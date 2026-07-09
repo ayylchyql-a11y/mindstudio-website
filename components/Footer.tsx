@@ -16,9 +16,8 @@ export default function Footer({ lang }: { lang: Locale }) {
         <div className="foot-inner">
           <span>{t.footerRights}</span>
           <div className="foot-links">
-            <a href="#">{t.footerPrivacy}</a>
-            <a href="#">{t.footerSupport}</a>
-            <a href="#">{t.footerPress}</a>
+            <a href={`/${lang}/privacy`}>{t.footerPrivacy}</a>
+            <a href={`/${lang}/support`}>{t.footerSupport}</a>
             <a href="mailto:ayylchyql@gmail.com">{t.footerContact}</a>
           </div>
         </div>

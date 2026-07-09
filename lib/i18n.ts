@@ -33,6 +33,17 @@ export interface Dictionary {
   detailFeatures: string;
   detailGallery: string;
   comingSoonNote: string;
+  privacyLabel: string;
+  supportLabel: string;
+  privacyIndexTitle: string;
+  privacyIndexIntro: string;
+  supportTitle: string;
+  supportIntro: string;
+  supportContactHeading: string;
+  supportContactBody: string;
+  supportPrivacyHeading: string;
+  viewPrivacy: string;
+  backHome: string;
 }
 
 export const dictionaries: Record<Locale, Dictionary> = {
@@ -64,6 +75,20 @@ export const dictionaries: Record<Locale, Dictionary> = {
     detailFeatures: "Features",
     detailGallery: "A closer look",
     comingSoonNote: "In the workshop now — coming to the App Store soon.",
+    privacyLabel: "Privacy Policy",
+    supportLabel: "Support",
+    privacyIndexTitle: "Privacy",
+    privacyIndexIntro:
+      "Every Mind Studio app is built to respect your privacy. Choose an app to read its full policy.",
+    supportTitle: "Support",
+    supportIntro:
+      "Questions, feedback, or a bug to report? Mind Studio is a one-person workshop, and every message reaches the maker directly.",
+    supportContactHeading: "Get in touch",
+    supportContactBody:
+      "Email ayylchyql@gmail.com — I read every message and reply as soon as I can.",
+    supportPrivacyHeading: "Privacy policies",
+    viewPrivacy: "Read policy",
+    backHome: "Home",
   },
   zh: {
     htmlLang: "zh-CN",
@@ -93,6 +118,18 @@ export const dictionaries: Record<Locale, Dictionary> = {
     detailFeatures: "功能亮点",
     detailGallery: "细节一览",
     comingSoonNote: "正在工作室打磨中 —— 即将登陆 App Store。",
+    privacyLabel: "隐私政策",
+    supportLabel: "支持",
+    privacyIndexTitle: "隐私政策",
+    privacyIndexIntro: "Mind Studio 的每一款 App 都尊重你的隐私。选择一款查看它的完整政策。",
+    supportTitle: "支持",
+    supportIntro:
+      "有疑问、建议，或想反馈问题？Mind Studio 是一个人的工作室，每一条消息都会直接到达作者本人。",
+    supportContactHeading: "联系方式",
+    supportContactBody: "发邮件到 ayylchyql@gmail.com —— 我会读每一封，并尽快回复。",
+    supportPrivacyHeading: "各 App 隐私政策",
+    viewPrivacy: "查看政策",
+    backHome: "首页",
   },
 };
 

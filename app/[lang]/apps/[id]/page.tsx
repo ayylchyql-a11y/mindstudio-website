@@ -115,6 +115,10 @@ export default async function AppDetail({
             <AppStoreBadge href={app.appStoreUrl} lang={lang} />
           </div>
         ) : null}
+        <div className="detail-legal-links">
+          <a href={`/${lang}/apps/${id}/privacy`}>{t.privacyLabel}</a>
+          <a href={`/${lang}/support`}>{t.supportLabel}</a>
+        </div>
       </section>
 
       <Effects />
