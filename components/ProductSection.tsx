@@ -25,14 +25,14 @@ export default function ProductSection({ app, lang }: { app: AppEntry; lang: Loc
             {app.status === "live" && app.appStoreUrl ? (
               <>
                 <AppStoreBadge href={app.appStoreUrl} lang={lang} />
-                <a className="learn" href={app.appStoreUrl} style={{ color: app.accent }}>
+                <a className="learn" href={`/${lang}/apps/${app.id}`} style={{ color: app.accent }}>
                   {t.learnMore}
                 </a>
               </>
             ) : (
-              <span className="soon-pill" style={{ color: app.accent }}>
+              <a className="soon-pill" href={`/${lang}/apps/${app.id}`} style={{ color: app.accent }}>
                 {t.comingSoon}
-              </span>
+              </a>
             )}
           </div>
         </div>

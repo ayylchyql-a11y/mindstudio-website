@@ -29,6 +29,10 @@ export interface Dictionary {
   footerSupport: string;
   footerPress: string;
   footerContact: string;
+  backToApps: string;
+  detailFeatures: string;
+  detailGallery: string;
+  comingSoonNote: string;
 }
 
 export const dictionaries: Record<Locale, Dictionary> = {
@@ -56,6 +60,10 @@ export const dictionaries: Record<Locale, Dictionary> = {
     footerSupport: "Support",
     footerPress: "Press Kit",
     footerContact: "Contact",
+    backToApps: "All apps",
+    detailFeatures: "Features",
+    detailGallery: "A closer look",
+    comingSoonNote: "In the workshop now — coming to the App Store soon.",
   },
   zh: {
     htmlLang: "zh-CN",
@@ -81,6 +89,10 @@ export const dictionaries: Record<Locale, Dictionary> = {
     footerSupport: "支持",
     footerPress: "媒体资源",
     footerContact: "联系",
+    backToApps: "全部作品",
+    detailFeatures: "功能亮点",
+    detailGallery: "细节一览",
+    comingSoonNote: "正在工作室打磨中 —— 即将登陆 App Store。",
   },
 };
 
