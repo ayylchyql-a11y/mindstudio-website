@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">M App Workshop logo</title>
+  <desc id="desc">A rounded black app tile containing a connected M-shaped network in warm white with a blue center node.</desc>
+
+  <rect width="1024" height="1024" fill="#050505"/>
+
+  <rect
+    x="64"
+    y="64"
+    width="896"
+    height="896"
+    rx="220"
+    fill="none"
+    stroke="#F7F4EC"
+    stroke-width="44"
+  />
+
+  <path
+    d="M278 310V708 M746 310V708 M278 310L746 708 M746 310L278 708"
+    fill="none"
+    stroke="#F7F4EC"
+    stroke-width="40"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <g fill="#050505" stroke="#F7F4EC" stroke-width="36">
+    <circle cx="278" cy="310" r="64"/>
+    <circle cx="746" cy="310" r="64"/>
+    <circle cx="278" cy="708" r="64"/>
+    <circle cx="746" cy="708" r="64"/>
+  </g>
+
+  <circle cx="512" cy="512" r="62" fill="#050505" stroke="#2F6FFF" stroke-width="32"/>
+</svg>
