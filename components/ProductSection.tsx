@@ -1,33 +1,37 @@
 /* eslint-disable @next/next/no-img-element */
 import type { AppEntry } from "@/data/apps";
+import type { Locale } from "@/lib/i18n";
+import { getDictionary } from "@/lib/i18n";
 import AppStoreBadge from "./AppStoreBadge";
 import CameraScreen from "./CameraScreen";
 
-export default function ProductSection({ app }: { app: AppEntry }) {
+export default function ProductSection({ app, lang }: { app: AppEntry; lang: Locale }) {
+  const t = getDictionary(lang);
+
   return (
     <section className={`product ${app.sectionClass}${app.flip ? " flip" : ""}`} id={app.id}>
       <div className="product-inner">
         <div className="copy">
-          <p className="eyebrow rv">{app.eyebrow}</p>
+          <p className="eyebrow rv">{app.name}</p>
           <h2 className="rv rv-d1">
-            {app.headlinePre}
+            {app.headlinePre[lang]}
             <span className="grad" style={{ backgroundImage: app.gradientCss }}>
-              {app.headlineGrad}
+              {app.headlineGrad[lang]}
             </span>
-            {app.headlinePost}
+            {app.headlinePost[lang]}
           </h2>
-          <p className="desc rv rv-d2">{app.desc}</p>
+          <p className="desc rv rv-d2">{app.desc[lang]}</p>
           <div className="cta-row rv rv-d2">
             {app.status === "live" && app.appStoreUrl ? (
               <>
-                <AppStoreBadge href={app.appStoreUrl} />
+                <AppStoreBadge href={app.appStoreUrl} lang={lang} />
                 <a className="learn" href={app.appStoreUrl} style={{ color: app.accent }}>
-                  Learn more
+                  {t.learnMore}
                 </a>
               </>
             ) : (
               <span className="soon-pill" style={{ color: app.accent }}>
-                Coming soon
+                {t.comingSoon}
               </span>
             )}
           </div>
@@ -36,7 +40,11 @@ export default function ProductSection({ app }: { app: AppEntry }) {
           <div className="phone">
             {app.shot ? (
               <div className="screen scr-shot">
-                <img className="shot" src={app.shot} alt={app.shotAlt ?? `${app.name} screenshot`} />
+                <img
+                  className="shot"
+                  src={app.shot}
+                  alt={app.shotAlt ? app.shotAlt[lang] : `${app.name} screenshot`}
+                />
               </div>
             ) : (
               <>

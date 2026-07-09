@@ -1,11 +1,16 @@
-export default function AppStoreBadge({ href }: { href: string }) {
+import type { Locale } from "@/lib/i18n";
+import { getDictionary } from "@/lib/i18n";
+
+export default function AppStoreBadge({ href, lang }: { href: string; lang: Locale }) {
+  const t = getDictionary(lang);
   return (
     <a className="store-badge" href={href} target="_blank" rel="noopener">
       <svg viewBox="0 0 17 20" aria-hidden="true">
         <path d="M14.1 10.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.9-.9-3.1-.8-1.6 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3.1-.7 1.4 0 1.8.7 3.1.7 1.3 0 2.1-1.1 2.9-2.3.9-1.3 1.3-2.6 1.3-2.7 0 0-2.6-1-2.7-3.7zM11.8 3.1c.6-.8 1.1-1.9 1-3.1-.9 0-2.1.6-2.8 1.5-.6.7-1.2 1.9-1 3 1.1 0 2.1-.6 2.8-1.4z" />
       </svg>
       <span>
-        <small>Download on the</small>App Store
+        <small>{t.badgeSmall}</small>
+        {t.badgeStore}
       </span>
     </a>
   );
