@@ -87,10 +87,10 @@ export default async function AppDetail({
           <p className="section-label">{t.detailGallery}</p>
           <div className="gallery">
             {app.gallery.map((shot) => (
-              <div key={shot.src}>
+              <div key={shot.src[lang]}>
                 <div className="phone">
                   <div className="screen scr-shot">
-                    <img className="shot" src={shot.src} alt={`${app.name} — ${shot.alt[lang]}`} />
+                    <img className="shot" src={shot.src[lang]} alt={`${app.name} — ${shot.alt[lang]}`} />
                   </div>
                 </div>
                 <p className="cap">{shot.alt[lang]}</p>

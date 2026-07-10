@@ -8,7 +8,7 @@ export interface Feature {
 }
 
 export interface Shot {
-  src: string;
+  src: Localized;
   alt: Localized;
 }
 
@@ -32,7 +32,7 @@ export interface AppEntry {
   sectionClass: "sect-light" | "sect-dark" | "sect-relax" | "sect-secret";
   flip: boolean;
   icon: string;
-  shot?: string;
+  shot?: Localized;
   shotAlt?: Localized;
   features: Feature[];
   gallery: Shot[];
@@ -58,7 +58,7 @@ export const apps: AppEntry[] = [
     sectionClass: "sect-light",
     flip: false,
     icon: "/icons/mbudget.png",
-    shot: "/shots/mbudget-home.jpg",
+    shot: { en: "/shots/mbudget-home-en.jpg", zh: "/shots/mbudget-home-zh.jpg" },
     shotAlt: { en: "M Budget home screen", zh: "M Budget 首页" },
     features: [
       {
@@ -91,10 +91,26 @@ export const apps: AppEntry[] = [
       },
     ],
     gallery: [
-      { src: "/shots/mbudget-home.jpg", alt: { en: "Home", zh: "首页" } },
-      { src: "/shots/mbudget-2.jpg", alt: { en: "Statistics", zh: "统计" } },
-      { src: "/shots/mbudget-3.jpg", alt: { en: "Budget", zh: "预算" } },
-      { src: "/shots/mbudget-4.jpg", alt: { en: "Accounts", zh: "账户" } },
+      {
+        src: { en: "/shots/mbudget-home-en.jpg", zh: "/shots/mbudget-home-zh.jpg" },
+        alt: { en: "Home", zh: "首页" },
+      },
+      {
+        src: { en: "/shots/mbudget-stats-en.jpg", zh: "/shots/mbudget-stats-zh.jpg" },
+        alt: { en: "Statistics", zh: "统计" },
+      },
+      {
+        src: { en: "/shots/mbudget-budget-en.jpg", zh: "/shots/mbudget-budget-zh.jpg" },
+        alt: { en: "Budget", zh: "预算" },
+      },
+      {
+        src: { en: "/shots/mbudget-accounts-en.jpg", zh: "/shots/mbudget-accounts-zh.jpg" },
+        alt: { en: "Accounts", zh: "账户" },
+      },
+      {
+        src: { en: "/shots/mbudget-networth-en.jpg", zh: "/shots/mbudget-networth-zh.jpg" },
+        alt: { en: "Net worth", zh: "净资产" },
+      },
     ],
   },
   {
@@ -115,7 +131,7 @@ export const apps: AppEntry[] = [
     sectionClass: "sect-relax",
     flip: true,
     icon: "/icons/malpharelax.png",
-    shot: "/shots/malpharelax-home.jpg",
+    shot: { en: "/shots/malpharelax-home.jpg", zh: "/shots/malpharelax-home.jpg" },
     shotAlt: { en: "M Alpha Relax home screen", zh: "M Alpha Relax 首页" },
     features: [
       {
@@ -148,10 +164,10 @@ export const apps: AppEntry[] = [
       },
     ],
     gallery: [
-      { src: "/shots/malpharelax-home.jpg", alt: { en: "Home", zh: "首页" } },
-      { src: "/shots/malpharelax-2.jpg", alt: { en: "Session", zh: "会话" } },
-      { src: "/shots/malpharelax-3.jpg", alt: { en: "Mixer", zh: "混音器" } },
-      { src: "/shots/malpharelax-4.jpg", alt: { en: "Stats", zh: "统计" } },
+      { src: { en: "/shots/malpharelax-home.jpg", zh: "/shots/malpharelax-home.jpg" }, alt: { en: "Home", zh: "首页" } },
+      { src: { en: "/shots/malpharelax-2.jpg", zh: "/shots/malpharelax-2.jpg" }, alt: { en: "Session", zh: "会话" } },
+      { src: { en: "/shots/malpharelax-3.jpg", zh: "/shots/malpharelax-3.jpg" }, alt: { en: "Mixer", zh: "混音器" } },
+      { src: { en: "/shots/malpharelax-4.jpg", zh: "/shots/malpharelax-4.jpg" }, alt: { en: "Stats", zh: "统计" } },
     ],
   },
   {
@@ -236,7 +252,7 @@ export const apps: AppEntry[] = [
     sectionClass: "sect-dark",
     flip: true,
     icon: "/icons/mcardwallet.png",
-    shot: "/shots/mcardwallet-home.jpg",
+    shot: { en: "/shots/mcardwallet-home.jpg", zh: "/shots/mcardwallet-home.jpg" },
     shotAlt: { en: "M Card Wallet home screen", zh: "M Card Wallet 首页" },
     features: [
       {
@@ -269,10 +285,10 @@ export const apps: AppEntry[] = [
       },
     ],
     gallery: [
-      { src: "/shots/mcardwallet-home.jpg", alt: { en: "Wallet", zh: "卡包" } },
-      { src: "/shots/mcardwallet-2.jpg", alt: { en: "Card detail", zh: "卡片详情" } },
-      { src: "/shots/mcardwallet-3.jpg", alt: { en: "Edit card", zh: "编辑卡片" } },
-      { src: "/shots/mcardwallet-4.jpg", alt: { en: "Profile", zh: "我的" } },
+      { src: { en: "/shots/mcardwallet-home.jpg", zh: "/shots/mcardwallet-home.jpg" }, alt: { en: "Wallet", zh: "卡包" } },
+      { src: { en: "/shots/mcardwallet-2.jpg", zh: "/shots/mcardwallet-2.jpg" }, alt: { en: "Card detail", zh: "卡片详情" } },
+      { src: { en: "/shots/mcardwallet-3.jpg", zh: "/shots/mcardwallet-3.jpg" }, alt: { en: "Edit card", zh: "编辑卡片" } },
+      { src: { en: "/shots/mcardwallet-4.jpg", zh: "/shots/mcardwallet-4.jpg" }, alt: { en: "Profile", zh: "我的" } },
     ],
   },
   {
@@ -292,7 +308,7 @@ export const apps: AppEntry[] = [
     sectionClass: "sect-secret",
     flip: false,
     icon: "/icons/hellosecret.png",
-    shot: "/shots/hellosecret-home.jpg",
+    shot: { en: "/shots/hellosecret-home.jpg", zh: "/shots/hellosecret-home.jpg" },
     shotAlt: { en: "HelloSecret feed screen", zh: "HelloSecret 秘密流" },
     features: [
       {
@@ -325,10 +341,10 @@ export const apps: AppEntry[] = [
       },
     ],
     gallery: [
-      { src: "/shots/hellosecret-home.jpg", alt: { en: "Feed", zh: "秘密流" } },
-      { src: "/shots/hellosecret-2.jpg", alt: { en: "Compose", zh: "写下" } },
-      { src: "/shots/hellosecret-3.jpg", alt: { en: "Detail", zh: "详情" } },
-      { src: "/shots/hellosecret-4.jpg", alt: { en: "Me", zh: "我的" } },
+      { src: { en: "/shots/hellosecret-home.jpg", zh: "/shots/hellosecret-home.jpg" }, alt: { en: "Feed", zh: "秘密流" } },
+      { src: { en: "/shots/hellosecret-2.jpg", zh: "/shots/hellosecret-2.jpg" }, alt: { en: "Compose", zh: "写下" } },
+      { src: { en: "/shots/hellosecret-3.jpg", zh: "/shots/hellosecret-3.jpg" }, alt: { en: "Detail", zh: "详情" } },
+      { src: { en: "/shots/hellosecret-4.jpg", zh: "/shots/hellosecret-4.jpg" }, alt: { en: "Me", zh: "我的" } },
     ],
   },
 ];

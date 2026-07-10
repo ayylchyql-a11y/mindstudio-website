@@ -42,7 +42,7 @@ export default function ProductSection({ app, lang }: { app: AppEntry; lang: Loc
               <div className="screen scr-shot">
                 <img
                   className="shot"
-                  src={app.shot}
+                  src={app.shot[lang]}
                   alt={app.shotAlt ? app.shotAlt[lang] : `${app.name} screenshot`}
                 />
               </div>
