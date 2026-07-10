@@ -44,6 +44,7 @@ export interface Dictionary {
   supportPrivacyHeading: string;
   viewPrivacy: string;
   backHome: string;
+  aboutLabel: string;
 }
 
 export const dictionaries: Record<Locale, Dictionary> = {
@@ -89,6 +90,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     supportPrivacyHeading: "Privacy policies",
     viewPrivacy: "Read policy",
     backHome: "Home",
+    aboutLabel: "About",
   },
   zh: {
     htmlLang: "zh-CN",
@@ -130,6 +132,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     supportPrivacyHeading: "各 App 隐私政策",
     viewPrivacy: "查看政策",
     backHome: "首页",
+    aboutLabel: "关于",
   },
 };
 

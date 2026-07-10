@@ -761,3 +761,13 @@
 }
 .detail-legal-links a { color: var(--ink-2); transition: color 0.2s; }
 .detail-legal-links a:hover { color: var(--ink); }
+
+/* ── About page ──────────────────────── */
+.about-page { text-align: left; }
+.about-mark { margin-bottom: 26px; }
+.about-mark .ms-logo {
+  width: 72px; height: 72px; border-radius: 24%;
+  box-shadow: 0 14px 34px rgba(5, 5, 5, 0.2);
+}
+.about-para { font-size: 17px; line-height: 1.75; color: var(--ink); margin-bottom: 20px; }
+.about-para a { color: #2f6fff; }

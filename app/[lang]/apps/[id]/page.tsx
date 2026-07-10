@@ -5,6 +5,7 @@ import DetailNav from "@/components/DetailNav";
 import AppStoreBadge from "@/components/AppStoreBadge";
 import CameraScreen from "@/components/CameraScreen";
 import Effects from "@/components/Effects";
+import JsonLd from "@/components/JsonLd";
 import { apps, getApp } from "@/data/apps";
 import { locales, isLocale, defaultLocale, getDictionary, type Locale } from "@/lib/i18n";
 
@@ -26,7 +27,7 @@ export async function generateMetadata({
     title,
     description: app.desc[locale],
     alternates: { canonical: `https://mindstudioapps.com/${locale}/apps/${id}` },
-    openGraph: { title, description: app.desc[locale], images: [app.icon] },
+    openGraph: { title, description: app.desc[locale] },
   };
 }
 
@@ -42,8 +43,26 @@ export default async function AppDetail({
 
   const t = getDictionary(lang);
 
+  const appLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: app.name,
+    description: app.desc[lang],
+    operatingSystem: "iOS",
+    applicationCategory: "MobileApplication",
+    url: `https://mindstudioapps.com/${lang}/apps/${app.id}`,
+    author: { "@type": "Organization", name: "Mind Studio" },
+    ...(app.status === "live" && app.appStoreUrl
+      ? {
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+          installUrl: app.appStoreUrl,
+        }
+      : {}),
+  };
+
   return (
     <main className={`detail ${app.sectionClass}`}>
+      <JsonLd data={appLd} />
       <DetailNav lang={lang} />
 
       <section className="detail-hero">
