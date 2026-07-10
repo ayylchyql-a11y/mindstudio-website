@@ -12,6 +12,11 @@ export interface Shot {
   alt: Localized;
 }
 
+export interface Slide {
+  src: Localized;
+  alt: Localized;
+}
+
 export interface AppEntry {
   id: string;
   name: string;
@@ -31,6 +36,7 @@ export interface AppEntry {
   shotAlt?: Localized;
   features: Feature[];
   gallery: Shot[];
+  slides?: Slide[];
 }
 
 export const apps: AppEntry[] = [
@@ -165,6 +171,28 @@ export const apps: AppEntry[] = [
     sectionClass: "sect-light",
     flip: false,
     icon: "/icons/mdoublecamera.png",
+    slides: [
+      {
+        src: { en: "/shots/camera-hero-en.jpg", zh: "/shots/camera-hero-zh.jpg" },
+        alt: { en: "Front and back in one frame", zh: "前后同框" },
+      },
+      {
+        src: { en: "/shots/camera-layout-en.jpg", zh: "/shots/camera-layout-zh.jpg" },
+        alt: { en: "Three layouts, one tap", zh: "一键三种布局" },
+      },
+      {
+        src: { en: "/shots/camera-control-en.jpg", zh: "/shots/camera-control-zh.jpg" },
+        alt: { en: "Precise controls", zh: "精准控制" },
+      },
+      {
+        src: { en: "/shots/camera-reaction-en.jpg", zh: "/shots/camera-reaction-zh.jpg" },
+        alt: { en: "Reaction mode", zh: "反应模式" },
+      },
+      {
+        src: { en: "/shots/camera-privacy-en.jpg", zh: "/shots/camera-privacy-zh.jpg" },
+        alt: { en: "Private by design", zh: "隐私优先" },
+      },
+    ],
     features: [
       {
         title: { en: "Front and back, at once", zh: "前后，同时" },

@@ -100,7 +100,21 @@ export default async function AppDetail({
         </div>
       )}
 
-      {app.gallery.length === 0 && (
+      {app.slides && app.slides.length > 0 && (
+        <div className="gallery-wrap">
+          <p className="section-label">{t.detailGallery}</p>
+          <div className="gallery">
+            {app.slides.map((slide) => (
+              <div key={slide.src[lang]} className="slide-card">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={slide.src[lang]} alt={`${app.name} — ${slide.alt[lang]}`} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {app.gallery.length === 0 && !app.slides && (
         <div className="gallery-wrap">
           <div className="gallery gallery-single">
             <div>
