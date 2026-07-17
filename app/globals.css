@@ -14,6 +14,9 @@
     --amber: #ff9f0a;
     --neon: #bf5af2;
     --violet: #7c6cff;
+    /* 动效令牌:自定义强化缓动,内置 ease 太软 */
+    --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
   }
   /* 淡色系版本：整站固定浅色，不随系统主题变化 */
 
@@ -62,12 +65,14 @@
     box-shadow: 0 14px 36px rgba(5, 5, 5, 0.28);
   }
   .nav-links { display: flex; gap: 32px; }
-  .nav-links a { opacity: 0.82; transition: opacity 0.2s; }
+  .nav-links a { opacity: 0.82; transition: opacity 0.15s ease; }
   .nav-links a:hover { opacity: 1; }
   .nav-lang {
     font-size: 12px; opacity: 0.6; border: 1px solid var(--hairline);
     padding: 4px 10px; border-radius: 99px;
+    transition: opacity 0.15s ease;
   }
+  .nav-lang:hover { opacity: 1; }
   @media (max-width: 640px) { .nav-links { display: none; } }
 
   /* ── Hero ───────────────────────────── */
@@ -115,9 +120,12 @@
     font-weight: 700; color: #fff;
     font-size: clamp(20px, 3.4vw, 34px);
     letter-spacing: -0.04em;
-    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: transform 200ms var(--ease-out-strong);
   }
-  .app-icon:hover { transform: translateY(-8px) scale(1.06); }
+  @media (hover: hover) and (pointer: fine) {
+    .app-icon:hover { transform: translateY(-6px) scale(1.04); }
+  }
+  .app-icon:active { transform: scale(0.95); transition-duration: 110ms; }
   .app-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 24%; display: block; }
   .ic-budget  { background: linear-gradient(160deg, #34e0c4, #009a86); }
   .ic-relax   { background: linear-gradient(160deg, #7fdcff, #2563c9); }
@@ -188,9 +196,12 @@
     padding: 11px 20px 11px 16px;
     border-radius: 99px;
     font-size: 15px; font-weight: 500;
-    transition: transform 0.25s ease, opacity 0.25s;
+    transition: transform 160ms var(--ease-out-strong);
   }
-  .store-badge:hover { transform: scale(1.04); }
+  @media (hover: hover) and (pointer: fine) {
+    .store-badge:hover { transform: scale(1.03); }
+  }
+  .store-badge:active { transform: scale(0.97); }
   .store-badge svg { width: 17px; height: 20px; fill: currentColor; }
   .store-badge small {
     display: block; font-size: 10px; font-weight: 400;
@@ -204,7 +215,9 @@
     letter-spacing: 0.04em;
     border: 1.5px solid currentColor;
     opacity: 0.85;
+    transition: transform 160ms var(--ease-out-strong);
   }
+  .soon-pill:active { transform: scale(0.97); }
   .soon-pill::before {
     content: ""; width: 7px; height: 7px; border-radius: 50%;
     background: currentColor;
@@ -545,12 +558,12 @@
   @keyframes drift2 { to { transform: translate(-80px, -60px) scale(1.08); } }
 
   /* ── Dock 磁吸（JS 驱动）── */
-  .icon-row.dock .app-icon { transition: transform 0.12s ease-out; }
+  .icon-row.dock .app-icon { transition: none; }
   .icon-row.dock .app-icon:hover { transform: none; }
 
-  /* ── 手机 3D 倾斜 + 反光 + 视差 ── */
+  /* ── 手机 3D 倾斜 + 反光 + 视差(JS 弹簧插值驱动,不走 CSS transition)── */
   .stage { perspective: 1100px; will-change: transform; }
-  .phone { transform-style: preserve-3d; transition: transform 0.18s ease-out; }
+  .phone { transform-style: preserve-3d; }
   .phone .glare {
     position: absolute; inset: 0; border-radius: 48px;
     pointer-events: none; z-index: 9;
@@ -563,12 +576,39 @@
   .nav-links a.active { opacity: 1; font-weight: 600; }
 
   /* ── Reveal animation ───────────────── */
-  .rv { opacity: 0; transform: translateY(34px); transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1); }
-  .rv.in { opacity: 1; transform: none; }
-  .rv-d1 { transition-delay: 0.08s; }
-  .rv-d2 { transition-delay: 0.16s; }
+  /* 位移小、时长短、强 ease-out,进场瞬间就有动静;轻微模糊掩盖交叠感 */
+  .rv {
+    opacity: 0;
+    transform: translateY(16px);
+    filter: blur(5px);
+    transition:
+      opacity 0.55s ease,
+      transform 0.55s var(--ease-out-strong),
+      filter 0.55s ease;
+  }
+  .rv.in { opacity: 1; transform: none; filter: none; }
+  .rv-d1 { transition-delay: 0.07s; }
+  .rv-d2 { transition-delay: 0.14s; }
+
+  /* Hero 图标行:行本身不做整体位移,由图标逐个错峰进场 */
+  .icon-row.rv { opacity: 1; transform: none; filter: none; transition: none; }
+  .icon-row .app-icon { opacity: 0; }
+  /* backwards 而非 both:动画结束后交还控制权,否则 fill 会压住 Dock 磁吸的 inline transform */
+  .icon-row.in .app-icon { opacity: 1; animation: icon-in 500ms var(--ease-out-strong) backwards; }
+  .icon-row.in .app-icon:nth-child(1) { animation-delay: 120ms; }
+  .icon-row.in .app-icon:nth-child(2) { animation-delay: 170ms; }
+  .icon-row.in .app-icon:nth-child(3) { animation-delay: 220ms; }
+  .icon-row.in .app-icon:nth-child(4) { animation-delay: 270ms; }
+  .icon-row.in .app-icon:nth-child(5) { animation-delay: 320ms; }
+  @keyframes icon-in {
+    from { opacity: 0; transform: translateY(14px) scale(0.9); }
+    to { opacity: 1; transform: none; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .rv { opacity: 1; transform: none; transition: none; }
+    .rv { opacity: 1; transform: none; filter: none; transition: none; }
+    .icon-row .app-icon { opacity: 1; }
+    .icon-row.in .app-icon { animation: none; }
     .r-orb, .r-wave i, .scroll-hint, .soon-pill::before, .s-hint::before,
     .shimmer, .hero::before, .hero::after { animation: none; }
     html { scroll-behavior: auto; }
@@ -590,9 +630,10 @@
   backdrop-filter: saturate(180%) blur(20px);
   border: 1px solid var(--hairline);
   padding: 7px 15px 7px 12px; border-radius: 99px;
-  transition: color 0.2s, transform 0.2s;
+  transition: color 0.2s ease, transform 200ms var(--ease-out-strong);
 }
 .detail-back:hover { color: var(--ink); transform: translateX(-2px); }
+.detail-back:active { transform: scale(0.96); }
 .detail-back::before { content: "‹"; font-size: 17px; line-height: 1; }
 
 .detail-hero {
@@ -677,9 +718,11 @@
 .gallery .phone {
   flex: 0 0 auto;
   scroll-snap-align: center;
-  transition: transform 0.3s ease;
+  transition: transform 250ms var(--ease-out-strong);
 }
-.gallery .phone:hover { transform: translateY(-6px); }
+@media (hover: hover) and (pointer: fine) {
+  .gallery .phone:hover { transform: translateY(-6px); }
+}
 .gallery .cap {
   text-align: center; margin-top: 14px;
   font-size: 13px; color: var(--ink-2);
@@ -701,7 +744,7 @@
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 13px; font-weight: 500; color: var(--ink-2);
   margin-bottom: 34px;
-  transition: color 0.2s, transform 0.2s;
+  transition: color 0.2s ease, transform 200ms var(--ease-out-strong);
 }
 .prose-page .eyebrow-link:hover { color: var(--ink); transform: translateX(-2px); }
 .prose-page .eyebrow-link::before { content: "‹"; font-size: 16px; line-height: 1; }
@@ -737,9 +780,12 @@
   background: var(--ground-elev);
   border: 1px solid var(--hairline);
   border-radius: 16px;
-  transition: transform 0.2s, border-color 0.2s;
+  transition: transform 200ms var(--ease-out-strong), border-color 0.2s ease;
 }
-.legal-row:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--ink) 22%, transparent); }
+@media (hover: hover) and (pointer: fine) {
+  .legal-row:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--ink) 22%, transparent); }
+}
+.legal-row:active { transform: scale(0.98); }
 .legal-row img { width: 44px; height: 44px; border-radius: 24%; flex-shrink: 0; }
 .legal-row .grow { flex: 1; min-width: 0; }
 .legal-row .nm { font-size: 16px; font-weight: 600; }
@@ -780,8 +826,10 @@
   border-radius: 34px;
   overflow: hidden;
   box-shadow: 0 22px 56px rgba(5, 5, 5, 0.28);
-  transition: transform 0.3s ease;
+  transition: transform 250ms var(--ease-out-strong);
   background: #0b0b0f;
 }
-.gallery .slide-card:hover { transform: translateY(-6px); }
+@media (hover: hover) and (pointer: fine) {
+  .gallery .slide-card:hover { transform: translateY(-6px); }
+}
 .gallery .slide-card img { width: 100%; height: auto; display: block; }
