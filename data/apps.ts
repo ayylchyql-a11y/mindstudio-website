@@ -347,6 +347,62 @@ export const apps: AppEntry[] = [
       { src: { en: "/shots/hellosecret-4.jpg", zh: "/shots/hellosecret-4.jpg" }, alt: { en: "Me", zh: "我的" } },
     ],
   },
+  {
+    id: "emoji",
+    name: "M Emoji",
+    headlinePre: { en: "Make the face ", zh: "做一张" },
+    headlineGrad: { en: "only you have", zh: "只有你有的脸" },
+    headlinePost: { en: ".", zh: "。" },
+    gradientCss: "linear-gradient(100deg, #f0a81e, #a66200)",
+    desc: {
+      en: "Build your own emoji from 225 hand-drawn parts, or remix a classic one. Whatever you save lands straight in your iMessage sticker panel — no exporting, no adding by hand.",
+      zh: "用 225 个手绘部件拼出自己的表情，或者拿现成 emoji 改造。做好保存，它就直接出现在 iMessage 的贴纸面板里 —— 不用导出、不用手动添加。",
+    },
+    tagline: { en: "Your face, your stickers.", zh: "你的脸，你的表情包。" },
+    status: "soon",
+    accent: "#a66200",
+    sectionClass: "sect-light",
+    flip: true,
+    icon: "/icons/memoji.png",
+    shot: { en: "/shots/memoji-home-en.jpg", zh: "/shots/memoji-home-zh.jpg" },
+    shotAlt: { en: "M Emoji home screen", zh: "M Emoji 首页" },
+    features: [
+      {
+        title: { en: "225 hand-drawn parts", zh: "225 个手绘部件" },
+        desc: {
+          en: "Faces, eyes, brows, mouths, beards, hair, glasses, hats, props, hands — eleven categories, all recolourable.",
+          zh: "脸型、眼睛、眉毛、嘴巴、胡须、发型、眼镜、帽子、配饰、手势 —— 十一个分类，都能换色。",
+        },
+      },
+      {
+        title: { en: "Straight into iMessage", zh: "直通 iMessage" },
+        desc: {
+          en: "Saving is all it takes. Your sticker shows up in the Messages panel, ready to send.",
+          zh: "保存即可。表情会出现在信息的贴纸面板里，随手就能发。",
+        },
+      },
+      {
+        title: { en: "Remix a classic", zh: "改造现成 emoji" },
+        desc: {
+          en: "Start from one of 1,587 open-source emoji and pile your own parts on top.",
+          zh: "从 1587 枚开源 emoji 里挑一个当底图，再往上叠自己的部件。",
+        },
+      },
+      {
+        title: { en: "WeChat & TikTok too", zh: "微信抖音也能用" },
+        desc: {
+          en: "Export with a white outline that reads on any chat bubble, plus step-by-step guides for both.",
+          zh: "导出带白描边，深浅气泡都看得清；两家的添加步骤都写好了。",
+        },
+      },
+    ],
+    gallery: [
+      { src: { en: "/shots/memoji-home-en.jpg", zh: "/shots/memoji-home-zh.jpg" }, alt: { en: "Home", zh: "首页" } },
+      { src: { en: "/shots/memoji-editor-en.jpg", zh: "/shots/memoji-editor-zh.jpg" }, alt: { en: "Editor", zh: "编辑器" } },
+      { src: { en: "/shots/memoji-emoji-en.jpg", zh: "/shots/memoji-emoji-zh.jpg" }, alt: { en: "Emoji library", zh: "emoji 底图库" } },
+      { src: { en: "/shots/memoji-export-en.jpg", zh: "/shots/memoji-export-zh.jpg" }, alt: { en: "Export", zh: "导出" } },
+    ],
+  },
 ];
 
 export function getApp(id: string): AppEntry | undefined {

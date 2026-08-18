@@ -295,6 +295,72 @@ export const privacy: Record<string, PrivacyDoc> = {
       contactSection,
     ],
   },
+  emoji: {
+    updated: { en: "Last updated: August 18, 2026", zh: "最后更新：2026 年 8 月 18 日" },
+    intro: {
+      en: "M Emoji runs entirely on your device. It has no network features at all — the developer collects nothing, uploads nothing, and sells nothing, because there is nowhere for your data to go.",
+      zh: "M Emoji 完全在你的设备上运行，没有任何联网功能 —— 开发者不收集、不上传、不出售任何数据，因为你的数据根本没有地方可去。",
+    },
+    sections: [
+      {
+        heading: { en: "Information we collect", zh: "我们收集的信息" },
+        body: [
+          {
+            en: "None. M Emoji has no analytics, advertising, or tracking SDKs, no account, and no server of its own. It never asks who you are.",
+            zh: "没有。M Emoji 没有接入任何分析、广告或追踪 SDK，没有账号，也没有自己的服务器。它从不问你是谁。",
+          },
+        ],
+      },
+      {
+        heading: { en: "Where your work is stored", zh: "作品存在哪里" },
+        body: [
+          {
+            en: "Everything you make — the editable document and the finished sticker image — is written to storage on your own device, inside a container shared with the app's iMessage extension so the sticker panel can read it. Nothing is synced to iCloud or anywhere else. Deleting the app deletes all of it.",
+            zh: "你做的一切 —— 可再编辑的作品文件和成品贴纸图 —— 都写在你自己设备的存储里，放在一个与本 App 的 iMessage 扩展共享的容器中，好让贴纸面板读得到。不同步到 iCloud，也不同步到别处。删掉 App 就一并删除。",
+          },
+        ],
+      },
+      {
+        heading: { en: "The iMessage sticker panel", zh: "iMessage 贴纸面板" },
+        body: [
+          {
+            en: "The bundled iMessage extension only reads the stickers already saved on this device and hands the one you tap to Messages. Sending is done by Apple's Messages app; the extension has no network access and sees nothing about your conversations.",
+            zh: "随附的 iMessage 扩展只读取这台设备上已保存的贴纸，把你点选的那一张交给「信息」。发送由 Apple 的信息 App 完成；扩展不联网，也看不到你的任何对话内容。",
+          },
+        ],
+      },
+      {
+        heading: { en: "Permissions", zh: "权限说明" },
+        body: [
+          {
+            en: "M Emoji asks for one permission: add-only access to your photo library, used the moment you tap “Save to Photos” so the sticker can be written there. It cannot read, browse, or delete your existing photos. There is no camera, contacts, microphone, or location access.",
+            zh: "M Emoji 只申请一个权限：相册的写入权限，仅在你点「存到相册」那一刻用来把贴纸写进去。它无法读取、浏览或删除你已有的照片。不使用相机、通讯录、麦克风与定位。",
+          },
+        ],
+      },
+      {
+        heading: { en: "Purchases", zh: "购买" },
+        body: [
+          {
+            en: "M Emoji Pro is a one-time purchase handled entirely by Apple's In-App Purchase. Apple processes the payment and tells the app only whether the purchase exists; the developer never sees your payment details or your Apple Account.",
+            zh: "M Emoji Pro 是一次性买断，全程由 Apple 的 App 内购买处理。Apple 完成支付，只告诉 App「买过没有」这一件事；开发者看不到你的支付信息，也看不到你的 Apple 账户。",
+          },
+        ],
+      },
+      {
+        heading: { en: "Artwork & third parties", zh: "素材与第三方" },
+        body: [
+          {
+            en: "The parts are drawn by the developer. The emoji you can remix come from Microsoft's open-source Fluent Emoji set (MIT licence), bundled inside the app — they are not downloaded, and using them contacts no one. There are no other third-party components.",
+            zh: "拼装部件由开发者绘制。可供改造的 emoji 底图来自微软开源的 Fluent Emoji（MIT 许可），已随 App 一起打包 —— 不需要下载，使用它们也不会联系任何人。除此之外没有其它第三方组件。",
+          },
+        ],
+      },
+      childrenSection,
+      changesSection,
+      contactSection,
+    ],
+  },
 };
 
 export function getPrivacy(id: string): PrivacyDoc | undefined {
