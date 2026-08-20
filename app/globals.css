@@ -833,3 +833,103 @@
   .gallery .slide-card:hover { transform: translateY(-6px); }
 }
 .gallery .slide-card img { width: 100%; height: auto; display: block; }
+
+/* ── 案例（受托/自有业务作品） ─────────── */
+.work-strip {
+  padding: 120px 24px 40px;
+  background: var(--ground);
+}
+.work-strip-inner { max-width: 980px; margin: 0 auto; text-align: center; }
+.work-strip .eyebrow {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--ink-2);
+}
+.work-strip h2 {
+  margin-top: 12px;
+  font-size: clamp(26px, 3.6vw, 42px);
+  font-weight: 700; letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.work-strip-body {
+  margin: 16px auto 0;
+  max-width: 56ch;
+  font-size: clamp(15px, 1.7vw, 18px);
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.work-cards { margin-top: 36px; display: flex; flex-direction: column; gap: 12px; }
+.work-card {
+  display: flex; align-items: center; gap: 16px;
+  text-align: left;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: var(--ground-elev);
+  border: 1px solid var(--hairline);
+  transition: transform 220ms var(--ease-out-strong), box-shadow 220ms var(--ease-out-strong);
+}
+@media (hover: hover) and (pointer: fine) {
+  .work-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07); }
+}
+.work-card:active { transform: scale(0.985); }
+.work-card img { width: 54px; height: 54px; border-radius: 24%; flex-shrink: 0; }
+.work-card .grow { flex: 1; min-width: 0; display: block; }
+.work-card .nm { display: block; font-size: 17px; font-weight: 600; }
+.work-card .tl {
+  display: block; margin-top: 3px;
+  font-size: 14px; line-height: 1.45; color: var(--ink-2);
+}
+.work-card .go { font-size: 14px; font-weight: 500; white-space: nowrap; }
+.work-card .go::after { content: " ›"; }
+@media (max-width: 640px) {
+  .work-card { flex-wrap: wrap; }
+  .work-card .go { width: 100%; }
+}
+
+.work-credit {
+  margin: 18px auto 0;
+  max-width: 60ch;
+  font-size: 14px; line-height: 1.6;
+  color: var(--ink-2);
+}
+.work-credit-sep { margin: 0 8px; opacity: 0.6; }
+.work-intro { max-width: 680px; margin: 0 auto; padding: 20px 24px 0; }
+.work-para {
+  font-size: 17px; line-height: 1.75;
+  color: var(--ink-2);
+  margin-bottom: 18px;
+}
+.piece-grid {
+  margin-top: 26px;
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (max-width: 720px) { .piece-grid { grid-template-columns: 1fr; } }
+.piece-card {
+  position: relative;
+  padding: 22px 20px 20px;
+  border-radius: 18px;
+  background: var(--ground-elev);
+  border: 1px solid var(--hairline);
+  overflow: hidden;
+}
+.piece-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.piece-card h3 { font-size: 16px; font-weight: 650; letter-spacing: -0.01em; }
+.piece-card p { margin-top: 8px; font-size: 14px; line-height: 1.6; color: var(--ink-2); }
+.piece-card .piece-tech {
+  margin-top: 12px;
+  font-size: 12px; letter-spacing: 0.02em;
+  color: var(--ink-2); opacity: 0.75;
+}
+.work-stack { max-width: 980px; margin: 0 auto; padding: 40px 24px 0; text-align: center; }
+.stack-row {
+  margin-top: 20px;
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+}
+.stack-chip {
+  padding: 7px 14px;
+  border-radius: 99px;
+  border: 1px solid var(--hairline);
+  background: var(--ground-elev);
+  font-size: 13px; color: var(--ink-2);
+}
+.work-page .detail-legal-links { flex-wrap: wrap; justify-content: center; }

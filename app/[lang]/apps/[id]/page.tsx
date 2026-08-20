@@ -7,6 +7,7 @@ import CameraScreen from "@/components/CameraScreen";
 import Effects from "@/components/Effects";
 import JsonLd from "@/components/JsonLd";
 import { apps, getApp } from "@/data/apps";
+import { getPrivacy } from "@/data/legal";
 import { locales, isLocale, defaultLocale, getDictionary, type Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
@@ -149,7 +150,7 @@ export default async function AppDetail({
           </div>
         ) : null}
         <div className="detail-legal-links">
-          <a href={`/${lang}/apps/${id}/privacy`}>{t.privacyLabel}</a>
+          {getPrivacy(id) && <a href={`/${lang}/apps/${id}/privacy`}>{t.privacyLabel}</a>}
           <a href={`/${lang}/support`}>{t.supportLabel}</a>
         </div>
       </section>

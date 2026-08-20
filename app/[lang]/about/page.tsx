@@ -27,6 +27,11 @@ const content = {
       zh: "从记账工具，到助眠声音，再到同时拍下此刻两面的相机 —— 它们不属于同一个品类，只共享同一个作者和同一种做事方式：安静、细致，一次做好一件。",
     },
   ],
+  workLine: {
+    en: "Not all of it ends up on the App Store. A sushi restaurant near Milan runs its entire ordering operation — apps, ordering site, back office, riders, backend — on a system built here: ",
+    zh: "并非所有产出都会出现在 App Store。米兰近郊的一家寿司餐厅，整套点单生意 —— App、点单网站、店内后台、骑手、后端 —— 都跑在这里做的系统上：",
+  },
+  workLink: { en: "the Mumi Sushi case study", zh: "Mumi Sushi 案例" },
   closing: {
     en: "If something here resonates — or breaks — I'd love to hear from you.",
     zh: "如果这里有什么打动了你 —— 或者出了问题 —— 我很想听到你的声音。",
@@ -67,6 +72,11 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
           {p[lang]}
         </p>
       ))}
+      <p className="about-para">
+        {content.workLine[lang]}
+        <a href={`/${lang}/work/mumi-sushi`}>{content.workLink[lang]}</a>
+        {lang === "zh" ? "。" : "."}
+      </p>
       <p className="about-para">
         {content.closing[lang]}{" "}
         <a href="mailto:ayylchyql@gmail.com">ayylchyql@gmail.com</a>

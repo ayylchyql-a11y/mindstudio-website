@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import ProductSection from "@/components/ProductSection";
+import WorkStrip from "@/components/WorkStrip";
 import Footer from "@/components/Footer";
 import Effects from "@/components/Effects";
 import JsonLd from "@/components/JsonLd";
@@ -42,6 +43,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       {apps.map((app) => (
         <ProductSection key={app.id} app={app} lang={lang} />
       ))}
+      <WorkStrip lang={lang} />
       <Footer lang={lang} />
       <Effects />
     </>

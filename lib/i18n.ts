@@ -45,6 +45,17 @@ export interface Dictionary {
   viewPrivacy: string;
   backHome: string;
   aboutLabel: string;
+  workEyebrow: string;
+  workTitle: string;
+  workBody: string;
+  workCta: string;
+  workSystemLabel: string;
+  workStackLabel: string;
+  workLinksLabel: string;
+  workFeaturesLabel: string;
+  workAndroidPending: string;
+  badgePlaySmall: string;
+  badgePlayStore: string;
 }
 
 export const dictionaries: Record<Locale, Dictionary> = {
@@ -91,6 +102,18 @@ export const dictionaries: Record<Locale, Dictionary> = {
     viewPrivacy: "Read policy",
     backHome: "Home",
     aboutLabel: "About",
+    workEyebrow: "Beyond the app family",
+    workTitle: "One more thing built here.",
+    workBody:
+      "Not everything from this workshop sits on a shelf as an app. A sushi restaurant near Milan runs its whole ordering operation on a system built here — customer apps, ordering site, back office, rider app, backend.",
+    workCta: "See the case study",
+    workSystemLabel: "What's in it",
+    workStackLabel: "Built with",
+    workLinksLabel: "Links",
+    workFeaturesLabel: "In the customer app",
+    workAndroidPending: "Android in review",
+    badgePlaySmall: "Get it on",
+    badgePlayStore: "Google Play",
   },
   zh: {
     htmlLang: "zh-CN",
@@ -133,6 +156,18 @@ export const dictionaries: Record<Locale, Dictionary> = {
     viewPrivacy: "查看政策",
     backHome: "首页",
     aboutLabel: "关于",
+    workEyebrow: "App 家族之外",
+    workTitle: "这里还做出过一件更大的东西。",
+    workBody:
+      "工作室的产出并不都是货架上的一款 App。米兰近郊的一家寿司餐厅，整套点单生意就跑在这里做的系统上 —— 顾客 App、点单网站、店内后台、骑手 App、后端。",
+    workCta: "查看案例",
+    workSystemLabel: "系统构成",
+    workStackLabel: "技术栈",
+    workLinksLabel: "相关链接",
+    workFeaturesLabel: "顾客 App 亮点",
+    workAndroidPending: "安卓审核中",
+    badgePlaySmall: "下载于",
+    badgePlayStore: "Google Play",
   },
 };
 
