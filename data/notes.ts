@@ -28,6 +28,48 @@ export interface Note {
 
 export const notes: Note[] = [
   {
+    slug: "storekit-products-empty-array-paywall-did-nothing",
+    date: "2026-08-22",
+    title: {
+      en: "My paywall did nothing for six months, and StoreKit never once returned an error",
+      zh: "我的付费墙静默失败了半年，而 StoreKit 一次错误都没报过",
+    },
+    summary: {
+      en: "Product.products(for:) returns an empty array for a product that isn't on sale — it does not throw. If your paywall reads .first and returns early, the button goes silently dead.",
+      zh: "商品没上架时 Product.products(for:) 返回的是空数组，不是抛错。付费墙如果取 .first 然后静默 return，购买按钮就成了一个死按钮。",
+    },
+    body: [
+      { t: "p", en: "For about six months my app had roughly 185 downloads and <b>zero</b> purchases. I assumed the obvious thing: people didn't want to pay. I rewrote the paywall copy. I moved the upgrade entry point. I second-guessed the price." },
+      { t: "p", en: "The actual reason was that the purchase button did nothing at all. Tap it, and the app did not show a sheet, did not show an error, did not log anything. It just sat there. And StoreKit was behaving exactly as documented the entire time." },
+      { t: "h2", en: "Empty is not an error" },
+      { t: "p", en: "In StoreKit 2 you fetch products like this:" },
+      { t: "code", lang: "swift", body: "let products = try await Product.products(for: [Self.proProductId])",
+        caption: { en: "A batch lookup. Ask for five IDs, get back however many the store recognises.", zh: "这是批量查询。问五个 ID，商店认得几个就还你几个。" } },
+      { t: "p", en: "That call is a <b>batch</b> lookup, and it treats an unknown product ID the way a dictionary lookup treats a missing key: the ID simply isn't in the result. It does not throw. It does not warn. Ask for one product that isn't on sale and you get back an empty array, successfully." },
+      { t: "p", en: "Which means this shape — and it is a very natural shape to write — is a silent dead end:" },
+      { t: "code", lang: "swift", body: "// The bug\nlet products = try await Product.products(for: [proProductId])\nguard let product = products.first else { return }   // ← silently does nothing\nlet result = try await product.purchase()",
+        caption: { en: "This compiles, runs, and reports success. The user just watches nothing happen.", zh: "这段代码编译过、跑得通、不报任何错。用户那边就是点了没反应。" } },
+      { t: "p", en: "Every review of that code reads fine, because the failure it guards against feels impossible — of course my own product ID exists, I typed it myself. The <code>try</code> in front of the call makes it feel like errors are handled. They are, just not this one, because this one is not an error." },
+      { t: "h2", en: "Why the store had never heard of my product" },
+      { t: "p", en: "The product ID was correct. It existed in App Store Connect. Its status, which I had not looked at in months, was <b>Developer Rejected</b>." },
+      { t: "p", en: "Here is the rule that caused it, and it is the part I had never seen written down clearly: <b>your first non-consumable in-app purchase has to be submitted for review attached to an app version.</b> It does not get reviewed on its own, so it rides along with a version submission." },
+      { t: "p", en: "Which means the reverse is true as well. Months earlier I had withdrawn a version submission for an unrelated reason. Withdrawing it also cancelled the in-app purchase attached to it. The IAP dropped back to Developer Rejected — never on sale, never reviewed. App Store Connect did not warn me, and the app had no way to know." },
+      { t: "note", en: "So the store was right to return an empty array. There genuinely was no purchasable product. Every layer behaved correctly, and the result was six months of a dead button." },
+      { t: "h2", en: "Two rules that came out of this" },
+      { t: "p", en: "<b>An empty product list must be a visible state, never an early return.</b> The fix is not clever — it is just refusing to swallow it:" },
+      { t: "code", lang: "swift", body: "let products = try await Product.products(for: [Self.proProductId])\nguard let product = products.first else {\n    IAPDiagnostics.recordProductMissing()\n    throw EntitlementError.productNotFound\n}",
+        caption: { en: "\"Can't fetch the product\" and \"the purchase failed\" are different diagnoses. Don't collapse them into one message.", zh: "「商品拉不到」和「购买失败了」是两种完全不同的病，别合并成同一句提示。" } },
+      { t: "p", en: "<b>Product IDs are burned forever.</b> Separately, I had created a product ID in App Store Connect, deleted it, then later tried to reuse the same string. Apple keeps deleted product IDs reserved permanently — you cannot re-register one. I had to move to a new ID with a <code>2</code> on the end and make sure every reference in code matched it exactly." },
+      { t: "h2", en: "The diagnostics screen I should have had on day one" },
+      { t: "p", en: "There is a second version of this problem, and it bit me later during review. A reviewer rejected the app because the purchase failed for them. Their screenshot showed the price rendering correctly — so products were fetching fine — but the app's only feedback was a generic \"Purchase failed, please try again\". Whatever <code>product.purchase()</code> actually threw had been swallowed. With nothing but that screenshot, there was nothing to debug." },
+      { t: "p", en: "So I built a diagnostics screen into settings. It does not attempt a purchase — in production that would charge real money. It just lays the black box open and makes every link in the chain readable and copyable:" },
+      { t: "ul", items: ["Whether the product can be fetched at all, and at what price and currency", "Whether the device can make payments (<code>AppStore.canMakePayments</code>)", "Which StoreKit environment and which storefront region the app is actually in", "Any entitlement the user already holds", "<b>The last purchase error, raw</b> — domain, code and description, recorded at the moment it was thrown"] },
+      { t: "p", en: "That last one matters most. A user who cannot pay you is not going to file a good bug report, and neither is a reviewer. Recording the raw error somewhere they can copy it turns \"it doesn't work\" into an actual diagnosis." },
+      { t: "h2", en: "What I'd tell past me" },
+      { t: "ul", items: ["Zero purchases is a <b>bug report</b> until proven otherwise. Six months of rewriting copy was six months spent optimising a button that was not connected to anything.", "Check the IAP's status in App Store Connect after <i>any</i> version submission is withdrawn, rejected or replaced. The two are coupled and nothing tells you.", "Never let \"the store returned nothing\" and \"the purchase failed\" collapse into the same user-facing message."] },
+    ],
+  },
+  {
     slug: "apple-development-certificate-expired-no-crash-logs",
     date: "2026-08-22",
     title: {
