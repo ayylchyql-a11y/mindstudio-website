@@ -1022,3 +1022,12 @@
   font-size: 15px;
 }
 .note-tail p { font-size: 15px !important; margin-bottom: 10px; }
+
+.note-fig { margin: 0 0 22px; }
+.note-fig img {
+  display: block; width: 100%; height: auto;
+  border: 1px solid var(--hairline); border-radius: 14px;
+}
+.note-fig figcaption {
+  margin-top: 9px; font-size: 13px; line-height: 1.6; color: var(--ink-2);
+}

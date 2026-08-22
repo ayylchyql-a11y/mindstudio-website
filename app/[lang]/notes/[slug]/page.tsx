@@ -65,6 +65,16 @@ function renderBlock(b: Block, i: number, lang: Locale) {
           ))}
         </ul>
       );
+    case "img":
+      return (
+        <figure key={i} className="note-fig">
+          {/* 这些图是我自己截的、放在 public/notes/ 下的静态资源，尺寸固定，
+              用 <img> 就够了 —— 引 next/image 只是为了一个 CDN 转码，不值得。 */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={b.src} alt={b.alt} loading="lazy" />
+          {b.caption ? <figcaption>{b.caption[lang]}</figcaption> : null}
+        </figure>
+      );
     case "code":
       return (
         <figure key={i} className="note-code">
