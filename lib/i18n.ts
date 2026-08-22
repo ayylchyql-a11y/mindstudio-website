@@ -45,6 +45,7 @@ export interface Dictionary {
   viewPrivacy: string;
   backHome: string;
   aboutLabel: string;
+  notesLabel: string;
   workEyebrow: string;
   workTitle: string;
   workBody: string;
@@ -102,6 +103,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     viewPrivacy: "Read policy",
     backHome: "Home",
     aboutLabel: "About",
+    notesLabel: "Notes",
     workEyebrow: "Beyond the app family",
     workTitle: "One more thing built here.",
     workBody:
@@ -156,6 +158,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     viewPrivacy: "查看政策",
     backHome: "首页",
     aboutLabel: "关于",
+    notesLabel: "笔记",
     workEyebrow: "App 家族之外",
     workTitle: "这里还做出过一件更大的东西。",
     workBody:

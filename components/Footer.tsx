@@ -17,6 +17,7 @@ export default function Footer({ lang }: { lang: Locale }) {
           <span>{t.footerRights}</span>
           <div className="foot-links">
             <a href={`/${lang}/about`}>{t.aboutLabel}</a>
+            <a href={`/${lang}/notes`}>{t.notesLabel}</a>
             <a href={`/${lang}/privacy`}>{t.footerPrivacy}</a>
             <a href={`/${lang}/support`}>{t.footerSupport}</a>
             <a href="mailto:ayylchyql@gmail.com">{t.footerContact}</a>

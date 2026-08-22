@@ -933,3 +933,92 @@
   font-size: 13px; color: var(--ink-2);
 }
 .work-page .detail-legal-links { flex-wrap: wrap; justify-content: center; }
+
+/* ── Notes (技术长文) ─────────────────── */
+.notes-page .notes-lang-hint {
+  margin-top: 14px; font-size: 13px; color: var(--ink-2);
+}
+.note-list {
+  list-style: none; margin: 34px 0 0; padding: 0;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.note-row {
+  display: grid; gap: 6px;
+  padding: 20px 22px;
+  background: var(--ground-elev);
+  border: 1px solid var(--hairline);
+  border-radius: 16px;
+  color: inherit;
+  transition: transform 200ms var(--ease-out-strong), border-color 0.2s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .note-row:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--ink) 22%, transparent); }
+}
+.note-row:active { transform: scale(0.99); }
+.note-row time {
+  font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-2); font-variant-numeric: tabular-nums;
+}
+.note-row .nt {
+  font-size: 19px; font-weight: 650; line-height: 1.3;
+  letter-spacing: -0.012em; color: var(--ink); text-wrap: balance;
+}
+.note-row .ns { font-size: 14.5px; line-height: 1.6; color: var(--ink-2); }
+.prose-page .note-row:hover { text-decoration: none; }
+
+/* 文章正文 */
+.note-body { margin-top: 34px; }
+.note-body p { font-size: 17px; line-height: 1.75; margin-bottom: 18px; }
+.note-body p b { color: var(--ink); font-weight: 620; }
+.note-body h2 { margin: 46px 0 14px; font-size: 21px; }
+.note-body code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 0.88em;
+  padding: 0.12em 0.36em;
+  border-radius: 5px;
+  background: var(--ground-elev);
+  border: 1px solid var(--hairline);
+  color: var(--ink);
+}
+.note-ul { margin: 0 0 18px; padding-left: 20px; }
+.note-ul li {
+  font-size: 17px; line-height: 1.72; color: var(--ink-2); margin-bottom: 10px;
+}
+.note-ul li::marker { color: var(--ink-2); }
+.note-callout {
+  padding: 16px 20px;
+  background: var(--ground-elev);
+  border: 1px solid var(--hairline);
+  border-left: 3px solid var(--accent-line, #2f6fff);
+  border-radius: 0 14px 14px 0;
+  color: var(--ink) !important;
+}
+
+/* 代码块 —— 必须能横向滚动，正文本身永远不横滚 */
+.note-code { margin: 0 0 22px; }
+.note-code pre {
+  margin: 0;
+  padding: 18px 20px;
+  background: var(--ground-elev);
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  overflow-x: auto;
+}
+.note-code pre code {
+  display: block;
+  padding: 0; border: 0; background: none; border-radius: 0;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 13.5px; line-height: 1.72;
+  color: var(--ink);
+  white-space: pre;
+}
+.note-code figcaption {
+  margin-top: 9px; font-size: 13px; line-height: 1.6; color: var(--ink-2);
+}
+
+.note-tail {
+  margin-top: 56px; padding-top: 26px;
+  border-top: 1px solid var(--hairline);
+  font-size: 15px;
+}
+.note-tail p { font-size: 15px !important; margin-bottom: 10px; }
