@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "../globals.css";
-import { getDictionary, isLocale, locales, defaultLocale, type Locale } from "@/lib/i18n";
+import { defaultLocale, getDictionary, hreflangMap, isLocale, localeMeta, locales, type Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -22,7 +22,7 @@ export async function generateMetadata({
     icons: { icon: "/logo.svg" },
     alternates: {
       canonical: url,
-      languages: { en: "/en", "zh-CN": "/zh" },
+      languages: hreflangMap("/{lang}"),
     },
     openGraph: {
       title: t.metaTitle,
@@ -45,7 +45,9 @@ export default async function LangLayout({
   const locale: Locale = isLocale(lang) ? lang : defaultLocale;
   const t = getDictionary(locale);
   return (
-    <html lang={t.htmlLang}>
+    // dir 必须跟着语言走：阿拉伯语不加 dir="rtl" 的话整页是左对齐的，
+    // 标点位置也全错（不是"看着别扭"，是读不了）。
+    <html lang={t.htmlLang} dir={localeMeta[locale].dir}>
       <body>{children}</body>
     </html>
   );

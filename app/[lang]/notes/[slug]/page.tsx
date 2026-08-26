@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { notes, noteBySlug, formatNoteDate, type Block } from "@/data/notes";
-import { locales, isLocale, defaultLocale, getDictionary, type Locale } from "@/lib/i18n";
+import { defaultLocale, getDictionary, hreflangMap, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
   return locales.flatMap((lang) => notes.map((n) => ({ lang, slug: n.slug })));
@@ -31,7 +31,7 @@ export async function generateMetadata({
     description: note.summary[locale],
     alternates: {
       canonical: url,
-      languages: { en: `/en/notes/${slug}`, "zh-CN": `/zh/notes/${slug}` },
+      languages: hreflangMap(`/{lang}/notes/${slug}`),
     },
     openGraph: {
       title: note.title[locale],
@@ -72,7 +72,7 @@ function renderBlock(b: Block, i: number, lang: Locale) {
               用 <img> 就够了 —— 引 next/image 只是为了一个 CDN 转码，不值得。 */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={b.src} alt={b.alt} loading="lazy" />
-          {b.caption ? <figcaption>{b.caption[lang]}</figcaption> : null}
+          {b.caption ? <figcaption>{pick(b.caption, lang)}</figcaption> : null}
         </figure>
       );
     case "code":
@@ -81,7 +81,7 @@ function renderBlock(b: Block, i: number, lang: Locale) {
           <pre>
             <code>{b.body}</code>
           </pre>
-          {b.caption ? <figcaption>{b.caption[lang]}</figcaption> : null}
+          {b.caption ? <figcaption>{pick(b.caption, lang)}</figcaption> : null}
         </figure>
       );
   }
@@ -118,16 +118,16 @@ export default async function NotePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <a className="eyebrow-link" href={`/${lang}/notes`}>
-        {copy.back[lang]}
+        {pick(copy.back, lang)}
       </a>
-      <h1>{note.title[lang]}</h1>
+      <h1>{pick(note.title, lang)}</h1>
       <p className="updated">
         <time dateTime={note.date}>{formatNoteDate(note.date, lang)}</time>
       </p>
       <article className="note-body">{note.body.map((b, i) => renderBlock(b, i, lang))}</article>
       <aside className="note-tail">
-        <p>{copy.tail[lang]}</p>
-        <a href={`/${lang}`}>{copy.tailLink[lang]}</a>
+        <p>{pick(copy.tail, lang)}</p>
+        <a href={`/${lang}`}>{pick(copy.tailLink, lang)}</a>
         <span aria-hidden="true"> · </span>
         <a href={`/${lang}/about`}>{t.aboutLabel}</a>
       </aside>

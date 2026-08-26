@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { apps, getApp } from "@/data/apps";
 import { getPrivacy } from "@/data/legal";
-import { locales, isLocale, defaultLocale, getDictionary, type Locale } from "@/lib/i18n";
+import { defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
   return locales.flatMap((lang) => apps.map((app) => ({ lang, id: app.id })));
@@ -45,14 +45,14 @@ export default async function PrivacyPage({
       <h1>
         {app.name} — {t.privacyLabel}
       </h1>
-      <p className="updated">{doc.updated[lang]}</p>
-      <p className="prose-intro">{doc.intro[lang]}</p>
+      <p className="updated">{pick(doc.updated, lang)}</p>
+      <p className="prose-intro">{pick(doc.intro, lang)}</p>
 
       {doc.sections.map((s, i) => (
         <section key={i}>
-          <h2>{s.heading[lang]}</h2>
+          <h2>{pick(s.heading, lang)}</h2>
           {s.body.map((p, j) => (
-            <p key={j}>{p[lang]}</p>
+            <p key={j}>{pick(p, lang)}</p>
           ))}
         </section>
       ))}

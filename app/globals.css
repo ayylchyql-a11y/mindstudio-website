@@ -67,12 +67,35 @@
   .nav-links { display: flex; gap: 32px; }
   .nav-links a { opacity: 0.82; transition: opacity 0.15s ease; }
   .nav-links a:hover { opacity: 1; }
-  .nav-lang {
+  /* 语言菜单：<details>/<summary> 做的纯 CSS 下拉（本站没有客户端 JS） */
+  .nav-lang { position: relative; }
+  .nav-lang > summary {
     font-size: 12px; opacity: 0.6; border: 1px solid var(--hairline);
     padding: 4px 10px; border-radius: 99px;
     transition: opacity 0.15s ease;
+    cursor: pointer; list-style: none; white-space: nowrap;
   }
-  .nav-lang:hover { opacity: 1; }
+  .nav-lang > summary::-webkit-details-marker { display: none; }
+  .nav-lang > summary:hover,
+  .nav-lang[open] > summary { opacity: 1; }
+  .nav-lang-menu {
+    position: absolute; top: calc(100% + 8px); right: 0; z-index: 40;
+    min-width: 168px; max-height: 60vh; overflow-y: auto;
+    margin: 0; padding: 6px; list-style: none;
+    background: var(--surface, #101010);
+    border: 1px solid var(--hairline); border-radius: 14px;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
+  }
+  .nav-lang-menu li { margin: 0; }
+  .nav-lang-menu a {
+    display: block; padding: 7px 12px; border-radius: 9px;
+    font-size: 13px; opacity: 0.72; white-space: nowrap;
+    transition: opacity 0.15s ease, background 0.15s ease;
+  }
+  .nav-lang-menu a:hover { opacity: 1; background: rgba(127, 127, 127, 0.14); }
+  .nav-lang-menu a[aria-current="true"] { opacity: 1; font-weight: 600; }
+  /* 阿拉伯语整页 dir="rtl" 时，菜单要贴左边而不是右边 */
+  [dir="rtl"] .nav-lang-menu { right: auto; left: 0; }
   @media (max-width: 640px) { .nav-links { display: none; } }
 
   /* ── Hero ───────────────────────────── */

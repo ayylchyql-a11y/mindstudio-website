@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { work } from "@/data/work";
 import type { Locale } from "@/lib/i18n";
-import { getDictionary } from "@/lib/i18n";
+import { getDictionary, pick } from "@/lib/i18n";
 
 export default function WorkStrip({ lang }: { lang: Locale }) {
   const t = getDictionary(lang);
@@ -19,7 +19,7 @@ export default function WorkStrip({ lang }: { lang: Locale }) {
               <img src={item.icon} alt={`${item.name} icon`} />
               <span className="grow">
                 <span className="nm">{item.name}</span>
-                <span className="tl">{item.tagline[lang]}</span>
+                <span className="tl">{pick(item.tagline, lang)}</span>
               </span>
               <span className="go" style={{ color: item.accent }}>
                 {t.workCta}

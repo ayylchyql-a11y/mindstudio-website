@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { notes, formatNoteDate } from "@/data/notes";
-import { locales, isLocale, defaultLocale, getDictionary, type Locale } from "@/lib/i18n";
+import { defaultLocale, getDictionary, hreflangMap, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -27,11 +27,11 @@ export async function generateMetadata({
   const { lang } = await params;
   const locale: Locale = isLocale(lang) ? lang : defaultLocale;
   return {
-    title: `${copy.title[locale]} · Mind Studio`,
-    description: copy.intro[locale],
+    title: `${pick(copy.title, locale)} · Mind Studio`,
+    description: pick(copy.intro, locale),
     alternates: {
       canonical: `https://mindstudioapps.com/${locale}/notes`,
-      languages: { en: "/en/notes", "zh-CN": "/zh/notes" },
+      languages: hreflangMap("/{lang}/notes"),
     },
   };
 }
@@ -47,17 +47,17 @@ export default async function NotesIndex({ params }: { params: Promise<{ lang: s
       <a className="eyebrow-link" href={`/${lang}`}>
         {t.backHome}
       </a>
-      <h1>{copy.title[lang]}</h1>
-      <p className="prose-intro">{copy.intro[lang]}</p>
-      {copy.englishOnly[lang] ? <p className="notes-lang-hint">{copy.englishOnly[lang]}</p> : null}
+      <h1>{pick(copy.title, lang)}</h1>
+      <p className="prose-intro">{pick(copy.intro, lang)}</p>
+      {pick(copy.englishOnly, lang) ? <p className="notes-lang-hint">{pick(copy.englishOnly, lang)}</p> : null}
 
       <ol className="note-list">
         {sorted.map((n) => (
           <li key={n.slug}>
             <a className="note-row" href={`/${lang}/notes/${n.slug}`}>
               <time dateTime={n.date}>{formatNoteDate(n.date, lang)}</time>
-              <span className="nt">{n.title[lang]}</span>
-              <span className="ns">{n.summary[lang]}</span>
+              <span className="nt">{pick(n.title, lang)}</span>
+              <span className="ns">{pick(n.summary, lang)}</span>
             </a>
           </li>
         ))}

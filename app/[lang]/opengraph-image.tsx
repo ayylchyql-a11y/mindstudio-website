@@ -1,10 +1,14 @@
 import { ImageResponse } from "next/og";
+import { locales } from "@/lib/i18n";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export function generateStaticParams() {
-  return [{ lang: "en" }, { lang: "zh" }];
+  // 🩸 原来这里手写着 [{lang:"en"},{lang:"zh"}]，扩到 12 语言时会静默漏掉十种
+  //   （分享到 Twitter/Slack 时那十种语言的页面没有预览图）。跟着 locales 走。
+  //   图上文案统一英文（品牌名和 app 名本来就是拉丁字母），不必逐语言重画。
+  return locales.map((lang) => ({ lang }));
 }
 
 export default async function Image() {

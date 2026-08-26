@@ -8,7 +8,7 @@ import Effects from "@/components/Effects";
 import JsonLd from "@/components/JsonLd";
 import { apps, getApp } from "@/data/apps";
 import { getPrivacy } from "@/data/legal";
-import { locales, isLocale, defaultLocale, getDictionary, type Locale } from "@/lib/i18n";
+import { defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
   return locales.flatMap((lang) => apps.map((app) => ({ lang, id: app.id })));
@@ -48,7 +48,7 @@ export default async function AppDetail({
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: app.name,
-    description: app.desc[lang],
+    description: pick(app.desc, lang),
     operatingSystem: "iOS",
     applicationCategory: "MobileApplication",
     url: `https://mindstudioapps.com/${lang}/apps/${app.id}`,
@@ -69,8 +69,8 @@ export default async function AppDetail({
       <section className="detail-hero">
         <img className="app-icon-lg" src={app.icon} alt={`${app.name} icon`} />
         <h1 className="rv">{app.name}</h1>
-        <p className="tagline rv rv-d1">{app.tagline[lang]}</p>
-        <p className="desc rv rv-d2">{app.desc[lang]}</p>
+        <p className="tagline rv rv-d1">{pick(app.tagline, lang)}</p>
+        <p className="desc rv rv-d2">{pick(app.desc, lang)}</p>
         <div className="cta-row rv rv-d2">
           {app.status === "live" && app.appStoreUrl ? (
             <AppStoreBadge href={app.appStoreUrl} lang={lang} />
@@ -88,13 +88,13 @@ export default async function AppDetail({
           <p className="section-label">{t.detailGallery}</p>
           <div className="gallery">
             {app.gallery.map((shot) => (
-              <div key={shot.src[lang]}>
+              <div key={pick(shot.src, lang)}>
                 <div className="phone">
                   <div className="screen scr-shot">
-                    <img className="shot" src={shot.src[lang]} alt={`${app.name} — ${shot.alt[lang]}`} />
+                    <img className="shot" src={pick(shot.src, lang)} alt={`${app.name} — ${pick(shot.alt, lang)}`} />
                   </div>
                 </div>
-                <p className="cap">{shot.alt[lang]}</p>
+                <p className="cap">{pick(shot.alt, lang)}</p>
               </div>
             ))}
           </div>
@@ -106,9 +106,9 @@ export default async function AppDetail({
           <p className="section-label">{t.detailGallery}</p>
           <div className="gallery">
             {app.slides.map((slide) => (
-              <div key={slide.src[lang]} className="slide-card">
+              <div key={pick(slide.src, lang)} className="slide-card">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={slide.src[lang]} alt={`${app.name} — ${slide.alt[lang]}`} />
+                <img src={pick(slide.src, lang)} alt={`${app.name} — ${pick(slide.alt, lang)}`} />
               </div>
             ))}
           </div>
@@ -136,8 +136,8 @@ export default async function AppDetail({
               <div className="dot" style={{ background: app.gradientCss }}>
                 {i + 1}
               </div>
-              <h3>{f.title[lang]}</h3>
-              <p>{f.desc[lang]}</p>
+              <h3>{pick(f.title, lang)}</h3>
+              <p>{pick(f.desc, lang)}</p>
             </div>
           ))}
         </div>

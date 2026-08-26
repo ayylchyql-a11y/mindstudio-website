@@ -7,7 +7,7 @@ import PlayStoreBadge from "@/components/PlayStoreBadge";
 import Effects from "@/components/Effects";
 import JsonLd from "@/components/JsonLd";
 import { work, getWork } from "@/data/work";
-import { locales, isLocale, defaultLocale, getDictionary, type Locale } from "@/lib/i18n";
+import { defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
   return locales.flatMap((lang) => work.map((w) => ({ lang, id: w.id })));
@@ -65,13 +65,13 @@ export default async function WorkDetail({
       <section className="detail-hero">
         <img className="app-icon-lg" src={item.icon} alt={`${item.name} icon`} />
         <h1 className="rv">{item.name}</h1>
-        <p className="tagline rv rv-d1">{item.tagline[lang]}</p>
+        <p className="tagline rv rv-d1">{pick(item.tagline, lang)}</p>
         <p className="work-credit rv rv-d2">
-          <span>{item.builtBy[lang]}</span>
+          <span>{pick(item.builtBy, lang)}</span>
           <span className="work-credit-sep" aria-hidden="true">
             ·
           </span>
-          <span>{item.publishedBy[lang]}</span>
+          <span>{pick(item.publishedBy, lang)}</span>
         </p>
         <div className="cta-row rv rv-d2">
           {item.appStoreUrl && <AppStoreBadge href={item.appStoreUrl} lang={lang} />}
@@ -88,7 +88,7 @@ export default async function WorkDetail({
       <section className="work-intro">
         {item.intro.map((p, i) => (
           <p className="work-para rv" key={i}>
-            {p[lang]}
+            {pick(p, lang)}
           </p>
         ))}
       </section>
@@ -98,17 +98,17 @@ export default async function WorkDetail({
           <p className="section-label">{t.detailGallery}</p>
           <div className="gallery">
             {item.gallery.map((shot) => (
-              <div key={shot.src[lang]}>
+              <div key={pick(shot.src, lang)}>
                 <div className="phone">
                   <div className="screen scr-shot">
                     <img
                       className="shot"
-                      src={shot.src[lang]}
-                      alt={`${item.name} — ${shot.alt[lang]}`}
+                      src={pick(shot.src, lang)}
+                      alt={`${item.name} — ${pick(shot.alt, lang)}`}
                     />
                   </div>
                 </div>
-                <p className="cap">{shot.alt[lang]}</p>
+                <p className="cap">{pick(shot.alt, lang)}</p>
               </div>
             ))}
           </div>
@@ -123,8 +123,8 @@ export default async function WorkDetail({
               <div className="dot" style={{ background: item.gradientCss }}>
                 {i + 1}
               </div>
-              <h3>{f.title[lang]}</h3>
-              <p>{f.desc[lang]}</p>
+              <h3>{pick(f.title, lang)}</h3>
+              <p>{pick(f.desc, lang)}</p>
             </div>
           ))}
         </div>
@@ -136,8 +136,8 @@ export default async function WorkDetail({
           {item.pieces.map((piece, i) => (
             <div className="piece-card rv" key={i}>
               <div className="piece-bar" style={{ background: item.gradientCss }} />
-              <h3>{piece.name[lang]}</h3>
-              <p>{piece.desc[lang]}</p>
+              <h3>{pick(piece.name, lang)}</h3>
+              <p>{pick(piece.desc, lang)}</p>
               <p className="piece-tech">{piece.tech}</p>
             </div>
           ))}
@@ -166,7 +166,7 @@ export default async function WorkDetail({
         <div className="detail-legal-links">
           {item.links.map((l) => (
             <a key={l.href} href={l.href} target="_blank" rel="noopener">
-              {l.label[lang]}
+              {pick(l.label, lang)}
             </a>
           ))}
         </div>

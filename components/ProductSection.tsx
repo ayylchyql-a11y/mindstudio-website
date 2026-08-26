@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import type { AppEntry } from "@/data/apps";
 import type { Locale } from "@/lib/i18n";
-import { getDictionary } from "@/lib/i18n";
+import { getDictionary, pick } from "@/lib/i18n";
 import AppStoreBadge from "./AppStoreBadge";
 import CameraScreen from "./CameraScreen";
 
@@ -14,13 +14,13 @@ export default function ProductSection({ app, lang }: { app: AppEntry; lang: Loc
         <div className="copy">
           <p className="eyebrow rv">{app.name}</p>
           <h2 className="rv rv-d1">
-            {app.headlinePre[lang]}
+            {pick(app.headlinePre, lang)}
             <span className="grad" style={{ backgroundImage: app.gradientCss }}>
-              {app.headlineGrad[lang]}
+              {pick(app.headlineGrad, lang)}
             </span>
-            {app.headlinePost[lang]}
+            {pick(app.headlinePost, lang)}
           </h2>
-          <p className="desc rv rv-d2">{app.desc[lang]}</p>
+          <p className="desc rv rv-d2">{pick(app.desc, lang)}</p>
           <div className="cta-row rv rv-d2">
             {app.status === "live" && app.appStoreUrl ? (
               <>
@@ -42,8 +42,8 @@ export default function ProductSection({ app, lang }: { app: AppEntry; lang: Loc
               <div className="screen scr-shot">
                 <img
                   className="shot"
-                  src={app.shot[lang]}
-                  alt={app.shotAlt ? app.shotAlt[lang] : `${app.name} screenshot`}
+                  src={pick(app.shot, lang)}
+                  alt={app.shotAlt ? pick(app.shotAlt, lang) : `${app.name} screenshot`}
                 />
               </div>
             ) : (
