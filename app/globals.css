@@ -1139,6 +1139,11 @@
 .desk-module ul { margin: 16px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 7px; font-size: 14.5px; line-height: 1.5; }
 .desk-module li::marker { color: #e8551f; }
 
+/* 🩸「Home」浮标是 position:fixed，横坐标 max(24px, 50vw-540px)；这一页的模块区宽 1080，
+   两者在宽屏上只差 24px，窄屏更是重合 —— 滚动时它就压在模块正文上。
+   这一页改成随页面滚走（页尾另有回链和联系入口，不会失去出口）。 */
+.desk-page .detail-back { position: absolute; top: 24px; }
+
 /* 没有截图的模块：一栏、留白收紧，读起来像有意为之而不是缺图 */
 .desk-module.no-shot { grid-template-columns: 1fr; gap: 0; padding: 32px 0; }
 .desk-module.no-shot .desk-module-copy { max-width: 720px; }

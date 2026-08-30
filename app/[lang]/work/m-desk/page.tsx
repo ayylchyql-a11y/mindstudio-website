@@ -59,7 +59,7 @@ export default async function MDeskPage({ params }: { params: Promise<{ lang: st
   };
 
   return (
-    <main className="detail sect-light work-page desk-page">
+    <main className="detail sect-light work-page desk-page" style={{ position: "relative" }}>
       <JsonLd data={ld} />
       <DetailNav lang={lang} label={t.backHome} />
 
