@@ -30,18 +30,14 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 }
 
 function Shot({ mod, lang }: { mod: (typeof mdesk.modules)[number]; lang: Locale }) {
-  // 浏览器窗框：三颗点 + 内容。没截图时画占位，模块名居中——不留空白，也不假装有图
+  // 浏览器窗框：后台是网页，用窗框不用手机框。
+  // 🩸没有截图的模块**不画占位框** —— 与其摆一个空窗户，不如把那一块压成一栏文字；
+  //    也绝不为了填满版面去数据库里造假数据（预订模块目前真的没有预约记录）。
+  if (!mod.shot) return null;
   return (
     <div className="browser">
       <div className="browser-bar"><span /><span /><span /></div>
-      {mod.shot ? (
-        <img className="browser-shot" src={pick(mod.shot.src, lang)} alt={pick(mod.shot.alt, lang)} loading="lazy" />
-      ) : (
-        <div className="browser-empty">
-          <span className="browser-empty-name">{pick(mod.name, lang)}</span>
-          <span className="browser-empty-soon">{pick(mdesk.shotSoon, lang)}</span>
-        </div>
-      )}
+      <img className="browser-shot" src={pick(mod.shot.src, lang)} alt={pick(mod.shot.alt, lang)} loading="lazy" />
     </div>
   );
 }
@@ -87,7 +83,7 @@ export default async function MDeskPage({ params }: { params: Promise<{ lang: st
       <section className="desk-modules">
         <p className="section-label">{pick(mdesk.modulesLabel, lang)}</p>
         {mdesk.modules.map((mod, i) => (
-          <article className={`desk-module rv${i % 2 ? " flip" : ""}`} id={mod.id} key={mod.id}>
+          <article className={`desk-module rv${mod.shot ? (i % 2 ? " flip" : "") : " no-shot"}`} id={mod.id} key={mod.id}>
             <div className="desk-module-copy">
               <span className="desk-module-n" style={{ background: mdesk.gradientCss }}>{String(i + 1).padStart(2, "0")}</span>
               <h2>{pick(mod.name, lang)}</h2>
@@ -98,9 +94,11 @@ export default async function MDeskPage({ params }: { params: Promise<{ lang: st
                 ))}
               </ul>
             </div>
-            <div className="desk-module-shot">
-              <Shot mod={mod} lang={lang} />
-            </div>
+            {mod.shot && (
+              <div className="desk-module-shot">
+                <Shot mod={mod} lang={lang} />
+              </div>
+            )}
           </article>
         ))}
       </section>
