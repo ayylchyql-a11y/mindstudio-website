@@ -67,6 +67,10 @@ export const mdesk = {
         { en: "Pause intake, set prep time, cap active orders — customers see it at once", zh: "暂停接单、设出餐时间、限活跃单数 —— 顾客端即时可见", it: "Pausa ordini, tempo di preparazione, tetto agli ordini attivi: il cliente lo vede subito" },
         { en: "Card orders appear only once payment is confirmed", zh: "卡付单要付款确认后才出现", it: "Gli ordini con carta compaiono solo a pagamento confermato" },
       ],
+      shot: {
+        src: { en: "/shots/mdesk-orders-en.jpg", it: "/shots/mdesk-orders-it.jpg", zh: "/shots/mdesk-orders-en.jpg" },
+        alt: { en: "Order board with orders from the website, the kiosk and Just Eat side by side", zh: "订单看板：网站、自助机、Just Eat 的单同屏", it: "Bacheca ordini: sito, chiosco e Just Eat sullo stesso schermo" },
+      },
     },
     {
       id: "kitchen",
@@ -82,6 +86,10 @@ export const mdesk = {
         { en: "Scheduled orders surface 45 minutes before they are due", zh: "预约单提前 45 分钟才浮出来", it: "Gli ordini programmati compaiono 45 minuti prima" },
         { en: "Clock-in code on the top bar", zh: "顶栏就有打卡码", it: "Codice timbratura nella barra in alto" },
       ],
+      shot: {
+        src: { en: "/shots/mdesk-kitchen-en.jpg", it: "/shots/mdesk-kitchen-it.jpg", zh: "/shots/mdesk-kitchen-en.jpg" },
+        alt: { en: "Kitchen screen with one card per order and a waiting timer", zh: "厨房屏：一单一张大卡片，带等待计时", it: "Schermo cucina con una scheda per ordine e il timer di attesa" },
+      },
     },
     {
       id: "cassa",
@@ -97,6 +105,10 @@ export const mdesk = {
         { en: "One collection dialog for everything — the cash portion is recorded for the day's drawer", zh: "所有收款走同一个弹窗 —— 现金部分单独记，日结抽屉才对得上", it: "Un solo dialogo di incasso: la parte in contanti va nel cassetto del giorno" },
         { en: "End-of-day closing report", zh: "日结报表", it: "Chiusura di giornata" },
       ],
+      shot: {
+        src: { en: "/shots/mdesk-cassa-en.jpg", it: "/shots/mdesk-cassa-it.jpg", zh: "/shots/mdesk-cassa-en.jpg" },
+        alt: { en: "Touch till with the dish grid and the open bill", zh: "收银台：菜品宫格与右侧账单", it: "Cassa touch con la griglia dei piatti e il conto aperto" },
+      },
     },
     {
       id: "menu",
@@ -112,6 +124,10 @@ export const mdesk = {
         { en: "Preparation station per category or dish", zh: "按分类或菜品指定备餐工位", it: "Postazione di preparazione per categoria o piatto" },
         { en: "Platform price overrides", zh: "平台单独定价", it: "Prezzi diversi per le piattaforme" },
       ],
+      shot: {
+        src: { en: "/shots/mdesk-menu-en.jpg", it: "/shots/mdesk-menu-it.jpg", zh: "/shots/mdesk-menu-en.jpg" },
+        alt: { en: "Menu editor with categories, dishes and CSV import", zh: "菜单编辑：分类、菜品与 CSV 导入", it: "Editor del menu con categorie, piatti e import CSV" },
+      },
     },
     {
       id: "platforms",
@@ -127,6 +143,10 @@ export const mdesk = {
         { en: "Photos resized to each platform's rules automatically", zh: "图片按各平台规格自动裁切", it: "Foto ridimensionate automaticamente secondo le regole di ogni piattaforma" },
         { en: "Ticket header shows the platform pickup code where riders need it", zh: "票头印平台取餐码，骑手到店对码", it: "In testa alla comanda il codice di ritiro della piattaforma, dove serve al rider" },
       ],
+      shot: {
+        src: { en: "/shots/mdesk-platforms-en.jpg", it: "/shots/mdesk-platforms-it.jpg", zh: "/shots/mdesk-platforms-en.jpg" },
+        alt: { en: "Deliveroo and Just Eat catalogues pushed from one page", zh: "一页推送 Deliveroo 与 Just Eat 的目录", it: "Cataloghi Deliveroo e Just Eat inviati da un’unica pagina" },
+      },
     },
     {
       id: "printing",
@@ -142,6 +162,10 @@ export const mdesk = {
         { en: "Printer offline? Jobs move to the backup with a banner on the ticket", zh: "打印机离线？任务转到备用机，票头带标记", it: "Stampante offline? Le stampe passano alla riserva, con un avviso in testa" },
         { en: "Unprinted-for-3-minutes alert with one-tap reassignment; beeper and cash drawer", zh: "3 分钟没打出来就报警、一键改派；蜂鸣与钱箱", it: "Avviso dopo 3 minuti senza stampa con riassegnazione a un tocco; cicalino e cassetto" },
       ],
+      shot: {
+        src: { en: "/shots/mdesk-printing-en.jpg", it: "/shots/mdesk-printing-it.jpg", zh: "/shots/mdesk-printing-en.jpg" },
+        alt: { en: "Each printer subscribed to the ticket types it should print", zh: "每台打印机勾选自己该打的票种", it: "Ogni stampante abbonata ai tipi di comanda che deve stampare" },
+      },
     },
     {
       id: "delivery",
@@ -157,6 +181,10 @@ export const mdesk = {
         { en: "Customer tracking page with the rider's position", zh: "顾客追踪页看得到骑手位置", it: "Pagina di tracking per il cliente con la posizione del rider" },
         { en: "Push notifications for new assignments", zh: "派单推送通知", it: "Notifiche push per le nuove assegnazioni" },
       ],
+      shot: {
+        src: { en: "/shots/mdesk-delivery-en.jpg", it: "/shots/mdesk-delivery-it.jpg", zh: "/shots/mdesk-delivery-en.jpg" },
+        alt: { en: "Delivery zones by postcode with fee, minimum and rider pay", zh: "按邮编划的配送区：配送费、起送额、骑手费", it: "Zone di consegna per CAP con costo, minimo e compenso rider" },
+      },
     },
     {
       id: "marketing",
@@ -172,6 +200,10 @@ export const mdesk = {
         { en: "Review invitation after delivery", zh: "送达后邀评", it: "Invito a recensire dopo la consegna" },
         { en: "Membership card with QR, in the apps and on the website", zh: "会员码，App 和网站都有", it: "Tessera con QR, nelle app e sul sito" },
       ],
+      shot: {
+        src: { en: "/shots/mdesk-marketing-en.jpg", it: "/shots/mdesk-marketing-it.jpg", zh: "/shots/mdesk-marketing-en.jpg" },
+        alt: { en: "Template and personal coupons with issue and redemption counts", zh: "模板券与专属券，含发放与核销数", it: "Coupon modello e personali con emessi e riscattati" },
+      },
     },
     {
       id: "reservations",
@@ -198,6 +230,10 @@ export const mdesk = {
         { en: "Supplier catalogue with Chinese names for the wholesaler", zh: "供应商货品表带中文名，批发商看得懂", it: "Catalogo fornitori con nomi in cinese per il grossista" },
         { en: "Stock room view", zh: "库房视图", it: "Vista magazzino" },
       ],
+      shot: {
+        src: { en: "/shots/mdesk-procurement-en.jpg", it: "/shots/mdesk-procurement-it.jpg", zh: "/shots/mdesk-procurement-en.jpg" },
+        alt: { en: "Shared purchasing draft with bilingual supplier items", zh: "共享订货草稿，货品中意双语", it: "Bozza di acquisto condivisa con articoli bilingui" },
+      },
     },
     {
       id: "staff",
@@ -213,6 +249,10 @@ export const mdesk = {
         { en: "Timesheet by station, CSV for the accountant", zh: "工时按工位分组，CSV 给会计", it: "Foglio ore per postazione, CSV per il commercialista" },
         { en: "Audit log of every back-office change, kept 180 days", zh: "后台每一处改动自动记录，保留 180 天", it: "Registro di ogni modifica in gestionale, conservato 180 giorni" },
       ],
+      shot: {
+        src: { en: "/shots/mdesk-staff-en.jpg", it: "/shots/mdesk-staff-it.jpg", zh: "/shots/mdesk-staff-en.jpg" },
+        alt: { en: "Employee accounts with roles, permissions and last login", zh: "员工账号：角色、权限、上次登录", it: "Account dipendenti con ruoli, permessi e ultimo accesso" },
+      },
     },
     {
       id: "ai",
@@ -227,6 +267,10 @@ export const mdesk = {
         { en: "Money-related changes require a typed confirmation", zh: "涉钱的改动要打字确认", it: "Le modifiche che toccano i soldi richiedono una conferma scritta" },
         { en: "The rulebook it reads is generated from the code, so it cannot drift", zh: "它读的规则手册由代码生成，不会漂", it: "Il manuale delle regole che legge è generato dal codice: non può divergere" },
       ],
+      shot: {
+        src: { en: "/shots/mdesk-ai-en.jpg", it: "/shots/mdesk-ai-it.jpg", zh: "/shots/mdesk-ai-en.jpg" },
+        alt: { en: "The management assistant proposing changes that need confirming", zh: "AI 助手提议改动，需确认才执行", it: "L’assistente che propone modifiche da confermare" },
+      },
     },
   ] as DeskModule[],
   principlesLabel: {

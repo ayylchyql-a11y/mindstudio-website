@@ -1125,6 +1125,8 @@
 /* 专页：模块段图文交替 */
 .desk-modules { max-width: 1080px; margin: 0 auto; padding: 56px 24px 0; }
 .desk-module {
+  /* 锚点跳转时给固定的「Home」浮标让位，否则它压在模块标题上 */
+  scroll-margin-top: 96px;
   display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 44px; align-items: center;
   padding: 44px 0; border-top: 1px solid var(--hairline);
 }
