@@ -4,8 +4,10 @@ import type { Locale } from "@/lib/i18n";
 import { pick } from "@/lib/i18n";
 
 /**
- * 首页旗舰段：Hero 之后、所有 App 之前。深色底把它和浅色的 App 段拉开——
- * 这是往下滑第一眼看到的东西，M Desk 是工作室最难的项目，位置要配得上。
+ * 首页旗舰段：Hero 之后、所有 App 之前。
+ * 这是往下滑第一眼看到的东西，M Desk 是工作室最难的项目，位置要配得上——
+ * 但重量感靠留白、标题尺寸和窗框投影来给，底色跟全站一样是浅的（详情页也是浅的，
+ * 点进去不该翻个面）。差异化只用品牌橙的色相。
  */
 export default function DeskFeature({ lang }: { lang: Locale }) {
   const href = `/${lang}/work/m-desk`;
@@ -16,7 +18,7 @@ export default function DeskFeature({ lang }: { lang: Locale }) {
         <div className="desk-feature-copy">
           <p className="eyebrow rv">{pick(mdesk.home.eyebrow, lang)}</p>
           <h2 className="rv rv-d1">
-            <span className="grad" style={{ backgroundImage: mdesk.gradientCss }}>{pick(mdesk.home.title, lang)}</span>
+            <span className="grad" style={{ backgroundImage: mdesk.gradientTextCss }}>{pick(mdesk.home.title, lang)}</span>
           </h2>
           <p className="desc rv rv-d2">{pick(mdesk.home.body, lang)}</p>
           <ul className="desk-facts rv rv-d2">
@@ -29,7 +31,7 @@ export default function DeskFeature({ lang }: { lang: Locale }) {
           </div>
         </div>
         <div className="desk-feature-stage rv rv-d1">
-          <a href={`${href}#orders`} className="browser browser-dark" aria-label={pick(mdesk.home.cta, lang)}>
+          <a href={`${href}#orders`} className="browser" aria-label={pick(mdesk.home.cta, lang)}>
             <div className="browser-bar"><span /><span /><span /></div>
             {hero?.shot ? (
               <img className="browser-shot" src={pick(hero.shot.src, lang)} alt={pick(hero.shot.alt, lang)} />

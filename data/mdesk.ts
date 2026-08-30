@@ -27,6 +27,9 @@ export const mdesk = {
   name: "M Desk",
   icon: "/icons/mdesk.svg",
   gradientCss: "linear-gradient(100deg, #ff7a1a, #e0483a)",
+  // 🩸同一条橙渐变当「文字填充」用在浅底上只有 2.49:1（大字号也要 3:1）。
+  //    标题专用这条压深版，按钮/序号块继续用上面那条（它们是白字压在渐变上，不受影响）。
+  gradientTextCss: "linear-gradient(100deg, #d9481a, #b8331f)",
   accent: "#e8551f",
   since: "2026-06",
   tagline: {
