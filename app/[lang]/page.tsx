@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
+import DeskFeature from "@/components/DeskFeature";
 import ProductSection from "@/components/ProductSection";
 import WorkStrip from "@/components/WorkStrip";
 import Footer from "@/components/Footer";
@@ -40,6 +41,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       <JsonLd data={appsLd} />
       <Nav lang={lang} />
       <Hero lang={lang} />
+      <DeskFeature lang={lang} />
       {apps.map((app) => (
         <ProductSection key={app.id} app={app} lang={lang} />
       ))}

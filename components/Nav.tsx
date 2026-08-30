@@ -14,6 +14,7 @@ export default function Nav({ lang }: { lang: Locale }) {
           Mind Studio
         </a>
         <div className="nav-links">
+          <a href={`/${lang}/work/m-desk`}>M Desk</a>
           {apps.map((app) => (
             <a key={app.id} href={`#${app.id}`}>
               {app.name}

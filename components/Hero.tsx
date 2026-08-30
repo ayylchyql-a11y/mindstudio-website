@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import MsLogo from "./MsLogo";
 import { apps } from "@/data/apps";
+import { mdesk } from "@/data/mdesk";
 import type { Locale } from "@/lib/i18n";
 import { getDictionary } from "@/lib/i18n";
 
@@ -20,6 +21,10 @@ export default function Hero({ lang }: { lang: Locale }) {
       </h1>
       <p className="sub rv rv-d2">{t.heroSub}</p>
       <div className="icon-row rv rv-d2">
+        {/* M Desk 排第一：工作室最难的项目，图标行里也该站在最前 */}
+        <a className="app-icon" href={`/${lang}/work/m-desk`} aria-label="M Desk">
+          <img src={mdesk.icon} alt="M Desk icon" />
+        </a>
         {apps.map((app) => (
           <a key={app.id} className="app-icon" href={`#${app.id}`} aria-label={app.name}>
             <img src={app.icon} alt={`${app.name} icon`} />

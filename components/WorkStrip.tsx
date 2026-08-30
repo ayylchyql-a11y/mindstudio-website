@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { work } from "@/data/work";
+import { mdesk } from "@/data/mdesk";
 import type { Locale } from "@/lib/i18n";
 import { getDictionary, pick } from "@/lib/i18n";
 
@@ -14,6 +15,16 @@ export default function WorkStrip({ lang }: { lang: Locale }) {
         <h2 className="rv rv-d1">{t.workTitle}</h2>
         <p className="work-strip-body rv rv-d2">{t.workBody}</p>
         <div className="work-cards rv rv-d2">
+          <a className="work-card" href={`/${lang}/work/m-desk`}>
+            <img src={mdesk.icon} alt="M Desk icon" />
+            <span className="grow">
+              <span className="nm">M Desk</span>
+              <span className="tl">{pick(mdesk.tagline, lang)}</span>
+            </span>
+            <span className="go" style={{ color: mdesk.accent }}>
+              {pick(mdesk.home.cta, lang)}
+            </span>
+          </a>
           {work.map((item) => (
             <a className="work-card" key={item.id} href={`/${lang}/work/${item.id}`}>
               <img src={item.icon} alt={`${item.name} icon`} />
