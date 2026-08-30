@@ -139,6 +139,9 @@ export default async function WorkDetail({
               <h3>{pick(piece.name, lang)}</h3>
               <p>{pick(piece.desc, lang)}</p>
               <p className="piece-tech">{piece.tech}</p>
+              {piece.href && (
+                <a className="piece-link" href={`/${lang}/work/${piece.href}`} style={{ color: item.accent }}>{t.learnMore} ›</a>
+              )}
             </div>
           ))}
         </div>

@@ -1054,3 +1054,115 @@
 .note-fig figcaption {
   margin-top: 9px; font-size: 13px; line-height: 1.6; color: var(--ink-2);
 }
+
+/* ── M Desk：首页旗舰段 + 专页 ─────────────────────────── */
+.desk-feature {
+  background: #0f0f12; color: #f5f5f7;
+  padding: 96px 24px;
+}
+.desk-feature-inner {
+  max-width: 1080px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1.15fr; gap: 56px; align-items: center;
+}
+.desk-feature .eyebrow { color: #ff9f0a; }
+.desk-feature h2 { font-size: clamp(34px, 4.6vw, 52px); line-height: 1.06; letter-spacing: -0.03em; font-weight: 700; margin-top: 10px; }
+.desk-feature h2 .grad { background-clip: text; -webkit-background-clip: text; color: transparent; }
+.desk-feature .desc { margin-top: 18px; font-size: 17px; line-height: 1.6; color: rgba(245,245,247,0.72); max-width: 480px; }
+.desk-facts { list-style: none; margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px; padding: 0; }
+.desk-facts li {
+  font-size: 12.5px; letter-spacing: 0.01em; padding: 6px 11px; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14); color: rgba(245,245,247,0.8);
+}
+.desk-page .desk-facts { justify-content: center; }
+.desk-page .desk-facts li { border-color: var(--hairline); color: var(--ink-2); }
+.desk-feature-btn, .desk-contact-btn {
+  display: inline-block; padding: 11px 20px; border-radius: 999px; color: #fff; font-weight: 600; font-size: 15px;
+  box-shadow: 0 10px 28px -10px rgba(255,122,26,0.6);
+  transition: transform 160ms var(--ease-out-strong);
+}
+.desk-feature-btn:hover, .desk-contact-btn:hover { transform: translateY(-1px); }
+.desk-feature-btn:active, .desk-contact-btn:active { transform: scale(0.97); }
+.desk-feature-stage { display: flex; flex-direction: column; gap: 14px; }
+
+/* 浏览器窗框：后台是网页，用窗框不用手机框 */
+.browser {
+  display: block; border-radius: 14px; overflow: hidden;
+  background: #fff; border: 1px solid var(--hairline);
+  box-shadow: 0 30px 60px -30px rgba(0,0,0,0.35);
+}
+.browser-dark { background: #1a1a1f; border-color: rgba(255,255,255,0.1); box-shadow: 0 40px 80px -30px rgba(0,0,0,0.8); }
+.browser-bar { display: flex; gap: 6px; padding: 10px 12px; border-bottom: 1px solid rgba(0,0,0,0.06); background: rgba(0,0,0,0.03); }
+.browser-dark .browser-bar { border-bottom-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.04); }
+.browser-bar span { width: 10px; height: 10px; border-radius: 50%; background: rgba(0,0,0,0.12); }
+.browser-dark .browser-bar span { background: rgba(255,255,255,0.18); }
+.browser-shot { display: block; width: 100%; height: auto; }
+.browser-empty {
+  aspect-ratio: 16 / 10; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  background:
+    linear-gradient(rgba(0,0,0,0.035) 1px, transparent 1px) 0 0 / 100% 28px,
+    linear-gradient(90deg, rgba(0,0,0,0.035) 1px, transparent 1px) 0 0 / 28px 100%;
+}
+.browser-dark .browser-empty {
+  background:
+    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px) 0 0 / 100% 28px,
+    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px) 0 0 / 28px 100%;
+}
+.browser-empty-name { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+.browser-empty-soon { font-size: 12px; color: var(--ink-2); }
+.browser-dark .browser-empty-soon { color: rgba(245,245,247,0.5); }
+
+.desk-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.desk-tile {
+  display: flex; flex-direction: column; gap: 4px; padding: 12px 12px 13px; border-radius: 12px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  transition: background 160ms var(--ease-out-strong), transform 160ms var(--ease-out-strong);
+}
+.desk-tile:hover { background: rgba(255,255,255,0.09); }
+.desk-tile:active { transform: scale(0.97); }
+.desk-tile-t { font-size: 13.5px; font-weight: 650; }
+.desk-tile-d { font-size: 12px; line-height: 1.4; color: rgba(245,245,247,0.6); }
+
+/* 专页：模块段图文交替 */
+.desk-modules { max-width: 1080px; margin: 0 auto; padding: 56px 24px 0; }
+.desk-module {
+  display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 44px; align-items: center;
+  padding: 44px 0; border-top: 1px solid var(--hairline);
+}
+.desk-module.flip .desk-module-copy { order: 2; }
+.desk-module-n {
+  display: inline-block; font-size: 12px; font-weight: 700; color: #fff; padding: 3px 9px; border-radius: 999px; letter-spacing: 0.06em;
+}
+.desk-module h2 { margin-top: 12px; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
+.desk-module .lead { margin-top: 10px; font-size: 16px; line-height: 1.6; color: var(--ink-2); }
+.desk-module ul { margin: 16px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 7px; font-size: 14.5px; line-height: 1.5; }
+.desk-module li::marker { color: #e8551f; }
+
+.desk-principles { max-width: 980px; margin: 0 auto; padding: 72px 24px 0; }
+.desk-principle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 18px; }
+.desk-principle {
+  padding: 22px 20px; border-radius: 18px; background: var(--ground-elev); border: 1px solid var(--hairline);
+}
+.desk-principle h3 { font-size: 16px; font-weight: 650; letter-spacing: -0.01em; }
+.desk-principle p { margin-top: 10px; font-size: 14px; line-height: 1.6; color: var(--ink-2); }
+
+.desk-tail { max-width: 720px; margin: 0 auto; padding: 72px 24px 100px; }
+.desk-case {
+  display: flex; align-items: center; gap: 16px; padding: 16px 18px; border-radius: 18px;
+  background: var(--ground-elev); border: 1px solid var(--hairline);
+}
+.desk-case img { width: 48px; height: 48px; border-radius: 24%; }
+.desk-case-label { font-size: 13px; color: var(--ink-2); }
+.desk-case-link { display: inline-block; margin-top: 3px; font-size: 15px; font-weight: 600; }
+.desk-contact { margin-top: 48px; text-align: center; }
+.desk-contact h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+.desk-contact p { margin: 12px auto 22px; max-width: 520px; font-size: 16px; line-height: 1.6; color: var(--ink-2); }
+.piece-link { display: inline-block; margin-top: 10px; font-size: 14px; font-weight: 600; }
+
+@media (max-width: 860px) {
+  .desk-feature { padding: 72px 20px; }
+  .desk-feature-inner { grid-template-columns: 1fr; gap: 36px; }
+  .desk-tiles { grid-template-columns: repeat(2, 1fr); }
+  .desk-module { grid-template-columns: 1fr; gap: 22px; padding: 36px 0; }
+  .desk-module.flip .desk-module-copy { order: 0; }
+  .desk-principle-grid { grid-template-columns: 1fr; }
+}

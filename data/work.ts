@@ -10,6 +10,8 @@ export interface WorkPiece {
   name: Localized;
   desc: Localized;
   tech: string;
+  /** 这一块有自己的专页时指过去（后台 → /work/m-desk） */
+  href?: string;
 }
 
 export interface WorkShot {
@@ -129,7 +131,8 @@ export const work: WorkEntry[] = [
         tech: "Next.js · React",
       },
       {
-        name: { en: "Back office", zh: "店内后台" },
+        name: { en: "Back office — M Desk", zh: "店内后台 · M Desk" },
+        href: "m-desk",
         desc: {
           en: "Where the restaurant actually runs the day: live order board, menu and stock, delivery zones, coupons and loyalty, reservations, reports.",
           zh: "餐厅每天真正在用的地方：实时订单看板、菜单与沽清、配送区域、优惠券与积分、餐位预订、报表。",

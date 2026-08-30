@@ -25,6 +25,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       });
     }
 
+    entries.push({ url: `${BASE}/${lang}/work/m-desk`, changeFrequency: "monthly", priority: 0.9 });
+
     for (const item of work) {
       entries.push({
         url: `${BASE}/${lang}/work/${item.id}`,
