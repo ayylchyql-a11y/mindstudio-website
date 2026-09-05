@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "../globals.css";
 import { defaultLocale, getDictionary, hreflangMap, isLocale, localeMeta, locales, type Locale } from "@/lib/i18n";
 
@@ -53,7 +54,18 @@ export default async function LangLayout({
     // dir 必须跟着语言走：阿拉伯语不加 dir="rtl" 的话整页是左对齐的，
     // 标点位置也全错（不是"看着别扭"，是读不了）。
     <html lang={t.htmlLang} dir={localeMeta[locale].dir}>
-      <body>{children}</body>
+      <body>
+        {children}
+        {/*
+          Vercel Web Analytics（Hobby 免费档：5 万事件/月、30 天历史）。
+          它注入的脚本由 Vercel 边缘在 /_vercel/insights/ 下提供，
+          🩸**只有在控制台开启了 Web Analytics 之后那个路径才存在**——
+          先加代码后开启的话，每个访客都会白吃一个 404。所以顺序是：
+          先在控制台 Enable，再推这行代码。
+          不写 cookie，因此不需要同意横幅。
+        */}
+        <Analytics />
+      </body>
     </html>
   );
 }
