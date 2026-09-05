@@ -20,6 +20,11 @@ export async function generateMetadata({
     title: t.metaTitle,
     description: t.metaDescription,
     icons: { icon: "/logo.svg" },
+    // Search Console 所有权验证。文件法（public/google32cd…html）才是主验证手段
+    // —— proxy.ts 的 matcher 排除了带点的路径，所以那个文件不会被语言重定向劫走。
+    // 这个 meta 是双保险：它出现在 /en /zh 等每个语言页上，而根路径 `/` 本身
+    // 是 307 到语言页的，Google 抓根路径时拿到的是重定向。
+    verification: { google: "Fgw2ZLEeaINrqkfHJZBW8HNJJZL_33atgUXjZUaDTo8" },
     alternates: {
       canonical: url,
       languages: hreflangMap("/{lang}"),
