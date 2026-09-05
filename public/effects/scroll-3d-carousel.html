@@ -1,0 +1,131 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scroll-driven 3D circular carousel</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; }
+
+  .scroller { height: 100%; overflow-y: auto; background: #07070c; }
+  .track { height: 500%; }
+  .stage {
+    position: sticky; top: 0; height: 100%;
+    display: grid; place-items: center;
+    overflow: hidden;
+    perspective: 1100px;
+    background: radial-gradient(65% 60% at 50% 50%, #15152a, #07070c 78%);
+  }
+
+  /* The ring itself only ever rotates. Every panel's place on it is fixed at
+     build time, which is what keeps the per-frame work to one transform. */
+  .ring {
+    position: relative; width: 46%; aspect-ratio: 16 / 9;
+    transform-style: preserve-3d;
+    transform: rotateY(var(--ring, 0deg));
+  }
+  .cell {
+    position: absolute; inset: 0;
+    border-radius: 8px; overflow: hidden;
+    /* backface-visibility matters here: without it the panels on the far side
+       of the ring render mirrored through the near ones and the whole thing
+       turns to soup. */
+    backface-visibility: hidden;
+  }
+  .cell .art { position: absolute; inset: 0; }
+  .cell .veil { position: absolute; inset: 0; background: #05050a; }
+  .cell .tag {
+    position: absolute; left: 12px; bottom: 10px;
+    font-size: 11px; font-weight: 600; color: #fff; text-shadow: 0 1px 6px #000a;
+  }
+
+  .caption {
+    position: absolute; left: 6%; bottom: 10%; color: #fff;
+  }
+  .caption b { display: block; font-size: clamp(14px, 2.2vw, 20px); letter-spacing: -0.015em; }
+  .caption i {
+    display: block; margin-top: 3px; font-style: normal;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #ffffff7a;
+  }
+  .caption span { position: absolute; inset: 0; display: block; }
+  .cue {
+    position: absolute; right: 5%; bottom: 11%;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #ffffff55;
+  }
+</style>
+
+<div class="scroller" id="scroller">
+  <div class="track">
+    <div class="stage">
+      <div class="ring" id="ring"></div>
+      <div class="caption" id="caption"></div>
+      <div class="cue">scroll ↓</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const scroller = document.getElementById("scroller");
+  const ring = document.getElementById("ring");
+  const caption = document.getElementById("caption");
+
+  const ITEMS = [
+    ["Wear Go Land", "stellia", "radial-gradient(60% 80% at 30% 25%, #ff5abf, transparent 60%), linear-gradient(140deg,#7b2ff7,#1a1030)"],
+    ["Discoat 2025SS", "exhibition", "radial-gradient(60% 80% at 70% 30%, #29e0ff, transparent 60%), linear-gradient(140deg,#0a4d8c,#071427)"],
+    ["Matsuken Samba", "rise up", "radial-gradient(60% 80% at 40% 70%, #ffd23e, transparent 60%), linear-gradient(140deg,#e0620d,#2a1206)"],
+    ["Shin Sekai", "nowhere", "radial-gradient(60% 80% at 55% 35%, #9a8bff, transparent 60%), linear-gradient(140deg,#3b2bff,#0d0a24)"],
+    ["Run for Money", "fortnite", "radial-gradient(60% 80% at 35% 45%, #00c2a8, transparent 60%), linear-gradient(140deg,#0b6b5c,#04211d)"],
+  ];
+
+  const N = ITEMS.length;
+  const STEP = 360 / N;      // angle between neighbours
+  // Radius from the panel width so neighbours sit edge to edge rather than
+  // overlapping or leaving a gap: r = (w/2) / tan(step/2).
+  const radiusFor = (w) => (w / 2) / Math.tan((STEP / 2) * Math.PI / 180) * 1.25;
+
+  const cells = ITEMS.map(([title, sub, art], i) => {
+    const el = document.createElement("div");
+    el.className = "cell";
+    el.innerHTML = `<div class="art"></div><div class="veil"></div><div class="tag"></div>`;
+    el.querySelector(".art").style.background = art;
+    el.querySelector(".tag").textContent = title;
+    ring.appendChild(el);
+
+    const cap = document.createElement("span");
+    cap.innerHTML = "<b></b><i></i>";
+    cap.querySelector("b").textContent = title;
+    cap.querySelector("i").textContent = sub;
+    caption.appendChild(cap);
+    return el;
+  });
+  const caps = [...caption.children];
+
+  let radius = 0;
+  const layout = () => {
+    radius = radiusFor(ring.clientWidth);
+    cells.forEach((el, i) => {
+      el.style.transform = `rotateY(${i * STEP}deg) translateZ(${radius}px)`;
+    });
+  };
+
+  const update = () => {
+    const max = scroller.scrollHeight - scroller.clientHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, scroller.scrollTop / max)) : 0;
+    const pos = p * (N - 1);                   // continuous index
+    ring.style.setProperty("--ring", (-pos * STEP).toFixed(3) + "deg");
+
+    cells.forEach((el, i) => {
+      const d = Math.abs(i - pos);
+      el.querySelector(".veil").style.opacity = Math.min(0.8, d * 0.42).toFixed(3);
+    });
+    caps.forEach((el, i) => {
+      const k = Math.min(1, Math.abs(i - pos));
+      el.style.opacity = (1 - k).toFixed(3);
+      el.style.transform = `translateY(${(i - pos) * 12}px)`;
+    });
+  };
+
+  layout(); update();
+  scroller.addEventListener("scroll", update, { passive: true });
+  addEventListener("resize", () => { layout(); update(); });
+</script>

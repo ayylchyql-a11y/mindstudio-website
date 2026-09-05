@@ -1,0 +1,121 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scroll-driven scene transition</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; }
+
+  .scroller { height: 100%; overflow-y: auto; background: #08080d; }
+  .track { height: 420%; }
+  .stage {
+    position: sticky; top: 0; height: 100%;
+    overflow: hidden;
+    perspective: 1400px;          /* the panels are real 3D, not skewed 2D */
+    display: grid; place-items: center;
+    background: radial-gradient(70% 60% at 50% 45%, #16162a, #08080d 75%);
+  }
+
+  .panel {
+    position: absolute;
+    width: 62%; aspect-ratio: 16 / 9;
+    border-radius: 10px; overflow: hidden;
+    transform-style: preserve-3d;
+    /* No transition. Every frame's transform is written from scroll position,
+       so a transition here would fight the scrub and add lag on fast wheels. */
+    will-change: transform, opacity;
+  }
+  .panel .art { position: absolute; inset: 0; }
+  .panel .tag {
+    position: absolute; left: 14px; bottom: 12px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.02em; color: #fff;
+    text-shadow: 0 1px 8px #000000aa;
+  }
+  /* Panels away from centre are dimmed by an overlay rather than opacity, so
+     the panel keeps its own contrast instead of fading into the background. */
+  .panel .veil { position: absolute; inset: 0; background: #05050a; }
+
+  .a1 { background: radial-gradient(60% 80% at 30% 25%, #ff5abf, transparent 60%), linear-gradient(140deg, #7b2ff7, #1a1030); }
+  .a2 { background: radial-gradient(60% 80% at 70% 30%, #29e0ff, transparent 60%), linear-gradient(140deg, #0a4d8c, #071427); }
+  .a3 { background: radial-gradient(60% 80% at 40% 70%, #ffd23e, transparent 60%), linear-gradient(140deg, #e0620d, #2a1206); }
+
+  .caption {
+    position: absolute; left: 6%; bottom: 8%;
+    color: #fff; pointer-events: none;
+  }
+  .caption b { display: block; font-size: clamp(15px, 2.4vw, 22px); letter-spacing: -0.015em; }
+  .caption i {
+    display: block; margin-top: 4px; font-style: normal;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #ffffff7a;
+  }
+  .caption span { display: block; position: absolute; inset: 0; }
+  .cue {
+    position: absolute; right: 5%; bottom: 9%;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #ffffff55;
+  }
+</style>
+
+<div class="scroller" id="scroller">
+  <div class="track">
+    <div class="stage" id="stage">
+      <div class="panel" data-i="0"><div class="art a1"></div><div class="veil"></div><div class="tag">Hello, Fortnite</div></div>
+      <div class="panel" data-i="1"><div class="art a2"></div><div class="veil"></div><div class="tag">Shin Sekai</div></div>
+      <div class="panel" data-i="2"><div class="art a3"></div><div class="veil"></div><div class="tag">Run for Money</div></div>
+      <div class="caption" id="caption"></div>
+      <div class="cue">scroll ↓</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const scroller = document.getElementById("scroller");
+  const panels = [...document.querySelectorAll(".panel")];
+  const caption = document.getElementById("caption");
+  const TITLES = [
+    ["Hello, Fortnite", "KizunaAI"],
+    ["Shin Sekai", "RADWIMPS"],
+    ["Run for Money", "Created in Fortnite"],
+  ];
+
+  // One caption element per scene, cross-faded. Rewriting the text of a single
+  // element instead would make it pop between scenes with no overlap.
+  TITLES.forEach(([t, s]) => {
+    const el = document.createElement("span");
+    el.innerHTML = "<b></b><i></i>";
+    el.querySelector("b").textContent = t;
+    el.querySelector("i").textContent = s;
+    caption.appendChild(el);
+  });
+  const caps = [...caption.children];
+
+  const update = () => {
+    const max = scroller.scrollHeight - scroller.clientHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, scroller.scrollTop / max)) : 0;
+    // Continuous index: 0 → 2 across the scroll. The fractional part IS the
+    // transition, which is what makes it scrubbable in both directions.
+    const pos = p * (panels.length - 1);
+
+    panels.forEach((el, i) => {
+      const d = i - pos;                       // -1 = gone left, 0 = centred, 1 = waiting right
+      const k = Math.min(1, Math.abs(d));
+      el.style.transform =
+        `translateX(${d * 68}%) rotateY(${d * -26}deg) translateZ(${-k * 190}px)`;
+      el.style.zIndex = String(100 - Math.round(k * 100));
+      el.querySelector(".veil").style.opacity = (k * 0.68).toFixed(3);
+      // Fully hide only what is more than one slot away, so at most three
+      // panels are ever composited.
+      el.style.visibility = Math.abs(d) > 1.6 ? "hidden" : "visible";
+    });
+
+    caps.forEach((el, i) => {
+      const k = Math.min(1, Math.abs(i - pos));
+      el.style.opacity = (1 - k).toFixed(3);
+      el.style.transform = `translateY(${(i - pos) * 14}px)`;
+    });
+  };
+
+  scroller.addEventListener("scroll", update, { passive: true });
+  addEventListener("resize", update);
+  update();
+</script>

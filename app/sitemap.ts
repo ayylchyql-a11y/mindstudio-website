@@ -3,6 +3,7 @@ import { apps } from "@/data/apps";
 import { privacy } from "@/data/legal";
 import { work } from "@/data/work";
 import { notes } from "@/data/notes";
+import { activeCategories, effectsIn } from "@/data/effects";
 import { locales } from "@/lib/i18n";
 
 const BASE = "https://mindstudioapps.com";
@@ -23,6 +24,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
         changeFrequency: "yearly",
         priority: 0.7,
       });
+    }
+
+    entries.push({ url: `${BASE}/${lang}/lab`, changeFrequency: "weekly", priority: 0.7 });
+
+    for (const cat of activeCategories()) {
+      entries.push({
+        url: `${BASE}/${lang}/lab/${cat.id}`,
+        changeFrequency: "weekly",
+        priority: 0.6,
+      });
+      for (const e of effectsIn(cat.id)) {
+        entries.push({
+          url: `${BASE}/${lang}/lab/${cat.id}/${e.slug}`,
+          lastModified: new Date(`${e.date}T00:00:00Z`),
+          changeFrequency: "monthly",
+          priority: 0.6,
+        });
+      }
     }
 
     entries.push({ url: `${BASE}/${lang}/work/m-desk`, changeFrequency: "monthly", priority: 0.9 });

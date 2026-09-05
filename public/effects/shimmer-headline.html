@@ -1,0 +1,47 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shimmer headline</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: grid; place-items: center;
+    padding: 0 24px;
+    background: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: clamp(28px, 7vw, 52px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    text-wrap: balance;
+
+    /* The three lines that matter: paint a gradient as the background,
+       clip it to the glyphs, make the text itself transparent.
+       The letters are a window; what moves is the cloth behind them. */
+    background: linear-gradient(100deg, #0a84ff, #bf5af2, #ff375f, #ff9f0a, #00c2a8, #0a84ff);
+    background-size: 320% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    /* linear, not ease. This is light travelling at a constant speed,
+       not a gesture with a beginning and an end — ease would make it
+       hesitate at both ends and read as a stutter. */
+    animation: shimmer 8s linear infinite;
+  }
+
+  /* First and last stop are the same colour (#0a84ff), so travelling the
+     full 320% lands exactly back at the start and the seam is invisible. */
+  @keyframes shimmer { to { background-position: 320% 0; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    h1 { animation: none; background-position: 30% 0; }
+  }
+</style>
+
+<h1>Software with<br>a point of view</h1>

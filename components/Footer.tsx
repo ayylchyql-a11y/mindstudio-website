@@ -1,5 +1,6 @@
+import { labCopy } from "@/data/effects";
 import type { Locale } from "@/lib/i18n";
-import { getDictionary } from "@/lib/i18n";
+import { getDictionary, pick } from "@/lib/i18n";
 
 export default function Footer({ lang }: { lang: Locale }) {
   const t = getDictionary(lang);
@@ -18,6 +19,7 @@ export default function Footer({ lang }: { lang: Locale }) {
           <div className="foot-links">
             <a href={`/${lang}/about`}>{t.aboutLabel}</a>
             <a href={`/${lang}/notes`}>{t.notesLabel}</a>
+            <a href={`/${lang}/lab`}>{pick(labCopy.navLabel, lang)}</a>
             <a href={`/${lang}/privacy`}>{t.footerPrivacy}</a>
             <a href={`/${lang}/support`}>{t.footerSupport}</a>
             <a href="mailto:ayylchyql@gmail.com">{t.footerContact}</a>

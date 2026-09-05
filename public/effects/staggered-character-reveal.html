@@ -1,0 +1,108 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Staggered character reveal</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh; display: grid; place-items: center;
+    padding: 0 8%;
+    background: #eef1f4;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    color: #14161a;
+  }
+
+  h1 { font-size: clamp(22px, 5.2vw, 46px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.18; }
+  .sub { margin-top: 14px; font-size: clamp(12px, 1.8vw, 15px); color: #5c626b; line-height: 1.6; }
+
+  /* Each word is its own mask. Masking per word rather than per line lets the
+     text wrap normally — a single line-level mask breaks the moment the copy
+     reflows at a narrower width, which is where this effect usually dies. */
+  .w {
+    display: inline-block; overflow: hidden;
+    vertical-align: top;
+    /* Descenders (g, y, p) get clipped by a mask sized to the line box, so the
+       mask is padded and pulled back by the same amount. */
+    padding-bottom: 0.16em; margin-bottom: -0.16em;
+  }
+  .c {
+    display: inline-block;
+    transform: translateY(110%);
+    opacity: 0;
+  }
+  .go .c {
+    transform: none; opacity: 1;
+    transition:
+      transform 620ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 300ms linear;
+    transition-delay: calc(var(--i) * 26ms);
+  }
+
+  .rerun {
+    position: fixed; right: 14px; bottom: 14px;
+    font: 500 11.5px/1 -apple-system, sans-serif; color: #5c626b;
+    background: #ffffffcc; border: 1px solid #00000014; border-radius: 99px;
+    padding: 7px 13px; cursor: pointer;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .c { transform: none; opacity: 1; }
+    .go .c { transition: none; }
+  }
+</style>
+
+<div>
+  <h1 data-split>Immersive entertainment that did not exist before</h1>
+  <p class="sub" data-split>Staggered character reveal · each glyph rises out of its own mask</p>
+</div>
+<button class="rerun" id="rerun">Replay</button>
+
+<script>
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function split(el) {
+    // Words first, characters inside them. Splitting the whole string into
+    // characters and letting them wrap would let a line break land mid-word.
+    const words = el.textContent.split(/(\s+)/);
+    el.textContent = "";
+    let n = 0;
+    for (const word of words) {
+      if (/^\s+$/.test(word)) { el.appendChild(document.createTextNode(word)); continue; }
+      const w = document.createElement("span");
+      w.className = "w";
+      for (const ch of word) {
+        const c = document.createElement("span");
+        c.className = "c";
+        c.style.setProperty("--i", n++);
+        c.textContent = ch;
+        w.appendChild(c);
+      }
+      el.appendChild(w);
+    }
+    // The visible text is now split across dozens of spans, which a screen
+    // reader would announce one letter at a time. One aria-label on the parent
+    // and the pieces hidden puts it back to a single sentence.
+    el.setAttribute("aria-label", el.textContent);
+    [...el.querySelectorAll(".w")].forEach((w) => w.setAttribute("aria-hidden", "true"));
+    return el;
+  }
+
+  const targets = [...document.querySelectorAll("[data-split]")].map(split);
+
+  const play = () => {
+    targets.forEach((t) => t.classList.remove("go"));
+    // Force a reflow so removing and re-adding the class in the same frame
+    // actually restarts the transition instead of being coalesced away.
+    void document.body.offsetWidth;
+    targets.forEach((t) => t.classList.add("go"));
+  };
+
+  if (reduce) targets.forEach((t) => t.classList.add("go"));
+  else {
+    const io = new IntersectionObserver((es) => {
+      if (es.some((e) => e.isIntersecting)) { play(); io.disconnect(); }
+    }, { threshold: 0.4 });
+    io.observe(targets[0]);
+  }
+  document.getElementById("rerun").addEventListener("click", play);
+</script>

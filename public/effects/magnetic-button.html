@@ -1,0 +1,97 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Magnetic button</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: grid; place-items: center;
+    background: #fff;
+    font: 500 15px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    color: #1d1d1f;
+  }
+
+  .magnet {
+    /* JS only writes these two variables; the transform stays declarative.
+       That leaves :active free to own `scale` without the two fighting
+       over the same property. */
+    --mx: 0px;
+    --my: 0px;
+    padding: 15px 30px;
+    border: 0; border-radius: 99px;
+    background: #1d1d1f; color: #f5f5f7;
+    font: inherit; cursor: pointer;
+    transform: translate(var(--mx), var(--my));
+    /* Only the release should be animated. While tracking the pointer,
+       a transition adds lag and the button feels like it is on elastic. */
+    transition: transform 450ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .magnet.tracking { transition-duration: 0ms; }
+  .magnet:active { scale: 0.96; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .magnet { --mx: 0px !important; --my: 0px !important; }
+  }
+</style>
+
+<button class="magnet">Hover me</button>
+
+<script>
+  const el = document.querySelector(".magnet");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Mouse only. A touch screen has no hover: the pointer arrives already pressed.
+  const fine = matchMedia("(pointer: fine)").matches;
+
+  if (!reduce && fine) {
+    const RADIUS = 60;  // catchment area, in px beyond the button's own box
+    const PULL = 0.35;  // travel = 35% of the pointer's offset from centre
+
+    // What we have currently applied. Needed to recover the button's resting
+    // position — see the subtraction below.
+    let ax = 0, ay = 0;
+
+    const set = (x, y, tracking) => {
+      ax = x; ay = y;
+      el.classList.toggle("tracking", tracking);
+      el.style.setProperty("--mx", x.toFixed(2) + "px");
+      el.style.setProperty("--my", y.toFixed(2) + "px");
+    };
+    const release = () => set(0, 0, false);
+
+    addEventListener("pointermove", (e) => {
+      const r = el.getBoundingClientRect();
+      // getBoundingClientRect reports the *transformed* box, so measuring the
+      // offset against it means measuring against a button that has already
+      // moved toward the cursor. Left uncorrected the two chase each other to
+      // an equilibrium and the pull collapses to a fraction of PULL — invisible
+      // if you test with one jump of the mouse, unmissable with a real one.
+      // Subtracting what we applied recovers the resting centre.
+      const dx = e.clientX - (r.left + r.width / 2 - ax);
+      const dy = e.clientY - (r.top + r.height / 2 - ay);
+      const inside =
+        Math.abs(dx) < r.width / 2 + RADIUS && Math.abs(dy) < r.height / 2 + RADIUS;
+
+      if (inside) set(dx * PULL, dy * PULL, true);
+      else release();
+    });
+
+    // The pull is released by the *next* pointermove — so if the pointer leaves
+    // the document altogether there is no next event, and the button stays
+    // stuck wherever it was last pulled to. Easy to miss on a full page, and
+    // guaranteed to happen in a small embed, where the edge is right there.
+    // The pull is released by the *next* pointermove landing outside the
+    // catchment area — but if the pointer leaves the document there is no next
+    // event, and the button stays stuck wherever it was last pulled to. Easy to
+    // miss on a full page; guaranteed in a small embed, where the edge is close.
+    //
+    // A null relatedTarget is the signal that the pointer left the document
+    // rather than merely crossing into another element inside it. Note this is
+    // mouseout, not pointerleave: pointerleave does not fire here.
+    document.addEventListener("mouseout", (e) => {
+      if (!e.relatedTarget) release();
+    });
+    // Alt-tabbing away mid-pull would otherwise leave it stuck too.
+    addEventListener("blur", release);
+  }
+</script>

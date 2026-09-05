@@ -1,0 +1,111 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fullscreen expansion transition</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; }
+
+  .scroller { height: 100%; overflow-y: auto; background: #0a0a10; scrollbar-width: thin; }
+  .track { height: 320%; position: relative; }
+  .stage { position: sticky; top: 0; height: 100%; overflow: hidden; }
+
+  /* Background wordmark, parked behind and moving at a different rate so the
+     expansion reads as depth rather than as a box getting bigger. */
+  .backdrop {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    background: radial-gradient(80% 70% at 50% 40%, #1b1b2e, #0a0a10 70%);
+  }
+  .backdrop span {
+    font-size: clamp(60px, 18vw, 190px); font-weight: 800;
+    letter-spacing: -0.05em; color: #ffffff0f; white-space: nowrap;
+    transform: translateX(calc(var(--p, 0) * -14%)) scale(calc(1 + var(--p, 0) * 0.25));
+  }
+
+  /* The card is ALWAYS full-bleed. What changes is the window cut out of it.
+     Scaling a small card up instead would stretch its contents and force a
+     counter-scale on every child; clipping leaves the artwork untouched at
+     every frame, which is why the type inside stays crisp. */
+  .card {
+    position: absolute; inset: 0;
+    /* 🩸 Do NOT write `--p: 0` here as a "default". JS sets --p on the stage and
+       it inherits down; a local declaration SHADOWS the inherited value, so the
+       card would sit frozen at 0 forever while --p on the stage animates
+       perfectly. Nothing errors and devtools shows both values, one on each
+       element. Use a fallback in var() instead — it only applies when the
+       property is genuinely unset. */
+    clip-path: inset(
+      calc((1 - var(--p, 0)) * 26%) calc((1 - var(--p, 0)) * 32%)
+      round calc((1 - var(--p, 0)) * 18px)
+    );
+  }
+  .card .art {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(60% 80% at 25% 20%, #ff5abf, transparent 60%),
+      radial-gradient(70% 70% at 80% 75%, #29e0ff, transparent 60%),
+      linear-gradient(140deg, #7b2ff7, #1b1b3a);
+    /* A slow push-in under the reveal. Ends at 1 so the final frame is a clean
+       1:1 render rather than a fractionally scaled one. */
+    transform: scale(calc(1.14 - 0.14 * var(--p, 0)));
+  }
+  .card .label {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 18px 22px;
+    background: linear-gradient(transparent, #00000099);
+    color: #fff;
+    opacity: var(--p, 0);
+  }
+  .card .label b { display: block; font-size: 17px; letter-spacing: -0.01em; }
+  .card .label i {
+    display: block; margin-top: 3px; font-style: normal;
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #ffffff8c;
+  }
+
+  .rail {
+    position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
+    width: 108px; height: 3px; border-radius: 99px; background: #ffffff24; overflow: hidden;
+  }
+  .rail i { display: block; height: 100%; background: #fff; transform-origin: left; transform: scaleX(var(--p, 0)); }
+  .cue {
+    position: absolute; left: 50%; top: 16px; transform: translateX(-50%);
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: #ffffff66; opacity: calc(1 - var(--p, 0) * 2);
+  }
+</style>
+
+<div class="scroller" id="scroller">
+  <div class="track">
+    <div class="stage" id="stage">
+      <div class="backdrop"><span>WORKS</span></div>
+      <div class="card">
+        <div class="art"></div>
+        <div class="label"><b>Wear Go Land</b><i>Fullscreen expansion</i></div>
+      </div>
+      <div class="cue">scroll ↓</div>
+      <div class="rail"><i></i></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const scroller = document.getElementById("scroller");
+  const stage = document.getElementById("stage");
+
+  const update = () => {
+    const max = scroller.scrollHeight - scroller.clientHeight;
+    // Progress is the only thing JS computes. Everything visual is expressed in
+    // CSS against --p, so the whole transition can be inspected by setting one
+    // number in devtools instead of stepping through a scroll handler.
+    const p = max > 0 ? Math.min(1, Math.max(0, scroller.scrollTop / max)) : 0;
+    stage.style.setProperty("--p", p.toFixed(4));
+  };
+
+  // passive: the handler never calls preventDefault, and saying so lets the
+  // browser start scrolling without waiting to find out.
+  scroller.addEventListener("scroll", update, { passive: true });
+  addEventListener("resize", update);
+  update();
+</script>

@@ -1,0 +1,77 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Section stacking transition</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; }
+
+  .scroller { height: 100%; overflow-y: auto; background: #08080d; }
+
+  /* Each section sticks at the top and the next one scrolls up over it. The
+     card underneath never moves — it is covered, not pushed — which is what
+     makes the stack read as depth instead of as a list. */
+  .sec {
+    position: sticky; top: 0;
+    height: 100%;
+    display: grid; place-items: center;
+    border-radius: 18px 18px 0 0;
+    overflow: hidden;
+    /* Every section needs its own paint layer or the sticky ones bleed into
+       each other's rounded corners. */
+    isolation: isolate;
+  }
+  .sec .inner { text-align: center; color: #fff; padding: 0 8%; }
+  .sec h2 { font-size: clamp(24px, 5.4vw, 46px); font-weight: 700; letter-spacing: -0.03em; }
+  .sec p { margin-top: 10px; font-size: clamp(12px, 1.8vw, 15px); color: #ffffffa8; }
+  .sec .n {
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: #ffffff70; margin-bottom: 12px;
+  }
+  /* Dimming + a slight push back on the section being covered. Driven from JS
+     as --k (0 = fully exposed, 1 = fully covered). */
+  .sec .shade {
+    position: absolute; inset: 0; background: #05050a;
+    opacity: calc(var(--k, 0) * 0.62); pointer-events: none;
+  }
+  .sec .inner { transform: scale(calc(1 - var(--k, 0) * 0.06)); }
+
+  .p1 { background: radial-gradient(70% 80% at 30% 25%, #7b2ff7, transparent 62%), #12102a; }
+  .p2 { background: radial-gradient(70% 80% at 70% 30%, #0a4d8c, transparent 62%), #071427; }
+  .p3 { background: radial-gradient(70% 80% at 45% 70%, #e0620d, transparent 62%), #23120a; }
+  .p4 { background: radial-gradient(70% 80% at 55% 40%, #00c2a8, transparent 62%), #04211d; }
+
+  .cue {
+    position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%);
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: #ffffff55; pointer-events: none;
+  }
+</style>
+
+<div class="scroller" id="scroller">
+  <section class="sec p1"><div class="inner"><div class="n">01</div><h2>Sections stack</h2><p>Each one sticks while the next climbs over it.</p></div><div class="shade"></div></section>
+  <section class="sec p2"><div class="inner"><div class="n">02</div><h2>Nothing is pushed</h2><p>The card underneath stays where it is. It gets covered.</p></div><div class="shade"></div></section>
+  <section class="sec p3"><div class="inner"><div class="n">03</div><h2>Depth, not a list</h2><p>Dimming and a 6% scale sell the one below as further away.</p></div><div class="shade"></div></section>
+  <section class="sec p4"><div class="inner"><div class="n">04</div><h2>Last one rests</h2><p>Give the stack a floor so it does not end mid-transition.</p></div><div class="shade"></div></section>
+</div>
+<div class="cue">scroll ↓</div>
+
+<script>
+  const scroller = document.getElementById("scroller");
+  const secs = [...document.querySelectorAll(".sec")];
+
+  const update = () => {
+    const h = scroller.clientHeight;
+    secs.forEach((sec, i) => {
+      const next = secs[i + 1];
+      // How far the next section has climbed over this one, 0 → 1.
+      const k = next ? Math.min(1, Math.max(0, 1 - (next.getBoundingClientRect().top / h))) : 0;
+      sec.style.setProperty("--k", k.toFixed(3));
+    });
+  };
+
+  scroller.addEventListener("scroll", update, { passive: true });
+  addEventListener("resize", update);
+  update();
+</script>
