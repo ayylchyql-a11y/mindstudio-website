@@ -1,7 +1,8 @@
 import MsLogo from "./MsLogo";
 import { apps } from "@/data/apps";
+import { labCopy } from "@/data/effects";
 import type { Locale } from "@/lib/i18n";
-import { getDictionary, locales, localeMeta } from "@/lib/i18n";
+import { getDictionary, locales, localeMeta, pick } from "@/lib/i18n";
 
 export default function Nav({ lang }: { lang: Locale }) {
   const t = getDictionary(lang);
@@ -20,6 +21,15 @@ export default function Nav({ lang }: { lang: Locale }) {
               {app.name}
             </a>
           ))}
+          {/*
+            导航上一半是产品（锚点跳到首页分区），一半是栏目（独立页面）。
+            两者混在一排会读成「又一个 app」，所以中间放一道细分隔线。
+            分隔线是 aria-hidden 的纯装饰 —— 屏幕阅读器听到的仍是一串链接。
+          */}
+          <span className="nav-sep" aria-hidden="true" />
+          <a className="nav-section" href={`/${lang}/lab`}>
+            {pick(labCopy.navLabel, lang)}
+          </a>
         </div>
         {/*
           语言菜单。2 语言时这里是个「切到另一种」的单链接（`navLangSwitch`），

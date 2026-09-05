@@ -69,7 +69,7 @@ export default async function CategoryPage({
               height={e.height}
               title={pick(e.title, lang)}
               accent={e.accent}
-              replayLabel={pick(labCopy.replay, lang)}
+              lang={lang}
             />
             <div className="fx-card-body">
               <h2>

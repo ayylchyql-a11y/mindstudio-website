@@ -64,9 +64,25 @@
     width: 86px; height: 86px; border-radius: 24%;
     box-shadow: 0 14px 36px rgba(5, 5, 5, 0.28);
   }
-  .nav-links { display: flex; gap: 32px; }
+  /* 🩸 gap 原本是 32px，加第 9 项「实验室」之后放不下了：总宽 771 > 可用 750，
+     flex 于是把每一项压扁、文字断成两行。
+     **「有没有溢出」这个检查测不出来** —— 子项是收缩+换行，不是溢出，
+     `.nav-inner` 的 scrollWidth 始终等于 clientWidth。要看的是链接行的高度。
+     实测自然宽合计 550、`.nav-inner` 封顶 980 ⇒ 可用 783 ⇒ gap 上限 29px。
+     取 20 是为了留余量：12 种语言里最紧的中文在 24px 时只剩 2px，
+     换台机器字体回退不同就会崩。nowrap 保证品牌名不会被断在中间。 */
+  .nav-links { display: flex; gap: 20px; }
+  .nav-links > a { white-space: nowrap; }
   .nav-links a { opacity: 0.82; transition: opacity 0.15s ease; }
   .nav-links a:hover { opacity: 1; }
+  /* 产品与栏目之间的分隔。gap 是 32px，所以分隔线两侧各留 4px 视觉呼吸，
+     靠负 margin 把间距收回来一点，免得这一处比别处宽一倍。 */
+  .nav-sep {
+    width: 1px; align-self: stretch;
+    margin: 4px -10px;
+    background: currentColor; opacity: 0.16;
+  }
+  .nav-section { font-weight: 600; }
   /* 语言菜单：<details>/<summary> 做的纯 CSS 下拉（本站没有客户端 JS） */
   .nav-lang { position: relative; }
   .nav-lang > summary {
@@ -96,7 +112,16 @@
   .nav-lang-menu a[aria-current="true"] { opacity: 1; font-weight: 600; }
   /* 阿拉伯语整页 dir="rtl" 时，菜单要贴左边而不是右边 */
   [dir="rtl"] .nav-lang-menu { right: auto; left: 0; }
-  @media (max-width: 640px) { .nav-links { display: none; } }
+  /* 断点从 640 抬到 940。
+     🩸 **这不是我加「实验室」造成的**：940px 以下就算 gap 归零也放不下
+     （可用宽度减去 logo 与语言菜单只剩约 500，而链接自然宽就要 550），
+     所以 640~900 这一段**在加实验室之前就已经在压扁换行了**，
+     只是两行文字挤在 48px 高的栏里，不细看发现不了。
+     与其让它悄悄变形，不如按这个站原本的做法：窄屏只留 logo 和语言菜单。
+     断点取 980 是因为它正好等于 `.nav-inner` 的 max-width：过了这个宽度容器
+     就不再变化、余量恒定 34px，940 这类数字会留下一条 20px 宽的临界带
+     （实测 941px 时余量 −5px）。 */
+  @media (max-width: 980px) { .nav-links { display: none; } }
 
   /* ── Hero ───────────────────────────── */
   .hero {
@@ -1305,7 +1330,10 @@
   display: block; width: 100%; border: 0;
   /* iframe 默认 display:inline，基线下面会留 4px 缝，看着像对不齐 */
 }
-.fx-poster { position: absolute; inset: 0; }
+/* 占位层在 iframe 底下：iframe 一画出来就自然盖住它，不需要 JS 去移除。
+   这样 JS 没跑 / 还没跑完时，用户看到的也不会是一个永久的灰盒子。 */
+.fx-poster { position: absolute; inset: 0; z-index: 0; }
+.fx-frame iframe { position: relative; z-index: 1; }
 .fx-replay {
   position: absolute; right: 10px; bottom: 10px; z-index: 2;
   font: 500 11.5px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
@@ -1425,7 +1453,8 @@
   border-radius: inherit;
   background: color-mix(in srgb, var(--ink) 34%, transparent);
   transform-origin: left;
-  animation: fx-poster-sweep 1.1s ease-in-out infinite;
+  /* 有限次：正常情况 iframe 很快就盖住它了，无限动下去是白烧 CPU */
+  animation: fx-poster-sweep 1.1s ease-in-out 8;
 }
 @keyframes fx-poster-sweep {
   0% { transform: scaleX(0.15) translateX(0); }

@@ -66,7 +66,7 @@ export default async function EffectPage({
           height={e.height}
           title={pick(e.title, lang)}
           accent={e.accent}
-          replayLabel={pick(labCopy.replay, lang)}
+          lang={lang}
         />
       </div>
 
