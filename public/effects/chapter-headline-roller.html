@@ -1,0 +1,149 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter headline roller</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; }
+
+  .scroller { height: 100%; overflow-y: auto; background: #06060c; scrollbar-width: thin; }
+  .track { height: 440%; }
+  /* 🩸 100vh，不是 100%（`.track` 高 440%，见 scroll-scrubbed-sequence 的同一条注释）。 */
+  .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #06060c; }
+
+  /* One backdrop per chapter, cross-faded. */
+  .bg { position: absolute; inset: 0; opacity: 0; transition: opacity 700ms cubic-bezier(.22,.61,.36,1); }
+  .bg.on { opacity: 1; }
+  .b0 { background: radial-gradient(85% 75% at 28% 18%, #1d3a8f, #070a18 72%); }
+  .b1 { background: radial-gradient(85% 75% at 72% 22%, #7a2f6a, #100713 72%); }
+  .b2 { background: radial-gradient(85% 75% at 46% 24%, #1c6f6a, #04120f 72%); }
+  .b3 { background: radial-gradient(85% 75% at 62% 30%, #8a5a1c, #140c05 72%); }
+  .grain { position: absolute; inset: 0; background: linear-gradient(180deg, #00000000 45%, #000000b8); }
+
+  .type { position: absolute; left: 6%; right: 6%; bottom: 11%; color: #fff; }
+
+  /* Eyebrow rolls in its own window, same machinery, tighter. */
+  /* 🩸 The type size lives on the ROW, not on the span. `height: 1.06em` on the
+     row resolves against the row's own font-size — leave that at the inherited
+     16px and the clip window comes out 17px tall while the text inside it is
+     54px, so you see a sliver of the headline and no error anywhere. Same trap
+     makes translateY(-110%) too short to clear the window. */
+  .eyebrow {
+    position: relative; overflow: hidden; margin-bottom: 10px;
+    font-size: 10px; line-height: 1.5em; height: 1.5em;
+  }
+  .eyebrow span {
+    position: absolute; left: 0; top: 0; white-space: nowrap;
+    letter-spacing: 0.24em; text-transform: uppercase; color: #ffffff8a;
+  }
+
+  /* 🩸 One clip window PER LINE, not one around the block. A single window
+     around both lines makes them a rigid pair — the second line can no longer
+     lag behind the first, and the stagger is the whole reason this reads as
+     type rather than as a moving rectangle. */
+  .line {
+    position: relative; overflow: hidden;
+    font-size: clamp(26px, 5.6vw, 54px); line-height: 1.06em; height: 1.06em;
+  }
+  .line + .line { margin-top: 0.04em; }
+  .line span {
+    position: absolute; left: 0; top: 0; white-space: nowrap;
+    font-weight: 500; letter-spacing: -0.035em;
+  }
+  /* Discrete states, driven by a CSS transition — deliberately NOT scrubbed.
+     Type dragged frame-by-frame with the scrollbar is unreadable, and it makes
+     a screen reader announce every intermediate string. */
+  .roll {
+    transform: translateY(110%); opacity: 0;
+    transition: transform 620ms cubic-bezier(.22,.61,.36,1), opacity 420ms linear;
+  }
+  .roll.past { transform: translateY(-110%); opacity: 0; }
+  .roll.now { transform: translateY(0); opacity: 1; }
+  .l2 .roll { transition-delay: 90ms; }      /* the stagger */
+  .eyebrow .roll { transition-duration: 460ms; transition-delay: 0ms; }
+
+  .dots { position: absolute; right: 6%; bottom: 12%; display: flex; gap: 7px; }
+  .dots i { width: 22px; height: 2px; background: #ffffff33; border-radius: 2px; transition: background 400ms; }
+  .dots i.on { background: #fff; }
+  .cue {
+    position: absolute; left: 6%; top: 8%;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #ffffff55;
+  }
+</style>
+
+<div class="scroller" id="scroller">
+  <div class="track">
+    <div class="stage" id="stage">
+      <div class="bg b0"></div><div class="bg b1"></div><div class="bg b2"></div><div class="bg b3"></div>
+      <div class="grain"></div>
+      <div class="cue">scroll ↓</div>
+      <div class="type">
+        <div class="eyebrow" id="eyebrow"></div>
+        <div class="line l1" id="l1"></div>
+        <div class="line l2" id="l2"></div>
+      </div>
+      <div class="dots" id="dots"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const CHAPTERS = [
+    ["01 — Frame", "Start From", "The Problem"],
+    ["02 — Build", "Ship It In", "Small Steps"],
+    ["03 — Test", "Put It In", "Real Hands"],
+    ["04 — Keep", "Keep What", "Holds Up"],
+  ];
+  const N = CHAPTERS.length;
+  const HYST = 0.04;      // dead zone around a boundary, as a fraction of progress
+
+  const scroller = document.getElementById("scroller");
+  const rows = [document.getElementById("eyebrow"), document.getElementById("l1"), document.getElementById("l2")];
+  const dots = document.getElementById("dots");
+
+  // One element per chapter per row, all stacked. Rewriting the text of a single
+  // element instead would leave nothing to cross with: the old line has to still
+  // be on screen, on its way out, while the new one arrives.
+  const cells = rows.map((row, r) => CHAPTERS.map((c) => {
+    const el = document.createElement("span");
+    el.className = "roll";
+    el.textContent = c[r];
+    row.appendChild(el);
+    return el;
+  }));
+  CHAPTERS.forEach(() => dots.appendChild(document.createElement("i")));
+  const pips = [...dots.children];
+  const bgs = [...document.querySelectorAll(".bg")];
+
+  let chapter = -1;
+
+  const show = (i) => {
+    if (i === chapter) return;
+    chapter = i;
+    cells.forEach((row) => row.forEach((el, j) => {
+      el.className = "roll" + (j === i ? " now" : j < i ? " past" : "");
+      // Only the settled chapter is readable text; the rest are decoration on
+      // their way in or out, and a screen reader should not read all four.
+      el.setAttribute("aria-hidden", j === i ? "false" : "true");
+    }));
+    pips.forEach((p, j) => p.classList.toggle("on", j === i));
+    bgs.forEach((b, j) => b.classList.toggle("on", j === i));
+  };
+
+  const update = () => {
+    const max = scroller.scrollHeight - scroller.clientHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, scroller.scrollTop / max)) : 0;
+    const next = Math.min(N - 1, Math.floor(p * N));
+    if (next === chapter) return;
+    // 🩸 Hysteresis. Resting exactly on a boundary — which a trackpad's inertia
+    // does constantly — otherwise flips the headline back and forth on sub-pixel
+    // scroll deltas. Commit only once we are clearly past the edge we crossed.
+    const edge = Math.max(next, chapter) / N;
+    if (chapter < 0 || Math.abs(p - edge) > HYST) show(next);
+  };
+
+  scroller.addEventListener("scroll", update, { passive: true });
+  addEventListener("resize", update);
+  update();
+</script>

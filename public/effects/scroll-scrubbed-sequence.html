@@ -1,0 +1,221 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scroll-scrubbed frame sequence</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; }
+
+  .scroller { height: 100%; overflow-y: auto; background: #04040a; scrollbar-width: thin; }
+  .track { height: 460%; }
+  /* 🩸 100vh，不是 100%：`.track` 高 460%，`height: 100%` 会把舞台撑成
+     整条轨道那么高，画面居中到看不见的地方去。 */
+  .stage {
+    position: sticky; top: 0; height: 100vh;
+    overflow: hidden; background: #04040a;
+  }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+  .hud { position: absolute; inset: 0; pointer-events: none; color: #fff; }
+  .eyebrow {
+    position: absolute; left: 5%; top: 8%;
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: #ffffff66;
+  }
+  /* 把机制摆到台面上：读数就是 scroll → 帧号这条链路本身 */
+  .readout {
+    position: absolute; left: 5%; bottom: 9%;
+    font: 500 11px/1.7 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: 0.06em; color: #ffffff8c;
+  }
+  .readout b { color: #ffd8a8; font-weight: 600; }
+  .rail {
+    position: absolute; right: 5%; top: 22%; bottom: 22%; width: 2px;
+    background: #ffffff1f; border-radius: 2px;
+  }
+  .rail i { position: absolute; left: 0; top: 0; width: 100%; background: #ffb066; border-radius: 2px; }
+  .cue {
+    position: absolute; right: 5%; bottom: 9%;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #ffffff55;
+  }
+</style>
+
+<div class="scroller" id="scroller">
+  <div class="track">
+    <div class="stage">
+      <canvas id="cv"></canvas>
+      <div class="hud">
+        <div class="eyebrow">01 — Sequence</div>
+        <div class="readout">progress <b id="rp">0.000</b><br>frame <b id="rf">1</b> / 40</div>
+        <div class="rail"><i id="ri"></i></div>
+        <div class="cue">scroll ↓</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const N = 40;                    // frames in the sequence
+  const scroller = document.getElementById("scroller");
+  const cv = document.getElementById("cv");
+  const ctx = cv.getContext("2d");
+  const rp = document.getElementById("rp"), rf = document.getElementById("rf"), ri = document.getElementById("ri");
+
+  /* ---------- the sequence ----------
+     A real build points this at an asset: 40 JPEGs blitted with drawImage, or
+     one <video> driven by `video.currentTime = progress * video.duration`.
+     Here each frame is synthesised so the sample stays a single file — the
+     scroll → index math below is identical either way. */
+
+  const rot = (p, ax, ay) => {
+    let { x, y, z } = p;
+    let c = Math.cos(ay), s = Math.sin(ay);
+    [x, z] = [x * c + z * s, -x * s + z * c];
+    c = Math.cos(ax); s = Math.sin(ax);
+    [y, z] = [y * c - z * s, y * s + z * c];
+    return { x, y, z };
+  };
+  const F = 620;                                   // focal length
+  const proj = (p, cx, cy, k) => {
+    const d = F / (F + p.z);
+    return { x: cx + p.x * k * d, y: cy + p.y * k * d, d };
+  };
+
+  // A blocky figure: two boxes and four limbs, defined once in body space.
+  const box = (cx, cy, cz, hx, hy, hz) => ({
+    v: [[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]]
+      .map(([sx, sy, sz]) => ({ x: cx + sx * hx, y: cy + sy * hy, z: cz + sz * hz })),
+    f: [[0,1,2,3,0,0,-1],[5,4,7,6,0,0,1],[4,0,3,7,-1,0,0],[1,5,6,2,1,0,0],[4,5,1,0,0,-1,0],[3,2,6,7,0,1,0]],
+  });
+  const HEAD = box(0, -63, 0, 16, 16, 16);
+  const TORSO = box(0, -10, 0, 19, 30, 11);
+  const LIMBS = [
+    [{ x: 0, y: -46, z: 0 }, { x: 0, y: -38, z: 0 }, 6],       // neck
+    [{ x: -19, y: -32, z: 0 }, { x: -40, y: -6, z: 10 }, 7],   // upper arm L
+    [{ x: -40, y: -6, z: 10 }, { x: -52, y: 24, z: 24 }, 5.5], // forearm L
+    [{ x: 19, y: -32, z: 0 }, { x: 44, y: -30, z: -6 }, 7],    // upper arm R
+    [{ x: 44, y: -30, z: -6 }, { x: 62, y: -56, z: 4 }, 5.5],  // forearm R
+    [{ x: -11, y: 17, z: 0 }, { x: -20, y: 54, z: 8 }, 8],     // thigh L
+    [{ x: -20, y: 54, z: 8 }, { x: -14, y: 90, z: 24 }, 6 ],   // shin L
+    [{ x: 11, y: 17, z: 0 }, { x: 24, y: 52, z: -4 }, 8],      // thigh R
+    [{ x: 24, y: 52, z: -4 }, { x: 40, y: 84, z: 8 }, 6],      // shin R
+  ];
+  // Points FROM the surface TOWARDS the key light: up, left, and towards the
+  // camera (screen y grows downwards, and the camera sits at negative z).
+  const LIGHT = (() => { const l = { x: -0.48, y: -0.72, z: -0.50 }; const m = Math.hypot(l.x, l.y, l.z); return { x: l.x/m, y: l.y/m, z: l.z/m }; })();
+
+  function renderFrame(i, w, h) {
+    const t = N > 1 ? i / (N - 1) : 0;
+    ctx.clearRect(0, 0, w, h);
+
+    // stage: deep blue room, one warm key light falling from the upper left
+    const g = ctx.createRadialGradient(w * 0.34, -h * 0.2, 0, w * 0.34, -h * 0.2, h * 1.7);
+    g.addColorStop(0, "#1b3d8f"); g.addColorStop(0.42, "#0d1636"); g.addColorStop(1, "#04060f");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+
+    // The beam gets a gradient ACROSS its width, not along its length. A flat
+    // polygon leaves two hard diagonal edges that read as a crease in the wall.
+    const ax = w * 0.16, bx = w * 0.62;
+    const dx = bx - ax, dy = h, dl = Math.hypot(dx, dy);
+    const px = dy / dl, py = -dx / dl;                    // unit perpendicular
+    const half = w * 0.19;
+    const mx = (ax + bx) / 2, my = h / 2;
+    const beam = ctx.createLinearGradient(mx - px * half, my - py * half, mx + px * half, my + py * half);
+    beam.addColorStop(0, "rgba(255,206,150,0)");
+    beam.addColorStop(0.5, "rgba(255,206,150,0.17)");
+    beam.addColorStop(1, "rgba(255,206,150,0)");
+    ctx.fillStyle = beam;
+    ctx.beginPath();
+    ctx.moveTo(mx - px * half - dx / 2, my - py * half - dy / 2);
+    ctx.lineTo(mx + px * half - dx / 2, my + py * half - dy / 2);
+    ctx.lineTo(mx + px * half + dx / 2, my + py * half + dy / 2);
+    ctx.lineTo(mx - px * half + dx / 2, my - py * half + dy / 2);
+    ctx.fill();
+
+    const yaw = -1.05 + t * 3.6;
+    const pitch = Math.sin(t * Math.PI * 1.35) * 0.6 - 0.18;
+    const k = (h / 300) * (1.08 + t * 0.5);
+    const cx = w * 0.5 + Math.sin(t * Math.PI * 1.1) * w * 0.07;
+    const cy = h * 0.58 - t * h * 0.17;
+
+    const draw = [];
+    for (const [b, tint] of [[TORSO, 0], [HEAD, 1]]) {
+      const rv = b.v.map((p) => rot(p, pitch, yaw));
+      for (const f of b.f) {
+        const q = [rv[f[0]], rv[f[1]], rv[f[2]], rv[f[3]]];
+        const n = rot({ x: f[4], y: f[5], z: f[6] }, pitch, yaw);
+        if (n.z > 0.02) continue;                       // back face, skip
+        const lit = Math.max(0, n.x * LIGHT.x + n.y * LIGHT.y + n.z * LIGHT.z);
+        draw.push({ z: (q[0].z + q[1].z + q[2].z + q[3].z) / 4, kind: "f", q, lit, tint });
+      }
+    }
+    for (const [a, b, r] of LIMBS) {
+      const p0 = rot(a, pitch, yaw), p1 = rot(b, pitch, yaw);
+      draw.push({ z: (p0.z + p1.z) / 2, kind: "l", p0, p1, r });
+    }
+    draw.sort((m, n) => n.z - m.z);                     // painter's algorithm
+
+    for (const d of draw) {
+      if (d.kind === "f") {
+        const pts = d.q.map((p) => proj(p, cx, cy, k));
+        const v = (d.tint ? 40 : 24) + d.lit * (d.tint ? 205 : 150);
+        ctx.fillStyle = d.tint
+          ? `rgb(${Math.round(v)},${Math.round(v * 0.88)},${Math.round(v * 0.68)})`
+          : `rgb(${Math.round(v * 0.86)},${Math.round(v * 0.90)},${Math.round(v * 1.0)})`;
+        ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y);
+        for (let j = 1; j < 4; j++) ctx.lineTo(pts[j].x, pts[j].y);
+        ctx.closePath(); ctx.fill();
+      } else {
+        const a = proj(d.p0, cx, cy, k), b = proj(d.p1, cx, cy, k);
+        const wd = d.r * k * ((a.d + b.d) / 2) * 2;
+        ctx.lineCap = "round";
+        // A cylinder is a barrel plus a highlight, not a flat stroke. Drawing the
+        // core once more, thinner and shifted towards the light, is enough to
+        // stop the limbs reading as noodles.
+        ctx.strokeStyle = "#4b5470"; ctx.lineWidth = wd;
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+        const ox = LIGHT.x * wd * 0.22, oy = LIGHT.y * wd * 0.22;
+        ctx.strokeStyle = "#e8dcc6"; ctx.lineWidth = wd * 0.55;
+        ctx.beginPath(); ctx.moveTo(a.x + ox, a.y + oy); ctx.lineTo(b.x + ox, b.y + oy); ctx.stroke();
+      }
+    }
+  }
+
+  /* ---------- scroll → frame ---------- */
+
+  let w = 0, h = 0, shown = -1, pending = 0;
+
+  const paint = (i) => {
+    if (i === shown) return;                            // the throttle that matters:
+    shown = i;                                          // never redraw the same frame
+    renderFrame(i, w, h);
+    rf.textContent = String(i + 1);
+  };
+
+  const update = () => {
+    const max = scroller.scrollHeight - scroller.clientHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, scroller.scrollTop / max)) : 0;
+    rp.textContent = p.toFixed(3);
+    ri.style.height = (p * 100).toFixed(2) + "%";
+    pending = Math.min(N - 1, Math.floor(p * N));
+    // One paint per animation frame, not one per scroll event. A trackpad fires
+    // scroll far faster than the display refreshes; painting inline burns the
+    // frame budget redrawing pictures nobody ever sees.
+    if (!raf) raf = requestAnimationFrame(tick);
+  };
+  let raf = 0;
+  const tick = () => { raf = 0; paint(pending); };
+
+  const resize = () => {
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    w = cv.clientWidth; h = cv.clientHeight;
+    cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    shown = -1;                                         // size changed, cache is stale
+    paint(pending);
+  };
+
+  scroller.addEventListener("scroll", update, { passive: true });
+  addEventListener("resize", () => { resize(); update(); });
+  resize(); update();
+</script>

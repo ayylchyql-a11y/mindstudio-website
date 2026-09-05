@@ -1,0 +1,103 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scroll-brightened paragraph</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; }
+
+  .scroller { height: 100%; overflow-y: auto; background: #08080c; scrollbar-width: thin; }
+  .track { height: 340%; }
+  /* 🩸 100vh，不是 100%（`.track` 高 340%）。 */
+  .stage {
+    position: sticky; top: 0; height: 100vh; overflow: hidden;
+    background: #08080c;
+    display: grid; align-content: center;
+    padding: 0 7%;
+  }
+  .rule { height: 1px; background: linear-gradient(90deg, #c99a3f, #c99a3f22 70%, transparent); }
+  .eyebrow {
+    margin: 14px 0 18px;
+    font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: #ffffff5c;
+  }
+  p {
+    font-size: clamp(17px, 3.5vw, 34px); line-height: 1.32;
+    font-weight: 400; letter-spacing: -0.022em;
+    /* The paragraph's real colour. Words are dimmed by opacity on top of this,
+       so the bright end never depends on JS having got the colour right. */
+    color: #f4f1ea;
+  }
+  /* 🩸 No dim start state in CSS. If the words began at opacity .12 here and the
+     script never ran — old browser, blocked bundle, an error three lines up —
+     the paragraph would be an invisible block of text with no error anywhere.
+     Full brightness is the resting state; the dimming is applied by JS. */
+  p i { font-style: normal; will-change: opacity; }
+
+  @media (prefers-reduced-motion: reduce) {
+    p i { opacity: 1 !important; }
+  }
+
+  .cue {
+    position: absolute; left: 7%; bottom: 8%;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: #ffffff44;
+  }
+</style>
+
+<div class="scroller" id="scroller">
+  <div class="track">
+    <div class="stage">
+      <div class="rule"></div>
+      <div class="eyebrow">01 — About</div>
+      <p id="copy">A designer who builds. Eight years spent between product teams and the browser, turning tools that demo well into workflows that survive a Tuesday afternoon.</p>
+      <div class="cue">scroll ↓</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const scroller = document.getElementById("scroller");
+  const p = document.getElementById("copy");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* 🩸 Split on words, never on characters. Per-character spans break find-in-page,
+     break double-click-to-select, and make a screen reader spell the sentence out
+     one letter at a time. Nothing about this effect needs finer than a word. */
+  const words = p.textContent.split(/(\s+)/);
+  p.textContent = "";
+  const spans = [];
+  for (const w of words) {
+    if (/^\s+$/.test(w)) { p.appendChild(document.createTextNode(w)); continue; }
+    const el = document.createElement("i");
+    el.textContent = w;
+    p.appendChild(el);
+    spans.push(el);
+  }
+
+  const N = spans.length;
+  const SOFT = 6;      // words the brightening front spans at once
+  const FLOOR = 0.16;  // how dark a word gets before its turn
+
+  const update = () => {
+    if (reduce) return;
+    const max = scroller.scrollHeight - scroller.clientHeight;
+    const raw = max > 0 ? scroller.scrollTop / max : 0;
+    // Finish before the very bottom, so the last words are lit while the
+    // paragraph is still on screen rather than exactly as it leaves.
+    const prog = Math.min(1, Math.max(0, raw / 0.82));
+    // +2 so a couple of words are already lit at rest: a paragraph that is
+    // uniformly dim before you touch it reads as a rendering fault, not as an effect.
+    const head = prog * (N + SOFT) + 2;
+    for (let i = 0; i < N; i++) {
+      // A front with width. Lighting exactly one word at a time reads as a
+      // cursor stepping through the text; several words mid-way reads as light
+      // moving across it.
+      const t = Math.min(1, Math.max(0, (head - i) / SOFT));
+      spans[i].style.opacity = (FLOOR + (1 - FLOOR) * t).toFixed(3);
+    }
+  };
+
+  scroller.addEventListener("scroll", update, { passive: true });
+  addEventListener("resize", update);
+  update();
+</script>
