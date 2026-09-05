@@ -1470,3 +1470,43 @@
 @media (prefers-reduced-motion: reduce) {
   .fx-poster-bar::after { animation: none; transform: scaleX(0.5); }
 }
+
+/* ── 卡片上的「代码 / 提示词」按钮 ──────────────────────
+   用原生 <details>：展开不需要 JS。两个按钮在一行 flex 里，
+   展开的那个用 `flex-basis: 100%` 独占一行，另一个自然被挤到它上面那行。 */
+.fx-actions {
+  margin-top: 14px;
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.fx-disclose { flex: 0 0 auto; }
+.fx-disclose[open] { flex: 1 0 100%; }
+.fx-disclose > summary {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 500; color: var(--ink-2);
+  border: 1px solid var(--hairline); border-radius: 99px;
+  padding: 6px 13px;
+  cursor: pointer; list-style: none; white-space: nowrap;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.fx-disclose > summary::-webkit-details-marker { display: none; }
+/* 自己画的箭头：展开时转 90 度，替代浏览器默认那个三角 */
+.fx-disclose > summary::before {
+  content: "›";
+  font-size: 15px; line-height: 0.8;
+  transition: transform 200ms var(--ease-out-strong);
+}
+.fx-disclose[open] > summary::before { transform: rotate(90deg); }
+.fx-disclose > summary:hover,
+.fx-disclose[open] > summary {
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--ink) 26%, transparent);
+}
+.fx-disclose-body { padding-top: 12px; }
+/* 卡片里的代码块比详情页矮一些，免得一展开就把整行卡片撑得老长 */
+.fx-disclose-body .fx-copybox { margin-bottom: 0; }
+.fx-disclose-body .fx-copybox pre { max-height: 260px; }
+.fx-disclose-body .fx-copybox-prompt pre { max-height: 260px; overflow-y: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-disclose > summary::before { transition: none; }
+}

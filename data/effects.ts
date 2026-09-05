@@ -355,7 +355,7 @@ export const effects: Effect[] = [
     accent: "#1d1d1f",
     anatomy: [
       "JS writes only two custom properties, <code>--mx</code> and <code>--my</code>. The <code>transform</code> stays in the stylesheet, which leaves <code>:active</code> free to own <code>scale</code> — if JS owned the whole transform, the press feedback would keep getting overwritten mid-drag.",
-      "A <code>.tracking</code> class sets <code>transition-duration: 0ms</code> while the pointer is inside the catchment area. Without it the button trails the cursor by the transition duration and feels like it is on elastic.",
+      "A <code>.tracking</code> class zeroes the <b>transform's</b> transition-duration while the pointer is inside the catchment area — the other transitioned properties (the glow, the border) keep theirs, which is why the duration list has three values. Without this the button trails the cursor by the transition duration and feels like it is on elastic.",
       "The release is where the easing lives: 450ms of <code>cubic-bezier(0.23, 1, 0.32, 1)</code>, a strong ease-out that overshoots nothing but decelerates hard.",
       "Gated behind <code>(pointer: fine)</code>. On touch there is no hover — the pointer arrives already pressed, so the effect would only ever fire as a flicker at tap time.",
       "<code>getBoundingClientRect()</code> reports the <b>transformed</b> box, so measuring the cursor offset against it measures against a button that has already moved toward the cursor. The two then chase each other to an equilibrium and the actual pull collapses to a fraction of <code>PULL</code>. Subtracting the currently applied translation recovers the resting centre.",
@@ -504,6 +504,9 @@ export const labCopy = {
     "zh-tw": "把這段丟給任意一個寫程式的模型，就能從零長出這個效果。它把每個數值都寫死了 ——「絲滑」「現代感」這種詞每次生成出來的都不一樣。",
   },
   sourceTitle: { en: "Source", zh: "源码", "zh-tw": "原始碼" },
+  /** 卡片上那两个小按钮 */
+  codeBtn: { en: "Code", zh: "代码", "zh-tw": "程式碼", ja: "コード", ko: "코드", it: "Codice" },
+  promptBtn: { en: "Prompt", zh: "提示词", "zh-tw": "提示詞", ja: "プロンプト", ko: "프롬프트", it: "Prompt" },
   sourceHint: {
     en: "The whole file. It is what the sample above is running — copy it into an .html file and it works with nothing else.",
     zh: "整个文件。上面那个样板跑的就是它 —— 存成 .html 打开就能用，不需要别的任何东西。",

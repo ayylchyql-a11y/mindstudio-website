@@ -7,10 +7,41 @@
   body {
     min-height: 100vh;
     display: grid; place-items: center;
-    background: #fff;
-    font: 500 15px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-    color: #1d1d1f;
+    background: #0b0b12;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
   }
+  /* Faint dot grid + a pool of light under the button. Both are decoration:
+     they give the pull something to move against, so a 14px offset reads as
+     movement instead of as a button that was always slightly off-centre. */
+  body::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(#ffffff14 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: radial-gradient(60% 60% at 50% 50%, #000 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(60% 60% at 50% 50%, #000 40%, transparent 100%);
+  }
+  body::after {
+    content: ""; position: absolute; left: 50%; top: 50%;
+    width: 320px; height: 320px; margin: -160px 0 0 -160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #4b6bff33, transparent 68%);
+    filter: blur(18px);
+    pointer-events: none;
+  }
+
+  .stack {
+    position: relative; z-index: 1;
+    display: grid; justify-items: center; gap: 20px;
+  }
+  .eyebrow {
+    font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: #ffffff5c;
+  }
+  .hint { font-size: 12px; color: #ffffff47; letter-spacing: 0.01em; }
 
   .magnet {
     /* JS only writes these two variables; the transform stays declarative.
@@ -18,24 +49,50 @@
        over the same property. */
     --mx: 0px;
     --my: 0px;
-    padding: 15px 30px;
-    border: 0; border-radius: 99px;
-    background: #1d1d1f; color: #f5f5f7;
-    font: inherit; cursor: pointer;
+    position: relative;
+    padding: 15px 32px;
+    border: 1px solid #ffffff2e;
+    border-radius: 99px;
+    background:
+      linear-gradient(#ffffff1f, #ffffff08) padding-box,
+      #14141d;
+    color: #fff;
+    font: 600 15px/1 inherit;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    box-shadow:
+      0 1px 0 #ffffff21 inset,          /* top edge catches the light */
+      0 10px 30px #00000059,
+      0 0 0 0 #4b6bff00;                /* glow, grown on hover */
     transform: translate(var(--mx), var(--my));
     /* Only the release should be animated. While tracking the pointer,
        a transition adds lag and the button feels like it is on elastic. */
-    transition: transform 450ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition:
+      transform 450ms cubic-bezier(0.23, 1, 0.32, 1),
+      box-shadow 300ms ease,
+      border-color 300ms ease;
   }
-  .magnet.tracking { transition-duration: 0ms; }
+  .magnet.tracking { transition-duration: 0ms, 300ms, 300ms; }
+  .magnet:hover {
+    border-color: #ffffff4d;
+    box-shadow:
+      0 1px 0 #ffffff2e inset,
+      0 12px 34px #00000066,
+      0 0 34px 2px #4b6bff4d;
+  }
   .magnet:active { scale: 0.96; }
+  .magnet:focus-visible { outline: 2px solid #7f9bff; outline-offset: 4px; }
 
   @media (prefers-reduced-motion: reduce) {
     .magnet { --mx: 0px !important; --my: 0px !important; }
   }
 </style>
 
-<button class="magnet">Hover me</button>
+<div class="stack">
+  <span class="eyebrow">Magnetic</span>
+  <button class="magnet">Get in touch</button>
+  <span class="hint">move your pointer near it</span>
+</div>
 
 <script>
   const el = document.querySelector(".magnet");
@@ -76,10 +133,6 @@
       else release();
     });
 
-    // The pull is released by the *next* pointermove — so if the pointer leaves
-    // the document altogether there is no next event, and the button stays
-    // stuck wherever it was last pulled to. Easy to miss on a full page, and
-    // guaranteed to happen in a small embed, where the edge is right there.
     // The pull is released by the *next* pointermove landing outside the
     // catchment area — but if the pointer leaves the document there is no next
     // event, and the button stays stuck wherever it was last pulled to. Easy to

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import CopyBox from "@/components/CopyBox";
 import EffectFrame from "@/components/EffectFrame";
 import { categories, categoryById, demoPath, effectsIn, labCopy } from "@/data/effects";
+import { readDemoSource } from "@/lib/effect-source";
 import { defaultLocale, hreflangMap, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 /**
@@ -83,6 +85,36 @@ export default async function CategoryPage({
                   </li>
                 ))}
               </ul>
+
+              {/*
+                原生 <details>：展开这件事不需要一行 JS，所以就算脚本没跑完
+                （或者根本没跑）这两个按钮也是能用的。站里的语言菜单是同样的做法。
+                CopyBox 里的复制按钮才需要 JS，那是纯增强。
+              */}
+              <div className="fx-actions">
+                <details className="fx-disclose">
+                  <summary>{pick(labCopy.codeBtn, lang)}</summary>
+                  <div className="fx-disclose-body">
+                    <CopyBox
+                      body={readDemoSource(e.slug)}
+                      label={`${e.slug}.html`}
+                      copyLabel={pick(labCopy.copy, lang)}
+                      doneLabel={pick(labCopy.copied, lang)}
+                    />
+                  </div>
+                </details>
+                <details className="fx-disclose">
+                  <summary>{pick(labCopy.promptBtn, lang)}</summary>
+                  <div className="fx-disclose-body">
+                    <CopyBox
+                      variant="prompt"
+                      body={e.prompt}
+                      copyLabel={pick(labCopy.copy, lang)}
+                      doneLabel={pick(labCopy.copied, lang)}
+                    />
+                  </div>
+                </details>
+              </div>
             </div>
           </article>
         ))}

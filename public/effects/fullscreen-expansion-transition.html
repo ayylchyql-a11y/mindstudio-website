@@ -9,7 +9,10 @@
 
   .scroller { height: 100%; overflow-y: auto; background: #0a0a10; scrollbar-width: thin; }
   .track { height: 320%; position: relative; }
-  .stage { position: sticky; top: 0; height: 100%; overflow: hidden; }
+  /* 🩸 100vh，不是 100%。`.track` 高 320%，所以 `height: 100%` 会把舞台撑成
+     整条轨道那么高，内容居中到看不见的地方去（卡片会出现在视口下方三分之一处、
+     被切掉）。数值照样在变，所以只验机制是发现不了的。 */
+  .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; }
 
   /* Background wordmark, parked behind and moving at a different rate so the
      expansion reads as depth rather than as a box getting bigger. */
