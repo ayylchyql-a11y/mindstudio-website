@@ -15,21 +15,21 @@ export default function Nav({ lang }: { lang: Locale }) {
           Mind Studio
         </a>
         <div className="nav-links">
+          {/*
+            栏目排在最前面，然后一道细分隔线，后面才是产品锚点。
+            混在一排会把栏目读成「又一个 app」，所以要隔开；
+            分隔线是 aria-hidden 的纯装饰 —— 屏幕阅读器听到的仍是一串链接。
+          */}
+          <a className="nav-section" href={`/${lang}/lab`}>
+            {pick(labCopy.navLabel, lang)}
+          </a>
+          <span className="nav-sep" aria-hidden="true" />
           <a href={`/${lang}/work/m-desk`}>M Desk</a>
           {apps.map((app) => (
             <a key={app.id} href={`#${app.id}`}>
               {app.name}
             </a>
           ))}
-          {/*
-            导航上一半是产品（锚点跳到首页分区），一半是栏目（独立页面）。
-            两者混在一排会读成「又一个 app」，所以中间放一道细分隔线。
-            分隔线是 aria-hidden 的纯装饰 —— 屏幕阅读器听到的仍是一串链接。
-          */}
-          <span className="nav-sep" aria-hidden="true" />
-          <a className="nav-section" href={`/${lang}/lab`}>
-            {pick(labCopy.navLabel, lang)}
-          </a>
         </div>
         {/*
           语言菜单。2 语言时这里是个「切到另一种」的单链接（`navLangSwitch`），

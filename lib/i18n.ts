@@ -119,7 +119,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
   "en": {
     htmlLang: "en",
     metaTitle: "Mind Studio — Apps by Ming",
-    metaDescription: "Mind Studio is a one-person app workshop. Small, honest apps for iPhone — M Budget, M Alpha Relax, M Card Wallet, M Double Camera, HelloSecret — each designed, built and polished by the same pair of hands.",
+    metaDescription: "Mind Studio is a one-person app workshop. Small, honest apps for iPhone — M Budget, M Alpha Relax, M Card Wallet, M Double Camera — each designed, built and polished by the same pair of hands.",
     heroEyebrow: "Mind Studio · Independent App Workshop",
     heroTitleLine1: "One maker.",
     heroTitleLine2: "A family of apps.",
@@ -168,7 +168,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
   "zh": {
     htmlLang: "zh-CN",
     metaTitle: "Mind Studio — 独立开发者的 App 家族",
-    metaDescription: "Mind Studio 是一个人的 App 工作室。为 iPhone 打造小而美的 App —— M Budget、M Alpha Relax、M Card Wallet、M Double Camera、HelloSecret —— 每一款都由同一双手设计、开发、打磨。",
+    metaDescription: "Mind Studio 是一个人的 App 工作室。为 iPhone 打造小而美的 App —— M Budget、M Alpha Relax、M Card Wallet、M Double Camera —— 每一款都由同一双手设计、开发、打磨。",
     heroEyebrow: "Mind Studio · 独立 App 工作室",
     heroTitleLine1: "一个人，",
     heroTitleLine2: "一个 App 家族。",
@@ -217,7 +217,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
   "zh-tw": {
     htmlLang: "zh-Hant",
     metaTitle: "Mind Studio — 獨立開發者的 App 家族",
-    metaDescription: "Mind Studio 是一個人的 App 工作室。為 iPhone 打造小而美的 App —— M Budget、M Alpha Relax、M Card Wallet、M Double Camera、HelloSecret —— 每一款都由同一雙手設計、開發、打磨。",
+    metaDescription: "Mind Studio 是一個人的 App 工作室。為 iPhone 打造小而美的 App —— M Budget、M Alpha Relax、M Card Wallet、M Double Camera —— 每一款都由同一雙手設計、開發、打磨。",
     heroEyebrow: "Mind Studio · 獨立 App 工作室",
     heroTitleLine1: "一個人，",
     heroTitleLine2: "一個 App 家族。",
@@ -266,7 +266,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
   "ja": {
     htmlLang: "ja",
     metaTitle: "Mind Studio — 個人開発者のアプリ",
-    metaDescription: "Mind Studio は一人だけのアプリ工房です。iPhone のための小さく誠実なアプリ —— M Budget, M Alpha Relax, M Card Wallet, M Double Camera, HelloSecret —— すべて同じ手で設計し、作り、磨いています。",
+    metaDescription: "Mind Studio は一人だけのアプリ工房です。iPhone のための小さく誠実なアプリ —— M Budget, M Alpha Relax, M Card Wallet, M Double Camera —— すべて同じ手で設計し、作り、磨いています。",
     heroEyebrow: "Mind Studio · 独立系アプリ工房",
     heroTitleLine1: "作り手はひとり。",
     heroTitleLine2: "アプリはひと family。",
@@ -315,7 +315,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
   "ko": {
     htmlLang: "ko",
     metaTitle: "Mind Studio — 1인 개발자의 앱",
-    metaDescription: "Mind Studio는 1인 앱 공방입니다. iPhone을 위한 작고 정직한 앱 —— M Budget, M Alpha Relax, M Card Wallet, M Double Camera, HelloSecret —— 모두 같은 손으로 설계하고 만들고 다듬었습니다.",
+    metaDescription: "Mind Studio는 1인 앱 공방입니다. iPhone을 위한 작고 정직한 앱 —— M Budget, M Alpha Relax, M Card Wallet, M Double Camera —— 모두 같은 손으로 설계하고 만들고 다듬었습니다.",
     heroEyebrow: "Mind Studio · 독립 앱 공방",
     heroTitleLine1: "만드는 사람은 한 명.",
     heroTitleLine2: "하나의 앱 패밀리.",
@@ -364,7 +364,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
   "fr": {
     htmlLang: "fr",
     metaTitle: "Mind Studio — Les apps de Ming",
-    metaDescription: "Mind Studio est un atelier d'applications à une seule personne. Des apps iPhone simples et honnêtes — M Budget, M Alpha Relax, M Card Wallet, M Double Camera, HelloSecret — toutes conçues, développées et peaufinées par les mêmes mains.",
+    metaDescription: "Mind Studio est un atelier d'applications à une seule personne. Des apps iPhone simples et honnêtes — M Budget, M Alpha Relax, M Card Wallet, M Double Camera — toutes conçues, développées et peaufinées par les mêmes mains.",
     heroEyebrow: "Mind Studio · Atelier d'apps indépendant",
     heroTitleLine1: "Un seul artisan.",
     heroTitleLine2: "Une famille d'apps.",
@@ -413,7 +413,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
   "de": {
     htmlLang: "de",
     metaTitle: "Mind Studio — Apps von Ming",
-    metaDescription: "Mind Studio ist eine App-Werkstatt für eine Person. Kleine, ehrliche iPhone-Apps — M Budget, M Alpha Relax, M Card Wallet, M Double Camera, HelloSecret — alle von denselben Händen entworfen, gebaut und poliert.",
+    metaDescription: "Mind Studio ist eine App-Werkstatt für eine Person. Kleine, ehrliche iPhone-Apps — M Budget, M Alpha Relax, M Card Wallet, M Double Camera — alle von denselben Händen entworfen, gebaut und poliert.",
     heroEyebrow: "Mind Studio · Unabhängige App-Werkstatt",
     heroTitleLine1: "Ein Macher.",
     heroTitleLine2: "Eine App-Familie.",
@@ -462,7 +462,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
   "es": {
     htmlLang: "es",
     metaTitle: "Mind Studio — Apps de Ming",
-    metaDescription: "Mind Studio es un taller de apps de una sola persona. Apps sencillas y honestas para iPhone — M Budget, M Alpha Relax, M Card Wallet, M Double Camera, HelloSecret — todas diseñadas, creadas y pulidas por las mismas manos.",
+    metaDescription: "Mind Studio es un taller de apps de una sola persona. Apps sencillas y honestas para iPhone — M Budget, M Alpha Relax, M Card Wallet, M Double Camera — todas diseñadas, creadas y pulidas por las mismas manos.",
     heroEyebrow: "Mind Studio · Taller de apps independiente",
     heroTitleLine1: "Un solo creador.",
     heroTitleLine2: "Una familia de apps.",
@@ -511,7 +511,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
   "pt": {
     htmlLang: "pt",
     metaTitle: "Mind Studio — Apps de Ming",
-    metaDescription: "A Mind Studio é uma oficina de apps de uma só pessoa. Apps simples e honestas para iPhone — M Budget, M Alpha Relax, M Card Wallet, M Double Camera, HelloSecret — todas desenhadas, criadas e polidas pelas mesmas mãos.",
+    metaDescription: "A Mind Studio é uma oficina de apps de uma só pessoa. Apps simples e honestas para iPhone — M Budget, M Alpha Relax, M Card Wallet, M Double Camera — todas desenhadas, criadas e polidas pelas mesmas mãos.",
     heroEyebrow: "Mind Studio · Oficina de apps independente",
     heroTitleLine1: "Um só criador.",
     heroTitleLine2: "Uma família de apps.",
@@ -560,7 +560,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
   "ru": {
     htmlLang: "ru",
     metaTitle: "Mind Studio — приложения Ming",
-    metaDescription: "Mind Studio — мастерская приложений одного человека. Небольшие честные приложения для iPhone — M Budget, M Alpha Relax, M Card Wallet, M Double Camera, HelloSecret — каждое спроектировано, собрано и отшлифовано одними руками.",
+    metaDescription: "Mind Studio — мастерская приложений одного человека. Небольшие честные приложения для iPhone — M Budget, M Alpha Relax, M Card Wallet, M Double Camera — каждое спроектировано, собрано и отшлифовано одними руками.",
     heroEyebrow: "Mind Studio · независимая мастерская приложений",
     heroTitleLine1: "Один автор.",
     heroTitleLine2: "Целое семейство приложений.",
@@ -609,7 +609,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
   "it": {
     htmlLang: "it",
     metaTitle: "Mind Studio — Le app di Ming",
-    metaDescription: "Mind Studio è un laboratorio di app di una sola persona. App semplici e oneste per iPhone — M Budget, M Alpha Relax, M Card Wallet, M Double Camera, HelloSecret — tutte progettate, sviluppate e rifinite dalle stesse mani.",
+    metaDescription: "Mind Studio è un laboratorio di app di una sola persona. App semplici e oneste per iPhone — M Budget, M Alpha Relax, M Card Wallet, M Double Camera — tutte progettate, sviluppate e rifinite dalle stesse mani.",
     heroEyebrow: "Mind Studio · Laboratorio di app indipendente",
     heroTitleLine1: "Un solo artigiano.",
     heroTitleLine2: "Una famiglia di app.",
@@ -658,7 +658,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
   "ar": {
     htmlLang: "ar",
     metaTitle: "Mind Studio — تطبيقات من صنع Ming",
-    metaDescription: "‏Mind Studio ورشة تطبيقات لشخص واحد. تطبيقات صغيرة وصادقة لـ iPhone — M Budget, M Alpha Relax, M Card Wallet, M Double Camera, HelloSecret — صُممت وبُنيت وصُقلت جميعها بالأيدي نفسها.",
+    metaDescription: "‏Mind Studio ورشة تطبيقات لشخص واحد. تطبيقات صغيرة وصادقة لـ iPhone — M Budget, M Alpha Relax, M Card Wallet, M Double Camera — صُممت وبُنيت وصُقلت جميعها بالأيدي نفسها.",
     heroEyebrow: "‏Mind Studio · ورشة تطبيقات مستقلة",
     heroTitleLine1: "صانع واحد.",
     heroTitleLine2: "عائلة من التطبيقات.",

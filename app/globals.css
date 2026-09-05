@@ -64,14 +64,16 @@
     width: 86px; height: 86px; border-radius: 24%;
     box-shadow: 0 14px 36px rgba(5, 5, 5, 0.28);
   }
-  /* 🩸 gap 原本是 32px，加第 9 项「实验室」之后放不下了：总宽 771 > 可用 750，
-     flex 于是把每一项压扁、文字断成两行。
-     **「有没有溢出」这个检查测不出来** —— 子项是收缩+换行，不是溢出，
-     `.nav-inner` 的 scrollWidth 始终等于 clientWidth。要看的是链接行的高度。
-     实测自然宽合计 550、`.nav-inner` 封顶 980 ⇒ 可用 783 ⇒ gap 上限 29px。
-     取 20 是为了留余量：12 种语言里最紧的中文在 24px 时只剩 2px，
-     换台机器字体回退不同就会崩。nowrap 保证品牌名不会被断在中间。 */
-  .nav-links { display: flex; gap: 20px; }
+  /* 导航容量是有限的，而且**跟视口无关**：`.nav-inner` 封顶 980px，
+     所以余量在任何桌面宽度下都是同一个数。
+     🩸 **「有没有溢出」这个检查测不出来**：flex 子项是收缩+换行、不是溢出，
+     `.nav-inner` 的 scrollWidth 始终等于 clientWidth。要看的是链接行的高度
+     （单行 15~19px，断成两行会变 37px）。我靠那个错误的检查放过去过一次。
+     余量必须按**最紧的那种语言**算：12 语里日语和葡语最紧（栏目名最长 +
+     语言菜单标签最宽），实测它们的 gap 上限是 33px，取 28 留出 35px 余量。
+     加/删导航项或改栏目名之后，这三个数都要重新量。
+     nowrap 保证品牌名不会被断在中间。 */
+  .nav-links { display: flex; gap: 28px; }
   .nav-links > a { white-space: nowrap; }
   .nav-links a { opacity: 0.82; transition: opacity 0.15s ease; }
   .nav-links a:hover { opacity: 1; }

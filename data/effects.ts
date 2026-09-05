@@ -14,7 +14,7 @@ import type { Localized } from "@/lib/i18n";
  *    在这里再抄一份 = 两处真相，改了 demo 忘了改展示，页面上给的代码就是错的。
  */
 
-export type CategoryId = "motion" | "scroll" | "background" | "text" | "surface" | "feedback";
+export type CategoryId = "web-effects";
 
 export interface Category {
   id: CategoryId;
@@ -31,59 +31,21 @@ export interface Category {
  */
 export const categories: Category[] = [
   {
-    id: "motion",
-    title: { en: "Motion", zh: "动效", "zh-tw": "動效", ja: "モーション", it: "Movimento" },
+    id: "web-effects",
+    title: {
+      en: "Web design effects",
+      zh: "网页设计特效",
+      "zh-tw": "網頁設計特效",
+      ja: "Web デザインエフェクト",
+      ko: "웹 디자인 이펙트",
+      it: "Effetti web",
+    },
     intro: {
-      en: "Things that move when you touch them. Durations, easing curves and the exact distances — the parts that decide whether an interaction feels alive or merely animated.",
-      zh: "碰它一下会动的东西。时长、缓动曲线、精确到像素的位移 —— 决定一个交互是「活的」还是「只是有动画」的那部分。",
+      en: "Interface effects pulled apart and rebuilt: what each one is made of, the exact numbers, and a prompt that reproduces it. Scroll-driven transitions, pointer-driven materials, type that arrives one glyph at a time.",
+      zh: "把网页界面的特效拆开重做一遍：它由什么构成、精确到多少的数值、以及一句能把它复现出来的提示词。滚动驱动的转场、跟着指针走的材质、一个字一个字进场的标题。",
+      "zh-tw": "把網頁介面的特效拆開重做一遍：它由什麼構成、精確到多少的數值、以及一句能把它複現出來的提示詞。捲動驅動的轉場、跟著指標走的材質、一個字一個字進場的標題。",
     },
     accent: "#2f6fff",
-  },
-  {
-    id: "scroll",
-    title: { en: "Scroll", zh: "滚动驱动", "zh-tw": "捲動驅動", ja: "スクロール", it: "Scroll" },
-    intro: {
-      en: "The scrollbar as a timeline. Scrubbing a transition with the wheel instead of playing it on a timer is what separates a site that responds from a site that merely animates — and it is where most of the cost hides.",
-      zh: "把滚动条当时间轴。用滚轮擦洗一段转场、而不是让它按定时器自己播完，是「会回应你」和「只是有动画」的分界线 —— 也是开销最容易失控的地方。",
-      "zh-tw": "把捲軸當時間軸。用滾輪擦洗一段轉場、而不是讓它按計時器自己播完，是「會回應你」和「只是有動畫」的分界線 —— 也是開銷最容易失控的地方。",
-    },
-    accent: "#ff375f",
-  },
-  {
-    id: "background",
-    title: { en: "Backgrounds", zh: "背景", "zh-tw": "背景", ja: "背景", it: "Sfondi" },
-    intro: {
-      en: "Gradients, grain, drifting light. Everything that sits behind the content and sets the mood without asking for attention.",
-      zh: "渐变、噪点、漂移的光。所有待在内容后面、负责定调子又不抢注意力的东西。",
-    },
-    accent: "#bf5af2",
-  },
-  {
-    id: "text",
-    title: { en: "Type", zh: "文字", "zh-tw": "文字", ja: "タイポ", it: "Testo" },
-    intro: {
-      en: "Headline treatments, reveals, variable-font tricks. Type carries most of the personality of a page, and most of it is done with three or four properties.",
-      zh: "标题处理、逐字进场、可变字体的花活。一个页面的气质大半由文字决定，而这大半又只用到三四个属性。",
-    },
-    accent: "#ff9f0a",
-  },
-  {
-    id: "surface",
-    title: { en: "Surfaces", zh: "材质", "zh-tw": "材質", ja: "マテリアル", it: "Superfici" },
-    intro: {
-      en: "Glass, depth, borders that catch the light. How a rectangle stops being a rectangle and starts being an object.",
-      zh: "玻璃、纵深、会反光的描边。一个矩形怎样才不再是矩形、而开始像一个物体。",
-    },
-    accent: "#00c2a8",
-  },
-  {
-    id: "feedback",
-    title: { en: "Feedback", zh: "反馈", "zh-tw": "回饋", ja: "フィードバック", it: "Feedback" },
-    intro: {
-      en: "Loading, empty, success, error. The states a design is judged on but rarely shown in.",
-      zh: "加载、空、成功、失败。评价一个设计好坏靠的是这些状态，而稿子里通常一个都没有。",
-    },
-    accent: "#7c6cff",
   },
 ];
 
@@ -118,7 +80,7 @@ export interface Effect {
 export const effects: Effect[] = [
   {
     slug: "interactive-liquid-distortion",
-    category: "surface",
+    category: "web-effects",
     date: "2026-09-05",
     title: { en: "Interactive liquid distortion", zh: "交互式流体扭曲", "zh-tw": "互動式流體扭曲" },
     gist: {
@@ -155,7 +117,7 @@ export const effects: Effect[] = [
   },
   {
     slug: "fullscreen-expansion-transition",
-    category: "scroll",
+    category: "web-effects",
     date: "2026-09-05",
     title: { en: "Fullscreen expansion transition", zh: "全屏扩展转场", "zh-tw": "全螢幕擴展轉場" },
     gist: {
@@ -193,7 +155,7 @@ export const effects: Effect[] = [
   },
   {
     slug: "scroll-driven-scene-transition",
-    category: "scroll",
+    category: "web-effects",
     date: "2026-09-05",
     title: { en: "Scroll-driven scene transition", zh: "滚动驱动的场景切换", "zh-tw": "捲動驅動的場景切換" },
     gist: {
@@ -230,7 +192,7 @@ export const effects: Effect[] = [
   },
   {
     slug: "scroll-3d-carousel",
-    category: "scroll",
+    category: "web-effects",
     date: "2026-09-05",
     title: { en: "Scroll-driven 3D carousel", zh: "滚动驱动的 3D 环形轮播", "zh-tw": "捲動驅動的 3D 環形輪播" },
     gist: {
@@ -266,7 +228,7 @@ export const effects: Effect[] = [
   },
   {
     slug: "scroll-snap-gallery",
-    category: "scroll",
+    category: "web-effects",
     date: "2026-09-05",
     title: { en: "Scroll snap", zh: "滚动吸附", "zh-tw": "捲動吸附" },
     gist: {
@@ -303,7 +265,7 @@ export const effects: Effect[] = [
   },
   {
     slug: "staggered-character-reveal",
-    category: "text",
+    category: "web-effects",
     date: "2026-09-05",
     title: { en: "Staggered character reveal", zh: "逐字错峰入场", "zh-tw": "逐字錯峰入場" },
     gist: {
@@ -341,7 +303,7 @@ export const effects: Effect[] = [
   },
   {
     slug: "section-stacking-transition",
-    category: "scroll",
+    category: "web-effects",
     date: "2026-09-05",
     title: { en: "Section stacking transition", zh: "滚动叠层转场", "zh-tw": "捲動疊層轉場" },
     gist: {
@@ -378,7 +340,7 @@ export const effects: Effect[] = [
   },
   {
     slug: "magnetic-button",
-    category: "motion",
+    category: "web-effects",
     date: "2026-09-05",
     title: {
       en: "Magnetic button",
@@ -416,7 +378,7 @@ export const effects: Effect[] = [
   },
   {
     slug: "aurora-drift",
-    category: "background",
+    category: "web-effects",
     date: "2026-09-05",
     title: {
       en: "Aurora drift",
@@ -451,7 +413,7 @@ export const effects: Effect[] = [
   },
   {
     slug: "shimmer-headline",
-    category: "text",
+    category: "web-effects",
     date: "2026-09-05",
     title: {
       en: "Shimmer headline",
@@ -517,12 +479,12 @@ export function demoPath(e: Effect): string {
  * （只有 en 必填、其余回落），加一句话就是加一行。
  */
 export const labCopy = {
-  navLabel: { en: "Lab", zh: "实验室", "zh-tw": "實驗室", ja: "ラボ", ko: "랩", it: "Lab" },
-  title: { en: "Lab", zh: "实验室", "zh-tw": "實驗室", ja: "ラボ", ko: "랩", it: "Lab" },
+  navLabel: { en: "AI Library", zh: "AI 设计库", "zh-tw": "AI 設計庫", ja: "AI ライブラリ", ko: "AI 라이브러리", it: "Libreria AI" },
+  title: { en: "AI Library", zh: "AI 设计库", "zh-tw": "AI 設計庫", ja: "AI ライブラリ", ko: "AI 라이브러리", it: "Libreria AI" },
   intro: {
-    en: "Interface effects taken apart and rebuilt: what it is made of, the exact numbers, and a prompt that reproduces it. Every sample on this site is live — hover it, replay it, read the source.",
-    zh: "把界面效果拆开重做一遍：它由什么构成、精确到多少的数值、以及一句能把它复现出来的提示词。这里每一个样板都是活的 —— 可以碰、可以重播、可以读源码。",
-    "zh-tw": "把介面效果拆開重做一遍：它由什麼構成、精確到多少的數值、以及一句能把它複現出來的提示詞。這裡每一個樣板都是活的 —— 可以碰、可以重播、可以讀原始碼。",
+    en: "A working reference, not a gallery. Every sample here runs in the page — hover it, scroll it, replay it — and each one comes with the numbers it was built from, the whole source file, and a prompt that reproduces it from scratch.",
+    zh: "这是一份能用的参考，不是灵感墙。这里每个样板都在页面里真的跑着 —— 可以碰、可以滚、可以重播；每一条都附带它是用什么数值搭出来的、完整源文件、以及一句能从零把它复现出来的提示词。",
+    "zh-tw": "這是一份能用的參考，不是靈感牆。這裡每個樣板都在頁面裡真的跑著 —— 可以碰、可以捲、可以重播；每一條都附帶它是用什麼數值搭出來的、完整原始檔、以及一句能從零把它複現出來的提示詞。",
   },
   englishOnly: {
     en: "",
