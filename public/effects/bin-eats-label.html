@@ -24,9 +24,19 @@
      reads them from here too — otherwise the same 330 exists in three
      places and someone changes one of them. */
   .slot {
-    position: relative; display: inline-flex;
+    --h: 62px;
+    --pill: 232px;
     --dur-collapse: 330ms;
     --dur-expand: 290ms;
+
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    /* 🩸 The slot holds the pill's full width even while the button inside it
+       is a 62px circle. Without this the flex row reflows on every click and
+       the *other* button slides 85px sideways — the collapse is supposed to
+       be a local event, not a layout event. */
+    width: var(--pill);
   }
   .hint { font-size: 12px; color: #6b5c78; letter-spacing: .01em; }
 
@@ -37,8 +47,6 @@
      what makes the collapse read as "the label was eaten" rather than
      "the button resized". */
   .del {
-    --h: 62px;
-    --pill: 232px;
     /* Measured off the source clip: 12.7% of the duration covers 43% of the
        distance, 25% covers 78%, 38% covers 89%. That is an easeOutQuint. */
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -106,11 +114,21 @@
 
   /* Progress ring: an SVG circle outside the collapsed button, revealed by
      stroke-dashoffset. Only visible while .busy. */
+  /* 🩸 Fixed square, centred on the button — NOT `inset: -7px`. An <svg> with
+     insets on all four sides takes its height from its own 1:1 viewBox and the
+     *pill's* width, so in the resting state the ring silently becomes a
+     246×246 circle hanging 85px below the button. It is invisible there
+     (opacity 0) right up until the button expands, when the ring fades out
+     with no delay while growing back into that monster — which is exactly
+     when you see it. */
   .ring {
-    position: absolute; inset: -7px;
+    position: absolute;
+    left: 50%; top: 50%;
+    width: calc(var(--h) + 14px);
+    height: calc(var(--h) + 14px);
     pointer-events: none;
     opacity: 0;
-    transform: rotate(-90deg);
+    transform: translate(-50%, -50%) rotate(-90deg);
     transition: opacity 120ms linear;
   }
   /* The ring waits out the collapse before it appears. Starting it while the
