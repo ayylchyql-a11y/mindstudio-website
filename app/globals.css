@@ -1247,12 +1247,67 @@
   color: var(--ink-2); font-variant-numeric: tabular-nums;
 }
 .cat-intro { font-size: 14.5px; line-height: 1.6; color: var(--ink-2); }
-.cat-peek { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
-.cat-peek span {
-  font-size: 11.5px; color: var(--ink-2);
-  border: 1px solid var(--hairline); border-radius: 99px;
-  padding: 3px 10px;
+
+/* ── 模块卡：上面一个在跑的预览，下面是标题那一行（后者才是链接）──
+   卡本身不是链接，所以预览里的圆点点得了、demo 本身也碰得到。 */
+.cat-card {
+  background: var(--ground-elev);
+  border: 1px solid var(--hairline);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
 }
+@media (hover: hover) and (pointer: fine) {
+  .cat-card:hover { border-color: color-mix(in srgb, var(--ink) 22%, transparent); }
+}
+/* 卡里那一行不再自己画边框和背景，它现在是卡的下半部分 */
+.cat-card .cat-row {
+  background: none; border: 0; border-radius: 0;
+  border-top: 1px solid var(--hairline);
+  transform: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .cat-card .cat-row:hover { transform: none; }
+}
+
+.cat-preview { position: relative; }
+.cat-preview-frame { position: relative; overflow: hidden; background: var(--ground); }
+/* 占位层在 iframe 底下：换页那一瞬间由它兜住，看不到白闪；
+   JS 没跑时它也不是个灰盒子，而是这条效果的主色。 */
+.cat-preview-poster { position: absolute; inset: 0; z-index: 0; }
+.cat-preview-frame iframe {
+  position: relative; z-index: 1;
+  display: block; width: 100%; border: 0;
+}
+.cat-preview-bar {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 8px 12px;
+  /* 样板底色什么都有（浅紫、近黑、纯白），所以这条压在上面的信息条
+     必须自己带底，不能指望下面那层的对比度 */
+  background: color-mix(in srgb, var(--ground-elev) 86%, transparent);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-top: 1px solid var(--hairline);
+}
+.cat-preview-name {
+  font-size: 11.5px; letter-spacing: 0.02em; color: var(--ink-2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cat-preview-dots { display: flex; gap: 6px; flex-shrink: 0; }
+.cat-preview-dots button {
+  width: 6px; height: 6px; padding: 0; border: 0; border-radius: 50%;
+  background: color-mix(in srgb, var(--ink) 22%, transparent);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.cat-preview-dots button:hover { background: color-mix(in srgb, var(--ink) 45%, transparent); }
+.cat-preview-dots button.on { background: var(--ink); transform: scale(1.25); }
+/* 6px 的点对手指来说太小了 —— 视觉尺寸不动，把可点区域撑到 24px */
+.cat-preview-dots button::before {
+  content: ""; position: absolute; width: 24px; height: 24px;
+  transform: translate(-9px, -9px);
+}
+.cat-preview-dots button { position: relative; }
 
 /* ── 分类页（宽版）── */
 .lab-wide { max-width: 1080px; margin: 0 auto; padding: 120px 24px 100px; }
@@ -1509,4 +1564,21 @@
 
 @media (prefers-reduced-motion: reduce) {
   .fx-disclose > summary::before { transition: none; }
+  /* 自动轮播本身已经在 JS 里停掉了（CategoryPreview 读同一个媒体查询）；
+     这里只是把剩下的过渡也收掉，别让点一下圆点还弹一下 */
+  .cat-card, .cat-preview-dots button { transition: none; }
+  .cat-preview-dots button.on { transform: none; }
+}
+
+/* 预览底栏里那个「要悬停 / 要滚动」。14 条里只有 3 条自己会动，
+   剩下的在小预览里就是静止画面 —— 标出来，否则看着像坏了。 */
+.cat-preview-hint {
+  font-style: normal;
+  margin-left: 8px;
+  padding: 2px 7px;
+  border: 1px solid var(--hairline);
+  border-radius: 99px;
+  font-size: 10.5px; letter-spacing: 0.03em;
+  color: var(--ink-2);
+  white-space: nowrap;
 }

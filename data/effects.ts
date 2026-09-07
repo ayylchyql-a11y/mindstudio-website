@@ -59,6 +59,14 @@ export interface Effect {
   gist: Localized;
   /** demo iframe 的高度(px)。样板自身不该出现滚动条，超了就调这里。 */
   height: number;
+  /**
+   * 这条效果**要人做什么它才动**。总览页的轮播预览靠它决定顺序和提示：
+   * `self` 一加载就自己演（自演的排最前，落地时卡片是活的）；
+   * `hover` / `scroll` 在小预览里是静止画面 —— 底栏标出来，
+   * 否则看着像效果坏了。
+   * 🩸这个字段是**量出来的**，不是拍脑袋填的：14 条里只有 3 条 self。
+   */
+  plays: "self" | "hover" | "scroll";
   /** 卡片占位底与详情页点缀色。取效果本身的主色，不是分类色。 */
   accent: string;
   /** 怎么做到的 —— 按「读的人要照着写一遍」的粒度写，允许 <code>。英文。 */
@@ -82,6 +90,7 @@ export const effects: Effect[] = [
     slug: "bin-eats-label",
     category: "web-effects",
     date: "2026-09-08",
+    plays: "hover",
     title: {
       en: "The bin eats the label",
       zh: "垃圾桶吃掉文字",
@@ -135,6 +144,7 @@ export const effects: Effect[] = [
     slug: "scroll-scrubbed-sequence",
     category: "web-effects",
     date: "2026-09-06",
+    plays: "scroll",
     title: { en: "Scroll-scrubbed frame sequence", zh: "滚动擦洗的帧序列", "zh-tw": "捲動擦洗的影格序列" },
     gist: {
       en: "A pinned stage where scroll position picks the frame instead of a clock. Nothing plays on its own — the reader is the transport control, and letting go stops it dead.",
@@ -174,6 +184,7 @@ export const effects: Effect[] = [
     slug: "chapter-headline-roller",
     category: "web-effects",
     date: "2026-09-06",
+    plays: "scroll",
     title: { en: "Chapter headline roller", zh: "章节标题的行遮罩换行", "zh-tw": "章節標題的行遮罩換行" },
     gist: {
       en: "Scroll crosses a chapter line and the headline rolls over: old lines climb out of a clip window while the new ones rise in behind them, one row lagging the next.",
@@ -213,6 +224,7 @@ export const effects: Effect[] = [
     slug: "scroll-word-brighten",
     category: "web-effects",
     date: "2026-09-06",
+    plays: "scroll",
     title: { en: "Scroll-brightened paragraph", zh: "随滚动逐词点亮的段落", "zh-tw": "隨捲動逐詞點亮的段落" },
     gist: {
       en: "A paragraph lit word by word as it scrolls, with a soft front several words wide — light moving across the text rather than a cursor stepping through it.",
@@ -250,6 +262,7 @@ export const effects: Effect[] = [
     slug: "interactive-liquid-distortion",
     category: "web-effects",
     date: "2026-09-05",
+    plays: "hover",
     title: { en: "Interactive liquid distortion", zh: "交互式流体扭曲", "zh-tw": "互動式流體扭曲" },
     gist: {
       en: "A tilted band of glass follows the pointer and refracts whatever is behind it, leaning into the direction of travel and straightening again when you stop. No WebGL — a clipped duplicate of the scene does the displacement.",
@@ -287,6 +300,7 @@ export const effects: Effect[] = [
     slug: "fullscreen-expansion-transition",
     category: "web-effects",
     date: "2026-09-05",
+    plays: "scroll",
     title: { en: "Fullscreen expansion transition", zh: "全屏扩展转场", "zh-tw": "全螢幕擴展轉場" },
     gist: {
       en: "Scroll opens a small card out to full bleed. The card never scales — the window cut out of it does — so the artwork and type inside stay pixel-exact the whole way.",
@@ -325,6 +339,7 @@ export const effects: Effect[] = [
     slug: "scroll-driven-scene-transition",
     category: "web-effects",
     date: "2026-09-05",
+    plays: "scroll",
     title: { en: "Scroll-driven scene transition", zh: "滚动驱动的场景切换", "zh-tw": "捲動驅動的場景切換" },
     gist: {
       en: "Scroll scrubs between full-bleed scenes: the outgoing panel rotates away in 3D as the next one swings in, with the caption cross-fading rather than being rewritten.",
@@ -362,6 +377,7 @@ export const effects: Effect[] = [
     slug: "scroll-3d-carousel",
     category: "web-effects",
     date: "2026-09-05",
+    plays: "scroll",
     title: { en: "Scroll-driven 3D carousel", zh: "滚动驱动的 3D 环形轮播", "zh-tw": "捲動驅動的 3D 環形輪播" },
     gist: {
       en: "Panels sit on a cylinder around the viewer and scroll rotates the ring. Each panel's place is set once at build time, so the per-frame cost is a single rotation on the parent.",
@@ -398,6 +414,7 @@ export const effects: Effect[] = [
     slug: "scroll-snap-gallery",
     category: "web-effects",
     date: "2026-09-05",
+    plays: "scroll",
     title: { en: "Scroll snap", zh: "滚动吸附", "zh-tw": "捲動吸附" },
     gist: {
       en: "Flick the row sideways and it settles exactly on the next item. Four CSS declarations, no JavaScript — and the browser keeps its own momentum physics, which is why a hand-written version never feels quite right.",
@@ -435,6 +452,7 @@ export const effects: Effect[] = [
     slug: "staggered-character-reveal",
     category: "web-effects",
     date: "2026-09-05",
+    plays: "self",
     title: { en: "Staggered character reveal", zh: "逐字错峰入场", "zh-tw": "逐字錯峰入場" },
     gist: {
       en: "Every glyph rises out of its own mask, 26ms apart. The interesting decisions are all in the splitting: per word so the text still wraps, and one aria-label so a screen reader does not read it letter by letter.",
@@ -473,6 +491,7 @@ export const effects: Effect[] = [
     slug: "section-stacking-transition",
     category: "web-effects",
     date: "2026-09-05",
+    plays: "scroll",
     title: { en: "Section stacking transition", zh: "滚动叠层转场", "zh-tw": "捲動疊層轉場" },
     gist: {
       en: "Each section sticks at the top and the next one climbs over it. The one underneath is never pushed — it is covered, dimmed and pushed back 6%, which is what makes a stack read as depth instead of as a list.",
@@ -510,6 +529,7 @@ export const effects: Effect[] = [
     slug: "magnetic-button",
     category: "web-effects",
     date: "2026-09-05",
+    plays: "hover",
     title: {
       en: "Magnetic button",
       zh: "磁吸按钮",
@@ -548,6 +568,7 @@ export const effects: Effect[] = [
     slug: "aurora-drift",
     category: "web-effects",
     date: "2026-09-05",
+    plays: "self",
     title: {
       en: "Aurora drift",
       zh: "极光漂移",
@@ -583,6 +604,7 @@ export const effects: Effect[] = [
     slug: "shimmer-headline",
     category: "web-effects",
     date: "2026-09-05",
+    plays: "self",
     title: {
       en: "Shimmer headline",
       zh: "流光标题",
@@ -683,4 +705,10 @@ export const labCopy = {
   caveatsTitle: { en: "Where it breaks", zh: "会翻车的地方", "zh-tw": "會翻車的地方" },
   fromTitle: { en: "Seen in", zh: "出处", "zh-tw": "出處" },
   allCategories: { en: "All categories", zh: "全部分类", "zh-tw": "全部分類" },
+  /** 总览页每张模块卡里那个轮播 */
+  previewOf: { en: "Preview", zh: "预览", "zh-tw": "預覽", ja: "プレビュー", ko: "미리보기", it: "Anteprima" },
+  goToSlide: { en: "Show", zh: "看", "zh-tw": "看", ja: "表示", ko: "보기", it: "Mostra" },
+  /** 预览里静止的那些：说清楚它要人做什么，否则看着像坏了 */
+  needsHover: { en: "hover it", zh: "要悬停", "zh-tw": "要停留", ja: "ホバー", ko: "호버", it: "passa sopra" },
+  needsScroll: { en: "scroll it", zh: "要滚动", "zh-tw": "要捲動", ja: "スクロール", ko: "스크롤", it: "scorri" },
 } satisfies Record<string, Localized>;
