@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { activeCategories, effectsIn, labCopy } from "@/data/effects";
-import { defaultLocale, getDictionary, hreflangMap, isLocale, locales, pick, type Locale } from "@/lib/i18n";
+import { ENGLISH_ONLY, altsFor, defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -17,10 +17,7 @@ export async function generateMetadata({
   return {
     title: `${pick(labCopy.title, locale)} · Mind Studio`,
     description: pick(labCopy.intro, locale),
-    alternates: {
-      canonical: `https://mindstudioapps.com/${locale}/lab`,
-      languages: hreflangMap("/{lang}/lab"),
-    },
+    alternates: altsFor("/{lang}/lab", locale, ENGLISH_ONLY),
   };
 }
 

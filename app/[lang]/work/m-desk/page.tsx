@@ -5,12 +5,15 @@ import DetailNav from "@/components/DetailNav";
 import Effects from "@/components/Effects";
 import JsonLd from "@/components/JsonLd";
 import { mdesk } from "@/data/mdesk";
-import { defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
+import { altsFor, defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 /**
  * M Desk 专页。静态段 `m-desk` 优先于同级的 `[id]`，所以不会和 work 案例页打架。
  * 结构：hero → 事实条 → 两段 intro → 12 个模块段（图文交替）→ 三条设计取向 → 技术栈 → 回链案例 → 招揽。
  */
+
+/** data/mdesk.ts 写了 en / zh / it 三份原文，其余九种语言读到的是英文。 */
+export const MDESK_LOCALES = ["en", "zh", "it"] as const satisfies readonly Locale[];
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -24,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return {
     title,
     description,
-    alternates: { canonical: `https://mindstudioapps.com/${locale}/work/m-desk` },
+    alternates: altsFor("/{lang}/work/m-desk", locale, MDESK_LOCALES),
     openGraph: { title, description },
   };
 }

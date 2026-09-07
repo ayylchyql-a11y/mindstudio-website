@@ -8,7 +8,7 @@ import Effects from "@/components/Effects";
 import JsonLd from "@/components/JsonLd";
 import { apps, getApp } from "@/data/apps";
 import { getPrivacy } from "@/data/legal";
-import { defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
+import { altsFor, defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
   return locales.flatMap((lang) => apps.map((app) => ({ lang, id: app.id })));
@@ -23,12 +23,15 @@ export async function generateMetadata({
   const locale: Locale = isLocale(lang) ? lang : defaultLocale;
   const app = getApp(id);
   if (!app) return {};
-  const title = `${app.name} — ${app.tagline[locale]} · Mind Studio`;
+  // pick() 而不是 `x[locale]`：data/apps.ts 现在 12 语言齐全，但缺一处译文时
+  // 后者会静默渲染成 undefined（2026-09-07 在 /notes 上真踩到过）。
+  const title = `${app.name} — ${pick(app.tagline, locale)} · Mind Studio`;
+  const description = pick(app.desc, locale);
   return {
     title,
-    description: app.desc[locale],
-    alternates: { canonical: `https://mindstudioapps.com/${locale}/apps/${id}` },
-    openGraph: { title, description: app.desc[locale] },
+    description,
+    alternates: altsFor(`/{lang}/apps/${id}`, locale),
+    openGraph: { title, description },
   };
 }
 

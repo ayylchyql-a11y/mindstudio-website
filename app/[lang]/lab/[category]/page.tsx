@@ -4,7 +4,7 @@ import CopyBox from "@/components/CopyBox";
 import EffectFrame from "@/components/EffectFrame";
 import { categories, categoryById, demoPath, effectsIn, labCopy } from "@/data/effects";
 import { readDemoSource } from "@/lib/effect-source";
-import { defaultLocale, hreflangMap, isLocale, locales, pick, type Locale } from "@/lib/i18n";
+import { ENGLISH_ONLY, altsFor, defaultLocale, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 /**
  * 一个分类一页，同类效果并排展示 —— 这是这个库最主要的用法：
@@ -31,10 +31,8 @@ export async function generateMetadata({
   return {
     title: `${pick(cat.title, locale)} · ${pick(labCopy.title, locale)} · Mind Studio`,
     description: pick(cat.intro, locale),
-    alternates: {
-      canonical: `https://mindstudioapps.com/${locale}/lab/${cat.id}`,
-      languages: hreflangMap(`/{lang}/lab/${cat.id}`),
-    },
+    // 拆解正文（anatomy / tokens / prompt / caveats）本来就只有英文。
+    alternates: altsFor(`/{lang}/lab/${cat.id}`, locale, ENGLISH_ONLY),
   };
 }
 

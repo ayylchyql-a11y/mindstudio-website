@@ -7,7 +7,14 @@ import PlayStoreBadge from "@/components/PlayStoreBadge";
 import Effects from "@/components/Effects";
 import JsonLd from "@/components/JsonLd";
 import { work, getWork } from "@/data/work";
-import { defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
+import { altsFor, defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
+
+/**
+ * data/work.ts 里正文只有 en / zh 两份（12 语言的只有 tagline 一个字段）。
+ * 其余十种语言的页面正文就是英文，canonical 得归到 /en，否则 Search Console
+ * 会报「重复网页，Google 选择的规范网页与用户指定的不同」。
+ */
+const WORK_LOCALES = ["en", "zh"] as const satisfies readonly Locale[];
 
 export function generateStaticParams() {
   return locales.flatMap((lang) => work.map((w) => ({ lang, id: w.id })));
@@ -22,12 +29,14 @@ export async function generateMetadata({
   const locale: Locale = isLocale(lang) ? lang : defaultLocale;
   const item = getWork(id);
   if (!item) return {};
-  const title = `${item.name} — ${item.tagline[locale]} · Mind Studio`;
+  // pick() 而不是 `x[locale]`：后者在缺译时渲染成 undefined，且编译不报错。
+  const title = `${item.name} — ${pick(item.tagline, locale)} · Mind Studio`;
+  const description = pick(item.intro[0], locale);
   return {
     title,
-    description: item.intro[0][locale],
-    alternates: { canonical: `https://mindstudioapps.com/${locale}/work/${id}` },
-    openGraph: { title, description: item.intro[0][locale] },
+    description,
+    alternates: altsFor(`/{lang}/work/${id}`, locale, WORK_LOCALES),
+    openGraph: { title, description },
   };
 }
 

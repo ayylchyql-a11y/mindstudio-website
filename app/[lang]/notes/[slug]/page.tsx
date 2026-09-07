@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { notes, noteBySlug, formatNoteDate, type Block } from "@/data/notes";
-import { defaultLocale, getDictionary, hreflangMap, isLocale, locales, pick, type Locale } from "@/lib/i18n";
+import { ENGLISH_ONLY, altsFor, defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
   return locales.flatMap((lang) => notes.map((n) => ({ lang, slug: n.slug })));
@@ -25,18 +25,21 @@ export async function generateMetadata({
   const locale: Locale = isLocale(lang) ? lang : defaultLocale;
   const note = noteBySlug(slug);
   if (!note) return {};
-  const url = `https://mindstudioapps.com/${locale}/notes/${slug}`;
+  // 🩸 `note.title[locale]` —— title/summary 只有 en/zh，其余十种语言
+  //    直接渲染成 `undefined · Mind Studio`，而且**编译过、TS 全绿**。
+  //    2026-09-07 在线上抓到 4 篇 × 10 种语言 = 40 个这样的标题。读取一律走 pick()。
+  const title = pick(note.title, locale);
+  const summary = pick(note.summary, locale);
+  // 正文只有英文 → canonical 归到 /en 那一份，不发 hreflang。
+  const alternates = altsFor(`/{lang}/notes/${slug}`, locale, ENGLISH_ONLY);
   return {
-    title: `${note.title[locale]} · Mind Studio`,
-    description: note.summary[locale],
-    alternates: {
-      canonical: url,
-      languages: hreflangMap(`/{lang}/notes/${slug}`),
-    },
+    title: `${title} · Mind Studio`,
+    description: summary,
+    alternates,
     openGraph: {
-      title: note.title[locale],
-      description: note.summary[locale],
-      url,
+      title,
+      description: summary,
+      url: alternates.canonical,
       siteName: "Mind Studio",
       type: "article",
       publishedTime: note.date,

@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { apps, getApp } from "@/data/apps";
 import { getPrivacy } from "@/data/legal";
-import { defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
+import { altsFor, defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
+
+/** data/legal.ts 里真正写了原文的语言。其余靠 pick() 回落到英文。 */
+const LEGAL_LOCALES = ["en", "zh"] as const satisfies readonly Locale[];
 
 export function generateStaticParams() {
   return locales.flatMap((lang) => apps.map((app) => ({ lang, id: app.id })));
@@ -20,7 +23,9 @@ export async function generateMetadata({
   if (!app) return {};
   return {
     title: `${app.name} — ${t.privacyLabel} · Mind Studio`,
-    alternates: { canonical: `https://mindstudioapps.com/${locale}/apps/${id}/privacy` },
+    // 法律文本有意只写 en / zh 两份（见 data/legal.ts），其余十种语言读到的
+    // 就是英文原文 —— 那十个 URL 的 canonical 归到 /en，zh-tw 归到 /zh。
+    alternates: altsFor(`/{lang}/apps/${id}/privacy`, locale, LEGAL_LOCALES),
   };
 }
 

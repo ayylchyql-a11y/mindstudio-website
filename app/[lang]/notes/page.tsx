@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { notes, formatNoteDate } from "@/data/notes";
-import { defaultLocale, getDictionary, hreflangMap, isLocale, locales, pick, type Locale } from "@/lib/i18n";
+import { ENGLISH_ONLY, altsFor, defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -29,10 +29,8 @@ export async function generateMetadata({
   return {
     title: `${pick(copy.title, locale)} · Mind Studio`,
     description: pick(copy.intro, locale),
-    alternates: {
-      canonical: `https://mindstudioapps.com/${locale}/notes`,
-      languages: hreflangMap("/{lang}/notes"),
-    },
+    // 列的是英文正文的文章，12 个语言版本对 Google 就是同一页。
+    alternates: altsFor("/{lang}/notes", locale, ENGLISH_ONLY),
   };
 }
 

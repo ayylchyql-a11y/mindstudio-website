@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { apps } from "@/data/apps";
 import { privacy } from "@/data/legal";
-import { locales, isLocale, defaultLocale, getDictionary, type Locale } from "@/lib/i18n";
+import { altsFor, locales, isLocale, defaultLocale, getDictionary, type Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -19,7 +19,7 @@ export async function generateMetadata({
   const t = getDictionary(locale);
   return {
     title: `${t.supportTitle} · Mind Studio`,
-    alternates: { canonical: `https://mindstudioapps.com/${locale}/support` },
+    alternates: altsFor("/{lang}/support", locale),
   };
 }
 

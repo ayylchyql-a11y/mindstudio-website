@@ -725,3 +725,50 @@ export function hreflangMap(pathTemplate: string): Record<string, string> {
   out["x-default"] = pathTemplate.replace("{lang}", defaultLocale);
   return out;
 }
+
+/**
+ * 只译到部分语言的页面，canonical 该指向**真正有那份内容的** URL。
+ *
+ * 🩸 2026-09-07 起因：Search Console 报「重复网页，Google 选择的规范网页与用户指定的不同」。
+ *    /notes、/lab、各 app 隐私政策、Mumi 案例的**正文本来就只有英文**（有意为之，
+ *    见 data/notes.ts 与 data/effects.ts 的注释），但 `generateStaticParams` 一律
+ *    铺 12 种语言，于是同一篇英文正文出现在 12 个 URL 上、每个还各自声明自己是
+ *    canonical。Google 实测把它们判成重复、自己挑了 /en 那份 —— 报告里那句
+ *    「与用户指定的不同」说的就是这个冲突。
+ *
+ * 做法：`translated` 里列出**真的有独立内容**的语言。
+ *   · 是其中之一 → canonical 指自己，hreflang 只列这几种；
+ *   · 不是（内容其实回落成英文了）→ canonical 指 /en 那份，且**不发 hreflang**
+ *     （hreflang 的含义是「同一内容的不同语言版本」，只有一个版本时列 12 条
+ *      等于告诉 Google 有 12 份译文，正是它判重复的由来）。
+ *
+ * 页面照常能访问、导航仍是本地语言 —— 只是在 Google 眼里归并到英文那一份。
+ */
+export const ENGLISH_ONLY: readonly Locale[] = ["en"];
+
+/**
+ * 这个页面在当前语言下**实际显示的是哪一份内容** —— 走的是 `pick()` 同一条回落链，
+ * 所以 zh-tw 归到 zh（它读到的确实是简体那份），其余归到 en。
+ */
+function contentLocale(locale: Locale, translated: readonly Locale[]): Locale {
+  if (translated.includes(locale)) return locale;
+  const fb = fallbackOf[locale];
+  if (fb !== undefined && translated.includes(fb)) return fb;
+  return defaultLocale;
+}
+
+export function altsFor(
+  pathTemplate: string,
+  locale: Locale,
+  translated: readonly Locale[] = locales
+): { canonical: string; languages?: Record<string, string> } {
+  const owner = contentLocale(locale, translated);
+  const canonical = `https://mindstudioapps.com${pathTemplate.replace("{lang}", owner)}`;
+  if (translated.length < 2) return { canonical };
+  const languages: Record<string, string> = {};
+  for (const loc of translated) {
+    languages[localeMeta[loc].htmlLang] = pathTemplate.replace("{lang}", loc);
+  }
+  languages["x-default"] = pathTemplate.replace("{lang}", defaultLocale);
+  return { canonical, languages };
+}

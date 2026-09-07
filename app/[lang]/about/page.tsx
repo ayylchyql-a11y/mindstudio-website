@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import MsLogo from "@/components/MsLogo";
-import { defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
+import { altsFor, defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -134,7 +134,7 @@ export async function generateMetadata({
   return {
     title: `${pick(content.title, locale)} · Mind Studio`,
     description: pick(content.paragraphs[0], locale),
-    alternates: { canonical: `https://mindstudioapps.com/${locale}/about` },
+    alternates: altsFor("/{lang}/about", locale),
   };
 }
 

@@ -4,7 +4,7 @@ import CopyBox from "@/components/CopyBox";
 import EffectFrame from "@/components/EffectFrame";
 import { categoryById, demoPath, effectBySlug, effects, effectsIn, labCopy } from "@/data/effects";
 import { readDemoSource } from "@/lib/effect-source";
-import { defaultLocale, getDictionary, hreflangMap, isLocale, locales, pick, type Locale } from "@/lib/i18n";
+import { ENGLISH_ONLY, altsFor, defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
   return locales.flatMap((lang) =>
@@ -21,15 +21,15 @@ export async function generateMetadata({
   const locale: Locale = isLocale(lang) ? lang : defaultLocale;
   const e = effectBySlug(category, slug);
   if (!e) return {};
-  const url = `https://mindstudioapps.com/${locale}/lab/${category}/${slug}`;
+  const alternates = altsFor(`/{lang}/lab/${category}/${slug}`, locale, ENGLISH_ONLY);
   return {
     title: `${pick(e.title, locale)} · Mind Studio`,
     description: pick(e.gist, locale),
-    alternates: { canonical: url, languages: hreflangMap(`/{lang}/lab/${category}/${slug}`) },
+    alternates,
     openGraph: {
       title: pick(e.title, locale),
       description: pick(e.gist, locale),
-      url,
+      url: alternates.canonical,
       siteName: "Mind Studio",
       type: "article",
     },
