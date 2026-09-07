@@ -42,3 +42,7 @@ next-env.d.ts
 
 # 抽帧脚本与中间产物（视频拆解用，不进仓库）
 /scratchpad/
+
+# impeccable：共享配置进仓库，会话缓存与私人覆盖不进
+.impeccable/hook.cache.json
+.impeccable/config.local.json

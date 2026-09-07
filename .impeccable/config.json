@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "layout-transition",
+        "value": "*",
+        "files": [
+          "public/effects/*.html"
+        ],
+        "createdAt": "2026-09-07T23:12:01.001Z",
+        "reason": "AI 设计库的样板是照视频复刻的：源效果动 width 就得动 width（scaleX 会压扁图标、把圆角拉成椭圆）。取舍已写进每条效果的 caveats。"
+      }
+    ]
+  }
+}
