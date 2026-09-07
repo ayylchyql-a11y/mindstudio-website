@@ -79,6 +79,57 @@ export interface Effect {
 
 export const effects: Effect[] = [
   {
+    slug: "bin-eats-label",
+    category: "web-effects",
+    date: "2026-09-08",
+    title: {
+      en: "The bin eats the label",
+      zh: "垃圾桶吃掉文字",
+      "zh-tw": "垃圾桶吃掉文字",
+    },
+    gist: {
+      en: "A delete button whose own label is the thing being deleted: the lid opens, the letters tumble in one at a time, and what is left is a circular icon with a progress ring around it.",
+      zh: "一颗删除按钮，被删掉的东西就是它自己的文字：盖子掀开，字母一个一个翻着掉进桶里，剩下的是一颗圆形图标和绕着它走的进度环。",
+      "zh-tw": "一顆刪除按鈕，被刪掉的東西就是它自己的文字：蓋子掀開，字母一個一個翻著掉進桶裡，剩下的是一顆圓形圖示和繞著它走的進度環。",
+    },
+    height: 300,
+    accent: "#8e33c4",
+    anatomy: [
+      "The label is split into one <code>&lt;span&gt;</code> per glyph at runtime, and each span gets its own <code>--fly</code> (the horizontal distance from where that glyph sits to the bin's mouth, read once at click time) plus a <code>--spin</code> that alternates direction. Six glyphs, <b>125ms apart</b>, <b>300ms</b> of flight each — that spacing is the whole character of the effect. Fire them together and it is a fade; space them further and the button feels broken.",
+      "The glyph transition eases <b>in</b>, not out: <code>cubic-bezier(0.55, 0, 0.85, 0.35)</code>. Things being sucked into something accelerate. Every other transition in this file eases out; this is the one that must not.",
+      "<b>The bin opens before anything goes in.</b> The lid rotates <code>-38deg</code> around a hinge at its left end (<code>transform-origin: 3px 6px</code>) over 150ms, and the first glyph waits <code>LID + 30ms</code> before leaving. Without that beat the lid and the first letter move together and it reads as the label falling through a closed lid.",
+      "Collapsing the pill animates <b>width only</b> — height, padding and border-radius never move, and the icon is positioned at <code>left: (height − icon) / 2</code> so it is already at the circle's centre before the width starts shrinking. The icon therefore does not travel at all, which is what sells \"the label was eaten\" over \"the button resized\".",
+      "<b>The ring cannot live inside the button.</b> The button needs <code>overflow: hidden</code> to clip the glyphs mid-flight, and the ring sits 7px outside the button box — put it inside and it is clipped away entirely. It goes on a wrapping <code>.slot</code> instead. Note what this failure looks like: <code>stroke-dashoffset</code> animates correctly the whole time, so every measurement passes while nothing renders.",
+      "The ring's <code>transition-delay</code> equals the collapse duration, so the sweep starts after the circle has settled rather than during the shrink — two events instead of one blurry one. It runs <b>linear</b>: a progress indicator that eases is a progress indicator that lies about where it is.",
+      "The completed ring is held for <b>120ms</b> before the button expands. Expanding on the frame the sweep lands means the full circle never renders once, and the whole sequence reads as having given up at 99%.",
+      "The refuse level inside the bin is a <code>&lt;rect&gt;</code> under a <code>clipPath</code>, scaled on Y one notch per glyph as each one lands. <b>Each button needs its own clipPath id</b> — two buttons in one document with the same id means the second silently uses the first's clip.",
+      "<code>.eating</code> stays on through the collapse and the ring, and comes off only when the button expands. Removing it once the eating is visually over — the obvious place — starts all six glyphs transitioning back to <code>opacity: 1</code> inside the circle, where <code>overflow: hidden</code> hides the mistake and the state is quietly wrong for the entire ring phase.",
+    ],
+    tokens: [
+      { label: "Lid", value: "-38deg over 150ms, hinged at the bar's left end" },
+      { label: "Glyph stagger", value: "125ms · 6 glyphs = 750ms of eating" },
+      { label: "Glyph flight", value: "300ms cubic-bezier(0.55, 0, 0.85, 0.35) (ease-IN)" },
+      { label: "Pill → circle", value: "330ms cubic-bezier(0.22, 1, 0.36, 1)" },
+      { label: "Progress ring", value: "900ms linear, delayed by the collapse" },
+      { label: "Ring hold", value: "120ms at full before expanding" },
+      { label: "Circle → pill", value: "290ms, same ease" },
+      { label: "Full cycle", value: "~2.9s" },
+    ],
+    prompt:
+      "Build a delete button in vanilla HTML/CSS/JS where the trash icon eats the label. Markup: a wrapper span.slot containing a button; the button holds an inline SVG bin (a separate .lid group and a .fill rect clipped by a clipPath) and a .label whose text 'Delete' is split into one span per character at runtime. The button is a 232x62px pill, border-radius 31px, overflow: hidden, and the bin is absolutely positioned at left: (62-26)/2 px so it already sits at the centre of the collapsed circle. On click: (1) rotate .lid -38deg with transform-origin at the left end of the lid bar over 150ms; (2) after 180ms, fly the glyphs into the bin one at a time, 125ms apart, each transitioning transform over 300ms with cubic-bezier(0.55, 0, 0.85, 0.35) — an ease-IN, because things being sucked in accelerate — to translate(var(--fly), 6px) rotate(var(--spin)) scale(0.55) with opacity going to 0 over 120ms after a 180ms delay; --fly is that glyph's horizontal distance to the bin mouth measured once at click time, --spin alternates sign and grows 170deg + 26deg per index; (3) scale the .fill rect up on Y one notch per glyph as each lands; (4) 180ms after the last glyph, collapse the button to a 62px circle by animating WIDTH ONLY over 330ms cubic-bezier(0.22, 1, 0.36, 1) — do not animate height, padding or border-radius; (5) show an SVG progress ring on the .slot wrapper (inset -7px, rotated -90deg, stroke-dasharray = circumference) and animate stroke-dashoffset to 0 over 900ms LINEAR with a transition-delay equal to the collapse duration; (6) hold the completed ring 120ms, then expand back to the pill over 290ms and restore the label in the same frame. The ring must be on the wrapper, not inside the button: the button's overflow: hidden would clip it away entirely while stroke-dashoffset still animates, so nothing renders and no measurement catches it. Give each button's clipPath a unique id. Keep a running flag so a second click mid-sequence is ignored. Under prefers-reduced-motion: reduce, set all transition durations to 1ms and drop the glyph transform so the label just goes, but keep the pill → circle → ring → pill state changes so the button still says work is happening.",
+    caveats: [
+      "The label is <code>aria-hidden</code> and the accessible name comes from <code>aria-label</code> on the button — otherwise the name would flicker as glyphs leave the DOM's text content.",
+      "The letters fly to where the bin is <b>at click time</b>. If the button can reflow mid-sequence (a resize, a font swapping in), the destinations go stale and the glyphs land beside the bin instead of in it.",
+      "This is a confirmation pattern, so it owes the user a way out. As built, the ring is decorative — it runs for a fixed 900ms and nothing can stop it. Wire it to the real request, and give it an undo: a ring that cannot be cancelled is a countdown that lies.",
+      "Six glyphs is about the limit. \"Delete permanently\" at the same 125ms stagger would take 2.5 seconds just to eat, and the user is waiting on a destructive action the whole time.",
+      "<b>Yes, this animates <code>width</code>, and that is a layout-animating property.</b> The usual advice — use <code>transform</code> — does not apply here: <code>scaleX</code> would squash the bin icon and stretch the border-radius into an ellipse, and the whole point of the collapse is that neither moves. The cost is real but bounded: two elements, one 330ms run per click, nothing scroll-driven. Reach for <code>transform</code> the moment this pattern lands in a list where several can collapse at once.",
+    ],
+    source: {
+      label: "抖音 @程序员八阿哥 · Delete Button — The Bin Eats The Label",
+      at: "2026-09-08",
+    },
+  },
+  {
     slug: "scroll-scrubbed-sequence",
     category: "web-effects",
     date: "2026-09-06",

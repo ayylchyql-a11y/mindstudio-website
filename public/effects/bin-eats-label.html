@@ -1,0 +1,274 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The bin eats the label</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    display: grid; place-items: center;
+    background: #f4eef7;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    overflow: hidden;
+  }
+  .stage { display: grid; justify-items: center; gap: 26px; }
+  .row { display: flex; gap: 34px; align-items: center; }
+  /* 🩸 The ring lives HERE, not inside the button. The button needs
+     `overflow: hidden` to clip the glyphs as they fly, and the ring sits
+     7px outside the button box — inside, it gets clipped away entirely.
+     Every numeric check still passes while that happens (the dashoffset
+     really is animating), so this one only shows up by looking.
+
+     Durations are declared here once. The button and the ring both live
+     inside the slot, so custom properties inherit down to both, and the JS
+     reads them from here too — otherwise the same 330 exists in three
+     places and someone changes one of them. */
+  .slot {
+    position: relative; display: inline-flex;
+    --dur-collapse: 330ms;
+    --dur-expand: 290ms;
+  }
+  .hint { font-size: 12px; color: #6b5c78; letter-spacing: .01em; }
+
+  /* ── The button ──────────────────────────────────────────────────
+     Width is the only animated box property: the pill collapses to a
+     circle by shrinking `width` down to its own height. Height, radius
+     and padding never move, so the icon never shifts a pixel — which is
+     what makes the collapse read as "the label was eaten" rather than
+     "the button resized". */
+  .del {
+    --h: 62px;
+    --pill: 232px;
+    /* Measured off the source clip: 12.7% of the duration covers 43% of the
+       distance, 25% covers 78%, 38% covers 89%. That is an easeOutQuint. */
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+    position: relative;
+    height: var(--h);
+    width: var(--pill);
+    border: 0;
+    border-radius: calc(var(--h) / 2);
+    padding: 0;
+    cursor: pointer;
+    overflow: hidden;
+    display: flex; align-items: center;
+    background: linear-gradient(160deg, #8e33c4, #6c1f9c);
+    color: #fff;
+    font: 600 20px/1 inherit;
+    letter-spacing: .01em;
+    box-shadow: 0 10px 24px #6c1f9c33;
+    transition: width var(--dur-expand) var(--ease);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .del.dark { background: linear-gradient(160deg, #3b3f4a, #23262d); box-shadow: 0 10px 24px #23262d33; }
+  .del:focus-visible { outline: 3px solid #ffffffcc; outline-offset: 3px; }
+
+  /* The icon is pinned to the left edge and centred in the collapsed
+     circle at the same time: left inset == (height − icon) / 2 means the
+     icon is already at the circle's centre before the width animates. */
+  .bin {
+    position: absolute;
+    left: calc((var(--h) - 26px) / 2);
+    width: 26px; height: 30px;
+    flex: none;
+  }
+  .bin svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .lid {
+    transform-origin: 3px 6px;      /* hinge at the left end of the bar */
+    transition: transform 150ms var(--ease);
+  }
+  .del.eating .lid,
+  .del.busy .lid { transform: rotate(-38deg) translate(-1px, -2px); }
+  /* Refuse level: a clip rect that rises as letters land. */
+  .fill { transform-origin: 50% 100%; transform: scaleY(0); transition: transform 180ms linear; }
+
+  .label {
+    /* Sits to the right of the icon; each glyph is its own span so it can
+       fly independently. */
+    margin-left: var(--h);
+    padding-right: 22px;
+    white-space: nowrap;
+    display: flex;
+  }
+  .label span {
+    display: inline-block;
+    transition:
+      transform 300ms cubic-bezier(0.55, 0, 0.85, 0.35),  /* ease-IN: the pull */
+      opacity 120ms linear 180ms;
+  }
+  /* Each glyph flies left into the open bin and tumbles on the way.
+     The horizontal distance is per-letter (set from JS) because letter 6
+     has much further to travel than letter 1. */
+  .del.eating .label span {
+    transform: translate(var(--fly), 6px) rotate(var(--spin)) scale(.55);
+    opacity: 0;
+  }
+
+  /* Progress ring: an SVG circle outside the collapsed button, revealed by
+     stroke-dashoffset. Only visible while .busy. */
+  .ring {
+    position: absolute; inset: -7px;
+    pointer-events: none;
+    opacity: 0;
+    transform: rotate(-90deg);
+    transition: opacity 120ms linear;
+  }
+  /* The ring waits out the collapse before it appears. Starting it while the
+     pill is still shrinking reads as one blurry event; letting the circle
+     settle first makes it "now it's working" instead. */
+  .slot:has(.busy) .ring { opacity: 1; transition-delay: var(--dur-collapse); }
+  .ring circle {
+    fill: none;
+    stroke: #d9a6f5;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: var(--c);
+    stroke-dashoffset: var(--c);
+  }
+  .slot:has(.busy) .ring circle {
+    /* 900ms, linear — a progress ring that eases is a progress ring that lies. */
+    transition: stroke-dashoffset 900ms linear var(--dur-collapse);
+    stroke-dashoffset: 0;
+  }
+  .slot:has(.dark) .ring circle { stroke: #9aa3b2; }
+
+  .del.collapsed { width: var(--h); }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* The whole point of the effect is the flight. With motion reduced the
+       label just goes; the state change (pill → circle → ring → back) still
+       happens so the button still communicates that work is running. */
+    .del, .label span, .lid, .fill, .ring circle { transition-duration: 1ms !important; }
+    .del.eating .label span { transform: none; }
+  }
+</style>
+
+<div class="stage">
+  <div class="row">
+    <span class="slot"><button class="del" type="button" aria-label="Delete"></button></span>
+    <span class="slot"><button class="del dark" type="button" aria-label="Delete"></button></span>
+  </div>
+  <p class="hint">Click a button</p>
+</div>
+
+<script>
+  const BIN = `
+    <svg viewBox="0 0 26 30" aria-hidden="true">
+      <g class="lid">
+        <rect x="1" y="4" width="24" height="3.2" rx="1.6" fill="#fff"/>
+        <rect x="9.5" y="0.6" width="7" height="3" rx="1.5" fill="#fff"/>
+      </g>
+      <g>
+        <clipPath id="c"><path d="M4.2 9.6h17.6l-1.7 18.2a2 2 0 0 1-2 1.8H7.9a2 2 0 0 1-2-1.8Z"/></clipPath>
+        <path d="M4.2 9.6h17.6l-1.7 18.2a2 2 0 0 1-2 1.8H7.9a2 2 0 0 1-2-1.8Z"
+              fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
+        <rect class="fill" clip-path="url(#c)" x="4" y="9" width="18" height="21" fill="#fff"/>
+      </g>
+    </svg>`;
+
+  const WORD = "Delete";
+  // All four numbers are measured off the source clip, not chosen:
+  //   lid opens 1.63→1.72 · first glyph leaves 2.05 · last lands 2.80
+  //   collapse 3.13→3.47 · ring 3.60→4.51 · expand 4.51→4.80
+  const LID = 150;       // lid swings open (mirrors the 150ms in the CSS)
+  // 🩸 the bin must be OPEN before anything goes in. Without this beat the
+  //    first glyph and the lid move together and it reads as the label
+  //    falling through a closed lid.
+  const LEAD = LID + 30;
+  const STAGGER = 125;   // six glyphs across 750ms
+  const FLIGHT = 300;
+  const EAT_TOTAL = LEAD + STAGGER * (WORD.length - 1) + FLIGHT;  // 1105ms
+  const SETTLE = 180;    // beat after the last glyph lands, before collapsing
+  // 从 CSS 读，不再手抄一份
+  const COLLAPSE = parseFloat(getComputedStyle(document.querySelector(".slot"))
+    .getPropertyValue("--dur-collapse"));
+  const RING = 900;
+  // 🩸 the completed ring has to be *seen*. Expanding on the same frame the
+  //    sweep lands means the full circle never renders once, and the whole
+  //    thing reads as "it gave up at 99%".
+  const HOLD = 120;
+
+  document.querySelectorAll(".del").forEach((btn) => {
+    const bin = document.createElement("span");
+    bin.className = "bin";
+    bin.innerHTML = BIN;
+    // Each button needs its own clipPath id or the second one silently
+    // inherits the first's — same document, duplicate ids.
+    const uid = "c" + Math.random().toString(36).slice(2, 8);
+    bin.querySelector("clipPath").id = uid;
+    bin.querySelector(".fill").setAttribute("clip-path", `url(#${uid})`);
+
+    const label = document.createElement("span");
+    label.className = "label";
+    label.setAttribute("aria-hidden", "true");
+    [...WORD].forEach((ch) => {
+      const s = document.createElement("span");
+      s.textContent = ch;
+      label.appendChild(s);
+    });
+
+    const ring = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    // 环随按钮一起缩：壳是 inline-flex，宽高跟着按钮走
+    ring.setAttribute("class", "ring");
+    ring.setAttribute("viewBox", "0 0 76 76");
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", "38"); circle.setAttribute("cy", "38"); circle.setAttribute("r", "36");
+    const c = 2 * Math.PI * 36;
+    circle.style.setProperty("--c", c.toFixed(2));
+    ring.appendChild(circle);
+
+    btn.append(bin, label);
+    btn.parentElement.append(ring);   // 壳上，绕开按钮的 overflow: hidden
+
+    const glyphs = [...label.children];
+    const fill = bin.querySelector(".fill");
+    let running = false;
+
+    btn.addEventListener("click", () => {
+      if (running) return;
+      running = true;
+
+      // Per-glyph flight distance: from where the glyph sits now to the
+      // bin's mouth. Read once, at click time — the layout is stable by then
+      // and reading it per frame would be the same number six times.
+      const mouth = bin.getBoundingClientRect();
+      glyphs.forEach((g, i) => {
+        const r = g.getBoundingClientRect();
+        g.style.setProperty("--fly", `${mouth.left + mouth.width / 2 - (r.left + r.width / 2)}px`);
+        g.style.setProperty("--spin", `${(i % 2 ? -1 : 1) * (170 + i * 26)}deg`);
+        const start = LEAD + i * STAGGER;
+        g.style.transitionDelay = `${start}ms, ${start + 180}ms`;
+        // Refuse level rises one notch per glyph, timed to when it lands.
+        setTimeout(() => { fill.style.transform = `scaleY(${(i + 1) / glyphs.length * 0.62})`; },
+                   start + FLIGHT * 0.75);
+      });
+
+      btn.classList.add("eating");
+
+      setTimeout(() => {
+        btn.classList.add("collapsed");
+        btn.style.transitionDuration = "var(--dur-collapse)";
+        // 🩸 `.eating` stays on through the collapse and the ring. Dropping it
+        //    here — the obvious place, since the eating is visually over —
+        //    starts every glyph transitioning *back* to opacity 1 inside the
+        //    circle. `overflow: hidden` happens to hide it, so nothing looks
+        //    wrong; the state is just quietly false for the whole ring phase,
+        //    and it only surfaces the day the button gets a wider collapsed
+        //    size or the label loses its left margin.
+        btn.classList.add("busy");
+      }, EAT_TOTAL + SETTLE);
+
+      setTimeout(() => {
+        // Expand and restore the label in the same frame: the glyphs fly back
+        // out of the bin while the pill reopens.
+        btn.classList.remove("busy", "collapsed", "eating");
+        btn.style.transitionDuration = "";
+        fill.style.transform = "scaleY(0)";
+        glyphs.forEach((g) => { g.style.transitionDelay = ""; });
+        running = false;
+        // The ring's own transition-delay covers the collapse, so the total
+        // is collapse + ring, not collapse + delay + ring.
+      }, EAT_TOTAL + SETTLE + COLLAPSE + RING + HOLD);
+    });
+  });
+</script>

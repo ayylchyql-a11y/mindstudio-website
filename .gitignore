@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# 抽帧脚本与中间产物（视频拆解用，不进仓库）
+/scratchpad/
