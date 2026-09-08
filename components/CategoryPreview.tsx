@@ -17,6 +17,8 @@ export interface PreviewSlide {
    *   先下载几 MB 才看到第一屏，而他可能根本没打算点进这个模块。
    */
   poster?: string;
+  /** 这条效果自己的详情页地址。海报是静态图 → 整张可点；活的 demo 不给链接（会吞掉交互）。 */
+  href: string;
 }
 
 const AUTO_MS = 8000;
@@ -105,16 +107,20 @@ export default function CategoryPreview({
           style={{ background: `radial-gradient(120% 120% at 30% 0%, ${cur.accent}26, transparent 70%)` }}
         />
         {cur.poster ? (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            key={cur.slug}
-            className="cat-preview-poster-img"
-            src={cur.poster}
-            alt={cur.title}
-            loading="lazy"
-            decoding="async"
-            style={{ height }}
-          />
+          /* 🩸海报必须整张可点：底栏写着「点开可玩」，而静态图点了没反应 = 文案在撒谎。
+             活的 demo 反过来**不能**套链接 —— 一套上，拖拽/悬停就全被链接吞了。 */
+          <a className="cat-preview-link" href={cur.href} aria-label={cur.title}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              key={cur.slug}
+              className="cat-preview-poster-img"
+              src={cur.poster}
+              alt={cur.title}
+              loading="lazy"
+              decoding="async"
+              style={{ height }}
+            />
+          </a>
         ) : (
           <iframe
             key={cur.slug}
