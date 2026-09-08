@@ -1030,6 +1030,14 @@
   border: 1px solid var(--hairline);
   color: var(--ink);
 }
+/* 🩸行内 <code> 里的长标识符会把整页撑宽：anatomy 写了
+   VNGenerateForegroundInstanceMaskRequest（39 字符、无处可断），
+   390px 视口下页面横向溢出 70px。以前没暴露只是因为没出现过这么长的词。
+   overflow-wrap: anywhere 让它在任意位置断行 —— 只影响放不下的那个词，
+   放得下的照旧不断。 */
+.note-body code,
+.note-ul code { overflow-wrap: anywhere; }
+
 .note-ul { margin: 0 0 18px; padding-left: 20px; }
 .note-ul li {
   font-size: 17px; line-height: 1.72; color: var(--ink-2); margin-bottom: 10px;
