@@ -1224,9 +1224,32 @@
    🩸 `var(--没定义的变量, fallback)` 不会报错，只会静默用 fallback —— 
       语言菜单那次的黑底黑字(1.06:1)就是这么来的。 */
 
+/* 陈列区不是正文。父列 .prose-page 是 760px 的**阅读宽度**，标题和引子该留在
+   那里；但这一排是作品陈列，关在阅读栏里等于桌面端再宽也只用 760。
+   margin-left:50% + translateX(-50%) 让它挣脱父列，auto-fit 自己决定放得下
+   几列 —— 放不下两列时自然回落成一列，不需要断点。
+   🩸 520px 这个下限是**量出来的**：14 个 demo 里写死宽度最大的是
+      aurora-drift 的 460px，低于这个值样板才会开始挤。
+   🩸 用 calc(100vw - 48px) 而不是 100%：100vw 含滚动条，减 48 之后仍比
+      内容区窄，所以不会在有滚动条的桌面端撑出横向滚动。 */
 .cat-list {
-  list-style: none; margin: 34px 0 0; padding: 0;
-  display: flex; flex-direction: column; gap: 12px;
+  list-style: none; padding: 0;
+  width: min(1240px, calc(100vw - 48px));
+  margin: 34px 0 0 50%;
+  transform: translateX(-50%);
+  display: grid;
+  /* 🩸 列数必须按 1fr 算、上限加在卡片上，不能写成 minmax(520px, 640px)：
+        auto-fit 是拿**上限**算能放几列的，640×2+16=1296 > 1240，
+        于是宽屏反而塌回一列（我第一版就是这么把两列写没的）。
+        1fr 决定列数，.cat-card 的 max-width 决定单列时不被拉成
+        又宽又扁的空框（1024 视口下不加限制会被拉到 976，而 demo 最宽 460）。 */
+  /* 🩸 下限必须写成 min(520px, 100%) 而不是裸 520px：
+        裸写时 520 是硬地板，390 视口下容器只有 342、轨道却仍被撑到 520，
+        整页横向溢出 154px（手机上直接裂）。套一层 min() 让它在窄屏退让。 */
+  grid-template-columns: repeat(auto-fit, minmax(min(520px, 100%), 1fr));
+  justify-items: center;
+  gap: 16px;
+  align-items: start;
 }
 .cat-row {
   display: grid; gap: 8px;
@@ -1259,6 +1282,8 @@
 /* ── 模块卡：上面一个在跑的预览，下面是标题那一行（后者才是链接）──
    卡本身不是链接，所以预览里的圆点点得了、demo 本身也碰得到。 */
 .cat-card {
+  width: 100%;
+  max-width: 640px;
   background: var(--ground-elev);
   border: 1px solid var(--hairline);
   border-radius: 16px;
