@@ -14,7 +14,7 @@ import type { Localized } from "@/lib/i18n";
  *    在这里再抄一份 = 两处真相，改了 demo 忘了改展示，页面上给的代码就是错的。
  */
 
-export type CategoryId = "web-effects";
+export type CategoryId = "web-effects" | "creative";
 
 export interface Category {
   id: CategoryId;
@@ -47,6 +47,23 @@ export const categories: Category[] = [
     },
     accent: "#2f6fff",
   },
+  {
+    id: "creative",
+    title: {
+      en: "Creative work",
+      zh: "创意设计",
+      "zh-tw": "創意設計",
+      ja: "クリエイティブ",
+      ko: "크리에이티브",
+      it: "Lavori creativi",
+    },
+    intro: {
+      en: "Finished pieces rather than parts \u2014 visual work you can just look at. Each one still carries the same three things as next door: what it is made of, the exact numbers, and a prompt that rebuilds it.",
+      zh: "\u8fd9\u91cc\u653e\u7684\u662f\u6210\u54c1\u800c\u4e0d\u662f\u96f6\u4ef6\u2014\u2014\u505a\u5b8c\u5c31\u80fd\u76f4\u63a5\u770b\u7684\u89c6\u89c9\u4f5c\u54c1\u3002\u4f46\u548c\u9694\u58c1\u4e00\u6837\uff0c\u6bcf\u4e00\u4ef6\u4ecd\u7136\u5199\u6e05\u695a\u5b83\u7531\u4ec0\u4e48\u6784\u6210\u3001\u7cbe\u786e\u5230\u591a\u5c11\u7684\u6570\u503c\u3001\u4ee5\u53ca\u4e00\u53e5\u80fd\u628a\u5b83\u91cd\u505a\u4e00\u904d\u7684\u63d0\u793a\u8bcd\u3002",
+      "zh-tw": "\u9019\u88e1\u653e\u7684\u662f\u6210\u54c1\u800c\u4e0d\u662f\u96f6\u4ef6\u2014\u2014\u505a\u5b8c\u5c31\u80fd\u76f4\u63a5\u770b\u7684\u8996\u89ba\u4f5c\u54c1\u3002\u4f46\u548c\u9694\u58c1\u4e00\u6a23\uff0c\u6bcf\u4e00\u4ef6\u4ecd\u7136\u5beb\u6e05\u695a\u5b83\u7531\u4ec0\u9ebc\u69cb\u6210\u3001\u7cbe\u78ba\u5230\u591a\u5c11\u7684\u6578\u503c\u3001\u4ee5\u53ca\u4e00\u53e5\u80fd\u628a\u5b83\u91cd\u505a\u4e00\u904d\u7684\u63d0\u793a\u8a5e\u3002",
+    },
+    accent: "#c9922e",
+  },
 ];
 
 export interface Effect {
@@ -69,6 +86,20 @@ export interface Effect {
   plays: "self" | "hover" | "scroll";
   /** 卡片占位底与详情页点缀色。取效果本身的主色，不是分类色。 */
   accent: string;
+  /**
+   * 成品作品不是单文件 demo —— 它带着自己的资源目录
+   * （`public/effects/<slug>/index.html` + assets）。
+   * 置 true 时 demo 路径改指目录，详情页**也不再贴源码**：
+   * 那是个 1MB 的打包产物，贴出来对读的人没有任何意义，
+   * 该讲的是怎么做出来的（anatomy / tokens / prompt）。
+   */
+  bundleDir?: true;
+  /**
+   * 总览页轮播用的静态海报（`/effects/<slug>/poster.jpg`）。
+   * 🩸重的作品必须给它：轮播是一进 /lab 就自动播的，
+   * 没有海报就等于让每个访客先下载几 MB 才看到第一屏。
+   */
+  poster?: string;
   /** 怎么做到的 —— 按「读的人要照着写一遍」的粒度写，允许 <code>。英文。 */
   anatomy: string[];
   /** 可以直接抄走的数值。左边是参数名，右边是值。 */
@@ -86,6 +117,55 @@ export interface Effect {
 }
 
 export const effects: Effect[] = [
+  {
+    slug: "holo-card",
+    category: "creative",
+    date: "2026-09-08",
+    plays: "self",
+    bundleDir: true,
+    poster: "/effects/holo-card/poster.jpg",
+    title: {
+      en: "Holographic card",
+      zh: "全息闪卡",
+      "zh-tw": "全息閃卡",
+    },
+    gist: {
+      en: "A collectible card you can turn in your hands: four registered layers slide against each other for depth, and a foil spectrum whose phase follows the viewing angle rather than a clock.",
+      zh: "一张可以拿在手里转的收藏卡：四层图相互错位做出景深，箔面的光谱跟着视角走而不是跟着时间走。",
+      "zh-tw": "一張可以拿在手裡轉的收藏卡：四層圖相互錯位做出景深，箔面的光譜跟著視角走而不是跟著時間走。",
+    },
+    height: 760,
+    accent: "#c9922e",
+    anatomy: [
+      "Four layers registered on <b>one 1024\u00d71536 canvas</b> \u2014 subject (real alpha), background, line art, typography. Everything downstream samples all four with the same UV, so a one-pixel misalignment shows up as a coloured fringe the moment the card tilts.",
+      "The subject is cut with the operating system\u2019s own subject-lift (<code>VNGenerateForegroundInstanceMaskRequest</code>), not a colour key \u2014 it keeps hair, a spear tip and the soft edge of a flowing cape. <b>No image model is involved in the cut-out</b>, only in generating the artwork.",
+      "Parallax is not UV-centering. The viewing direction is transformed <i>into the card plane</i>, divided by a bounded normal component, then the UV is offset by signed depth. Subject <b>+0.28</b>, background <b>\u22120.20</b> \u2014 the opposite signs are what make it read as depth instead of the whole picture sliding.",
+      "Foil is mapped bands (scale 0.55, distortion 7, mapping Y 32\u00b0) pushed through a pink\u2192yellow\u2192blue\u2192white ramp in Overlay. <b>The spectrum phase is driven by viewing angle, not by time</b> \u2014 that single choice is the difference between a foil and a shimmer.",
+      "Every BSDF is <code>Metallic=1, Roughness=1</code>. Bronze, gold and armour come alive; flat unsaturated areas go grey. Pick artwork that has metal in it \u2014 the material is doing the work, not a filter.",
+    ],
+    tokens: [
+      { label: "canvas", value: "1024 \u00d7 1536 (2:3)" },
+      { label: "subjectScale", value: "1.25" },
+      { label: "subjectDepth", value: "0.28" },
+      { label: "backgroundDepth", value: "\u22120.20" },
+      { label: "foil", value: "0.65" },
+      { label: "safeArea", value: "scale 1.12, offset (\u22120.06, \u22120.085)" },
+      { label: "subject height", value: "65% of card" },
+      { label: "line-art ink", value: "under 4% of the subject" },
+    ],
+    prompt:
+      "Generate the artwork as 2:3 portrait, 1024\u00d71536: a single hero subject, strong readable silhouette, bronze or metal surfaces, dark stormy background with one bright light source. Then build the card from four registered layers on that same canvas: (1) lift the subject with real alpha; (2) erase the subject from the background BEFORE blurring it at 28px, otherwise the blur leaves a ghost of the subject behind the real one; (3) derive line art with a difference-of-Gaussians at \u03c3 1.2 and 3.0, multiplied by 14, values above 170 pushed to white, keeping ink under 4%; (4) typography on a transparent layer. Render with subjectDepth 0.28, backgroundDepth \u22120.20, foil 0.65, and drive the foil spectrum from the viewing angle rather than from time.",
+    caveats: [
+      "Landscape source art has to be upscaled about 2\u00d7 to fill a 2:3 card. Illustration survives that; a photograph does not.",
+      "A still render freezes the foil band at one angle \u2014 it can sit right across a dark area and read as a grey wash. <b>Judge colour on the interactive version at several angles, never on the still.</b>",
+      "<code>Metallic=1</code> means dark, unsaturated regions reflect their surroundings and drift toward grey. That is the material working as intended, not a bug.",
+      "Needs WebGL2. Model plus textures are about 2\u202fMB, so this one loads from a poster instead of auto-playing in the overview carousel.",
+    ],
+    source: {
+      label: "Viewer built on RuiC-card-skill by HRuiCcc \u00b7 MIT",
+      url: "https://github.com/HRuiCcc/RuiC-card-skill",
+    },
+  },
   {
     slug: "bin-eats-label",
     category: "web-effects",
@@ -658,7 +738,7 @@ export function effectBySlug(category: string, slug: string): Effect | undefined
 
 /** demo 文件路径由 slug 推导，不在数据里手写 —— 手写就会有拼错的那天。 */
 export function demoPath(e: Effect): string {
-  return `/effects/${e.slug}.html`;
+  return e.bundleDir ? `/effects/${e.slug}/index.html` : `/effects/${e.slug}.html`;
 }
 
 /**
@@ -711,4 +791,6 @@ export const labCopy = {
   /** 预览里静止的那些：说清楚它要人做什么，否则看着像坏了 */
   needsHover: { en: "hover it", zh: "要悬停", "zh-tw": "要停留", ja: "ホバー", ko: "호버", it: "passa sopra" },
   needsScroll: { en: "scroll it", zh: "要滚动", "zh-tw": "要捲動", ja: "スクロール", ko: "스크롤", it: "scorri" },
+  /** 有海报的重作品：轮播里是静态图，点开才是真的 */
+  openToPlay: { en: "open to play", zh: "\u70b9\u5f00\u53ef\u73a9", "zh-tw": "\u9ede\u958b\u53ef\u73a9", ja: "\u958b\u3044\u3066\u64cd\u4f5c", ko: "\uc5f4\uc5b4\uc11c \uc870\uc791", it: "apri per interagire" },
 } satisfies Record<string, Localized>;

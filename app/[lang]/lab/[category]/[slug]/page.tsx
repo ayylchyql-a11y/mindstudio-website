@@ -48,8 +48,10 @@ export default async function EffectPage({
   if (!e || !cat) notFound();
   const t = getDictionary(lang);
 
-  // 源码在构建时从 public/effects/<slug>.html 读出来 —— 单一真相，不会跟 demo 漂移
-  const source = readDemoSource(e.slug);
+  // 源码在构建时从 public/effects/<slug>.html 读出来 —— 单一真相，不会跟 demo 漂移。
+  // 🩸目录型的成品作品（bundleDir）没有「那一个文件」：它的产物是 1MB 打包 bundle，
+  //   贴出来对读的人没有任何意义，而且 readDemoSource 会直接 ENOENT 把构建打断。
+  const source = e.bundleDir ? null : readDemoSource(e.slug);
   const siblings = effectsIn(cat.id).filter((x) => x.slug !== e.slug);
 
   return (
@@ -98,14 +100,18 @@ export default async function EffectPage({
         doneLabel={pick(labCopy.copied, lang)}
       />
 
-      <h2>{pick(labCopy.sourceTitle, lang)}</h2>
-      <p>{pick(labCopy.sourceHint, lang)}</p>
-      <CopyBox
-        body={source}
-        label={`${e.slug}.html`}
-        copyLabel={pick(labCopy.copy, lang)}
-        doneLabel={pick(labCopy.copied, lang)}
-      />
+      {source !== null ? (
+        <>
+          <h2>{pick(labCopy.sourceTitle, lang)}</h2>
+          <p>{pick(labCopy.sourceHint, lang)}</p>
+          <CopyBox
+            body={source}
+            label={`${e.slug}.html`}
+            copyLabel={pick(labCopy.copy, lang)}
+            doneLabel={pick(labCopy.copied, lang)}
+          />
+        </>
+      ) : null}
 
       {e.caveats?.length ? (
         <>

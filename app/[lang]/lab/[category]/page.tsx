@@ -90,17 +90,22 @@ export default async function CategoryPage({
                 CopyBox 里的复制按钮才需要 JS，那是纯增强。
               */}
               <div className="fx-actions">
-                <details className="fx-disclose">
-                  <summary>{pick(labCopy.codeBtn, lang)}</summary>
-                  <div className="fx-disclose-body">
-                    <CopyBox
-                      body={readDemoSource(e.slug)}
-                      label={`${e.slug}.html`}
-                      copyLabel={pick(labCopy.copy, lang)}
-                      doneLabel={pick(labCopy.copied, lang)}
-                    />
-                  </div>
-                </details>
+                {/* 🩸目录型成品（bundleDir）没有「那一个 html」可给：
+                    它的产物是 1MB 打包 bundle，而且 readDemoSource 会 ENOENT
+                    把整个构建打断（第一次就是这么红的）。这类作品只给提示词。 */}
+                {e.bundleDir ? null : (
+                  <details className="fx-disclose">
+                    <summary>{pick(labCopy.codeBtn, lang)}</summary>
+                    <div className="fx-disclose-body">
+                      <CopyBox
+                        body={readDemoSource(e.slug)}
+                        label={`${e.slug}.html`}
+                        copyLabel={pick(labCopy.copy, lang)}
+                        doneLabel={pick(labCopy.copied, lang)}
+                      />
+                    </div>
+                  </details>
+                )}
                 <details className="fx-disclose">
                   <summary>{pick(labCopy.promptBtn, lang)}</summary>
                   <div className="fx-disclose-body">

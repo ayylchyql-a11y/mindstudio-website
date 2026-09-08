@@ -11,6 +11,12 @@ export interface PreviewSlide {
   src: string;
   /** 见 Effect.plays。决定顺序（self 排最前）和底栏那个提示 */
   plays: "self" | "hover" | "scroll";
+  /**
+   * 有海报 = 这条太重，轮播里只放静态图。
+   * 🩸轮播是一进 /lab 就自动播的：不给海报就等于让每个访客
+   *   先下载几 MB 才看到第一屏，而他可能根本没打算点进这个模块。
+   */
+  poster?: string;
 }
 
 const AUTO_MS = 8000;
@@ -76,7 +82,8 @@ export default function CategoryPreview({
    *    也就是说轮播里**大多数格是静止画面**。不说破的话看着像效果坏了。
    *    标出来之后它就成了信息：这条要你做点什么才看得到。
    */
-  const hint = cur.plays === "hover" ? pick(labCopy.needsHover, lang)
+  const hint = cur.poster ? pick(labCopy.openToPlay, lang)
+             : cur.plays === "hover" ? pick(labCopy.needsHover, lang)
              : cur.plays === "scroll" ? pick(labCopy.needsScroll, lang)
              : null;
 
@@ -97,24 +104,42 @@ export default function CategoryPreview({
           aria-hidden="true"
           style={{ background: `radial-gradient(120% 120% at 30% 0%, ${cur.accent}26, transparent 70%)` }}
         />
-        <iframe
-          key={cur.slug}
-          src={cur.src}
-          title={cur.title}
-          loading="lazy"
-          /* allow-scripts 是必须的（demo 带 JS）；不给 allow-same-origin，
-             所以 demo 拿不到本站的 storage / cookie。两个一起给等于没有沙箱。 */
-          sandbox="allow-scripts"
-          style={{ height }}
-        />
+        {cur.poster ? (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            key={cur.slug}
+            className="cat-preview-poster-img"
+            src={cur.poster}
+            alt={cur.title}
+            loading="lazy"
+            decoding="async"
+            style={{ height }}
+          />
+        ) : (
+          <iframe
+            key={cur.slug}
+            src={cur.src}
+            title={cur.title}
+            loading="lazy"
+            /* allow-scripts 是必须的（demo 带 JS）；不给 allow-same-origin，
+               所以 demo 拿不到本站的 storage / cookie。两个一起给等于没有沙箱。 */
+            sandbox="allow-scripts"
+            style={{ height }}
+          />
+        )}
       </div>
 
-      {slides.length > 1 && (
+      {/* 🩸底栏原来只在「不止一条」时才出现。分类里只有一件作品时（creative 现在就是），
+          它整条不渲染 —— 于是海报既没有标题也没有「点开可玩」，
+          看上去就是一张贴在那儿的静态图，没人知道它是活的。
+          判据改成「有多条 或 有提示要说」。 */}
+      {(slides.length > 1 || hint) && (
         <div className="cat-preview-bar">
           <span className="cat-preview-name">
             {cur.title}
             {hint && <em className="cat-preview-hint">{hint}</em>}
           </span>
+          {slides.length > 1 && (
           <span className="cat-preview-dots" role="tablist" aria-label={pick(labCopy.previewOf, lang)}>
             {slides.map((s, n) => (
               <button
@@ -128,6 +153,7 @@ export default function CategoryPreview({
               />
             ))}
           </span>
+          )}
         </div>
       )}
     </div>

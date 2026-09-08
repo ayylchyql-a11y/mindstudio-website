@@ -1,0 +1,32 @@
+{
+  "title": "独行成军",
+  "subtitle": "独立开发者",
+  "technique": "全线发版",
+  "tagline": "iOS、安卓、后端与五十个语言区，同一双手",
+  "edition": "001 / 001",
+  "collection": "MIND STUDIO 个人典藏 · 2026",
+  "description": "阳光穿过栅栏的那一秒，屏幕还没亮，下一版的清单已经排好了。",
+  "font": "/System/Library/Fonts/STHeiti Medium.ttc",
+  "assets": {
+    "subject": "./assets/subject.png",
+    "background": "./assets/background.jpg",
+    "text": "./assets/text.png",
+    "lineart": "./assets/lineart.png",
+    "model": "./assets/card.glb"
+  },
+  "parameters": {
+    "subjectScale": 1.25,
+    "subjectDepth": 0.28,
+    "backgroundDepth": -0.2,
+    "foil": 0.65
+  },
+  "safeArea": {
+    "scale": 1.12,
+    "offset": [
+      -0.06,
+      -0.085
+    ]
+  },
+  "studio": "MIND STUDIO",
+  "studioEn": ""
+}

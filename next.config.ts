@@ -12,6 +12,26 @@ import type { NextConfig } from "next";
 const OLD_CATEGORIES = "motion|scroll|background|text|surface|feedback";
 
 const nextConfig: NextConfig = {
+  /**
+   * 🩸 /lab 的样板跑在 `sandbox="allow-scripts"` 的 iframe 里，**故意不给
+   * `allow-same-origin`**（两个一起给等于没有沙箱）。代价是这个文档的来源是
+   * `null`，而对 null 来源来说**连同源资源都算跨源**：
+   *   · `<script type="module">` 按 CORS 语义取 → 被拦
+   *   · 运行时 `fetch('./card-config.json')` → 被拦
+   *   · three 加载贴图 / GLB → 被拦
+   * 前 14 条效果全是内联脚本的单文件，所以一直没碰到；holo-card 是第一个
+   * 带外部脚本和运行时资源的作品，一上去就整个白屏（控制台是 CORS 报错，
+   * 不是 404，很容易看成"文件没传上去"）。
+   * 这些文件本来就是公开静态资源，放开读取不损失任何东西。
+   */
+  async headers() {
+    return [
+      {
+        source: "/effects/:path*",
+        headers: [{ key: "Access-Control-Allow-Origin", value: "*" }],
+      },
+    ];
+  },
   async redirects() {
     return [
       {

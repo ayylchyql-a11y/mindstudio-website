@@ -65,6 +65,7 @@ export default async function LabIndex({ params }: { params: Promise<{ lang: str
                     accent: e.accent,
                     src: demoPath(e),
                     plays: e.plays,
+                    poster: e.poster,
                   }))}
               />
               <a className="cat-row" href={`/${lang}/lab/${c.id}`}>
