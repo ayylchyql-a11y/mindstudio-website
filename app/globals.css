@@ -1313,14 +1313,17 @@
   display: block; width: 100%; border: 0;
 }
 /* 太重的作品在轮播里放静态海报（见 CategoryPreview 的 poster）。
-   object-fit: contain —— 卡是 2:3 竖版，cover 会把上下两条信息带切掉，
-   而那两条恰恰是这张卡的一半内容。 */
+   🩸 cover 而不是 contain：海报是「卡片 + 自身虚化衬底」的构图，卡片本体只占
+      画面宽度的 41%，所以裁切只会吃掉两侧的衬底。桌面端框比例(1.53:1)和海报
+      一致、cover 等于 contain；窄屏框变成 340×400 时，contain 会在上下各留
+      88px 空白，cover 则填满且卡片仍完整（保留中间 56% > 41%）。
+      注：早先海报是纯竖版卡时这里必须是 contain，换成横版构图后才轮到 cover。 */
 .cat-preview-link { position: relative; z-index: 1; display: block; }
 .cat-preview-link:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
 .cat-preview-frame img.cat-preview-poster-img {
   position: relative; z-index: 1;
   display: block; width: 100%; border: 0;
-  object-fit: contain;
+  object-fit: cover;
 }
 .cat-preview-bar {
   position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;

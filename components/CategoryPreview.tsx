@@ -24,6 +24,18 @@ export interface PreviewSlide {
 const AUTO_MS = 8000;
 
 /**
+ * 预览框高度。**400 是量出来的、不是拍的**：14 条效果在 data/effects.ts 里
+ * 各自声明的 height 中位数就是 400（9 条写 400，其余 260–380）。
+ * 原来是 260 —— 取的是最小值，等于把大多数样板压扁着展示。
+ * 🩸 所有样板的根容器都是 min-height:100vh / height:100%，在 iframe 里
+ *    100vh 就是这个框的高度，所以它们跟着框长、多给高度不浪费，
+ *    滚动类还能多露一截场景。
+ * 🩸 没做成正方形（两列时 610×610）：那比任何样板需要的都高 200px，
+ *    卡片会从 527 长到 737，代价是标题行要多滚 282px。
+ */
+const FRAME_H = 400;
+
+/**
  * 总览页每张模块卡里那个轮播预览。
  *
  * 为什么是这里、而不是分类页：分类页是**查阅**（扫一遍找到我要的那条），
@@ -43,7 +55,7 @@ const AUTO_MS = 8000;
 export default function CategoryPreview({
   slides,
   lang,
-  height = 260,
+  height = FRAME_H,
 }: {
   slides: PreviewSlide[];
   lang: Locale;
