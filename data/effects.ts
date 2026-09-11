@@ -14,7 +14,7 @@ import type { Localized } from "@/lib/i18n";
  *    在这里再抄一份 = 两处真相，改了 demo 忘了改展示，页面上给的代码就是错的。
  */
 
-export type CategoryId = "web-effects" | "creative";
+export type CategoryId = "web-effects" | "creative" | "mobile-ui";
 
 export interface Category {
   id: CategoryId;
@@ -63,6 +63,23 @@ export const categories: Category[] = [
       "zh-tw": "\u9019\u88e1\u653e\u7684\u662f\u6210\u54c1\u800c\u4e0d\u662f\u96f6\u4ef6\u2014\u2014\u505a\u5b8c\u5c31\u80fd\u76f4\u63a5\u770b\u7684\u8996\u89ba\u4f5c\u54c1\u3002\u4f46\u548c\u9694\u58c1\u4e00\u6a23\uff0c\u6bcf\u4e00\u4ef6\u4ecd\u7136\u5beb\u6e05\u695a\u5b83\u7531\u4ec0\u9ebc\u69cb\u6210\u3001\u7cbe\u78ba\u5230\u591a\u5c11\u7684\u6578\u503c\u3001\u4ee5\u53ca\u4e00\u53e5\u80fd\u628a\u5b83\u91cd\u505a\u4e00\u904d\u7684\u63d0\u793a\u8a5e\u3002",
     },
     accent: "#c9922e",
+  },
+  {
+    id: "mobile-ui",
+    title: {
+      en: "Mobile UI design",
+      zh: "手机UI设计",
+      "zh-tw": "手機UI設計",
+      ja: "モバイル UI デザイン",
+      ko: "모바일 UI 디자인",
+      it: "UI mobile",
+    },
+    intro: {
+      en: "Whole phone interfaces rebuilt as working replicas \u2014 the design language read off a video and put back together screen by screen, with the numbers it runs on, the source file, and a prompt that reproduces it. Tap through them; they are not pictures.",
+      zh: "把整套手机界面按视频复刻成能用的样板：从视频里读出它的设计语言，一屏一屏装回去，附上它赖以成立的数值、完整源文件、以及一句能把它复现出来的提示词。可以点进去玩，不是截图。",
+      "zh-tw": "把整套手機介面按影片複刻成能用的樣板：從影片裡讀出它的設計語言，一屏一屏裝回去，附上它賴以成立的數值、完整原始檔、以及一句能把它複現出來的提示詞。可以點進去玩，不是截圖。",
+    },
+    accent: "#5b3fd6",
   },
 ];
 
@@ -166,6 +183,121 @@ export const effects: Effect[] = [
       label: "Viewer built on RuiC-card-skill by HRuiCcc \u00b7 MIT",
       url: "https://github.com/HRuiCcc/RuiC-card-skill",
     },
+  },
+  {
+    slug: "mind-space-ai-os",
+    category: "mobile-ui",
+    date: "2026-09-11",
+    plays: "self",
+    title: { en: "Mind Space: an ambient AI phone OS", zh: "Mind Space：氛围感 AI 手机系统", "zh-tw": "Mind Space：氛圍感 AI 手機系統" },
+    gist: {
+      en: "A working replica of the whole design language: a sky that takes the hue of whichever context is on top, frosted context cards that carry third-party widgets inside them, and a prompt bar that is the only way to talk to it. Three screens, all tappable.",
+      zh: "整套设计语言的可用复刻：天空色跟着排在最上面的那张卡走、磨砂卡片里嵌着第三方小组件、底部一条提示词输入栏是跟它说话的唯一入口。三个界面，都能点。",
+      "zh-tw": "整套設計語言的可用複刻：天空色跟著排在最上面的那張卡走、磨砂卡片裡嵌著第三方小組件、底部一條提示詞輸入欄是跟它說話的唯一入口。三個介面，都能點。",
+    },
+    height: 720,
+    accent: "#5b3fd6",
+    anatomy: [
+      "<b>What the language is.</b> Frame-by-frame the source shows one idea repeated at every level: the interface is a <i>sky</i>, not a surface. A single vertical gradient — dark saturated at the top, dissolving to paper by 84% — is the only colour on the screen, and its hue is whatever context currently sits on top (purple for Relaxation, teal for Spring Trip, blue for Build Brain.ai). Cards, chips and the prompt bar are all white at varying alpha; nothing else is tinted.",
+      "The hue is one custom property, <code>--h</code>, registered with <code>@property … syntax: \"&lt;number&gt;\"</code> so it can be <b>transitioned</b> (900ms). Every screen state — home, detail, the agents view — writes only that number. An unregistered property would snap; measured on the source, the sky cross-fades over roughly a second.",
+      "<b>Cards are contexts, not content.</b> Each one is a 28px-radius frosted panel (<code>#ffffffa8</code> + <code>backdrop-filter: blur(22px)</code>) with a chip, a title, a one-line subtitle, and a footer that is always a progress fact (<code>Completed 2 of 5</code>, a 45% ring, <code>Tasks to-do 6</code>). The card that lands on the dark part of the sky flips to a dark variant (<code>#ffffff1f</code>, white type) — the same element, one class.",
+      "<b>Third parties live in an inset white widget</b> (20px radius, <code>#ffffffe0</code>) at the right of the card, never as a logo in the corner: the stay's photo collage, the airline's timeline with SFO → Gate B26 → LHR, a row of source apps with an avatar pile and <code>+5 sources</code>. The mark of the service is a 22px circle inside its widget.",
+      "<b>Tabs re-sort the stack.</b> Mind Space / Personal / Family / Work each define an order; switching runs a FLIP (measure, reorder the DOM, invert, release) over 620ms, the top card takes the dark variant, and the sky takes its hue. The list in the DOM is the truth; the animation is derived from it.",
+      "<b>Detail is the same sky pulled lower.</b> Tapping a card opens a screen with the identical hue, the dark region now holding the hero (chip, 24px title, lede, a sources list with <i>Yesterday / Today / Recent searches</i> on the right), and the paper region holding <i>Next up</i> and <i>AI Actions</i> as 18px-radius white minis. A bottom bar carries the chat icon and pill tabs.",
+      "<b>The prompt is the only input.</b> A 40px pill floating over the stack with a live caret; tapping it (or the chat icon on detail) opens the agents view: paper background, the context collapsed to a 150×74 thumbnail top-right, tabs, agent cards with a note thumbnail, a <i>Follow up</i> field, three <i>Suggest</i> chips and a keyboard. The context never leaves the screen — it shrinks.",
+      "Type is a single grotesque at five sizes: 24 / 15.5 / 12.5 / 11 / 10, weights 600 and 500 only. Radii: 36 (screen) / 28 (card) / 20 (widget) / 18 (mini) / 99 (pills). The device shell scales to the frame with <code>transform: scale()</code>, so the layout is authored once at 360×740.",
+      "The showcase walks the tabs every 3.6s until the first tap, so the sample demonstrates the sky and the re-sort by itself; any interaction stops it.",
+    ],
+    tokens: [
+      { label: "Sky", value: "hsl(--h 55% 16%) → 62% 44% @32% → 50% 80% @62% → #f5f4f9 @84%" },
+      { label: "Hues", value: "Family 275 · Trip 190 · Work 228" },
+      { label: "Hue transition", value: "900ms cubic-bezier(.22,.61,.36,1) via @property" },
+      { label: "Card", value: "#ffffffa8 · blur 22px · r 28 · dark variant #ffffff1f" },
+      { label: "Widget / mini", value: "#ffffffe0 r 20 · #ffffffd9 r 18" },
+      { label: "Re-sort", value: "FLIP 620ms cubic-bezier(.22,.61,.36,1)" },
+      { label: "Type", value: "24 / 15.5 / 12.5 / 11 / 10 · 600 & 500" },
+      { label: "Device", value: "360×740 · bezel 12 · r 46/36 · punch-hole 12" },
+    ],
+    prompt:
+      "Build a self-contained mobile UI replica in vanilla HTML/CSS/JS: a 360×740 phone (12px black bezel, radius 46 outside / 36 screen, 12px punch-hole camera, status bar '19:30') scaled to fit the viewport with transform: scale(min(1, (innerHeight−36)/740, (innerWidth−24)/360)). The screen background is ONE gradient driven by a registered custom property: @property --h { syntax: '<number>'; inherits: true; initial-value: 275 } and background: linear-gradient(180deg, hsl(var(--h) 55% 16%) 0%, hsl(var(--h) 62% 44%) 32%, hsl(var(--h) 50% 80%) 62%, #f5f4f9 84%) with transition: --h 900ms cubic-bezier(.22,.61,.36,1). Home: a row of pill tabs (Mind Space / Personal / Family / Work; the active one has a 1px #ffffff8c border and #ffffff1f fill) and a vertical stack of three context cards, each a 28px-radius frosted panel (#ffffffa8, 1px #ffffffb0 border, backdrop-filter blur(22px)) with a chip (20px pill), a 15.5px/600 title, an 11px subtitle, a progress footer (check + 'Completed 2 of 5', a conic ring + '45% 2 of 5', or 'Tasks to-do 6'), and a right-hand inset white widget (radius 20, #ffffffe0) holding a third-party item: a photo collage with a red circular mark, a flight timeline 'SA2847 to London · 2:00 SFO · Gate B26 · 4:30 LHR' with a yellow mark, or a row of source-app circles plus an avatar pile '+5 sources'. Each context carries a hue (275, 190, 228). Each tab defines an order of the three cards; on tab change reorder the DOM with FLIP (measure tops, appendChild in the new order, measure again, set translateY(delta) with transitions off, flush with getBoundingClientRect, then remove the transform so a 620ms cubic-bezier(.22,.61,.36,1) transition carries it), give the first card a dark variant (#ffffff1f, white text) and write its hue into --h. A 40px floating prompt pill 'I want to become' with a blinking caret sits over the stack. Tapping a card opens a detail screen (translateY 28px → 0, 480ms) using the same hue with the gradient pulled lower (paper from 66%): back button, chip, 24px title, lede, 'Based on 8 sources' rows (Line / Calendar / Chrome with 'Yesterday / Today / Recent searches' right-aligned, '+5 sources' centred), 'Next up' and 'AI Actions' as 170px white minis (radius 18), and a bottom bar with a chat icon and pill tabs 'AI Answer / Notes / Market & Competitors'. Tapping the prompt or the chat icon opens the agents screen on paper: the context shrinks to a 150×74 dark thumbnail top-right, tabs 'AI Agents / Notes / Market & Competitors', 'Specialized agents ready to help with …', agent cards with a 54px note thumbnail, a 'Follow up' field with + and mic, three 'Suggest' chips, and a QWERTY keyboard with an 'English' space bar. Hide the home screen (opacity 0) while another screen is open. Auto-advance the tabs every 3.6s until the first interaction. Under prefers-reduced-motion remove all transitions and the auto-advance.",
+    caveats: [
+      "<code>@property</code> is what makes the sky cross-fade. Firefox shipped it in 128 (2024); anything older snaps the hue instantly — the layout is unaffected, only the transition is lost.",
+      "<code>backdrop-filter</code> on three stacked cards over a gradient is fine on a phone-sized canvas; the same language at desktop width with a dozen cards will show on integrated GPUs. Cap the blur radius or drop it on the cards that sit on paper, where it does nothing visible anyway.",
+      "The third-party marks are placeholders (a red house circle, a yellow 'spirit' disc, coloured initials) — they stand in for real brand assets, which are not free to redistribute. The <b>placement</b> is the point: inside the widget, never on the card.",
+      "The re-sort is measured against the phone's own coordinates, so the FLIP delta is divided by the shell's scale; forget that and the cards fly twice as far as they should on a shrunken device.",
+      "This is a replica of a concept render, not of a shipped product. Text and data are ours; the layout, colour behaviour and interaction model are the source's.",
+    ],
+    source: { label: "@海森堡 (Douyin) · “自然人工智能设计探索的思维空间”", at: "0:00–0:19" },
+  },
+  {
+    slug: "ambient-hue-follows-focus",
+    category: "mobile-ui",
+    date: "2026-09-11",
+    plays: "hover",
+    title: { en: "Ambient hue follows focus", zh: "天空色跟着焦点走", "zh-tw": "天空色跟著焦點走" },
+    gist: {
+      en: "The background is not a theme, it is a number. Whatever has focus hands over its hue, one registered custom property tweens to it, and the whole screen changes mood without any element being recoloured.",
+      zh: "背景不是主题色，是一个数字。谁拿到焦点谁就把自己的色相交出来，一个注册过的自定义属性缓动过去，整屏气氛就变了，没有任何元素被单独换色。",
+      "zh-tw": "背景不是主題色，是一個數字。誰拿到焦點誰就把自己的色相交出來，一個註冊過的自訂屬性緩動過去，整屏氣氛就變了，沒有任何元素被單獨換色。",
+    },
+    height: 400,
+    accent: "#3f8fd6",
+    anatomy: [
+      "One gradient on <code>body</code>, four stops, every stop written as <code>hsl(var(--h) S L)</code>. Saturation and lightness are fixed per stop; only the hue moves. That is why a purple sky and a teal sky feel like the same place at a different hour rather than two themes.",
+      "🩸 <code>@property --h { syntax: \"&lt;number&gt;\" }</code> is the entire mechanism. Without registration a custom property has no interpolation type, <code>transition: --h 900ms</code> is silently ignored, and the sky snaps. The readout in the corner shows the interpolated value climbing — that is the proof it animates.",
+      "The page never chooses a colour. Each focusable thing carries <code>data-h</code>; focusing it copies that number into <code>--h</code>. Adding a fourth context is one attribute, not a stylesheet change.",
+      "The focused card lifts 6px and goes opaque white; the others stay at 35% white over the sky. Same element, one class — the card does not know what hue the sky is.",
+      "Hover and click both drive focus, so the effect works with a pointer and with a tap; <code>pointerenter</code> fires once per crossing, not per pixel.",
+    ],
+    tokens: [
+      { label: "Sky stops", value: "16% / 44% / 80% lightness · 55 / 62 / 50 saturation · paper @90%" },
+      { label: "Transition", value: "--h 900ms cubic-bezier(.22,.61,.36,1)" },
+      { label: "Hues", value: "275 · 190 · 228" },
+      { label: "Card", value: "#ffffff59 rest → #ffffffe0 focused · lift 6px · 500ms" },
+    ],
+    prompt:
+      "Build an 'ambient hue follows focus' panel in vanilla HTML/CSS/JS. Register the hue: @property --h { syntax: '<number>'; inherits: true; initial-value: 275 }. On body set --h: 275, transition: --h 900ms cubic-bezier(.22,.61,.36,1), and background: linear-gradient(180deg, hsl(var(--h) 55% 16%) 0%, hsl(var(--h) 62% 44%) 34%, hsl(var(--h) 50% 80%) 66%, #f5f4f9 90%). Place three 190×210 cards (radius 26, #ffffff59 with a 1px #ffffff80 border and backdrop-filter blur(20px)), each with a data-h attribute (275, 190, 228), a chip, a colour dot showing hsl(var(--c) 62% 44%), a title and a subtitle. On pointerenter and click, mark that card focused (background #ffffffe0, translateY(-6px), 500ms) and write its data-h into --h on the body. Show a monospace readout in the corner that reads the computed --h every animation frame and prints it rounded, so the interpolation is visible. Never set any colour on any element from JavaScript except that one number. Under prefers-reduced-motion drop the transitions.",
+    caveats: [
+      "Hue interpolation goes the short way round the wheel: 275 → 190 passes through blue (fine), but 350 → 20 would pass through red at full saturation. If two contexts sit across the wheel, interpolate in OKLCH or step through a neutral.",
+      "Text on the sky must be checked at <b>every</b> hue, not the one you designed with. Lightness is pinned per stop here so contrast is stable; the moment saturation or lightness varies per context that guarantee is gone.",
+    ],
+    source: { label: "@海森堡 (Douyin) · “自然人工智能设计探索的思维空间”", at: "0:03–0:11" },
+  },
+  {
+    slug: "glass-stack-flip-reorder",
+    category: "mobile-ui",
+    date: "2026-09-11",
+    plays: "self",
+    title: { en: "Glass stack FLIP reorder", zh: "磨砂卡片堆的 FLIP 重排", "zh-tw": "磨砂卡片堆的 FLIP 重排" },
+    gist: {
+      en: "Switching a filter tab re-sorts a stack of cards: each card slides from where it was to where it now is, the one that lands on top turns dark, and the sky takes its hue. The DOM order is the truth; the motion is derived from it.",
+      zh: "切一个筛选标签，一叠卡片就重新排序：每张卡从原来的位置滑到现在的位置，落到最上面那张变深色，天空跟着换成它的色相。DOM 顺序是真相，动效是从它推出来的。",
+      "zh-tw": "切一個篩選標籤，一疊卡片就重新排序：每張卡從原來的位置滑到現在的位置，落到最上面那張變深色，天空跟著換成它的色相。DOM 順序是真相，動效是從它推出來的。",
+    },
+    height: 400,
+    accent: "#7a5af0",
+    anatomy: [
+      "<b>FLIP</b>: First, Last, Invert, Play. Measure every card's <code>top</code>; <code>appendChild</code> them in the new order; measure again; set <code>transform: translateY(first − last)</code> with transitions disabled; flush layout with one <code>getBoundingClientRect()</code>; remove the transform. The CSS transition on <code>transform</code> (620ms) carries each card home.",
+      "The transition has to be switched <b>off</b> for the invert step — a <code>.moving</code> class sets <code>transition: none</code> — otherwise the card tweens <i>to</i> its old position first and then back, which reads as a double bounce.",
+      "The flush is the line people delete. Without a forced layout read between setting the inverted transform and clearing it, the browser batches both writes and the card simply appears in its new place.",
+      "The top card takes the dark variant (<code>#ffffff1f</code>, white type) and the sky takes its hue (<code>--h</code>, registered with <code>@property</code>, 900ms). Both are consequences of the order, computed after the reorder — nothing is stored about 'which card is active'.",
+      "The panel on the right prints the per-card Δy for every switch. A card with Δy 0 is skipped entirely; one with −212px is the card that just went from bottom to top.",
+      "The showcase cycles the tabs every 3.2s until a tab is tapped.",
+    ],
+    tokens: [
+      { label: "Travel", value: "620ms cubic-bezier(.22,.61,.36,1) on transform" },
+      { label: "Invert", value: ".moving { transition: none } + one getBoundingClientRect() flush" },
+      { label: "Top card", value: "#ffffff1f · white type · 600ms colour transition" },
+      { label: "Sky", value: "--h → top card's hue · 900ms" },
+    ],
+    prompt:
+      "Build a FLIP-reordered card stack in vanilla HTML/CSS/JS. Three 96px-tall frosted cards (radius 22, #ffffffa8, 1px #ffffffb0 border, backdrop-filter blur(22px)) in a flex column with 10px gap; each has a chip, a title, a subtitle, a colour dot, and a hue (275, 190, 228). Four pill tabs each define an order of the three cards. On tab change: record each card's getBoundingClientRect().top (First); appendChild the cards in the new order (Last); for each card compute dy = firstTop − newTop, add a class that sets transition: none, set transform: translateY(dy px), call getBoundingClientRect() once to flush layout, then remove the class and clear the transform so the stylesheet's transition: transform 620ms cubic-bezier(.22,.61,.36,1) plays (Invert, Play). Skip cards whose dy is 0. After reordering, give the first card a dark variant (#ffffff1f, white text, 600ms colour transitions) and set a registered custom property --h (@property, syntax '<number>', transition 900ms) on the body to that card's hue; the body background is linear-gradient(180deg, hsl(var(--h) 55% 16%), hsl(var(--h) 62% 44%) 34%, hsl(var(--h) 50% 80%) 66%, #f5f4f9 90%). Print each card's Δy and the new --h in a monospace panel. Auto-cycle the tabs every 3.2s until a tab is clicked. Under prefers-reduced-motion skip the transforms.",
+    caveats: [
+      "FLIP on <code>transform</code> is cheap; FLIP on <code>top</code> or <code>margin</code> is a layout per frame. If the cards also change <b>height</b> between states, animate <code>scaleY</code> with <code>transform-origin: top</code> and counter-scale the children, or accept a crossfade.",
+      "Measure in the same coordinate space you transform in. Inside a scaled parent (a phone shell with <code>transform: scale(.9)</code>) the rect delta is in viewport pixels but the transform is in local pixels — divide by the scale or the cards overshoot.",
+      "Rapid re-sorts interrupt the transition mid-flight, which FLIP handles correctly (it measures the <i>current</i> rendered position) — but only if the measurement happens before the DOM move, never after.",
+    ],
+    source: { label: "@海森堡 (Douyin) · “自然人工智能设计探索的思维空间”", at: "0:03–0:11" },
   },
   {
     slug: "hover-door-bloom",
@@ -958,7 +1090,8 @@ export const effects: Effect[] = [
 export function effectsIn(category: CategoryId): Effect[] {
   return effects
     .filter((e) => e.category === category)
-    .sort((a, b) => (a.date < b.date ? 1 : -1));
+    // 同一天的按数组顺序：主样板写在前面就排在前面（之前平局返回 -1，同日会整批倒序）
+    .sort((a, b) => (a.date === b.date ? 0 : a.date < b.date ? 1 : -1));
 }
 
 /** 没有效果的分类不出现在 /lab 上 —— 空分类页比没有分类页更伤。 */

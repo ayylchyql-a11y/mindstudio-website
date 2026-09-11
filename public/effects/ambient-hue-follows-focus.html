@@ -1,0 +1,75 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ambient hue follows focus</title>
+<style>
+  /* 🩸 Register the hue as a <number>. An unregistered custom property has no
+     interpolation type, so `transition: --h` is ignored and the sky snaps. */
+  @property --h { syntax: "<number>"; inherits: true; initial-value: 275; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    --h: 275;
+    transition: --h 900ms cubic-bezier(.22,.61,.36,1);
+    /* The whole ambience is this one gradient. Nothing else is coloured. */
+    background: linear-gradient(180deg,
+      hsl(var(--h) 55% 16%) 0%,
+      hsl(var(--h) 62% 44%) 34%,
+      hsl(var(--h) 50% 80%) 66%,
+      #f5f4f9 90%);
+    color: #17151f; overflow: hidden; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { height: 100%; display: grid; grid-template-rows: auto 1fr auto; padding: 22px 24px 18px; }
+  .top { display: flex; justify-content: space-between; align-items: baseline; color: #fff; }
+  .top h1 { font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+  .top .read { font: 500 11px/1 ui-monospace, Menlo, monospace; color: #ffffffb0; }
+  .top .read b { color: #fff; font-weight: 600; }
+
+  .row { display: flex; gap: 12px; align-items: center; justify-content: center; }
+  .card {
+    width: 190px; height: 210px; padding: 16px; border-radius: 26px; cursor: pointer;
+    background: #ffffff59; border: 1px solid #ffffff80; color: #17151f;
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    display: flex; flex-direction: column; gap: 8px;
+    transition: background-color 500ms, transform 500ms cubic-bezier(.22,.61,.36,1), box-shadow 500ms;
+  }
+  .card:hover, .card.on { background: #ffffffe0; color: #17151f; transform: translateY(-6px); box-shadow: 0 24px 40px -24px #1a123a80; }
+  .chip { align-self: flex-start; padding: 3px 9px; border-radius: 99px; font-size: 10px; font-weight: 500; border: 1px solid currentColor; opacity: .8; }
+  .card h3 { margin-top: auto; font-size: 17px; font-weight: 600; letter-spacing: -.01em; }
+  .card p { font-size: 11px; opacity: .7; }
+  /* the swatch: each card carries its hue as data and shows it as a dot */
+  .card i { width: 16px; height: 16px; border-radius: 50%; background: hsl(var(--c) 62% 44%); box-shadow: 0 0 0 3px #ffffff80; }
+
+  .foot { text-align: center; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: #17151f80; }
+  @media (prefers-reduced-motion: reduce) { body, .card { transition: none; } .foot { display: none; } }
+</style>
+
+<div class="wrap">
+  <div class="top"><h1>Mind Space</h1><div class="read">--h <b id="rh">275</b></div></div>
+  <div class="row" id="row">
+    <div class="card on" data-h="275"><span class="chip">Family</span><i style="--c:275"></i><h3>Relaxation Ideas</h3><p>Activities for couples</p></div>
+    <div class="card" data-h="190"><span class="chip">Family</span><i style="--c:190"></i><h3>Spring Trip</h3><p>Complete vacation planning</p></div>
+    <div class="card" data-h="228"><span class="chip">Work</span><i style="--c:228"></i><h3>Build Brain.ai</h3><p>Tasks to-do · 6</p></div>
+  </div>
+  <div class="foot">hover a card · the sky follows it</div>
+</div>
+
+<script>
+  /* The page never picks a colour. It asks the focused thing what hue it
+     carries and writes that ONE number; the gradient does the rest. */
+  const cards = [...document.querySelectorAll(".card")];
+  const rh = document.getElementById("rh");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function focus(card) {
+    cards.forEach((c) => c.classList.toggle("on", c === card));
+    document.body.style.setProperty("--h", card.dataset.h);
+  }
+  cards.forEach((c) => { c.addEventListener("pointerenter", () => focus(c)); c.addEventListener("click", () => focus(c)); });
+  // readout shows the interpolated value, which is what proves it animates
+  (function loop() {
+    rh.textContent = Math.round(parseFloat(getComputedStyle(document.body).getPropertyValue("--h")));
+    if (!reduce) requestAnimationFrame(loop);
+  })();
+</script>

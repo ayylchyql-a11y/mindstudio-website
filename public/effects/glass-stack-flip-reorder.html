@@ -1,0 +1,100 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glass stack FLIP reorder</title>
+<style>
+  @property --h { syntax: "<number>"; inherits: true; initial-value: 275; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    --h: 275; transition: --h 900ms cubic-bezier(.22,.61,.36,1);
+    background: linear-gradient(180deg, hsl(var(--h) 55% 16%) 0%, hsl(var(--h) 62% 44%) 34%, hsl(var(--h) 50% 80%) 66%, #f5f4f9 90%);
+    color: #17151f; overflow: hidden; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { height: 100%; display: grid; grid-template-columns: 1fr 250px; gap: 28px; padding: 22px 26px; align-items: start; }
+  .tabs { display: flex; gap: 6px; }
+  .tab { height: 30px; padding: 0 13px; border-radius: 99px; border: 1px solid transparent; font-size: 12px; font-weight: 500; color: #ffffffb8; background: none; cursor: pointer; transition: border-color 400ms, background-color 400ms, color 400ms; }
+  .tab.on { border-color: #ffffff8c; background: #ffffff1f; color: #fff; }
+
+  .stack { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; max-width: 360px; }
+  .card {
+    height: 96px; padding: 14px 16px; border-radius: 22px; position: relative;
+    background: #ffffffa8; border: 1px solid #ffffffb0;
+    backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+    /* FLIP: the transform is the animation. `moving` switches it off for one
+       frame so the inverted position lands without tweening. */
+    transition: transform 620ms cubic-bezier(.22,.61,.36,1), background-color 600ms, border-color 600ms, color 600ms;
+    will-change: transform;
+  }
+  .card.moving { transition: none; }
+  .card.dark { background: #ffffff1f; border-color: #ffffff38; color: #fff; }
+  .chip { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: 10px; font-weight: 500; border: 1px solid #17151f2a; background: #ffffff8c; }
+  .dark .chip { border-color: #ffffff59; background: #ffffff24; color: #fff; }
+  .card h3 { margin-top: 8px; font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+  .card p { font-size: 11px; opacity: .65; margin-top: 2px; }
+  .card i { position: absolute; right: 16px; top: 16px; width: 14px; height: 14px; border-radius: 50%; background: hsl(var(--c) 62% 44%); box-shadow: 0 0 0 3px #ffffff80; }
+
+  .log {
+    margin-top: 42px; padding: 14px 16px; border-radius: 16px; background: #ffffff8c; border: 1px solid #ffffffb0;
+    font: 500 10.5px/1.7 ui-monospace, Menlo, monospace; color: #17151fb0; white-space: pre; min-height: 150px;
+  }
+  .log b { color: #17151f; }
+  .foot { position: absolute; left: 0; right: 0; bottom: 10px; text-align: center; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: #17151f80; }
+  @media (prefers-reduced-motion: reduce) { body, .card, .tab { transition: none; } .foot { display: none; } }
+</style>
+
+<div class="wrap">
+  <div>
+    <nav class="tabs" id="tabs"></nav>
+    <div class="stack" id="stack"></div>
+  </div>
+  <div class="log" id="log"></div>
+</div>
+<div class="foot">tap a tab · the stack re-sorts, the sky follows the top card</div>
+
+<script>
+  const CARDS = {
+    relax: { h: 275, chip: "Family", t: "Relaxation Ideas", s: "Activities for couples" },
+    trip: { h: 190, chip: "Family", t: "Spring Trip", s: "Complete vacation planning" },
+    brain: { h: 228, chip: "Work", t: "Build Brain.ai", s: "Tasks to-do · 6" },
+  };
+  const TABS = [["Mind Space", ["relax", "trip", "brain"]], ["Personal", ["trip", "relax", "brain"]], ["Family", ["relax", "brain", "trip"]], ["Work", ["brain", "relax", "trip"]]];
+  const stack = document.getElementById("stack"), tabs = document.getElementById("tabs"), log = document.getElementById("log");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const els = {};
+  for (const [id, c] of Object.entries(CARDS)) {
+    const el = document.createElement("article"); el.className = "card"; el.dataset.id = id;
+    el.innerHTML = `<span class="chip">${c.chip}</span><i style="--c:${c.h}"></i><h3>${c.t}</h3><p>${c.s}</p>`;
+    els[id] = el;
+  }
+  let cur = 0, auto = 0;
+  TABS.forEach(([n], i) => { const b = document.createElement("button"); b.className = "tab"; b.textContent = n; b.onclick = () => { clearInterval(auto); setTab(i); }; tabs.appendChild(b); });
+
+  /* FLIP = First, Last, Invert, Play.
+     First: measure where every card is. Last: move the DOM to the new order
+     and measure again. Invert: transform each card back to where it was.
+     Play: drop the transform and let the CSS transition carry it home.
+     The DOM order is the truth; the motion is derived from it. */
+  function setTab(i) {
+    cur = i;
+    [...tabs.children].forEach((b, k) => b.classList.toggle("on", k === i));
+    const order = TABS[i][1];
+    const first = Object.fromEntries(order.map((id) => [id, els[id].getBoundingClientRect().top]));
+    for (const id of order) stack.appendChild(els[id]);                     // Last
+    const lines = [];
+    order.forEach((id, k) => {
+      const el = els[id]; el.classList.toggle("dark", k === 0);
+      const dy = first[id] - el.getBoundingClientRect().top;                // Invert
+      lines.push(`${id.padEnd(6)} Δy ${String(Math.round(dy)).padStart(5)}px`);
+      if (reduce || !dy) return;
+      el.classList.add("moving"); el.style.transform = `translateY(${dy}px)`;
+      el.getBoundingClientRect();                                            // flush
+      el.classList.remove("moving"); el.style.transform = "";                // Play
+    });
+    document.body.style.setProperty("--h", CARDS[order[0]].h);
+    log.innerHTML = `<b>${TABS[i][0]}</b>\n${lines.join("\n")}\n--h → <b>${CARDS[order[0]].h}</b>`;
+  }
+  setTab(0);
+  if (!reduce) auto = setInterval(() => setTab((cur + 1) % TABS.length), 3200);
+</script>
