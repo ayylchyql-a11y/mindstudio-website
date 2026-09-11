@@ -10,7 +10,7 @@ export interface PreviewSlide {
   accent: string;
   src: string;
   /** 见 Effect.plays。决定顺序（self 排最前）和底栏那个提示 */
-  plays: "self" | "hover" | "scroll";
+  plays: "self" | "hover" | "scroll" | "click";
   /**
    * 有海报 = 这条太重，轮播里只放静态图。
    * 🩸轮播是一进 /lab 就自动播的：不给海报就等于让每个访客
@@ -99,6 +99,7 @@ export default function CategoryPreview({
   const hint = cur.poster ? pick(labCopy.openToPlay, lang)
              : cur.plays === "hover" ? pick(labCopy.needsHover, lang)
              : cur.plays === "scroll" ? pick(labCopy.needsScroll, lang)
+             : cur.plays === "click" ? pick(labCopy.needsClick, lang)
              : null;
 
   return (

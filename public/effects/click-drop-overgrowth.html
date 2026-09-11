@@ -1,0 +1,219 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Immersive float: drop and overgrow</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    background: #150f36; color: #fff; overflow: hidden; position: relative;
+    cursor: pointer; -webkit-user-select: none; user-select: none;
+  }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .copy { position: absolute; left: 4%; right: 4%; bottom: 22px; pointer-events: none; }
+  .copy .eyebrow { font: italic 400 12px/1 "Playfair Display", "Didot", Georgia, serif; color: #ffffffb8; margin-bottom: 4px; }
+  .copy .row { display: flex; justify-content: space-between; align-items: baseline; }
+  .copy h1 { font: 400 42px/1 "Playfair Display", "Didot", "Bodoni 72", Georgia, serif; text-transform: uppercase; letter-spacing: .01em; }
+  .hint {
+    position: absolute; left: 0; right: 0; top: 14px; text-align: center;
+    font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: #ffffff7a;
+    transition: opacity 400ms;
+  }
+  .hint.off { opacity: 0; }
+  @media (prefers-reduced-motion: reduce) { .hint { display: none; } }
+</style>
+
+<canvas id="cv"></canvas>
+<div class="copy">
+  <div class="eyebrow">Visions So</div>
+  <div class="row"><h1>Undeniable</h1><h1>Resist</h1></div>
+</div>
+<div class="hint" id="hint">click anywhere · the sphere drops</div>
+
+<script>
+  const cv = document.getElementById("cv");
+  const ctx = cv.getContext("2d");
+  const hint = document.getElementById("hint");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- the limb ----------
+     One cubic Bézier, stroked 110px wide with round caps. Shading is three
+     strokes of the same path — shadow below, body, highlight above — because a
+     tube lit from the top-left is just a light band offset from a dark band. */
+  const P = [{ x: -0.08, y: 0.86 }, { x: 0.30, y: -0.22 }, { x: 0.42, y: 1.36 }, { x: 1.06, y: 0.34 }];
+  const TUBE = 0.28;                       // tube width as a fraction of height
+  const bez = (t) => {
+    const u = 1 - t;
+    return {
+      x: u*u*u*P[0].x + 3*u*u*t*P[1].x + 3*u*t*t*P[2].x + t*t*t*P[3].x,
+      y: u*u*u*P[0].y + 3*u*u*t*P[1].y + 3*u*t*t*P[2].y + t*t*t*P[3].y,
+    };
+  };
+
+  let W = 0, H = 0, DPR = 1, S = 1;
+  let samples = [], hairs = [], speckles = [], contact = null, restY = 0;
+  let seed = 11;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+  function build() {
+    DPR = Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    cv.width = W * DPR; cv.height = H * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    S = H;                                 // everything is in units of height
+    // sample the curve densely so the overgrowth can be located ALONG it
+    samples = [];
+    for (let i = 0; i <= 360; i++) {
+      const t = i / 360, a = bez(t), b = bez(Math.min(1, t + 0.002));
+      const dx = b.x - a.x, dy = b.y - a.y, m = Math.hypot(dx, dy) || 1;
+      samples.push({ x: a.x * W, y: a.y * S, nx: -dy / m, ny: dx / m });
+    }
+    // hairs: a fixed set of fuzz fibres rooted on the tube's silhouette
+    seed = 11; hairs = []; speckles = [];
+    for (let i = 0; i < samples.length; i++) {
+      const s = samples[i], r = TUBE * S * 0.5;
+      for (const side of [1, -1]) {
+        if (rnd() < 0.35) continue;
+        hairs.push({
+          x: s.x + s.nx * r * side, y: s.y + s.ny * r * side,
+          nx: s.nx * side, ny: s.ny * side,
+          len: (0.012 + rnd() * 0.035) * S, tilt: (rnd() - 0.5) * 1.4,
+          flower: rnd() < 0.05, hue: rnd() < 0.7 ? "#ff8a3d" : "#ffc36a",
+        });
+      }
+      // speckles: the fur's texture inside the silhouette
+      for (let k = 0; k < 3; k++) {
+        const o = (rnd() - 0.5) * 2 * r * 0.92;
+        speckles.push({ x: s.x + s.nx * o, y: s.y + s.ny * o, a: 0.25 + rnd() * 0.5, r: 0.8 + rnd() * 1.4, light: rnd() < 0.3 });
+      }
+    }
+    // where the sphere lands: the top of the tube directly under its x
+    const sx = W * 0.56;
+    let best = samples[0];
+    for (const s of samples) if (Math.abs(s.x - sx) < Math.abs(best.x - sx)) best = s;
+    contact = { x: sx, y: best.y - TUBE * S * 0.5 };
+    restY = contact.y - RAD();
+  }
+  const RAD = () => S * 0.105;             // sphere radius
+
+  /* ---------- state machine ---------- */
+  // float → drop → settle (growth runs from the moment of impact)
+  let phase = "float", y = 0, vy = 0, tImpact = 0, squash = 0, particles = [], last = 0;
+  const G = 3.2;                           // gravity, in heights / s²
+  const FRONT = 0.30;                      // growth front speed, heights / s
+
+  function reset() {
+    phase = "float"; y = S * 0.16; vy = 0; squash = 0; particles = [];
+    hint.classList.remove("off");
+  }
+  addEventListener("pointerdown", () => {
+    if (phase === "float") {
+      phase = "drop"; hint.classList.add("off");
+      if (reduce) { phase = "settle"; y = restY; tImpact = performance.now() - 20000; }
+    } else reset();
+  });
+
+  function drawTube(color, hi, lo, widthScale) {
+    ctx.lineCap = "round"; ctx.lineJoin = "round";
+    const path = () => {
+      ctx.beginPath();
+      ctx.moveTo(P[0].x * W, P[0].y * S);
+      ctx.bezierCurveTo(P[1].x * W, P[1].y * S, P[2].x * W, P[2].y * S, P[3].x * W, P[3].y * S);
+    };
+    const w = TUBE * S * widthScale;
+    ctx.save();
+    ctx.translate(0, w * 0.10); ctx.strokeStyle = lo; ctx.lineWidth = w; path(); ctx.stroke();
+    ctx.restore();
+    ctx.strokeStyle = color; ctx.lineWidth = w; path(); ctx.stroke();
+    ctx.save();
+    ctx.globalAlpha = 0.55;
+    ctx.translate(-w * 0.04, -w * 0.12); ctx.strokeStyle = hi; ctx.lineWidth = w * 0.58; path(); ctx.stroke();
+    ctx.globalAlpha = 0.85;
+    ctx.translate(-w * 0.03, -w * 0.10); ctx.lineWidth = w * 0.26; path(); ctx.stroke();
+    ctx.restore();
+  }
+
+  function frame(now) {
+    const dt = Math.min(0.05, last ? (now - last) / 1000 : 0); last = now;
+    const R = RAD();
+
+    if (phase === "float") y = S * 0.16 + Math.sin(now / 900) * S * 0.012;
+    if (phase === "drop") {
+      vy += G * S * dt; y += vy * dt;
+      if (y >= restY) { y = restY; phase = "settle"; tImpact = now; squash = 1; }
+    }
+    if (phase === "settle") squash = Math.max(0, squash - dt * 4.5);
+    const grown = phase === "settle" ? (now - tImpact) / 1000 * FRONT * S : 0;   // front radius, px
+
+    // ---- backdrop
+    const bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, "#2b2064"); bg.addColorStop(1, "#0f0a2a");
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+    const haze = ctx.createRadialGradient(W * 0.5, H * 0.1, 0, W * 0.5, H * 0.1, H);
+    haze.addColorStop(0, "#7a5cff2e"); haze.addColorStop(1, "#7a5cff00");
+    ctx.fillStyle = haze; ctx.fillRect(0, 0, W, H);
+
+    // ---- the limb: lavender, lit from the top-left
+    drawTube("#6d57c9", "#b9a8ff", "#2d2070", 1);
+
+    // ---- the overgrowth: the same tube, dark and fuzzy, clipped to a disc
+    //      that grows from the point of impact. The clip IS the effect.
+    if (grown > 0) {
+      ctx.save();
+      ctx.beginPath(); ctx.arc(contact.x, contact.y, grown, 0, Math.PI * 2); ctx.clip();
+      drawTube("#1a1030", "#2a1a44", "#0b0618", 1.06);
+      for (const q of speckles) {
+        ctx.fillStyle = q.light ? `rgba(120,96,180,${q.a})` : `rgba(6,3,14,${q.a})`;
+        ctx.beginPath(); ctx.arc(q.x, q.y, q.r, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.restore();
+      for (const h of hairs) {
+        const d = Math.hypot(h.x - contact.x, h.y - contact.y);
+        if (d > grown) continue;
+        // fibres closest to the front are still growing
+        const k = Math.min(1, (grown - d) / (S * 0.12));
+        const L = h.len * k;
+        ctx.strokeStyle = "#0e0820"; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(h.x, h.y);
+        ctx.lineTo(h.x + (h.nx + h.tilt * h.ny) * L, h.y + (h.ny - h.tilt * h.nx) * L); ctx.stroke();
+        if (h.flower && k > 0.6) {
+          const f = Math.min(1, (k - 0.6) / 0.4), fx = h.x + h.nx * L, fy = h.y + h.ny * L;
+          ctx.fillStyle = h.hue;
+          for (let j = 0; j < 3; j++) {
+            ctx.beginPath(); ctx.arc(fx + Math.cos(j * 2.1) * 2.4 * f, fy + Math.sin(j * 2.1) * 2.4 * f, 2 * f, 0, Math.PI * 2); ctx.fill();
+          }
+        }
+        // spores lift off just behind the front
+        if (!reduce && k < 0.5 && Math.random() < 0.06)
+          particles.push({ x: h.x, y: h.y, vx: (Math.random() - 0.5) * 18, vy: -12 - Math.random() * 22, life: 1.2 + Math.random() * 1.6, t: 0, c: Math.random() < 0.5 ? "#ffb066" : "#d9c9ff" });
+      }
+    }
+    // ---- particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const q = particles[i]; q.t += dt; if (q.t > q.life) { particles.splice(i, 1); continue; }
+      q.x += q.vx * dt; q.y += q.vy * dt;
+      ctx.globalAlpha = 1 - q.t / q.life;
+      ctx.fillStyle = q.c; ctx.beginPath(); ctx.arc(q.x, q.y, 1.4, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // ---- the sphere: glow, body, and the squash on impact
+    const glow = ctx.createRadialGradient(contact.x, y, R * 0.6, contact.x, y, R * 2.6);
+    glow.addColorStop(0, "#ff9a4a66"); glow.addColorStop(1, "#ff9a4a00");
+    ctx.fillStyle = glow; ctx.fillRect(contact.x - R * 3, y - R * 3, R * 6, R * 6);
+    ctx.save();
+    ctx.translate(contact.x, y + R);
+    ctx.scale(1 + squash * 0.14, 1 - squash * 0.2);
+    const body = ctx.createRadialGradient(-R * 0.3, -R * 1.3, R * 0.1, 0, -R, R * 1.1);
+    body.addColorStop(0, "#fff1dc"); body.addColorStop(0.5, "#ffb166"); body.addColorStop(1, "#e2672a");
+    ctx.fillStyle = body; ctx.beginPath(); ctx.arc(0, -R, R, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+
+    requestAnimationFrame(frame);
+  }
+
+  addEventListener("resize", () => { build(); });
+  build(); reset();
+  requestAnimationFrame(frame);
+</script>

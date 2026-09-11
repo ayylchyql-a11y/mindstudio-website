@@ -1,0 +1,209 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scroll-driven helix flow</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; background: #060606; color: #fff; }
+
+  .scroller { height: 100%; overflow-y: auto; scrollbar-width: thin; }
+  .track { height: 400%; }
+  /* 🩸 100vh，不是 100%：.track 高 400%，100% 会把舞台撑成整条轨道那么高 */
+  .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #060606; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+  .nav {
+    position: absolute; left: 4%; right: 4%; top: 14px; display: flex; justify-content: space-between;
+    font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: #ffffff7a;
+  }
+  .nav span + span { margin-left: 14px; }
+
+  /* Three copy blocks, one per camera station. They are NOT scrubbed: each
+     one fades over a short band of progress, so the type is always either
+     legible or gone — never half-way. */
+  .copy { position: absolute; width: 190px; pointer-events: none; opacity: var(--s, 0); transform: translateY(calc((1 - var(--s, 0)) * 12px)); }
+  .copy h2 { font-size: 15px; font-weight: 500; line-height: 1.25; letter-spacing: -.01em; margin-bottom: 8px; }
+  .copy p { font-size: 7.5px; line-height: 1.5; color: #ffffffa8; margin-bottom: 12px; }
+  .copy .btn { display: inline-block; padding: 5px 9px; border: 1px solid #ffffff; font-size: 7px; letter-spacing: .06em; }
+  .c1 { left: 4%; top: 40%; }
+  .c2 { right: 4%; top: 12%; }
+  .c3 { right: 4%; bottom: 12%; }
+
+  .readout {
+    position: absolute; left: 4%; bottom: 9%;
+    font: 500 11px/1.7 ui-monospace, SFMono-Regular, Menlo, monospace; color: #ffffff66;
+  }
+  .readout b { color: #ffb066; font-weight: 600; }
+  .cue { position: absolute; right: 4%; bottom: 9%; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #ffffff55; opacity: var(--cue, 1); }
+</style>
+
+<div class="scroller" id="scroller">
+  <div class="track">
+    <div class="stage" id="stage">
+      <canvas id="cv"></canvas>
+      <div class="nav"><span>GeneTrace</span><span><span>Story</span><span>Kits</span><span>Science</span><span>Sign in</span></span></div>
+
+      <div class="copy c1" id="c1">
+        <h2>Learn what your genes reveal about you and your roots.</h2>
+        <p>Explore your heritage and connect with kin through one easy DNA kit.</p>
+        <span class="btn">Begin here</span>
+      </div>
+      <div class="copy c2" id="c2">
+        <h2>Reveal the journeys encoded in your blood.</h2>
+        <p>Map your lineage across centuries and civilizations.</p>
+        <span class="btn">Discover now</span>
+      </div>
+      <div class="copy c3" id="c3">
+        <h2>Where data meets origin.</h2>
+        <p>Cutting-edge genetic insights built on years of discovery.</p>
+        <span class="btn">Read more</span>
+      </div>
+
+      <div class="readout">progress <b id="rp">0.000</b> · station <b id="rs">1</b></div>
+      <div class="cue">scroll ↓</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const scroller = document.getElementById("scroller");
+  const stage = document.getElementById("stage");
+  const cv = document.getElementById("cv");
+  const ctx = cv.getContext("2d");
+  const rp = document.getElementById("rp"), rs = document.getElementById("rs");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- the helix, in world units ----------
+     Axis along x. Two strands wind around it; a rung joins them every PITCH
+     units and is split into two halves with a gap in the middle — that gap is
+     what makes it read as base pairs rather than a ladder. */
+  const LEN = 3200, RADIUS = 78, TURN = 340, PITCH = 34, STEP = 9;
+  const START = -1400;                     // runs off both edges of every station
+  const strands = [[], []];
+  for (let x = START; x <= LEN; x += STEP) {
+    const a = (x / TURN) * Math.PI * 2;
+    strands[0].push({ x, y: Math.cos(a) * RADIUS, z: Math.sin(a) * RADIUS });
+    strands[1].push({ x, y: -Math.cos(a) * RADIUS, z: -Math.sin(a) * RADIUS });
+  }
+  const rungs = [];
+  for (let x = START + PITCH / 2; x < LEN; x += PITCH) {
+    const a = (x / TURN) * Math.PI * 2, cy = Math.cos(a) * RADIUS, cz = Math.sin(a) * RADIUS;
+    // each half runs from the strand to 18% short of the axis
+    rungs.push([{ x, y: cy, z: cz }, { x, y: cy * 0.18, z: cz * 0.18 }]);
+    rungs.push([{ x, y: -cy, z: -cz }, { x, y: -cy * 0.18, z: -cz * 0.18 }]);
+  }
+
+  /* ---------- camera stations ----------
+     Scroll is one continuous dolly along the axis (camX). Everything else —
+     yaw, pitch, distance — is keyframed at four stations and eased between
+     them, so the close-up in the middle is a *place* the scroll passes
+     through, not a separate scene. */
+  const STATIONS = [
+    { at: 0.00, yaw: 0.62, pitch: 0.36, dist: 820, roll: 0.0 },
+    { at: 0.38, yaw: 1.05, pitch: 0.10, dist: 250, roll: 0.5 },
+    { at: 0.72, yaw: -0.45, pitch: -0.28, dist: 760, roll: -0.2 },
+    { at: 1.00, yaw: -0.70, pitch: -0.10, dist: 900, roll: -0.35 },
+  ];
+  const smooth = (x) => x * x * (3 - 2 * x);
+  const clamp01 = (v) => Math.min(1, Math.max(0, v));
+  const slice = (p, a, b) => clamp01((p - a) / (b - a));
+  function camera(p) {
+    let i = 0; while (i < STATIONS.length - 2 && p > STATIONS[i + 1].at) i++;
+    const A = STATIONS[i], B = STATIONS[i + 1], k = smooth(slice(p, A.at, B.at));
+    const mix = (key) => A[key] + (B[key] - A[key]) * k;
+    return { yaw: mix("yaw"), pitch: mix("pitch"), dist: mix("dist"), roll: mix("roll"), x: p * (LEN - 700) + 350 };
+  }
+
+  let W = 0, H = 0, DPR = 1;
+  function size() {
+    DPR = Math.min(devicePixelRatio || 1, 2);
+    W = stage.clientWidth; H = stage.clientHeight;
+    cv.width = W * DPR; cv.height = H * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    paint(true);
+  }
+
+  let p = 0, drawn = -1;
+  function project(pt, cam, cy, sy, cp, sp, cr, sr) {
+    // translate to the camera, then yaw (about y), pitch (about x), roll (about z)
+    let x = pt.x - cam.x, y = pt.y, z = pt.z;
+    [x, z] = [x * cy - z * sy, x * sy + z * cy];
+    [y, z] = [y * cp - z * sp, y * sp + z * cp];
+    [x, y] = [x * cr - y * sr, x * sr + y * cr];
+    z += cam.dist;
+    if (z < 40) return null;                       // behind / on the lens
+    const f = H * 1.1, s = f / z;
+    return { x: W / 2 + x * s, y: H / 2 + y * s, s, z };
+  }
+
+  function paint(force) {
+    if (!force && Math.abs(p - drawn) < 0.0004) return;
+    drawn = p;
+    const cam = camera(p);
+    const cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw);
+    const cp = Math.cos(cam.pitch), sp = Math.sin(cam.pitch);
+    const cr = Math.cos(cam.roll), sr = Math.sin(cam.roll);
+    const P = (pt) => project(pt, cam, cy, sy, cp, sp, cr, sr);
+
+    ctx.fillStyle = "#060606"; ctx.fillRect(0, 0, W, H);
+
+    // gather every segment with its depth, then paint far → near
+    const segs = [];
+    for (const s of strands) for (let i = 1; i < s.length; i++) {
+      const a = P(s[i - 1]), b = P(s[i]); if (!a || !b) continue;
+      segs.push({ a, b, z: (a.z + b.z) / 2, rung: false });
+    }
+    for (const r of rungs) {
+      const a = P(r[0]), b = P(r[1]); if (!a || !b) continue;
+      segs.push({ a, b, z: (a.z + b.z) / 2, rung: true });
+    }
+    segs.sort((u, v) => v.z - u.z);
+
+    ctx.lineCap = "round";
+    for (const g of segs) {
+      const s = (g.a.s + g.b.s) / 2;                 // screen scale ≈ 1/depth
+      const fog = clamp01(1.25 - g.z / 1500);        // far segments sink into black
+      if (fog <= 0) continue;
+      if (g.rung) {
+        // glow (wide, faint) → body → hot core. Three strokes, no shadowBlur.
+        const w = 9 * s * H / 400;
+        ctx.strokeStyle = `rgba(255,110,20,${(0.22 * fog).toFixed(3)})`; ctx.lineWidth = w * 3.2;
+        ctx.beginPath(); ctx.moveTo(g.a.x, g.a.y); ctx.lineTo(g.b.x, g.b.y); ctx.stroke();
+        ctx.strokeStyle = `rgba(255,140,40,${fog.toFixed(3)})`; ctx.lineWidth = w;
+        ctx.beginPath(); ctx.moveTo(g.a.x, g.a.y); ctx.lineTo(g.b.x, g.b.y); ctx.stroke();
+        ctx.strokeStyle = `rgba(255,225,170,${(0.9 * fog).toFixed(3)})`; ctx.lineWidth = w * 0.32;
+        ctx.beginPath(); ctx.moveTo(g.a.x, g.a.y); ctx.lineTo(g.b.x, g.b.y); ctx.stroke();
+      } else {
+        const w = 13 * s * H / 400;
+        ctx.strokeStyle = `rgba(52,52,60,${fog.toFixed(3)})`; ctx.lineWidth = w;
+        ctx.beginPath(); ctx.moveTo(g.a.x, g.a.y); ctx.lineTo(g.b.x, g.b.y); ctx.stroke();
+        ctx.strokeStyle = `rgba(150,150,165,${(0.35 * fog).toFixed(3)})`; ctx.lineWidth = w * 0.22;
+        ctx.beginPath(); ctx.moveTo(g.a.x - w * 0.15, g.a.y - w * 0.22); ctx.lineTo(g.b.x - w * 0.15, g.b.y - w * 0.22); ctx.stroke();
+      }
+    }
+    // a warm pool of light where the rungs are densest on screen
+    const v = ctx.createRadialGradient(W * 0.5, H * 0.5, 0, W * 0.5, H * 0.5, H * 0.9);
+    v.addColorStop(0, "#ff7a1a10"); v.addColorStop(1, "#00000000");
+    ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
+  }
+
+  function readProgress() {
+    const max = scroller.firstElementChild.offsetHeight - scroller.clientHeight;
+    p = max > 0 ? clamp01(scroller.scrollTop / max) : 0;
+    // copy blocks: in, hold, out — each edge is 8% of the scroll
+    const s1 = 1 - slice(p, 0.24, 0.32);
+    const s2 = slice(p, 0.32, 0.40) * (1 - slice(p, 0.62, 0.70));
+    const s3 = slice(p, 0.70, 0.78);
+    document.getElementById("c1").style.setProperty("--s", s1.toFixed(3));
+    document.getElementById("c2").style.setProperty("--s", s2.toFixed(3));
+    document.getElementById("c3").style.setProperty("--s", s3.toFixed(3));
+    stage.style.setProperty("--cue", (1 - slice(p, 0, 0.1)).toFixed(3));
+    rp.textContent = p.toFixed(3);
+    rs.textContent = p < 0.32 ? 1 : p < 0.70 ? 2 : 3;
+  }
+  let raf = 0;
+  scroller.addEventListener("scroll", () => { readProgress(); if (!raf) raf = requestAnimationFrame(() => { raf = 0; paint(); }); }, { passive: true });
+  addEventListener("resize", size);
+  size(); readProgress();
+</script>

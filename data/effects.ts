@@ -82,8 +82,9 @@ export interface Effect {
    * `hover` / `scroll` 在小预览里是静止画面 —— 底栏标出来，
    * 否则看着像效果坏了。
    * 🩸这个字段是**量出来的**，不是拍脑袋填的：14 条里只有 3 条 self。
+   * `click` 是 09-11 那批加的：沉浸式漂浮那条要点一下才落球。
    */
-  plays: "self" | "hover" | "scroll";
+  plays: "self" | "hover" | "scroll" | "click";
   /** 卡片占位底与详情页点缀色。取效果本身的主色，不是分类色。 */
   accent: string;
   /**
@@ -165,6 +166,243 @@ export const effects: Effect[] = [
       label: "Viewer built on RuiC-card-skill by HRuiCcc \u00b7 MIT",
       url: "https://github.com/HRuiCcc/RuiC-card-skill",
     },
+  },
+  {
+    slug: "hover-door-bloom",
+    category: "web-effects",
+    date: "2026-09-11",
+    plays: "hover",
+    title: { en: "Hover-triggered door bloom", zh: "悬停触发的车门绽放", "zh-tw": "懸停觸發的車門綻放" },
+    gist: {
+      en: "Hover the car and the door swings open with flowers pouring out; leave and it all rewinds from wherever it got to. One clock that runs both ways.",
+      zh: "指针停在车上，车门打开、花从车里涌出来；指针一离开，整段从当前位置倒着放回去。一个能正走也能倒走的时钟。",
+      "zh-tw": "指標停在車上，車門打開、花從車裡湧出來；指標一離開，整段從當前位置倒著放回去。一個能正走也能倒走的時鐘。",
+    },
+    height: 400,
+    accent: "#b8174a",
+    anatomy: [
+      "The original is a rendered clip: <code>video.play()</code> on <code>pointerenter</code>, <code>playbackRate = -1</code> on <code>pointerleave</code>. The property that matters is that leaving mid-way <b>rewinds from where it is</b> — it never snaps to frame 0. Frame-diffing the source shows the door part-way closed at 0.8s, re-opening at 1.0s: the clip reverses and resumes from the same spot.",
+      "This sample has no clip, so it keeps one number <code>t</code> in 0…1 and moves it at ±1/1500 per ms in a <code>requestAnimationFrame</code> loop. Hover sets the direction to +1, leaving sets it to −1; the loop stops when <code>t</code> hits either end. With a real asset the whole integration is <code>video.currentTime = t * video.duration</code>.",
+      "Every part reads its own <b>slice</b> of the clock: door 0–0.45, bonnet 0.08–0.55, and each bloom a private window inside 0.30–1. So the sequence — door first, bonnet a beat behind, flowers spilling one after another — is data, not a chain of callbacks.",
+      "The door is an HTML element, not an SVG group: Safari ignores 3D transforms on SVG children, and a door swing is <code>rotateY(-56deg)</code> around <code>transform-origin: 100% 50%</code> (the hinge edge) under a 640px perspective on the car. The cabin interior is painted <b>over</b> the body in the SVG and hidden by the closed door.",
+      "JS writes only custom properties: <code>--door</code>, <code>--hood</code>, and one <code>--k</code> per bloom. The transforms stay in CSS (<code>translate(calc(var(--dx) * var(--k)))</code> …), so the blooms' directions and sizes are declared per element and the script never touches a transform string.",
+      "Blooms use an ease-out-back on arrival — they overshoot by 1.7 and settle — because petals that stop dead read as icons scaling in. The door uses a plain cubic ease-out: hinges do not overshoot.",
+      "Hover only exists on a fine pointer. On touch the same element toggles the clock on tap, and the hint changes to say so.",
+    ],
+    tokens: [
+      { label: "Clock", value: "1500ms forward · same speed reversed" },
+      { label: "Door", value: "rotateY −56° · slice 0–0.45 · ease-out cubic" },
+      { label: "Bonnet", value: "rotate −16° (2D, hinge at rear edge) · slice 0.08–0.55" },
+      { label: "Blooms", value: "13 · windows inside 0.30–1 · ease-out back (c = 1.70158)" },
+      { label: "Perspective", value: "640px on the car, origin 50% 40%" },
+      { label: "Reverse", value: "from current t, never from 0" },
+    ],
+    prompt:
+      "Build a hover-triggered 'door bloom' hero in vanilla HTML/CSS/JS. A pale studio background, a serif magenta headline, and a side-view car built from inline SVG. Make the car door a separate absolutely-positioned HTML div containing its own SVG piece, with transform-origin: 100% 50% and transform: rotateY(calc(var(--door) * -56deg)), inside a parent with perspective: 640px; SVG children cannot take 3D transforms in Safari. Paint the cabin interior in the body SVG on top of the body so the open door reveals it. Implement ONE progress clock t in 0..1 advanced in requestAnimationFrame at ±1/1500 per millisecond: pointerenter on the car sets direction +1, pointerleave sets −1, and the loop stops at either end — leaving mid-way MUST rewind from the current t, never jump to 0. Each animated part reads a slice of t: door slice(t, 0, .45) with ease-out cubic; bonnet slice(t, .08, .55) rotating −16° about its rear edge; 13 blooms (circles with radial gradients and rotated leaf shapes) each with a private window inside 0.30..1 and an ease-out-back curve (c = 1.70158). JS writes only custom properties (--door, --hood, one --k per bloom); the transforms live in CSS as translate(calc(var(--dx) * var(--k))) scale(calc(var(--s) * var(--k))). Give the door a drop-shadow that grows with its angle. On a coarse pointer (no hover), toggle the clock on tap instead. Under prefers-reduced-motion jump straight to the end state.",
+    caveats: [
+      "A real <code>&lt;video&gt;</code> only reverses cleanly if its keyframe interval is short (encode with a keyframe every 5–10 frames). <code>playbackRate = -1</code> on a normally-encoded clip stutters, and Safari ignores negative rates for some codecs entirely — a canvas frame sequence driven by the same clock is the reliable path.",
+      "The hover target must be the <b>resting</b> car, not the animated parts: a bloom that scales out past the pointer and then shrinks back under it fires enter/leave in a loop. Here the blooms have <code>pointer-events: none</code>.",
+      "The stylised car is illustration, not the rendered asset in the source. The point of the sample is the reversible clock and the slicing; swap the SVG for a clip or frame sequence and nothing else changes.",
+    ],
+    source: { label: "@优卓UX上岸社 (Douyin) · 「动效描述」第 3 集 · Art.Car", at: "0:00" },
+  },
+  {
+    slug: "hover-tinted-service-list",
+    category: "web-effects",
+    date: "2026-09-11",
+    plays: "hover",
+    title: { en: "Hover-tinted service list", zh: "悬停换色的服务清单", "zh-tw": "懸停換色的服務清單" },
+    gist: {
+      en: "A list where every row owns a colour: hover one and the whole section repaints to it, the row steps forward, and the price, blurb and preview card follow.",
+      zh: "每一行自带一个颜色：指针停在哪行，整块区域就染成哪行的色，那一行往前站一步，右边的价格、说明和预览卡跟着换。",
+      "zh-tw": "每一行自帶一個顏色：指標停在哪行，整塊區域就染成哪行的色，那一行往前站一步，右邊的價格、說明和預覽卡跟著換。",
+    },
+    height: 400,
+    accent: "#4c3ff2",
+    anatomy: [
+      "The section's background is a single custom property, <code>--tint</code>, with <code>transition: background-color 600ms</code>. A row hover writes that one property and nothing else on the page knows colour exists. Frame-diffing the source: blue → red → orange → green → teal, one full repaint per row crossing.",
+      "Rows rest at <code>opacity: .42</code>; the active one goes to 1 and steps 6px to the right. The step is the part people feel — a colour change alone reads as the page doing something, the translate reads as <i>this row</i> doing it.",
+      "Listen on <code>pointerenter</code> per row, not <code>pointermove</code>: one event per row crossing instead of one per pixel, and no work at all while the pointer sits still.",
+      "The right column does not morph. Price and blurb fade <b>out</b> (220ms, 4px down), get replaced, then fade back in. A single cross-fade shows half of one price on top of half of another, which is unreadable for the whole 220ms.",
+      "The preview card leans 4° in the direction the pointer travelled (down the list = clockwise) and settles over 500ms. It is set with a custom property and reset 60ms later, so the settle is a CSS transition, not a keyframe.",
+      "The active row is kept on leave. The section never returns to a 'no selection' state — it lands on row 1 at load so the right column is never empty.",
+      "Rows are focusable and <code>focus</code> drives the same <code>select()</code>: keyboard users get the whole effect, including the repaint.",
+    ],
+    tokens: [
+      { label: "Section repaint", value: "600ms cubic-bezier(.22,.61,.36,1)" },
+      { label: "Row rest / active", value: "opacity .42 → 1 · translateX 6px · 300ms" },
+      { label: "Text swap", value: "out 220ms → replace → in 220ms" },
+      { label: "Card lean", value: "±4° · settle 500ms" },
+      { label: "Trigger", value: "pointerenter + focus, per row" },
+    ],
+    prompt:
+      "Build a hover-tinted service list in vanilla HTML/CSS/JS. The page body declares --tint and uses it as background-color with transition: background-color 600ms cubic-bezier(.22,.61,.36,1). Left column: 8 rows (serif, 21px) each with a category label and a duration; rows rest at opacity .42, the active row is opacity 1 and translateX(6px), both transitioned 300ms. Each row has its own colour, price, blurb and gradient artwork in a data array. On pointerenter (not pointermove) and on focus, call select(i): write the row's colour into --tint on the body, toggle an 'on' class so only that row is active, and update the right column. Right column: a 30px serif price, a 7.5px blurb, a white 'Book Service' button, and a 132×96 white preview card whose inner area shows the row's gradient. Swap the price and blurb by adding a class that fades them out (opacity 0, translateY 4px, 220ms), replacing the text after 220ms, then removing the class; never cross-fade in place. Lean the card ±4° in the direction of travel via a custom property and reset it 60ms later so it settles over a 500ms transition. Keep the last hovered row active on pointer leave and select row 1 at load. Make rows focusable (tabindex 0). Under prefers-reduced-motion drop every transition.",
+    caveats: [
+      "Transitioning <code>background-color</code> on the <b>body</b> repaints the whole viewport for 600ms. Fine for a section; on a page with a big fixed backdrop-filter or heavy shadows it will show as jank — scope the tint to the section element instead.",
+      "Eight saturated tints and dark text: check contrast for every one. #e0a12a (the amber row) is the borderline case here at 21px serif; below ~18px it would fail.",
+      "Row hover on a list this dense means the tint changes on every pass of the pointer across it, which is a lot of colour when someone is just moving to the right column. A 60–80ms enter delay before committing the select is the usual fix on a real page; the sample leaves it instant so the mechanism is visible.",
+    ],
+    source: { label: "@优卓UX上岸社 (Douyin) · 「动效描述」第 3 集 · Art.Car services", at: "0:04" },
+  },
+  {
+    slug: "scroll-vortex-transit",
+    category: "web-effects",
+    date: "2026-09-11",
+    plays: "scroll",
+    title: { en: "Scroll-driven vortex transit", zh: "滚动驱动的漩涡穿隧", "zh-tw": "捲動驅動的漩渦穿隧" },
+    gist: {
+      en: "Scroll pushes the camera into a cloud tunnel: the hero fades, the bands balloon past the edges, the dark eye grows until it fills the frame, and the next chapter is what is on the other side.",
+      zh: "滚动把镜头推进一条云隧道：首屏标题淡出，云带从画面边缘胀出去，中央的黑洞越长越大直到占满整屏，下一章就在洞的另一头。",
+      "zh-tw": "捲動把鏡頭推進一條雲隧道：首屏標題淡出，雲帶從畫面邊緣脹出去，中央的黑洞越長越大直到佔滿整屏，下一章就在洞的另一頭。",
+    },
+    height: 400,
+    accent: "#7692bc",
+    anatomy: [
+      "Same skeleton as every scroll-driven piece here: a 420%-tall track, a sticky <code>100vh</code> stage, progress read from layout every time (<code>scrollTop / (trackHeight − viewport)</code>), never accumulated from wheel deltas.",
+      "The source is a rendered clip scrubbed by scroll. The sample is procedural so the file stays self-contained: 42 rings stacked in depth, each a handful of arcs whose start, length, width and tint are decided <b>once</b> at load. Scroll moves the camera forward by up to 6 ring-depths; the projection <code>radius = focal / depth</code> is the entire tunnel illusion — near rings balloon past the frame, far ones crowd into the eye.",
+      "🩸 Rings must be painted <b>far → near, sorted by depth after the camera offset</b>. Index order is not depth order once the modulo wraps; painting in index order puts a far ring on top of a near one for a few frames every time the camera passes a ring boundary, which reads as a flicker with no obvious cause.",
+      "Bands are three concentric strokes (widths 1 / 0.62 / 0.3, alphas 0.22 / 0.3 / 0.42) rather than one — a single hard stroke reads as a machined ring, and clouds have no edge. Ring centres also wander on a slow sine with depth so the tunnel bends instead of drilling straight.",
+      "Near bands thin out as their radius approaches the frame diagonal (alpha × (1 − 0.95·k)). Without that, every ring the camera passes through paints a near-vertical arc at the screen edge for a moment, and the edges strobe.",
+      "The eye is a radial gradient whose radius grows with <code>eye²</code> over progress 0.62–0.9 — quadratic so it lingers small and then swallows the frame. The hero drifts up 40px and fades over 0–0.3; the next chapter fades in over 0.86–1 with its labels rising 14px, so the two never share the screen.",
+      "A very slow idle spin (0.00004 rad/ms) keeps the picture alive while the reader is not scrolling, and is disabled under reduced motion — where the sample only repaints on scroll.",
+    ],
+    tokens: [
+      { label: "Scroll distance", value: "420% of the viewport" },
+      { label: "Rings · arcs", value: "42 · 9 per ring" },
+      { label: "Camera travel", value: "6 ring-depths, smoothstep over 0.08–0.86" },
+      { label: "Projection", value: "r = 0.58·min(W,H) / (0.25 + 0.22·z)" },
+      { label: "Eye", value: "grows with eye² over 0.62–0.9" },
+      { label: "Hero out / chapter in", value: "0–0.3 · 0.86–1" },
+    ],
+    prompt:
+      "Build a scroll-driven vortex transit in vanilla HTML/CSS/JS. A scroll container with a 420%-tall track and a sticky stage (height: 100vh, never 100%) holding a full-size canvas; derive progress p from layout every time (scrollTop / (trackHeight - clientHeight)), never accumulate wheel deltas, and register the scroll listener passive. On the canvas draw a procedural cloud tunnel: 42 rings, each with 9 arcs whose start angle, arc length (0.8-3.0 rad), width factor, tint (72% steel blue rgb(118,146,188), 28% dust rgb(196,140,84)) and alpha are generated once from a seeded PRNG. The camera moves forward cam = smoothstep(slice(p, .08, .86)) * 6 ring-depths; each ring's depth is z = ((i - cam) mod 42), depth = 0.25 + 0.22 z, radius = 0.58 * min(W,H) / depth. Sort rings by z descending BEFORE painting (index order is not depth order after the modulo). Offset ring centres by sin(0.42 z + .6) * 10% and cos(0.37 z) * 7% of the focal length so the tunnel bends. Draw each arc as three concentric round-capped strokes (width 1 / .62 / .3 of 0.17·r·w, alpha .22 / .3 / .42 of the band alpha), fade far rings by (1 - z/42), and fade near rings to 5% as their radius approaches 0.75 of the frame diagonal; skip rings beyond that. Rotate arcs by 0.475 z + 0.11 i plus a 0.00004 rad/ms idle drift. Paint a black radial 'eye' at the centre whose radius grows with eye² where eye = slice(p, .62, .9), plus a vignette. Overlay an HTML hero (nav, eyebrow, three-part serif headline, lede) that translates up 40px and fades over p 0-0.3, and a next chapter (six scattered uppercase labels + a serif headline) that fades in over p 0.86-1 with labels rising 14px. Back the canvas at min(devicePixelRatio, 2). Under prefers-reduced-motion disable the idle drift and repaint only on scroll.",
+    caveats: [
+      "This is a stand-in for a rendered clip, not a recreation of one. The mechanism (sticky stage, layout-derived progress, depth-sorted projection, hero out / chapter in) is what transfers; with a real asset replace the ring loop with <code>video.currentTime = p * duration</code> and keep everything else.",
+      "~1100 arcs × 3 strokes per frame is fine at 760×400, and fine at 1440×900 on a laptop. On a 4K canvas at DPR 2 it is not; cap the backing store at DPR 2 (done here) and consider dropping the ring count on large stages.",
+      "The eye is opaque black by 0.9, so the next chapter must sit on the same black — a lighter chapter background would flash through the eye's soft edge.",
+    ],
+    source: { label: "@优卓UX上岸社 (Douyin) · 「动效描述」第 3 集 · Void Atlas", at: "0:06" },
+  },
+  {
+    slug: "click-drop-overgrowth",
+    category: "web-effects",
+    date: "2026-09-11",
+    plays: "click",
+    title: { en: "Immersive float: drop and overgrow", zh: "沉浸式漂浮：落球与蔓生", "zh-tw": "沉浸式漂浮：落球與蔓生" },
+    gist: {
+      en: "A glowing sphere floats above a soft shape. Click and it drops, lands with a squash, and from the point of impact a dark fur creeps over the surface with sparks and small flowers riding the front.",
+      zh: "一颗发光球悬在一段柔软的形体上方。点一下它就落下、砸出一记压扁，然后从接触点开始，一层深色绒毛沿着表面蔓延开来，火星和小花跟在蔓延的前沿上。",
+      "zh-tw": "一顆發光球懸在一段柔軟的形體上方。點一下它就落下、砸出一記壓扁，然後從接觸點開始，一層深色絨毛沿著表面蔓延開來，火星和小花跟在蔓延的前沿上。",
+    },
+    height: 400,
+    accent: "#ff9a4a",
+    anatomy: [
+      "Three phases in one state machine: <b>float</b> (a 900ms sine bob), <b>drop</b> (gravity 3.2 heights/s², integrated per frame), <b>settle</b> (a squash that decays at 4.5/s, and the growth clock starts). The click only flips float → drop; everything after is physics and time.",
+      "The 'limb' is one cubic Bézier stroked 28% of the height wide with round caps. Its shading is three more strokes of the same path — a shadow band offset down, the body, two highlight bands offset up-left at 55% and 85% alpha. A tube lit from the top-left is just a light band offset from a dark band.",
+      "The landing point is computed, not hard-coded: the curve is sampled 360 times, the sample nearest the sphere's x is found, and the contact is that point minus half the tube width. Change the curve and the sphere still lands on it.",
+      "<b>The overgrowth is a clip.</b> The same tube is drawn again in dark colours, 6% wider, inside <code>ctx.clip()</code> of a circle centred on the contact point whose radius grows at 0.30 heights per second from the moment of impact. Speckles (3 per sample, inside the silhouette) give the fur its texture; they are pre-generated and only ever drawn inside the clip.",
+      "Fibres are fixed points on the silhouette (both sides, 65% kept) with a length and tilt decided at load. A fibre inside the front draws at full length; within 12% of the height of the front it draws at partial length — so the front is where things are still growing, not a hard line. 5% of fibres carry a three-dot flower that pops once the fibre is 60% grown.",
+      "Spores lift off only from fibres in the partially-grown band (6% chance per fibre per frame), drift up at 12–34 px/s and fade over 1.2–2.8s. Two colours, orange and lilac, to match the source frames.",
+      "Second click resets everything; under reduced motion the click jumps straight to the fully overgrown state with no spores.",
+    ],
+    tokens: [
+      { label: "Gravity", value: "3.2 × height / s²" },
+      { label: "Squash on impact", value: "scaleX 1.14 · scaleY 0.8 · decays at 4.5/s" },
+      { label: "Growth front", value: "0.30 × height / s from the contact point" },
+      { label: "Front softness", value: "fibres grow over the last 12% of height" },
+      { label: "Fibres · speckles", value: "~470 · ~1080, generated once" },
+      { label: "Spores", value: "1.2–2.8s life · 12–34 px/s upward" },
+    ],
+    prompt:
+      "Build a click-to-drop overgrowth scene on a single full-size canvas in vanilla JS. Backdrop: vertical gradient #2b2064 → #0f0a2a with a violet radial haze. Draw a 'limb': one cubic Bézier (control points as fractions of width/height) stroked with round caps at a width of 0.28 × height, shaded with three extra strokes of the same path (a dark band offset down 10% of the width, then highlight bands offset up-left at 58% and 26% of the width, 55% and 85% alpha). Sample the curve 360 times with unit normals. An orange sphere (radius 0.105 × height, radial gradient #fff1dc → #ffb166 → #e2672a, plus a wide orange glow) floats at 16% of the height with a 900ms sine bob. On pointerdown switch to a drop phase: integrate vy += 3.2 × height × dt, y += vy × dt, and land when the sphere reaches the tube's top surface directly under it (find the nearest sample by x, subtract half the tube width). On impact set squash = 1 and decay it at 4.5 per second, applying scale(1 + .14 squash, 1 − .2 squash) about the contact point; start a growth clock. Every frame after impact, ctx.clip() to a circle at the contact point with radius = elapsed × 0.30 × height and redraw the tube inside it 6% wider in #1a1030 / #2a1a44 / #0b0618, plus ~1000 pre-generated speckles inside the silhouette. Draw pre-generated fibres rooted on both sides of the silhouette (length 1.2–4.7% of height, random tilt) only when their distance to the contact point is inside the radius, scaling their length by min(1, (radius − d) / (0.12 × height)); 5% of fibres grow a three-dot orange flower once 60% grown. From fibres less than half grown, spawn spores at 6% per frame that rise 12–34 px/s and fade over 1.2–2.8 s, coloured #ffb066 or #d9c9ff. A second click resets. Under prefers-reduced-motion the click jumps to the fully grown state with no spores. Overlay an HTML headline at the bottom: an italic serif eyebrow and two 42px uppercase serif words at the left and right edges.",
+    caveats: [
+      "The growth is radial from the contact point, which is right for one blob. Along a long thin shape it would reach the far end at the same moment it reaches the near end of the next bend; a real build measures distance <b>along the curve</b> (the sample index) instead of Euclidean distance.",
+      "Everything is redrawn every frame, including the pre-generated speckles once the clip is open. At 760×400 that is trivial; on a full-viewport hero at DPR 2 with more speckles, move the fur to an offscreen canvas rendered once and only redraw the clip.",
+      "The 'click anywhere' affordance is a hint label, not a control. Keyboard users have no way in — add a real button that calls the same handler on a production page.",
+    ],
+    source: { label: "@优卓UX上岸社 (Douyin) · 「动效描述」第 3 集 · Visions So", at: "0:12" },
+  },
+  {
+    slug: "scroll-helix-flythrough",
+    category: "web-effects",
+    date: "2026-09-11",
+    plays: "scroll",
+    title: { en: "Scroll-driven helix flow", zh: "滚动驱动的旋流光", "zh-tw": "捲動驅動的旋流光" },
+    gist: {
+      en: "Scroll is one continuous dolly along a glowing double helix. The camera passes through three stations — wide, close enough to see single rungs, wide again from the other side — and the copy swaps at each.",
+      zh: "滚动是沿着一条发光双螺旋的一次连续推轨。镜头经过三个站位 —— 远景、近到能看清单根横档、再从另一侧回到远景 —— 每到一站换一段文案。",
+      "zh-tw": "捲動是沿著一條發光雙螺旋的一次連續推軌。鏡頭經過三個站位 —— 遠景、近到能看清單根橫檔、再從另一側回到遠景 —— 每到一站換一段文案。",
+    },
+    height: 400,
+    accent: "#ff8c28",
+    anatomy: [
+      "The helix is geometry, not a picture: two strands winding around the x-axis (radius 78, one turn per 340 units, a point every 9), and a rung every 34 units split into two halves that stop 18% short of the axis. That gap is what makes it read as base pairs rather than a ladder.",
+      "<b>Scroll is one dolly.</b> The camera's x is <code>p × length</code>, continuously. Yaw, pitch, roll and distance are keyframed at four <i>stations</i> (p = 0, 0.38, 0.72, 1) and smoothstepped between them, so the close-up in the middle is a place the scroll passes through, not a separate scene. Frame-diffing the source: wide → macro on single rungs → wide from a different angle, with the copy block moving corner to corner.",
+      "Every strand segment and rung half is projected (translate → yaw → pitch → roll → perspective with focal 1.1 × height), given a depth, and the whole list is sorted far → near before painting. Without the sort, a near rung paints under a far strand the moment the camera turns.",
+      "Rungs are three strokes each: a wide 22%-alpha glow, the orange body, and a thin hot core at 32% of the width — no <code>shadowBlur</code>, which would cost more than the whole scene. Strands are a dark body with a thin lighter highlight offset up-left.",
+      "Stroke width is <code>base × screenScale</code> (screen scale ≈ 1/depth), so a rung 250 units from the lens is eight times thicker than one at 2000. Fog: alpha = clamp(1.25 − z/1500), far geometry sinks into the black rather than stopping at a draw distance.",
+      "Copy blocks are <b>not scrubbed</b>. Each fades over an 8%-wide band of progress and holds in between, so the type is always fully legible or gone. Station 1 is bottom-left, station 2 top-right, station 3 bottom-right, mirroring the source.",
+      "Repaint is skipped when progress moved less than 0.0004; the scroll handler only records progress and schedules one <code>requestAnimationFrame</code>.",
+    ],
+    tokens: [
+      { label: "Scroll distance", value: "400% of the viewport" },
+      { label: "Helix", value: "radius 78 · 340/turn · rung every 34 · gap 18%" },
+      { label: "Stations (p)", value: "0 · 0.38 · 0.72 · 1" },
+      { label: "Distance", value: "820 → 250 → 760 → 900" },
+      { label: "Focal", value: "1.1 × stage height" },
+      { label: "Rung glow", value: "3 strokes: 3.2w @ .22 · 1w · .32w hot core" },
+      { label: "Copy bands", value: "out 0.24–0.32 · in 0.32–0.40 / out 0.62–0.70 · in 0.70–0.78" },
+    ],
+    prompt:
+      "Build a scroll-driven helix fly-through in vanilla HTML/CSS/JS. Scroll container with a 400%-tall track and a sticky stage (height: 100vh, never 100%) holding a canvas backed at min(devicePixelRatio, 2). Progress p comes from layout (scrollTop / (trackHeight - clientHeight)), the listener is passive, and the handler only stores p and schedules one requestAnimationFrame. Geometry: two strands along the x-axis from −1400 to 3200, radius 78, one full turn per 340 units, a sample every 9 units; a rung every 34 units split into two halves running from each strand to 18% short of the axis. Camera: x = p × (length − 700) + 350 continuously; yaw / pitch / roll / distance keyframed at four stations {p: 0, yaw .62, pitch .36, dist 820, roll 0}, {.38, 1.05, .10, 250, .5}, {.72, −.45, −.28, 760, −.2}, {1, −.70, −.10, 900, −.35} and interpolated with smoothstep between neighbours. Project every point: translate by −camX, rotate yaw about y, pitch about x, roll about z, add dist to z, discard if z < 40, scale = 1.1 × height / z. Build a list of strand segments and rung halves with their mean depth, sort far → near, then paint: rungs as three round-capped strokes (width 9 × scale × height/400: glow at 3.2× width and rgba(255,110,20,.22), body rgb(255,140,40), hot core at .32× width rgb(255,225,170)), strands as a dark rgb(52,52,60) stroke 13 × scale × height/400 wide with a thin rgb(150,150,165) highlight offset up-left. Multiply every alpha by fog = clamp(1.25 − z/1500, 0, 1). Skip the repaint when |p − lastPainted| < 0.0004. Three HTML copy blocks (headline, blurb, outlined button) at bottom-left, top-right and bottom-right, each with opacity from its own progress band: block 1 = 1 − slice(p, .24, .32); block 2 = slice(p, .32, .40) × (1 − slice(p, .62, .70)); block 3 = slice(p, .70, .78), plus a 12px translateY as they fade. Do not scrub the text with scroll.",
+    caveats: [
+      "The close station (distance 250) puts geometry within 40 units of the lens at some yaw angles; those segments are culled, which is visible as a rung end vanishing if the station is tuned tighter. Keep the near clip or fade segments out as z → 40.",
+      "Segment count is fixed (~1000 strand segments + ~270 rung halves), so cost is constant regardless of scroll speed — but sorting per frame is O(n log n). Above ~5000 segments switch to bucketing by depth.",
+      "The copy bands and the camera stations are tuned together (station 2 at 0.38, block 2 in at 0.32–0.40). Moving one without the other leaves text arriving before the camera does.",
+      "Under reduced motion the scene still scrubs with scroll — there is no autonomous motion to remove — but a page that wants to be gentle should pin the camera at station 1 and let the copy fade only.",
+    ],
+    source: { label: "@优卓UX上岸社 (Douyin) · 「动效描述」第 3 集 · GeneTrace", at: "0:20" },
+  },
+  {
+    slug: "cursor-luminous-gateway",
+    category: "web-effects",
+    date: "2026-09-11",
+    /* 一加载就推轨+起雾+标题入场，光标只是加层视差 —— 轮播里是活的 */
+    plays: "self",
+    title: { en: "Cursor-driven luminous gateway", zh: "光标驱动的辉光流转", "zh-tw": "游標驅動的輝光流轉" },
+    gist: {
+      en: "A glowing doorway on a dusk horizon. The whole scene creeps toward you over 16 seconds, mist rises off the ground, and the cursor tilts the layers apart by depth.",
+      zh: "黄昏地平线上立着一扇发光的门。整个场景用 16 秒缓缓向你推近，雾从地面升起，光标一动，各层按各自的景深错开。",
+      "zh-tw": "黃昏地平線上立著一扇發光的門。整個場景用 16 秒緩緩向你推近，霧從地面升起，游標一動，各層按各自的景深錯開。",
+    },
+    height: 400,
+    accent: "#ff9a5a",
+    anatomy: [
+      "Three motions, three owners. The <b>dolly</b> is one CSS animation on the scene wrapper: <code>scale(1) → scale(1.11)</code> over 16s with a strong ease-out, origin at the horizon (50% 62%) so the push feels aimed at the door. The <b>mist</b> is CSS keyframes on three sheets. The <b>parallax</b> is the only thing JavaScript touches.",
+      "JS writes two numbers, <code>--px</code> and <code>--py</code> in −1…1, eased toward the pointer at 8% per frame. Every layer multiplies them by its own <code>--d</code> in CSS (<code>translate(calc(var(--px) * var(--d)), …)</code>): sky 4px, far ridge 10px, gate 14px, near ridge 18px, water 22px, mist 30px. Adding a layer is one custom property, not another line of script.",
+      "Every layer is 12% larger than the frame (<code>inset: -6%</code>) so neither the parallax nor the dolly ever exposes an edge.",
+      "The door is a white rectangle with four stacked <code>box-shadow</code>s (14px white, 60px peach, 180px orange, 320px deep orange) — that is the bloom — plus a blurred ellipse below it for light on the ground and a masked radial column on the water for the reflection, with 1px ripples inside the same mask. It also tilts <code>rotateY(±6°)</code> with <code>--px</code>, which sells it as an object standing in the scene.",
+      "Mist sheets fade up from 0 to .55 over 7s (delays 0.8 / 1.9 / 3.2s) — the source's 'ground gradually reveals itself' — then drift ±6% on 26 / 19 / 33-second alternating loops so the pattern never repeats.",
+      "Headline lines rise out of an <code>overflow: hidden</code> window (900ms, 140ms stagger) with the second line in a ghost weight, as in the source; the paragraph and button fade in at 700ms.",
+      "The pointer leaving the document fires no further <code>pointermove</code>, so a document <code>mouseout</code> with <code>relatedTarget === null</code> eases the scene back to centre. Parallax is gated behind <code>(pointer: fine)</code> and off under reduced motion, where the dolly and mist drift are also removed.",
+    ],
+    tokens: [
+      { label: "Dolly", value: "scale 1 → 1.11 · 16s cubic-bezier(.16,.6,.3,1) · origin 50% 62%" },
+      { label: "Parallax depths", value: "4 / 10 / 14 / 18 / 22 / 30 px" },
+      { label: "Pointer easing", value: "8% per frame" },
+      { label: "Door bloom", value: "14 · 60 · 180 · 320px shadows" },
+      { label: "Mist", value: "rise 7s to .55 · drift ±6% on 26/19/33s" },
+      { label: "Headline", value: "900ms cubic-bezier(.22,.61,.36,1) · 140ms stagger" },
+    ],
+    prompt:
+      "Build a cursor-driven luminous gateway hero in vanilla HTML/CSS/JS. A .scene wrapper with inset: -6% and transform-origin: 50% 62% animates scale(1) → scale(1.11) over 16s cubic-bezier(.16,.6,.3,1) forwards. Inside it, absolutely positioned layers each declare a depth --d and share one transform: translate(calc(var(--px, 0) * var(--d)), calc(var(--py, 0) * var(--d) * .6)). Layers, back to front: sky (--d 4px; linear gradient #150f3a → #34205a 36% → #8a3f5a 54% → #f28a55 64% → #ffb07a 68%, plus a peach radial glow at 50% 66% and a faint star field on the top half), a far ridge (--d 10px; jagged SVG polygon with a vertical gradient fill), a near ridge (--d 18px; darker polygon), the gate (--d 14px), water (--d 22px; from 66% down, dark gradient, a masked radial reflection column with 1px repeating ripples), and mist (--d 30px). The door is a 4.6%-wide, 29%-tall white rectangle at top 38%, with box-shadow: 0 0 14px 4px #ffffffe6, 0 0 60px 18px #ffb27acc, 0 0 180px 60px #ff8a4a66, 0 0 320px 120px #ff6a2a33, a rotateY(calc(var(--px) * 6deg)) tilt, and a blurred ::after ellipse below it for light on the ground. Mist: three 140%-wide blurred (14px) radial-gradient sheets low in the frame, animated from opacity 0 / translateY(18px) to opacity .55 over 7s with delays .8s, 1.9s, 3.2s, then drifting margin-left −6% → 6% on 26s, 19s and 33s alternate loops. Headline: two lines each in an overflow: hidden window, rising from translateY(110%) over 900ms cubic-bezier(.22,.61,.36,1) with a 140ms stagger, the second line at 52% white; paragraph and button fade in after 700ms. JS: on pointermove set targets tx = clientX/innerWidth*2−1 and ty likewise, ease x += (tx − x) * .08 per requestAnimationFrame, write --px/--py on the scene, and stop the loop once within .001. On a document mouseout with relatedTarget null, ease back to 0,0. Enable only under (pointer: fine) and not under prefers-reduced-motion, where the dolly and mist drift are also disabled.",
+    caveats: [
+      "Four stacked large-radius box-shadows on a moving element repaint every frame the parallax runs. On a full-viewport hero at DPR 2 this shows on integrated GPUs — promote the gate layer with <code>will-change: transform</code> (done) and keep the biggest shadow under ~350px.",
+      "The dolly runs once from page load and never resets; on a route change inside an SPA the animation will not replay unless the element is re-mounted.",
+      "Mist over the water dims the reflection. The sheets here are lowered and capped at .55 opacity for that reason; push them up and the door's reflection disappears, which was the first version of this sample.",
+      "The sky's saturated orange band does not meet contrast for the small paragraph if the copy is moved down; keep text on the dark upper third.",
+    ],
+    source: { label: "@优卓UX上岸社 (Douyin) · 「动效描述」第 3 集 · Gateway", at: "0:26" },
   },
   {
     slug: "bin-eats-label",
@@ -791,6 +1029,7 @@ export const labCopy = {
   /** 预览里静止的那些：说清楚它要人做什么，否则看着像坏了 */
   needsHover: { en: "hover it", zh: "要悬停", "zh-tw": "要停留", ja: "ホバー", ko: "호버", it: "passa sopra" },
   needsScroll: { en: "scroll it", zh: "要滚动", "zh-tw": "要捲動", ja: "スクロール", ko: "스크롤", it: "scorri" },
+  needsClick: { en: "click it", zh: "要点击", "zh-tw": "要點擊", ja: "クリック", ko: "클릭", it: "clicca" },
   /** 有海报的重作品：轮播里是静态图，点开才是真的 */
   openToPlay: { en: "open to play", zh: "\u70b9\u5f00\u53ef\u73a9", "zh-tw": "\u9ede\u958b\u53ef\u73a9", ja: "\u958b\u3044\u3066\u64cd\u4f5c", ko: "\uc5f4\uc5b4\uc11c \uc870\uc791", it: "apri per interagire" },
 } satisfies Record<string, Localized>;

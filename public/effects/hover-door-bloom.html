@@ -1,0 +1,245 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hover-triggered door bloom</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    background: #e9e8ec; color: #1a1620;
+    overflow: hidden; position: relative;
+    -webkit-user-select: none; user-select: none;
+  }
+  /* Studio: a pale room with a soft ceiling grid, so the car has walls to open against. */
+  .room {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(#ffffff00 0 42%, #d9d7de 100%),
+      repeating-linear-gradient(90deg, #ffffff66 0 1px, transparent 1px 64px),
+      linear-gradient(#f3f2f6, #e5e4ea);
+  }
+  .room::after {
+    content: ""; position: absolute; left: 50%; top: 0; width: 46%; height: 42%;
+    transform: translateX(-50%);
+    background: repeating-linear-gradient(0deg, #ffffff88 0 1px, transparent 1px 22px);
+    mask-image: linear-gradient(#000, transparent); -webkit-mask-image: linear-gradient(#000, transparent);
+  }
+
+  .nav { position: absolute; left: 24px; top: 16px; font-size: 11px; font-weight: 500; letter-spacing: .04em; }
+  .pill {
+    position: absolute; left: 50%; top: 12px; transform: translateX(-50%);
+    background: #1a1620; color: #fff; border-radius: 99px; padding: 6px 10px;
+    font-size: 8px; font-weight: 500; line-height: 1; letter-spacing: .06em; display: flex; gap: 12px;
+  }
+  .pill i { opacity: .55; font-style: normal; }
+  h1 {
+    position: absolute; left: 0; right: 0; top: 40px; text-align: center;
+    font: 400 34px/1 "Playfair Display", "Didot", "Bodoni 72", Georgia, serif;
+    letter-spacing: .02em; color: #b8174a; text-transform: uppercase;
+  }
+  h1 em { font-style: italic; }
+  .sub {
+    position: absolute; left: 0; right: 0; top: 118px; text-align: center;
+    font-size: 6.5px; font-weight: 500; line-height: 1.5; letter-spacing: .1em; text-transform: uppercase; color: #5a5464;
+  }
+  .stat {
+    position: absolute; width: 96px; font: 300 22px/1 "Playfair Display", Georgia, serif;
+  }
+  .stat small { display: block; margin-top: 4px; font: 500 6px/1.5 -apple-system, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: #6e6879; }
+  .stat.tl { left: 28px; top: 178px; } .stat.tr { right: 28px; top: 178px; text-align: right; }
+  .stat.bl { left: 28px; top: 300px; } .stat.br { right: 28px; top: 300px; text-align: right; }
+
+  /* ---------- the car ---------- */
+  .car {
+    position: absolute; left: 50%; top: 210px; width: 360px; height: 150px;
+    margin-left: -180px;
+    /* The door is a real 3D swing, so the whole car sits under one perspective
+       and the door rotates about its hinge edge — not a 2D scale trick. */
+    perspective: 640px; perspective-origin: 50% 40%;
+    cursor: pointer;
+  }
+  .car svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .shadow {
+    position: absolute; left: 6%; right: 6%; top: 112px; height: 22px;
+    border-radius: 50%; background: radial-gradient(#00000042, transparent 70%);
+    filter: blur(4px);
+  }
+  .hood {
+    transform-box: fill-box; transform-origin: 0% 100%;
+    transform: rotate(calc(var(--hood, 0) * -16deg));
+  }
+  .door {
+    position: absolute; left: 134px; top: 34px; width: 62px; height: 78px;
+    transform-origin: 100% 50%;          /* hinge = the front edge of the door */
+    transform: rotateY(calc(var(--door, 0) * -56deg));
+    transform-style: preserve-3d; backface-visibility: hidden;
+    filter: drop-shadow(0 0 0 #0000);
+  }
+  .door svg { overflow: visible; }
+
+  .blooms { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
+  .b {
+    position: absolute; left: 156px; top: 96px; width: 26px; height: 26px;
+    border-radius: 50%;
+    /* Each bloom lives at the door sill and is thrown outward by its own vector.
+       `--k` is that bloom's private progress, written by JS from the shared clock. */
+    --k: 0;
+    transform:
+      translate(calc(var(--dx) * var(--k)), calc(var(--dy) * var(--k)))
+      scale(calc(var(--s) * var(--k)))
+      rotate(calc(var(--r, 0deg) * var(--k)));
+    background: radial-gradient(circle at 50% 50%, #5a2410 0 16%, var(--c1) 22% 58%, var(--c2) 80%);
+    box-shadow: 0 6px 10px -4px #00000055;
+  }
+  .b.leaf { border-radius: 100% 0 100% 0; background: linear-gradient(135deg, #7fa25a, #3b6a2e); }
+
+  .hint {
+    position: absolute; left: 0; right: 0; bottom: 12px; text-align: center;
+    font-size: 10px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: #6e6879;
+  }
+  @media (prefers-reduced-motion: reduce) { .hint { display: none; } }
+</style>
+
+<div class="room"></div>
+<div class="nav">Art.Car</div>
+<div class="pill">Home <i>About</i> <i>Services</i> <i>Contact</i></div>
+<h1>Flawl<em>e</em>ss Cl<em>e</em>an<br>F<em>o</em>r Your Car</h1>
+<div class="sub">We bring your car back to life with expert detailing and eco-friendly products<br>that protect every surface and restore that brand-new feel.</div>
+<div class="stat tl">15K+<small>Happy customers who trust us</small></div>
+<div class="stat tr">50+<small>Care services for every detail</small></div>
+<div class="stat bl">7<small>Years of professional experience</small></div>
+<div class="stat br">98%<small>Of clients recommend us</small></div>
+
+<div class="car" id="car">
+  <div class="shadow"></div>
+  <svg viewBox="0 0 360 150" aria-hidden="true">
+    <defs>
+      <linearGradient id="paint" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#9c1f3a"/><stop offset=".55" stop-color="#6e1128"/><stop offset="1" stop-color="#4a0b1b"/>
+      </linearGradient>
+      <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#dfe8f2"/><stop offset="1" stop-color="#8fa3b8"/>
+      </linearGradient>
+    </defs>
+    <!-- body -->
+    <path d="M10 118 L10 86 Q12 68 36 64 L100 60 L132 30 Q138 24 152 24 L234 24 Q248 24 256 32 L286 60 L338 64 Q352 68 352 86 L352 118 Z" fill="url(#paint)"/>
+    <path d="M12 74 L350 74" stroke="#ffffff28" stroke-width="2"/>
+    <path d="M10 104 L352 104" stroke="#00000055" stroke-width="3"/>
+    <!-- cabin interior: painted OVER the body, only visible once the door swings out -->
+    <path d="M136 36 L190 36 L190 110 L136 110 Z" fill="#2a1a1e"/>
+    <path d="M150 62 q8 -4 16 0 v20 q-6 14 -2 26 h-18 v-26 q-2 -12 4 -20z" fill="#b58a5a"/>
+    <rect x="158" y="92" width="26" height="6" rx="3" fill="#8a6540"/>
+    <!-- rear window -->
+    <path d="M110 60 L136 34 L136 60 Z" fill="url(#glass)"/>
+    <!-- windscreen -->
+    <path d="M198 34 L236 34 Q246 34 250 40 L270 60 L198 60 Z" fill="url(#glass)"/>
+    <!-- hood: hinged at the windscreen, the front edge lifts -->
+    <path class="hood" d="M270 60 L338 64 Q352 68 352 82 L290 80 Z" fill="#a52544"/>
+    <!-- lamps + bumper -->
+    <rect x="344" y="88" width="10" height="9" rx="2" fill="#ffe1a8"/>
+    <rect x="8" y="88" width="10" height="9" rx="2" fill="#ff5c5c"/>
+    <path d="M4 112 L356 112" stroke="#d9d9dc" stroke-width="6" stroke-linecap="round"/>
+    <!-- wheels -->
+    <g><circle cx="78" cy="118" r="26" fill="#17141a"/><circle cx="78" cy="118" r="17" fill="#e5e3e8"/><circle cx="78" cy="118" r="7" fill="#9a97a2"/></g>
+    <g><circle cx="282" cy="118" r="26" fill="#17141a"/><circle cx="282" cy="118" r="17" fill="#e5e3e8"/><circle cx="282" cy="118" r="7" fill="#9a97a2"/></g>
+  </svg>
+
+  <!-- The door is an HTML element, not an SVG group: SVG children cannot take
+       3D transforms in Safari, and a swing needs rotateY under perspective. -->
+  <div class="door" id="door">
+    <svg viewBox="134 34 62 78" aria-hidden="true">
+      <path d="M136 60 L136 36 Q140 34 146 34 L192 34 L192 60 Z" fill="#7a1330"/>
+      <path d="M142 58 L142 40 Q144 38 150 38 L188 38 L188 58 Z" fill="url(#glass)"/>
+      <path d="M136 60 L192 60 L192 110 L136 110 Z" fill="url(#paint)"/>
+      <rect x="176" y="80" width="12" height="4" rx="2" fill="#f2e6d8"/>
+      <path d="M136 74 L192 74" stroke="#ffffff28" stroke-width="2"/>
+    </svg>
+  </div>
+
+  <div class="blooms" id="blooms"></div>
+</div>
+<div class="hint">hover the car</div>
+
+<script>
+  /* ---------- one clock, two directions ----------
+     The original drives a rendered clip: `video.play()` on pointerenter,
+     `playbackRate = -1` on pointerleave. The important property is that leaving
+     mid-way REWINDS FROM WHERE IT IS — it never snaps back to frame 0. This
+     sample keeps one progress number `t` in 0…1 and moves it at ±1/DUR per ms;
+     every part reads its own slice of `t`. Swap the parts for a <video> and
+     `video.currentTime = t * video.duration` is the entire integration. */
+  const DUR = 1500;                                  // ms for the full forward run
+  const car = document.getElementById("car");
+  const door = document.getElementById("door");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Blooms: [dx, dy, scale, rotation, colour pair, kind, start, end]
+  const BLOOMS = [
+    [-38, -18, 1.9, 0, ["#ff8a5b", "#c93f2b"], "", .30, .70],
+    [-22, -44, 1.6, 0, ["#ffd36e", "#e0912b"], "", .36, .78],
+    [-58, 6, 1.4, 0, ["#ff6f8f", "#b8174a"], "", .40, .80],
+    [-6, -58, 1.3, 0, ["#ffb1c5", "#d8557d"], "", .44, .86],
+    [-72, -30, 1.2, 0, ["#ffa459", "#d95a1f"], "", .48, .90],
+    [-40, 18, 1.1, 0, ["#f7e08a", "#c7a33a"], "", .50, .92],
+    [-86, -8, 0.9, 0, ["#ff8a5b", "#c93f2b"], "", .56, .96],
+    [-24, -70, 0.9, 0, ["#ffd36e", "#e0912b"], "", .60, 1],
+    [-50, -52, 1.3, 40, null, "leaf", .34, .74],
+    [-80, -44, 1.2, -25, null, "leaf", .46, .88],
+    [-16, -30, 1.1, 70, null, "leaf", .38, .80],
+    [-96, 10, 1.0, 15, null, "leaf", .58, .98],
+    [-64, 24, 0.9, -60, null, "leaf", .52, .94],
+  ];
+  const wrap = document.getElementById("blooms");
+  const nodes = BLOOMS.map(([dx, dy, s, r, c, kind, a, b]) => {
+    const el = document.createElement("i");
+    el.className = "b " + kind;
+    el.style.setProperty("--dx", dx + "px");
+    el.style.setProperty("--dy", dy + "px");
+    el.style.setProperty("--s", s);
+    el.style.setProperty("--r", r + "deg");
+    if (c) { el.style.setProperty("--c1", c[0]); el.style.setProperty("--c2", c[1]); }
+    wrap.appendChild(el);
+    return { el, a, b };
+  });
+
+  const clamp01 = (v) => Math.min(1, Math.max(0, v));
+  const slice = (t, a, b) => clamp01((t - a) / (b - a));
+  const outCubic = (x) => 1 - Math.pow(1 - x, 3);
+  const outBack = (x) => { const c = 1.70158; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+
+  function render(t) {
+    // door: first 45% of the clock. Hood follows 100ms behind.
+    car.style.setProperty("--door", outCubic(slice(t, 0, .45)));
+    car.style.setProperty("--hood", outCubic(slice(t, .08, .55)));
+    // The swung door needs a shadow that grows with its angle, otherwise it
+    // floats in front of the sill instead of standing in the room.
+    door.style.filter = `drop-shadow(${-8 * slice(t, 0, .45)}px 6px 6px #0000004d)`;
+    // blooms: each one owns a window inside 0.30…1 and overshoots on arrival
+    for (const n of nodes) n.el.style.setProperty("--k", outBack(slice(t, n.a, n.b)).toFixed(4));
+  }
+
+  let t = 0, dir = 0, last = 0, raf = 0;
+  function tick(now) {
+    const dt = last ? now - last : 0; last = now;
+    t = clamp01(t + dir * dt / DUR);
+    render(t);
+    if ((dir > 0 && t < 1) || (dir < 0 && t > 0)) raf = requestAnimationFrame(tick);
+    else { raf = 0; last = 0; }
+  }
+  function go(d) {
+    dir = d;
+    if (reduce) { t = d > 0 ? 1 : 0; render(t); return; }
+    if (!raf) { last = 0; raf = requestAnimationFrame(tick); }
+  }
+
+  // Hover on a fine pointer; tap-to-toggle on touch, where there is no hover.
+  if (matchMedia("(hover: hover)").matches) {
+    car.addEventListener("pointerenter", () => go(1));
+    car.addEventListener("pointerleave", () => go(-1));
+  } else {
+    car.addEventListener("click", () => go(dir > 0 ? -1 : 1));
+    document.querySelector(".hint").textContent = "tap the car";
+  }
+  render(0);
+</script>

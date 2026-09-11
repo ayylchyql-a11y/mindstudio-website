@@ -1,0 +1,179 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cursor-driven luminous gateway</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    background: #1a1240; color: #fff; overflow: hidden; position: relative;
+  }
+  /* Every layer is 12% larger than the frame so the parallax never shows an
+     edge, and the whole scene is on one slow dolly-in. */
+  .scene {
+    position: absolute; inset: -6%;
+    transform-origin: 50% 62%;
+    animation: dolly 16s cubic-bezier(.16,.6,.3,1) forwards;
+  }
+  @keyframes dolly { from { transform: scale(1); } to { transform: scale(1.11); } }
+  .layer {
+    position: absolute; inset: 0;
+    /* --px/--py: the cursor, −1…1. --d: this layer's depth (px of travel). */
+    transform: translate(calc(var(--px, 0) * var(--d)), calc(var(--py, 0) * var(--d) * .6));
+    will-change: transform;
+  }
+
+  .sky {
+    --d: 4px;
+    background:
+      radial-gradient(60% 45% at 50% 66%, #ffb27a 0%, #ff7a4a55 35%, #ff7a4a00 70%),
+      linear-gradient(#150f3a 0%, #34205a 36%, #8a3f5a 54%, #f28a55 64%, #ffb07a 68%);
+  }
+  .sky::after {                       /* a handful of stars, high only */
+    content: ""; position: absolute; inset: 0 0 50%;
+    background-image:
+      radial-gradient(#ffffffb0 .6px, transparent 1px),
+      radial-gradient(#ffffff70 .5px, transparent 1px);
+    background-size: 140px 90px, 90px 70px;
+    background-position: 20px 10px, 50px 30px;
+    opacity: .7;
+  }
+  .ridge { --d: 10px; }
+  .ridge svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .ridge.near { --d: 18px; }
+
+  /* Water: the bottom third mirrors the sky, dimmed, with the gate's light
+     laid down it as a soft column + hairline ripples. */
+  .water {
+    --d: 22px;
+    top: 66%;
+    background: linear-gradient(#b0644d 0%, #4a2a4a 20%, #221638 60%, #110b24 100%);
+  }
+  .water::before {
+    content: ""; position: absolute; left: 50%; top: -6%; width: 30%; height: 110%;
+    transform: translateX(-50%);
+    background:
+      repeating-linear-gradient(#ffffff00 0 3px, #ffffff2e 3px 4px, #ffffff00 4px 7px),
+      radial-gradient(50% 50% at 50% 12%, #fff5e8e6, #ffb27a99 28%, #ff9a5a33 55%, transparent 72%);
+    /* the ripples only exist where the light is: mask the stripes with the same ellipse */
+    mask-image: radial-gradient(50% 50% at 50% 12%, #000 30%, transparent 72%);
+    -webkit-mask-image: radial-gradient(50% 50% at 50% 12%, #000 30%, transparent 72%);
+    filter: blur(1.5px);
+  }
+  .water::after {                       /* the shore's black rocks */
+    content: ""; position: absolute; inset: 0 0 auto; height: 12%;
+    background: radial-gradient(100% 100% at 50% 100%, #00000000 55%, #12091e 56%);
+    opacity: .8;
+  }
+
+  .gate { --d: 14px; }
+  .door {
+    position: absolute; left: 50%; top: 38%; width: 4.6%; height: 29%;
+    transform: translateX(-50%) rotateY(calc(var(--px, 0) * 6deg));
+    border-radius: 2px;
+    background: linear-gradient(#ffffff, #fff4e6 60%, #ffd9b0);
+    box-shadow:
+      0 0 14px 4px #ffffffe6,
+      0 0 60px 18px #ffb27acc,
+      0 0 180px 60px #ff8a4a66,
+      0 0 320px 120px #ff6a2a33;
+  }
+  .door::after {                        /* light spilling onto the ground */
+    content: ""; position: absolute; left: 50%; top: 100%; width: 420%; height: 34%;
+    transform: translate(-50%, -30%);
+    background: radial-gradient(50% 50% at 50% 50%, #ffffffcc, #ffb27a66 40%, transparent 70%);
+    filter: blur(6px);
+  }
+
+  /* Fog: three long blurred sheets low in the frame. They fade UP over the
+     first seconds (the "ground reveals itself") and then drift sideways on
+     loops of different lengths so the pattern never repeats. */
+  .fog { --d: 30px; top: 58%; }
+  .fog i {
+    position: absolute; left: -20%; width: 140%; height: 38%;
+    border-radius: 50%;
+    background: radial-gradient(50% 50% at 50% 50%, #ffdcc8, #ffb89a88 45%, transparent 72%);
+    filter: blur(14px);
+    opacity: 0;
+    animation: rise 7s ease-out forwards, drift var(--t) ease-in-out infinite alternate;
+    animation-delay: var(--w), 0s;
+  }
+  .fog i:nth-child(1) { top: 22%; left: -30%; --t: 26s; --w: .8s; }
+  .fog i:nth-child(2) { top: 46%; left: 0; width: 110%; --t: 19s; --w: 1.9s; background: radial-gradient(50% 50% at 40% 50%, #ffc7a8e0, #e0a08a66 45%, transparent 72%); }
+  .fog i:nth-child(3) { top: 66%; left: -40%; --t: 33s; --w: 3.2s; background: radial-gradient(50% 50% at 60% 50%, #ffe0cc, #ffb89a77 40%, transparent 70%); }
+  @keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: .55; transform: translateY(0); } }
+  @keyframes drift { from { margin-left: -6%; } to { margin-left: 6%; } }
+
+  .copy { position: absolute; left: 0; right: 0; top: 24px; text-align: center; pointer-events: none; }
+  .line { overflow: hidden; height: 1.15em; }
+  .line span { display: block; transform: translateY(110%); animation: up 900ms cubic-bezier(.22,.61,.36,1) forwards; }
+  .copy h1 { font-size: 22px; font-weight: 500; letter-spacing: -.01em; }
+  .copy h1 .line:nth-child(2) span { animation-delay: 140ms; color: #ffffff85; font-weight: 400; }
+  .copy p { margin-top: 6px; font-size: 7px; line-height: 1.5; color: #ffffffb0; letter-spacing: .04em; }
+  .copy .btn { display: inline-block; margin-top: 8px; padding: 4px 9px; background: #fff; color: #1a1240; font-size: 6.5px; letter-spacing: .06em; }
+  .copy p, .copy .btn { opacity: 0; animation: fade 700ms ease-out forwards; animation-delay: 700ms; }
+  @keyframes up { to { transform: translateY(0); } }
+  @keyframes fade { to { opacity: 1; } }
+
+  .hint { position: absolute; left: 0; right: 0; bottom: 12px; text-align: center; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: #ffffff66; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scene, .fog i, .line span, .copy p, .copy .btn { animation: none; }
+    .fog i { opacity: .55; }
+    .line span { transform: none; }
+    .copy p, .copy .btn { opacity: 1; }
+    .hint { display: none; }
+  }
+</style>
+
+<div class="scene" id="scene">
+  <div class="layer sky"></div>
+  <div class="layer ridge far">
+    <svg viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="hz" x1="0" y1="0" x2="0" y2="1"><stop offset=".5" stop-color="#4a2d5c"/><stop offset=".68" stop-color="#7a3f58"/></linearGradient></defs>
+      <path fill="url(#hz)" d="M0 268 L28 252 L52 258 L84 236 L106 244 L132 222 L150 230 L176 214 L204 228 L226 220 L252 236 L286 210 L310 224 L336 218 L362 232 L392 226 L420 240 L448 236 L476 246 L504 242 L536 234 L560 240 L588 226 L612 236 L640 214 L662 224 L690 208 L714 220 L742 212 L770 230 L800 218 L828 232 L856 216 L880 228 L910 214 L936 226 L962 220 L1000 236 L1000 400 L0 400Z"/>
+    </svg>
+  </div>
+  <div class="layer ridge near">
+    <svg viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#1b1030" d="M0 282 L22 270 L48 276 L70 258 L96 266 L124 250 L146 262 L170 254 L196 266 L222 256 L250 264 L276 246 L300 258 L322 252 L348 260 L376 256 L410 262 L440 258 L470 264 L500 260 L530 264 L560 258 L590 266 L620 252 L646 262 L672 244 L698 256 L724 250 L752 262 L780 254 L812 262 L840 248 L868 258 L896 250 L926 262 L954 256 L1000 266 L1000 400 L0 400Z"/>
+    </svg>
+  </div>
+  <div class="layer gate"><div class="door"></div></div>
+  <div class="layer water"></div>
+  <div class="layer fog"><i></i><i></i><i></i></div>
+</div>
+
+<div class="copy">
+  <h1><div class="line"><span>Your Personal Gateway To</span></div><div class="line"><span>Global Connection</span></div></h1>
+  <p>Step through and host real-time, multilingual conversations — no extra<br>apps or plugins needed.</p>
+  <span class="btn">contact sales</span>
+</div>
+<div class="hint">move the cursor</div>
+
+<script>
+  /* The cursor only ever writes two numbers, --px and --py in −1…1. Each
+     layer multiplies them by its own --d in CSS, so adding a layer is one
+     custom property, not another line of JavaScript. The numbers are eased
+     towards the target at 8% per frame: the scene follows the hand with a
+     little weight instead of snapping to it. */
+  const scene = document.getElementById("scene");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let tx = 0, ty = 0, x = 0, y = 0, raf = 0;
+  function tick() {
+    x += (tx - x) * 0.08; y += (ty - y) * 0.08;
+    scene.style.setProperty("--px", x.toFixed(4));
+    scene.style.setProperty("--py", y.toFixed(4));
+    raf = (Math.abs(tx - x) > 0.001 || Math.abs(ty - y) > 0.001) ? requestAnimationFrame(tick) : 0;
+  }
+  if (!reduce && matchMedia("(pointer: fine)").matches) {
+    addEventListener("pointermove", (e) => {
+      tx = (e.clientX / innerWidth) * 2 - 1;
+      ty = (e.clientY / innerHeight) * 2 - 1;
+      if (!raf) raf = requestAnimationFrame(tick);
+    }, { passive: true });
+    // the pointer leaving the document fires no further pointermove
+    document.addEventListener("mouseout", (e) => { if (!e.relatedTarget) { tx = 0; ty = 0; if (!raf) raf = requestAnimationFrame(tick); } });
+  }
+</script>

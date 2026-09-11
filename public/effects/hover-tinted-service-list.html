@@ -1,0 +1,125 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hover-tinted service list</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    color: #15121a; overflow: hidden;
+    /* The section IS the swatch: one custom property, transitioned, and every
+       row hover just rewrites it. Nothing else on the page knows about colour. */
+    --tint: #4c3ff2;
+    background: var(--tint);
+    transition: background-color 600ms cubic-bezier(.22,.61,.36,1);
+  }
+  .wrap { position: relative; height: 100%; padding: 26px 32px 22px; display: grid; grid-template-columns: 1fr 200px; gap: 24px; }
+
+  .list { list-style: none; }
+  .row {
+    display: flex; align-items: baseline; gap: 14px;
+    padding: 5px 0; cursor: pointer;
+    font: 400 21px/1.15 "Playfair Display", "Didot", "Bodoni 72", Georgia, serif;
+    letter-spacing: -.005em;
+    opacity: .42;
+    transition: opacity 300ms cubic-bezier(.22,.61,.36,1), transform 300ms cubic-bezier(.22,.61,.36,1);
+  }
+  .row small { font: 500 6.5px/1 -apple-system, sans-serif; letter-spacing: .12em; text-transform: uppercase; opacity: .8; }
+  .row .dur { margin-left: auto; font: 500 7px/1 ui-monospace, Menlo, monospace; letter-spacing: .06em; }
+  .row.on { opacity: 1; transform: translateX(6px); }
+  .row:hover { opacity: 1; }
+
+  /* Right column: price + blurb + a preview card. Each swap is a 220ms
+     cross-fade — the row is what people are reading, the card just follows. */
+  .side { position: relative; display: flex; flex-direction: column; align-items: flex-end; text-align: right; }
+  .price { font: 400 30px/1 "Playfair Display", Georgia, serif; }
+  .blurb { margin-top: 8px; font-size: 7.5px; line-height: 1.55; color: #15121ab8; max-width: 180px; }
+  .book { margin-top: 12px; padding: 7px 12px; background: #fff; border-radius: 3px; font-size: 7.5px; font-weight: 600; letter-spacing: .02em; }
+  .fade { transition: opacity 220ms, transform 220ms; }
+  .fade.swap { opacity: 0; transform: translateY(4px); }
+
+  .card {
+    position: absolute; right: 0; bottom: 0; width: 132px; height: 96px;
+    border-radius: 8px; background: #fff; padding: 5px;
+    box-shadow: 0 18px 40px -18px #0000007a;
+    transform: rotate(var(--r, 0deg));
+    transition: transform 500ms cubic-bezier(.22,.61,.36,1);
+  }
+  .card i {
+    display: block; width: 100%; height: 100%; border-radius: 4px;
+    background: var(--art);
+    transition: background 400ms;
+  }
+
+  .hint { position: absolute; left: 32px; bottom: 10px; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #15121a80; }
+  @media (prefers-reduced-motion: reduce) {
+    body, .row, .fade, .card, .card i { transition: none; }
+    .hint { display: none; }
+  }
+</style>
+
+<div class="wrap">
+  <ul class="list" id="list"></ul>
+  <div class="side">
+    <div class="price fade" id="price"></div>
+    <div class="blurb fade" id="blurb"></div>
+    <div class="book">Book Service</div>
+    <div class="card" id="card"><i></i></div>
+  </div>
+  <div class="hint">hover a row</div>
+</div>
+
+<script>
+  const SERVICES = [
+    ["Ceramic Coating 9H", "Surface protection", "3–4 hrs", "$280", "#4c3ff2", "Nano-ceramic layer bonded to the clear coat: two years of gloss, hydrophobic beading and UV shielding.", "linear-gradient(135deg,#8f86ff,#2a1fb3 60%,#0e0a4a)"],
+    ["Full Exterior Polish", "Paint correction", "2 hrs", "$140", "#d93a2b", "Two-stage machine polish that removes swirl marks and restores depth to the paint.", "linear-gradient(135deg,#ffb199,#c62a1c 55%,#5a0c05)"],
+    ["Deep Interior Detailing", "Cabin", "3 hrs", "$180", "#f26a1e", "Pressurised steam extraction, dry-ozone odour purification and meticulous cabin fibre revival.", "linear-gradient(135deg,#ffd0a8,#e8560d 55%,#6a2400)"],
+    ["Paint Protection Film", "Surface protection", "6 hrs", "$850", "#16a37a", "Self-healing urethane film on the impact zones — bonnet, mirrors, sills — invisible once cured.", "linear-gradient(135deg,#a8ffe0,#0f8f68 55%,#03362a)"],
+    ["Leather Care & Restore", "Cabin", "1.5 hrs", "$120", "#1aa6a0", "pH-balanced clean, conditioning and colour refresh for hides that have started to dry and crack.", "linear-gradient(135deg,#b5fff9,#118f89 55%,#033a37)"],
+    ["Engine Bay Detailing", "Mechanical", "1 hr", "$90", "#5b46d9", "Degrease, rinse and dress every visible surface under the bonnet without touching the electrics.", "linear-gradient(135deg,#c9bfff,#4531c9 55%,#160e57)"],
+    ["Windshield Rain Repel", "Glass", "30 min", "$45", "#c4247e", "Hydrophobic glass treatment: rain beads and sheets off above 60 km/h without wipers.", "linear-gradient(135deg,#ffb3dc,#b0166c 55%,#4a0530)"],
+    ["Signature Showroom Package", "Everything", "1 day", "$1,200", "#e0a12a", "Every service on this list in one booking, finished with a hand-applied carnauba glaze.", "linear-gradient(135deg,#ffe6a8,#c98c12 55%,#5c3d02)"],
+  ];
+  const list = document.getElementById("list");
+  const price = document.getElementById("price"), blurb = document.getElementById("blurb"), card = document.getElementById("card");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let cur = -1, swapTimer = 0;
+
+  SERVICES.forEach(([name, cat, dur], i) => {
+    const li = document.createElement("li");
+    li.className = "row";
+    li.innerHTML = `<span>${name}</span><small>${cat}</small><span class="dur">${dur}</span>`;
+    // pointerenter, not mousemove: one event per row crossing, not one per pixel
+    li.addEventListener("pointerenter", () => select(i));
+    li.addEventListener("focus", () => select(i));
+    li.tabIndex = 0;
+    list.appendChild(li);
+  });
+
+  function select(i) {
+    if (i === cur) return;
+    const dir = i > cur ? 1 : -1;
+    cur = i;
+    const [, , , cost, tint, text, art] = SERVICES[i];
+    document.body.style.setProperty("--tint", tint);
+    [...list.children].forEach((li, k) => li.classList.toggle("on", k === i));
+    // the card leans the way the pointer travelled, then settles
+    card.style.setProperty("--r", dir * 4 + "deg");
+    card.style.setProperty("--art", art);
+    setTimeout(() => card.style.setProperty("--r", "0deg"), 60);
+    // text: out (220ms) → replace → in. A single fade would show half of one
+    // price morphing into half of another.
+    clearTimeout(swapTimer);
+    if (reduce) { price.textContent = cost; blurb.textContent = text; return; }
+    price.classList.add("swap"); blurb.classList.add("swap");
+    swapTimer = setTimeout(() => {
+      price.textContent = cost; blurb.textContent = text;
+      price.classList.remove("swap"); blurb.classList.remove("swap");
+    }, 220);
+  }
+  // land on the first row so the section never shows an empty right column
+  price.textContent = SERVICES[0][3]; blurb.textContent = SERVICES[0][5];
+  card.style.setProperty("--art", SERVICES[0][6]);
+  list.children[0].classList.add("on"); cur = 0;
+</script>
