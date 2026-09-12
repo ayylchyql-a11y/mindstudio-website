@@ -1,0 +1,197 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cyclone [369] — a volumetric storm in 369 characters</title>
+<!--
+  Shader: "Cyclone [369]" by @XorDev — https://www.shadertoy.com/view/N3dGRM
+  ShaderToy default licence: CC BY-NC-SA 3.0. The 369-character original is
+  reproduced verbatim in the code box below; the GLSL in <script> is a port
+  to WebGL1 (explicit initialisation, a tanh polyfill, constant loop bounds)
+  with stage switches added so the pipeline can be walked one step at a time.
+-->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #05040a; color: #fff; overflow: hidden; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+  /* the chapter strip — mirrors the five title cards in the source video */
+  .panel {
+    position: absolute; left: 12px; right: 12px; bottom: 12px;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+    pointer-events: none;
+  }
+  .panel > * { pointer-events: auto; }
+  .stage {
+    display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px 0 6px;
+    border-radius: 99px; border: 1px solid #ffffff2a; background: #0c0a1acc; color: #ffffffb8;
+    font-size: 11px; font-weight: 500; letter-spacing: .01em; cursor: pointer;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    transition: border-color 250ms, color 250ms, background-color 250ms;
+  }
+  .stage i { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 6px; background: #ffffff14; font-style: normal; font-size: 9px; font-weight: 700; color: #b9a6ff; }
+  .stage.on { border-color: #b9a6ff99; color: #fff; background: #241a4acc; }
+  .stage.on i { background: #7b5cff; color: #fff; }
+  .knobs { margin-left: auto; display: flex; gap: 10px; align-items: center; height: 30px; padding: 0 12px; border-radius: 99px; border: 1px solid #ffffff2a; background: #0c0a1acc; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .knobs label { display: flex; align-items: center; gap: 6px; font: 500 10px/1 ui-monospace, Menlo, monospace; color: #ffffff99; }
+  .knobs b { color: #fff; font-weight: 600; min-width: 26px; text-align: right; }
+  .knobs input { width: 70px; accent-color: #b9a6ff; }
+  .tag { position: absolute; left: 14px; top: 12px; font: 500 10px/1 ui-monospace, Menlo, monospace; letter-spacing: .08em; color: #ffffff80; text-transform: uppercase; }
+  .tag b { color: #d9c9ff; font-weight: 600; }
+  .credit { position: absolute; right: 14px; top: 12px; font-size: 10px; letter-spacing: .04em; color: #ffffff80; }
+  .credit a { color: #d9c9ff; text-decoration: none; }
+  .nogl { position: absolute; inset: 0; display: none; place-items: center; text-align: center; font-size: 12px; color: #ffffffb0; padding: 24px; }
+
+  /* the 369 characters themselves, for reading — the render above is them */
+  .code {
+    position: absolute; left: 12px; right: 12px; bottom: 54px; max-height: 44%; overflow: auto;
+    padding: 12px 14px; border-radius: 14px; border: 1px solid #ffffff1f; background: #07061299;
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    font: 500 10.5px/1.55 ui-monospace, Menlo, monospace; color: #e8e2ff; white-space: pre; tab-size: 4;
+    opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity 300ms, transform 300ms;
+  }
+  .code.show { opacity: 1; transform: none; pointer-events: auto; }
+  .code .c { color: #8f88b0; } .code .k { color: #ff8fb8; } .code .f { color: #8fd0ff; } .code .n { color: #ffd479; }
+  .code mark { background: #7b5cff55; color: inherit; border-radius: 3px; }
+  @media (prefers-reduced-motion: reduce) { .code, .stage { transition: none; } }
+</style>
+
+<canvas id="cv"></canvas>
+<div class="nogl" id="nogl">This piece needs WebGL. Your browser has it switched off.</div>
+<div class="tag">Cyclone [369] · <b id="chars">369</b> chars · <b id="fps">–</b> fps</div>
+<div class="credit">shader by <a href="https://www.shadertoy.com/view/N3dGRM" target="_blank" rel="noopener">@XorDev</a> · CC BY-NC-SA</div>
+
+<pre class="code" id="code"><span class="c">/* "Cyclone [369]" by @XorDev (ShaderToy N3dGRM) */</span>
+<span class="k">void</span> <span class="f">mainImage</span>(<span class="k">out vec4</span> O, <span class="k">vec2</span> I) {
+    <span class="k">float</span> z,d,a,i,T=iTime;
+    <span class="k">for</span>(O*=i; i++&lt;<span class="n">90.</span>;) {
+<mark data-s="1">        <span class="k">vec3</span> p = z * <span class="f">normalize</span>(<span class="k">vec3</span>(I+I,<span class="n">0</span>) - iResolution.xyy),t,Z;
+        Z.x=<span class="n">6.</span>*T, p.z+=<span class="n">9.</span>, t=p;
+        d=<span class="n">2.</span>, a=(p.y-<span class="f">length</span>(p.xz))/d-T;</mark>
+<mark data-s="2">        <span class="k">for</span>(p.xz *= <span class="k">mat2</span>(<span class="f">cos</span>(a+T+<span class="k">vec4</span>(<span class="n">0</span>, <span class="n">5</span>, <span class="n">8</span>, <span class="n">0</span>)));
+            d&lt;<span class="n">4.</span>; p+=<span class="f">sin</span>(p.yzx * d - Z) / d) d/=<span class="n">.9</span>;</mark>
+<mark data-s="3">        z += d = <span class="f">min</span>(<span class="f">length</span>(p.xz), <span class="n">8.</span>-<span class="f">abs</span>(p.y)) / <span class="n">15.</span>/(<span class="n">2.</span>+<span class="f">cos</span>(a));
+        O += <span class="k">vec4</span>(<span class="n">7</span>, <span class="n">5</span>, z, <span class="n">0</span>) * d / <span class="f">length</span>(t.xz-(p.xz/<span class="n">2.</span>+<span class="n">3.</span>)*<span class="f">sin</span>(a));</mark>
+    }
+<mark data-s="4">    O = <span class="f">tanh</span>(O*O / <span class="n">1e3</span>);</mark>
+}</pre>
+
+<div class="panel">
+  <button class="stage" data-s="1"><i>02</i>Ray &amp; basis</button>
+  <button class="stage" data-s="2"><i>03</i>+ turbulence</button>
+  <button class="stage" data-s="3"><i>04</i>+ emission</button>
+  <button class="stage on" data-s="4"><i>05</i>+ tonemap</button>
+  <button class="stage" id="src"><i>{}</i>source</button>
+  <div class="knobs">
+    <label>steps <input id="steps" type="range" min="20" max="90" value="90"><b id="stepsv">90</b></label>
+    <label>octaves <input id="oct" type="range" min="2.2" max="6" step=".1" value="4"><b id="octv">4.0</b></label>
+  </div>
+</div>
+
+<script>
+  const cv = document.getElementById("cv");
+  const gl = cv.getContext("webgl", { antialias: false, alpha: false, powerPreference: "high-performance" });
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!gl) document.getElementById("nogl").style.display = "grid";
+
+  /* ---------- the port ----------
+     Differences from the 369-character original, and why:
+       · every variable is initialised — the golf relies on GPU zeros that the
+         GLSL spec does not promise, and Safari on Apple silicon does not give;
+       · tanh is a polyfill — GLSL ES 1.0 has no tanh (WebGL2 does; this runs
+         on WebGL1 so it works on more phones);
+       · loop bounds are constants with an early `break` — ES 1.0 requires it;
+       · three stage switches and two knobs. With all of them at their defaults
+         the maths is character-for-character the original. */
+  const FRAG = `
+precision highp float;
+uniform vec2 iResolution; uniform float iTime;
+uniform float uSteps, uOct, uTurb, uColor, uTone;
+vec4 th(vec4 x) { x = clamp(x, -20., 20.); vec4 e = exp(2. * x); return (e - 1.) / (e + 1.); }
+void main() {
+  vec2 I = gl_FragCoord.xy;
+  vec4 O = vec4(0.);
+  float z = 0., d = 0., a = 0., T = iTime;
+  for (float i = 0.; i < 90.; i++) {
+    if (i >= uSteps) break;
+    // 02 · perspective ray, pushed 9 units into the scene; a = cone height − radius, spun by time
+    vec3 p = z * normalize(vec3(I + I, 0.) - iResolution.xyy), t, Z = vec3(0.);
+    Z.x = 6. * T; p.z += 9.; t = p;
+    d = 2.; a = (p.y - length(p.xz)) / d - T;
+    // the "golfed rotation basis": cos of (a, a+5, a+8, a) is a 2×2 rotation, near enough
+    p.xz *= mat2(cos(a + T + vec4(0., 5., 8., 0.)));
+    // 03 · multi-octave swirl: p.yzx cycles the axes so no octave lines up with the last
+    if (uTurb > .5) for (int k = 0; k < 16; k++) { if (d >= uOct) break; d /= .9; p += sin(p.yzx * d - Z) / d; }
+    // 04 · cylinder-bounded distance, inverse-distance emission, warm→cold with depth
+    z += d = min(length(p.xz), 8. - abs(p.y)) / 15. / (2. + cos(a));
+    vec4 tint = uColor > .5 ? vec4(7., 5., z, 0.) : vec4(5.);
+    O += tint * d / length(t.xz - (p.xz / 2. + 3.) * sin(a));
+  }
+  // 05 · filmic squash: tanh(O²/1000) keeps the core from clipping to white
+  O = uTone > .5 ? th(O * O / 1e3) : clamp(O * O / 1e3, 0., 1.);
+  gl_FragColor = vec4(O.rgb, 1.);
+}`;
+  const VERT = `attribute vec2 a; void main(){ gl_Position = vec4(a, 0., 1.); }`;
+
+  let prog, U = {}, t0 = performance.now(), frames = 0, fpsT = t0;
+  if (gl) {
+    const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s)); return s; };
+    prog = gl.createProgram();
+    gl.attachShader(prog, sh(gl.VERTEX_SHADER, VERT)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FRAG));
+    gl.linkProgram(prog); gl.useProgram(prog);
+    const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, "a"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    for (const n of ["iResolution", "iTime", "uSteps", "uOct", "uTurb", "uColor", "uTone"]) U[n] = gl.getUniformLocation(prog, n);
+  }
+
+  // stage → the three switches. 4 = the whole shader.
+  const STAGES = { 1: [0, 0, 1], 2: [1, 0, 1], 3: [1, 1, 0], 4: [1, 1, 1] };
+  let stage = 4, steps = 90, oct = 4;
+  const code = document.getElementById("code");
+  function setStage(s) {
+    stage = s;
+    document.querySelectorAll(".stage[data-s]").forEach((b) => b.classList.toggle("on", +b.dataset.s === s));
+    // highlight the lines this stage adds
+    code.querySelectorAll("mark").forEach((m) => { m.style.background = +m.dataset.s === s ? "#7b5cff66" : (+m.dataset.s < s ? "#ffffff0a" : "transparent"); m.style.opacity = +m.dataset.s <= s ? 1 : .35; });
+    draw(true);
+  }
+  document.querySelectorAll(".stage[data-s]").forEach((b) => b.addEventListener("click", () => setStage(+b.dataset.s)));
+  document.getElementById("src").addEventListener("click", (e) => { code.classList.toggle("show"); e.currentTarget.classList.toggle("on"); });
+  const stepsEl = document.getElementById("steps"), octEl = document.getElementById("oct");
+  stepsEl.addEventListener("input", () => { steps = +stepsEl.value; document.getElementById("stepsv").textContent = steps; draw(true); });
+  octEl.addEventListener("input", () => { oct = +octEl.value; document.getElementById("octv").textContent = oct.toFixed(1); draw(true); });
+
+  /* Render at 0.7× CSS pixels and never above DPR 1: ninety ray steps with a
+     seven-octave inner loop is ~630 sin() per pixel. At 760×400 that is
+     nothing; at a Retina full-bleed it is the difference between 60 and 20. */
+  function size() {
+    // the code box sits above the chapter strip, which wraps to two rows on narrow frames
+    code.style.bottom = document.querySelector(".panel").offsetHeight + 20 + "px";
+    const k = 0.7;
+    cv.width = Math.max(1, Math.floor(cv.clientWidth * k)); cv.height = Math.max(1, Math.floor(cv.clientHeight * k));
+    if (gl) gl.viewport(0, 0, cv.width, cv.height);
+    draw(true);
+  }
+  let visible = true, raf = 0;
+  function draw(once) {
+    if (!gl) return;
+    const now = performance.now();
+    // reduced motion: a fixed instant of the storm, still — it is a still image then
+    const t = reduce ? 7.5 : (now - t0) / 1000;
+    const [turb, color, tone] = STAGES[stage];
+    gl.uniform2f(U.iResolution, cv.width, cv.height); gl.uniform1f(U.iTime, t);
+    gl.uniform1f(U.uSteps, steps); gl.uniform1f(U.uOct, oct);
+    gl.uniform1f(U.uTurb, turb); gl.uniform1f(U.uColor, color); gl.uniform1f(U.uTone, tone);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    frames++;
+    if (now - fpsT > 1000) { document.getElementById("fps").textContent = Math.round(frames * 1000 / (now - fpsT)); frames = 0; fpsT = now; }
+    if (!once && visible && !reduce) raf = requestAnimationFrame(() => draw(false));
+  }
+  // stop burning the GPU when nobody is looking
+  const restart = () => { visible = !document.hidden; if (visible && !raf && !reduce) raf = requestAnimationFrame(() => draw(false)); if (!visible) { cancelAnimationFrame(raf); raf = 0; } };
+  document.addEventListener("visibilitychange", restart);
+  addEventListener("resize", size);
+  size(); setStage(4);
+  if (!reduce) raf = requestAnimationFrame(() => draw(false));
+</script>

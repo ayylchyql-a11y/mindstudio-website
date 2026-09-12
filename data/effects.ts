@@ -136,6 +136,52 @@ export interface Effect {
 
 export const effects: Effect[] = [
   {
+    slug: "cyclone-369",
+    category: "creative",
+    date: "2026-09-12",
+    plays: "self",
+    title: { en: "Cyclone [369]: a volumetric storm in 369 characters", zh: "Cyclone [369]：369 个字符的体积风暴", "zh-tw": "Cyclone [369]：369 個字元的體積風暴" },
+    gist: {
+      en: "XorDev's 369-character GLSL storm, running live on WebGL with the pipeline broken into the four steps the source video walks through — ray and basis, turbulence, emission, tonemap — plus knobs for the step count and octave cutoff.",
+      zh: "XorDev 那段 369 字符的 GLSL 风暴，在 WebGL 里实时跑着，并按视频拆解的四步 —— 射线与旋转基、分形扰动、体积发光、色调映射 —— 一步一步开给你看，外加步数和倍频截止两个旋钮。",
+      "zh-tw": "XorDev 那段 369 字元的 GLSL 風暴，在 WebGL 裡即時跑著，並按影片拆解的四步 —— 射線與旋轉基、分形擾動、體積發光、色調映射 —— 一步一步開給你看，外加步數和倍頻截止兩個旋鈕。",
+    },
+    height: 440,
+    accent: "#b57bff",
+    anatomy: [
+      "The whole piece is one fragment shader: 90 ray-march steps per pixel, no geometry, no textures, no buffers. Each step advances <code>z</code> along a perspective ray (<code>normalize(vec3(I+I,0) − iResolution.xyy)</code>, pushed 9 units in), warps the sample point, measures a distance, and adds glow inversely proportional to that distance. The four stages below are the four things that happen inside that loop.",
+      "<b>02 · Ray &amp; basis.</b> <code>a = (p.y − length(p.xz)) / 2 − T</code> is a cone: height minus radius, spun by time. <code>p.xz *= mat2(cos(a + T + vec4(0, 5, 8, 0)))</code> is the golf trick — cosines at offsets 0 / 5 / 8 / 0 radians approximate (cos, −sin, sin, cos) closely enough to act as a 2D rotation, in 30 characters instead of 60. With only this stage on you see the bare funnel.",
+      "<b>03 · Turbulence.</b> <code>for(…; d &lt; 4.; p += sin(p.yzx * d − Z) / d) d /= .9;</code> — an octave loop that starts at frequency 2 and multiplies by 1/0.9 until it passes 4 (seven octaves). <code>p.yzx</code> cycles the axes each pass so no octave is aligned with the previous one; <code>Z.x = 6T</code> drifts only the x-phase, which is what makes the plasma stream rather than boil.",
+      "<b>04 · Emission.</b> The distance is <code>min(length(p.xz), 8 − |p.y|)</code> — a cylinder bound — divided by <code>15 (2 + cos a)</code>, so steps get shorter near the core. Glow is <code>vec4(7, 5, z, 0) · d / length(t.xz − (p.xz/2 + 3)·sin a)</code>: warm (7, 5) up front, and the blue channel <b>is the depth</b> <code>z</code>, so the far side of the storm turns cold by itself. The inverse distance is what makes the core blow out.",
+      "<b>05 · Tonemap.</b> <code>O = tanh(O·O / 1e3)</code>: squaring adds contrast, dividing sets exposure, tanh rolls the top off so the core goes to a soft white instead of clipping. Stage 04 in the sample shows the same frame with a plain clamp — the difference is the entire 'filmic' look.",
+      "The port keeps the maths character-for-character but not the golf: every variable is initialised (the original relies on GPU zeros that the spec does not promise and Apple GPUs do not give), <code>tanh</code> is a polyfill (GLSL ES 1.0 has none), and both loops have constant bounds with an early <code>break</code> (ES 1.0 requires it). Stages are three uniform switches that default to the original.",
+      "Rendered at 0.7× CSS pixels, never above DPR 1, and paused on <code>visibilitychange</code>. Ninety steps × seven octaves is about 630 <code>sin()</code> per pixel; at a 760×400 frame that is free, at a Retina full-bleed it is the difference between 60 fps and 20.",
+      "Under reduced motion it renders one frame at t = 7.5 s and stops — a still of the storm, not an empty box.",
+    ],
+    tokens: [
+      { label: "Steps", value: "90 per pixel (knob 20–90)" },
+      { label: "Octaves", value: "d from 2 to 4 at ×1/0.9 → 7 passes (knob 2.2–6)" },
+      { label: "Rotation basis", value: "mat2(cos(a + T + vec4(0, 5, 8, 0)))" },
+      { label: "Bound", value: "min(length(p.xz), 8 − |p.y|) / 15 / (2 + cos a)" },
+      { label: "Tint", value: "vec4(7, 5, z, 0) — blue = depth" },
+      { label: "Tonemap", value: "tanh(O² / 1000)" },
+      { label: "Backing store", value: "0.7 × CSS px, DPR capped at 1" },
+    ],
+    prompt:
+      "Port XorDev's 'Cyclone [369]' (shadertoy.com/view/N3dGRM, CC BY-NC-SA 3.0 — keep the attribution in the file) to a single self-contained HTML page on WebGL1. Full-screen canvas, one fullscreen triangle, fragment shader with uniforms iResolution, iTime, uSteps, uOct, uTurb, uColor, uTone. Reproduce the original maths exactly but initialise every variable, replace tanh with a polyfill th(x) = (e^{2x}−1)/(e^{2x}+1) on x clamped to ±20, and use constant loop bounds with early break: for i in 0..90 (break at uSteps): p = z * normalize(vec3(I+I, 0) − iResolution.xyy); Z = vec3(6*T, 0, 0); p.z += 9; t = p; d = 2; a = (p.y − length(p.xz)) / d − T; p.xz *= mat2(cos(a + T + vec4(0, 5, 8, 0))); if uTurb: for k in 0..16 { if d >= uOct break; d /= .9; p += sin(p.yzx * d − Z) / d; }; z += d = min(length(p.xz), 8 − abs(p.y)) / 15 / (2 + cos(a)); O += (uColor ? vec4(7, 5, z, 0) : vec4(5)) * d / length(t.xz − (p.xz/2 + 3) * sin(a)). After the loop O = uTone ? th(O*O/1e3) : clamp(O*O/1e3, 0, 1). Add a chapter strip of four buttons mapping to (uTurb, uColor, uTone) = (0,0,1), (1,0,1), (1,1,0), (1,1,1), a 'source' toggle that shows the original 369-character shader with the lines of the current stage highlighted, and two range inputs for steps (20–90) and octave cutoff (2.2–6). Render at 0.7 × CSS pixels with devicePixelRatio capped at 1, pause the loop on visibilitychange, show an fps readout, and under prefers-reduced-motion draw one frame at t = 7.5 and stop. Show a 'needs WebGL' message if getContext fails.",
+    caveats: [
+      "Licence: ShaderToy's default is CC BY-NC-SA 3.0. That permits this page (non-commercial, attributed, same licence on the port) and does <b>not</b> permit dropping the shader into a product. The attribution comment at the top of the file is part of the work.",
+      "The golfed original leaves <code>O</code>, <code>z</code>, <code>i</code>, <code>t</code> and <code>Z.yz</code> uninitialised. On most desktop drivers they read as zero; on Apple GPUs and some Android drivers they read as garbage and the first frame is noise. Initialising them costs characters, which is why the original does not — a port has no reason to inherit that.",
+      "<code>p.xz *= mat2(cos(a + T + vec4(0, 5, 8, 0)))</code> is not an exact rotation (cos 5 ≈ 0.284 and cos 8 ≈ −0.146 are not ±sin), so the transform also scales slightly per step. That is part of the look; 'fixing' it to a true rotation changes the storm.",
+      "Ninety steps at full-bleed on a phone GPU throttles within a minute. The 0.7× backing store and the visibility pause are the minimum; a real page should also drop <code>uSteps</code> on small viewports.",
+    ],
+    source: {
+      label: "Shader: “Cyclone [369]” by @XorDev · ShaderToy N3dGRM · CC BY-NC-SA 3.0 · breakdown via @MasterYeeeee (Douyin)",
+      url: "https://www.shadertoy.com/view/N3dGRM",
+      at: "0:00–1:25",
+    },
+  },
+  {
     slug: "holo-card",
     category: "creative",
     date: "2026-09-08",
