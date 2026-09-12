@@ -1,0 +1,135 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scroll-driven pinned hero recomposition</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; background: #f2f2f4; color: #17171b; }
+  .scroller { height: 100%; overflow-y: auto; scrollbar-width: thin; }
+  .track { height: 320%; }
+  /* 🩸 100vh，不是 100%：.track 高 320%，100% 会把舞台撑成整条轨道那么高 */
+  .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; background: linear-gradient(#f7f7f9, #e9e9ee); }
+
+  .nav { position: absolute; left: 4%; right: 4%; top: 12px; display: flex; align-items: center; gap: 10px; font-size: 8px; color: #17171b; z-index: 5; }
+  .nav .pill { padding: 4px 9px; border-radius: 99px; background: #17171b; color: #fff; font-weight: 600; }
+  .nav .ghost { padding: 4px 9px; border-radius: 99px; background: #ffffffb0; }
+  .nav .end { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+
+  /* the iridescent ring: a blurred conic band that rises and swells with p */
+  .ring {
+    position: absolute; left: 50%; top: 50%; width: 320px; height: 320px; margin: -160px 0 0 -160px; border-radius: 50%;
+    background: conic-gradient(from 200deg, #ffb27a, #ff8fb1, #b9a6ff, #8fd0ff, #a8f0d0, #ffd479, #ffb27a);
+    mask: radial-gradient(circle, #0000 66%, #000 70%, #000 84%, #0000 88%);
+    -webkit-mask: radial-gradient(circle, #0000 66%, #000 70%, #000 84%, #0000 88%);
+    filter: blur(9px); opacity: .85;
+    transform: translateY(calc(var(--p) * -70px)) scale(calc(1 + var(--p) * .45));
+  }
+
+  /* ---------- the two hands ----------
+     Stylised: a pointing arm each. They start touching at the centre and
+     scroll pulls them apart along their own diagonals. */
+  .hand { position: absolute; top: 50%; width: 300px; height: 90px; margin-top: -45px; }
+  .hand svg { width: 100%; height: 100%; overflow: visible; }
+  .hand.human { left: 50%; margin-left: -296px; transform: translate(calc(var(--p) * -150px), calc(var(--p) * 60px)) rotate(calc(var(--p) * -5deg)); }
+  .hand.robot { left: 50%; margin-left: -4px; transform: translate(calc(var(--p) * 150px), calc(var(--p) * -50px)) rotate(calc(var(--p) * 5deg)); }
+
+  /* headline in the middle, the four fragments at the corners */
+  .title { position: absolute; left: 0; right: 0; top: 22%; text-align: center; opacity: calc(1 - var(--p1)); transform: translateY(calc(var(--p1) * -40px)); }
+  .title h1 { font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
+  .title p { font-size: 17px; color: #17171b80; } .title p b { color: #17171b; font-weight: 600; }
+  .lede { position: absolute; left: 4%; bottom: 12%; width: 190px; font-size: 8.5px; line-height: 1.5; color: #17171bb0; opacity: calc(1 - var(--p1)); }
+  .lede small { display: block; font-size: 6.5px; margin-bottom: 4px; color: #17171b66; }
+  .chips { position: absolute; right: 4%; bottom: 12%; display: flex; gap: 6px; opacity: calc(1 - var(--p1)); }
+  .chips span { padding: 4px 8px; border-radius: 99px; background: #ffffffc0; font-size: 7px; }
+
+  .frag { position: absolute; width: 190px; opacity: var(--p2); transform: translateY(calc((1 - var(--p2)) * var(--dy))); }
+  .frag h2 { font-size: 18px; font-weight: 500; line-height: 1.15; letter-spacing: -.01em; }
+  .frag h2 span { color: #17171b66; }
+  .frag p { margin-top: 6px; font-size: 8px; line-height: 1.5; color: #17171b99; }
+  .frag small { display: block; font-size: 6.5px; color: #17171b66; margin-bottom: 4px; }
+  .tl { left: 4%; top: 12%; --dy: 24px; }
+  .tr { right: 4%; top: 12%; text-align: right; --dy: 24px; }
+  .bl { left: 4%; bottom: 10%; --dy: -24px; }
+  .br { right: 4%; bottom: 10%; text-align: right; --dy: -24px; }
+  .tabs { position: absolute; left: 4%; right: 4%; bottom: 3%; display: flex; gap: 22px; font-size: 7px; color: #17171b66; opacity: var(--p2); }
+
+  .readout { position: absolute; left: 4%; top: 46px; font: 500 10px/1.7 ui-monospace, SFMono-Regular, Menlo, monospace; color: #17171b66; }
+  .readout b { color: #17171b; font-weight: 600; }
+  .cue { position: absolute; right: 4%; top: 46px; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: #17171b66; opacity: calc(1 - var(--p1)); }
+</style>
+
+<div class="scroller" id="scroller">
+  <div class="track">
+    <div class="stage" id="stage" style="--p:0;--p1:0;--p2:0">
+      <div class="nav"><b>◆ NeuralKinetics</b><span class="pill">● Menu</span><span class="ghost">Advanced Bionics</span><span class="ghost">Cognitive AI</span><span class="end"><span class="pill">+</span>Adaptive Systems</span></div>
+      <div class="ring"></div>
+
+      <div class="hand human"><svg viewBox="0 0 300 90" aria-hidden="true">
+        <defs><linearGradient id="skin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dcae90"/><stop offset="1" stop-color="#a86f52"/></linearGradient></defs>
+        <!-- forearm -->
+        <path d="M0 24 Q70 16 150 28 L150 68 Q70 78 0 68 Z" fill="url(#skin)"/>
+        <!-- palm -->
+        <path d="M148 26 C180 20 214 24 226 38 L226 60 C214 74 180 76 148 68 Z" fill="url(#skin)"/>
+        <!-- index finger, pointing -->
+        <path d="M222 34 L286 30 Q296 31 296 38 Q296 45 286 46 L222 50 Z" fill="#d9a98a"/>
+        <path d="M250 32 L250 48 M270 31 L270 47" stroke="#b9805f" stroke-width="1.2"/>
+        <!-- folded fingers -->
+        <path d="M218 50 Q248 50 252 60 Q250 70 232 70 L218 68 Z" fill="#c48f70"/>
+        <path d="M214 60 Q236 62 238 72 Q234 78 220 76 Z" fill="#b57f62"/>
+        <!-- thumb -->
+        <path d="M176 26 Q206 10 232 22 Q236 30 224 34 Q200 30 176 34 Z" fill="#d9a98a"/>
+        <path d="M0 30 Q70 22 150 32" stroke="#ffffff59" stroke-width="3" fill="none"/>
+      </svg></div>
+      <div class="hand robot"><svg viewBox="0 0 300 90" aria-hidden="true">
+        <defs><linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#cfd3da"/><stop offset=".5" stop-color="#8d939c"/><stop offset="1" stop-color="#e6e8ec"/></linearGradient></defs>
+        <g transform="translate(300 0) scale(-1 1)">
+          <path d="M0 24 Q70 16 150 28 L150 68 Q70 78 0 68 Z" fill="url(#chrome)"/>
+          <path d="M148 26 C180 20 214 24 226 38 L226 60 C214 74 180 76 148 68 Z" fill="url(#chrome)"/>
+          <path d="M222 34 L286 30 Q296 31 296 38 Q296 45 286 46 L222 50 Z" fill="url(#chrome)"/>
+          <path d="M218 50 Q248 50 252 60 Q250 70 232 70 L218 68 Z" fill="#b8bcc4"/>
+          <path d="M214 60 Q236 62 238 72 Q234 78 220 76 Z" fill="#9ea3ab"/>
+          <path d="M176 26 Q206 10 232 22 Q236 30 224 34 Q200 30 176 34 Z" fill="url(#chrome)"/>
+          <!-- joints and seams: what makes it read as a machine -->
+          <g fill="none" stroke="#6f757e" stroke-width="1.4"><path d="M150 28 L150 68"/><path d="M226 38 L226 60"/><path d="M250 31 L250 49"/><path d="M270 30 L270 47"/><path d="M60 22 L60 74"/><path d="M110 24 L110 72"/></g>
+          <circle cx="190" cy="48" r="7" fill="none" stroke="#6f757e" stroke-width="1.4"/><circle cx="190" cy="48" r="2" fill="#6f757e"/>
+        </g>
+      </svg></div>
+
+      <div class="title"><h1>NeuralKinetics</h1><p>cybernetics <b>made organic</b></p></div>
+      <div class="lede"><small>Autonomous Dynamics</small>Unifying biological grace with machine intelligence to design the next era of fusion</div>
+      <div class="chips"><span>Neuromorphic</span><span>AGI</span><span>Cybernetics</span></div>
+
+      <div class="frag tl"><h2>Built to<br><span>move with you</span></h2><p>Biological instinct. Adaptive intelligence. A more natural connection between human and machine.</p></div>
+      <div class="frag tr"><small>01 / Cognitive intelligence</small><h2>Sense.<br>Understand.<br>Adapt.</h2><p>Intelligence that reads the world around it, learns from every interaction, and responds in the moment.</p></div>
+      <div class="frag bl"><small>The human side of technology</small><p>We work at the intersection of biology and computation. Every system begins with the way people feel, think, and move.</p></div>
+      <div class="frag br"><small>02 / Adaptive systems</small><h2>Precision.<br><span>With feeling.</span></h2><p>Engineered for strength. Designed for subtlety. Movement that feels natural.</p></div>
+      <div class="tabs"><span>Bionics</span><span>Cognition</span><span>Perception</span><span>Robotics</span><span>Adaptation</span></div>
+
+      <div class="readout">progress <b id="rp">0.000</b></div>
+      <div class="cue">scroll ↓</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* One number, three curves. `--p` drives the geometry continuously (hands,
+     ring); `--p1` (0…0.45) empties the centre; `--p2` (0.35…0.8) fills the
+     corners. The overlap 0.35–0.45 is deliberate: the hero is never empty. */
+  const scroller = document.getElementById("scroller"), stage = document.getElementById("stage"), rp = document.getElementById("rp");
+  const clamp01 = (v) => Math.min(1, Math.max(0, v));
+  const slice = (p, a, b) => clamp01((p - a) / (b - a));
+  const smooth = (x) => x * x * (3 - 2 * x);
+  let raf = 0;
+  function update() {
+    raf = 0;
+    const max = scroller.firstElementChild.offsetHeight - scroller.clientHeight;
+    const p = max > 0 ? clamp01(scroller.scrollTop / max) : 0;
+    stage.style.setProperty("--p", smooth(slice(p, 0, 0.85)).toFixed(4));
+    stage.style.setProperty("--p1", smooth(slice(p, 0, 0.45)).toFixed(4));
+    stage.style.setProperty("--p2", smooth(slice(p, 0.35, 0.8)).toFixed(4));
+    rp.textContent = p.toFixed(3);
+  }
+  scroller.addEventListener("scroll", () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+  update();
+</script>
