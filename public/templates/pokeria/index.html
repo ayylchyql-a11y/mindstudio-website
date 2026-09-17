@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#f6f1e7" />
+  <meta name="description" content="Mumi Poke — pokeria a Vimercate. Componi la tua bowl, scegli una signature, ritira in 15 minuti o ricevila a casa." />
+  <title>Mumi Poke — Pokeria Vimercate</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+  <div class="promo">Pesce tagliato ogni mattina <span>·</span> Consegna gratuita sopra € 25 a Vimercate</div>
+
+  <header data-header>
+    <a class="logo press" href="#top" aria-label="Mumi Poke, torna all'inizio"><b>MUMI</b><i>poke</i><small>Pokeria · Vimercate</small></a>
+    <nav>
+      <a href="#componi">Componi</a>
+      <a href="#signature">Signature</a>
+      <a href="#come">Come funziona</a>
+      <a href="#dove">Dove siamo</a>
+    </nav>
+    <div class="actions">
+      <button class="mode-mini press" type="button" data-mode-label>Consegna</button>
+      <button class="cart-button press" type="button" aria-label="Apri carrello, 0 articoli" data-open-cart><span>Carrello</span><b data-cart-count>0</b></button>
+      <button class="menu-button press" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-button><i></i><i></i></button>
+    </div>
+  </header>
+  <div class="mobile-nav" data-mobile-nav aria-hidden="true">
+    <a href="#componi" data-nav-link>Componi la tua bowl</a>
+    <a href="#signature" data-nav-link>Le signature</a>
+    <a href="#come" data-nav-link>Come funziona</a>
+    <a href="#dove" data-nav-link>Dove siamo</a>
+    <button type="button" data-open-cart>Apri il carrello</button>
+  </div>
+
+  <main id="main">
+    <!-- Hero: three drifting colour blobs (salmone / avocado / mango) instead of a photo,
+         headline rises one glyph at a time. -->
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <p class="tag reveal">Vimercate · dal lunedì alla domenica</p>
+        <h1 data-split>Il mare, in una bowl.</h1>
+        <p class="lead reveal">Base, proteina, quattro topping e una salsa. Componi la tua o scegli una signature: è pronta in 15 minuti.</p>
+        <div class="hero-actions reveal">
+          <a class="btn dark" href="#componi">Componi la tua bowl <span>→</span></a>
+          <a class="btn light" href="#signature">Le signature</a>
+        </div>
+      </div>
+      <div class="hero-bowl" aria-hidden="true">
+        <svg viewBox="0 0 320 320" data-bowl="hero"></svg>
+        <p class="hero-bowl-note"><b>Salmone classica</b> · riso, salmone, avocado, edamame, mango, sesamo</p>
+      </div>
+      <div class="delivery-card">
+        <p>Come vuoi ricevere il tuo ordine?</p>
+        <div class="mode-switch" role="group" aria-label="Modalità ordine">
+          <button class="active" type="button" data-mode="Consegna" aria-pressed="true">⌁ Consegna</button>
+          <button type="button" data-mode="Ritiro" aria-pressed="false">▣ Ritiro</button>
+        </div>
+        <span data-mode-note>20–30 min · da € 2,00</span>
+      </div>
+    </section>
+
+    <!-- Builder: the section's hue follows the protein you hover or pick. -->
+    <section class="builder" id="componi">
+      <div class="section-head reveal">
+        <p class="eyebrow">Componi la tua bowl</p>
+        <h2>Quattro scelte.<br /><em>Una bowl tua.</em></h2>
+        <p>Il prezzo include base, una proteina, quattro topping e una salsa. Ogni topping in più costa € 1,00.</p>
+      </div>
+
+      <div class="builder-grid">
+        <div class="steps">
+          <fieldset class="step" data-step="size">
+            <legend><span>01</span> Formato</legend>
+            <div class="chips" role="radiogroup" aria-label="Formato">
+              <button type="button" class="chip on" data-size="Regular" data-price="11.90" aria-pressed="true">Regular <b>€ 11,90</b></button>
+              <button type="button" class="chip" data-size="Large" data-price="14.90" aria-pressed="false">Large <b>€ 14,90</b></button>
+            </div>
+          </fieldset>
+
+          <fieldset class="step" data-step="base">
+            <legend><span>02</span> Base</legend>
+            <div class="chips" role="radiogroup" aria-label="Base">
+              <button type="button" class="chip on" data-base="Riso sushi" data-fill="#f7f2e8" aria-pressed="true">Riso sushi</button>
+              <button type="button" class="chip" data-base="Riso venere" data-fill="#3a2b31" aria-pressed="false">Riso venere</button>
+              <button type="button" class="chip" data-base="Quinoa" data-fill="#e8d8b4" aria-pressed="false">Quinoa</button>
+              <button type="button" class="chip" data-base="Insalata mista" data-fill="#bcd98d" aria-pressed="false">Insalata mista</button>
+            </div>
+          </fieldset>
+
+          <fieldset class="step" data-step="protein">
+            <legend><span>03</span> Proteina</legend>
+            <!-- every row owns a colour; hovering one repaints the whole section -->
+            <ul class="protein-list" role="radiogroup" aria-label="Proteina">
+              <li class="row on" tabindex="0" role="radio" aria-checked="true" data-protein="Salmone" data-h="14" data-fill="#ff7a59" data-extra="0"><span>Salmone</span><small>Norvegese, taglio a cubetti</small><em>incluso</em></li>
+              <li class="row" tabindex="0" role="radio" aria-checked="false" data-protein="Tonno" data-h="352" data-fill="#e04b5a" data-extra="1.50"><span>Tonno</span><small>Pinna gialla, marinato leggero</small><em>+ € 1,50</em></li>
+              <li class="row" tabindex="0" role="radio" aria-checked="false" data-protein="Gamberi" data-h="24" data-fill="#ffa07a" data-extra="1.50"><span>Gamberi</span><small>Cotti al vapore, lime</small><em>+ € 1,50</em></li>
+              <li class="row" tabindex="0" role="radio" aria-checked="false" data-protein="Pollo teriyaki" data-h="34" data-fill="#c98a52" data-extra="0"><span>Pollo teriyaki</span><small>Coscia, glassato</small><em>incluso</em></li>
+              <li class="row" tabindex="0" role="radio" aria-checked="false" data-protein="Tofu" data-h="48" data-fill="#f0d58c" data-extra="0"><span>Tofu</span><small>Croccante al sesamo · vegano</small><em>incluso</em></li>
+            </ul>
+          </fieldset>
+
+          <fieldset class="step" data-step="toppings">
+            <legend><span>04</span> Topping <small data-topping-count>0 / 4 inclusi</small></legend>
+            <div class="chips" role="group" aria-label="Topping">
+              <button type="button" class="chip" data-topping="Avocado" data-fill="#8cc06f" aria-pressed="false">Avocado</button>
+              <button type="button" class="chip" data-topping="Edamame" data-fill="#6fae5c" aria-pressed="false">Edamame</button>
+              <button type="button" class="chip" data-topping="Mango" data-fill="#ffbe3d" aria-pressed="false">Mango</button>
+              <button type="button" class="chip" data-topping="Cetriolo" data-fill="#bfe08a" aria-pressed="false">Cetriolo</button>
+              <button type="button" class="chip" data-topping="Alga wakame" data-fill="#1f6f5f" aria-pressed="false">Alga wakame</button>
+              <button type="button" class="chip" data-topping="Mais" data-fill="#f5d34f" aria-pressed="false">Mais</button>
+              <button type="button" class="chip" data-topping="Pomodorini" data-fill="#e8503c" aria-pressed="false">Pomodorini</button>
+              <button type="button" class="chip" data-topping="Ravanello" data-fill="#f3a6c1" aria-pressed="false">Ravanello</button>
+              <button type="button" class="chip" data-topping="Cipolla croccante" data-fill="#c9975a" aria-pressed="false">Cipolla croccante</button>
+              <button type="button" class="chip" data-topping="Sesamo" data-fill="#e9dcc3" aria-pressed="false">Sesamo</button>
+            </div>
+          </fieldset>
+
+          <fieldset class="step" data-step="sauce">
+            <legend><span>05</span> Salsa</legend>
+            <div class="chips" role="radiogroup" aria-label="Salsa">
+              <button type="button" class="chip on" data-sauce="Soia" data-fill="#5a3a22" aria-pressed="true">Soia</button>
+              <button type="button" class="chip" data-sauce="Teriyaki" data-fill="#7a4a2a" aria-pressed="false">Teriyaki</button>
+              <button type="button" class="chip" data-sauce="Spicy mayo" data-fill="#ff9a6e" aria-pressed="false">Spicy mayo</button>
+              <button type="button" class="chip" data-sauce="Ponzu" data-fill="#c9a34a" aria-pressed="false">Ponzu</button>
+              <button type="button" class="chip" data-sauce="Sesamo" data-fill="#e6d3a8" aria-pressed="false">Sesamo</button>
+            </div>
+          </fieldset>
+        </div>
+
+        <aside class="preview">
+          <svg viewBox="0 0 320 320" data-bowl="builder" aria-hidden="true"></svg>
+          <div class="summary">
+            <p class="summary-title">La tua bowl</p>
+            <p class="summary-list" data-summary>Regular · Riso sushi · Salmone · Soia</p>
+            <div class="summary-price"><span>Totale</span><b data-builder-price>€ 11,90</b></div>
+            <button class="btn dark wide" type="button" data-add-custom>Aggiungi al carrello <span>＋</span></button>
+            <small>Allergeni: pesce, soia, sesamo. Chiedi in cassa per la lista completa.</small>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Signature bowls: a horizontal rail that snaps one card at a time. Four CSS lines, no JS. -->
+    <section class="signature" id="signature">
+      <div class="section-head reveal">
+        <p class="eyebrow">Le signature</p>
+        <h2>Sei bowl già pensate.<br /><em>Scorri e scegli.</em></h2>
+        <p>Le combinazioni che ordinano di più. Ogni card indica gli allergeni.</p>
+      </div>
+      <div class="rail" tabindex="0" aria-label="Bowl signature, scorri orizzontalmente">
+        <article class="slide" style="--art:#ff7a59"><div class="slide-art"><svg viewBox="0 0 320 320" data-bowl="sig" data-recipe="Riso sushi|Salmone|Avocado,Edamame,Mango,Sesamo|Soia"></svg><i>Best seller</i></div><div class="slide-info"><div><h3>Salmone classica</h3><p>Riso sushi, salmone, avocado, edamame, mango, sesamo, soia</p><small>4 · 6 · 11</small></div><b>€ 12,90</b></div><button type="button" data-add data-name="Salmone classica" data-price="12.90">Aggiungi <span>＋</span></button></article>
+        <article class="slide" style="--art:#e04b5a"><div class="slide-art"><svg viewBox="0 0 320 320" data-bowl="sig" data-recipe="Riso venere|Tonno|Avocado,Cetriolo,Pomodorini,Cipolla croccante|Spicy mayo"></svg></div><div class="slide-info"><div><h3>Tonno spicy</h3><p>Riso venere, tonno, avocado, cetriolo, pomodorini, cipolla croccante, spicy mayo</p><small>3 · 4 · 6</small></div><b>€ 14,40</b></div><button type="button" data-add data-name="Tonno spicy" data-price="14.40">Aggiungi <span>＋</span></button></article>
+        <article class="slide" style="--art:#ffa07a"><div class="slide-art"><svg viewBox="0 0 320 320" data-bowl="sig" data-recipe="Quinoa|Gamberi|Mango,Edamame,Ravanello,Sesamo|Ponzu"></svg></div><div class="slide-info"><div><h3>Gamberi & mango</h3><p>Quinoa, gamberi, mango, edamame, ravanello, sesamo, ponzu</p><small>2 · 6 · 11</small></div><b>€ 14,40</b></div><button type="button" data-add data-name="Gamberi &amp; mango" data-price="14.40">Aggiungi <span>＋</span></button></article>
+        <article class="slide" style="--art:#7cb56b"><div class="slide-art"><svg viewBox="0 0 320 320" data-bowl="sig" data-recipe="Insalata mista|Tofu|Avocado,Edamame,Alga wakame,Mais|Sesamo"></svg><i>Vegana</i></div><div class="slide-info"><div><h3>Verde vegana</h3><p>Insalata, tofu al sesamo, avocado, edamame, wakame, mais, salsa sesamo</p><small>6 · 11</small></div><b>€ 11,90</b></div><button type="button" data-add data-name="Verde vegana" data-price="11.90">Aggiungi <span>＋</span></button></article>
+        <article class="slide" style="--art:#c98a52"><div class="slide-art"><svg viewBox="0 0 320 320" data-bowl="sig" data-recipe="Riso sushi|Pollo teriyaki|Mais,Cetriolo,Cipolla croccante,Sesamo|Teriyaki"></svg></div><div class="slide-info"><div><h3>Pollo teriyaki</h3><p>Riso sushi, pollo glassato, mais, cetriolo, cipolla croccante, sesamo, teriyaki</p><small>1 · 6 · 11</small></div><b>€ 12,40</b></div><button type="button" data-add data-name="Pollo teriyaki" data-price="12.40">Aggiungi <span>＋</span></button></article>
+        <article class="slide" style="--art:#ffbe3d"><div class="slide-art"><svg viewBox="0 0 320 320" data-bowl="sig" data-recipe="Riso sushi|Salmone|Mango,Avocado,Ravanello,Pomodorini|Ponzu"></svg><i>Estate</i></div><div class="slide-info"><div><h3>Tropicale</h3><p>Riso sushi, salmone, mango, avocado, ravanello, pomodorini, ponzu</p><small>4 · 6</small></div><b>€ 13,40</b></div><button type="button" data-add data-name="Tropicale" data-price="13.40">Aggiungi <span>＋</span></button></article>
+      </div>
+      <p class="rail-hint" aria-hidden="true">← scorri →</p>
+    </section>
+
+    <section class="how" id="come">
+      <div class="section-head reveal">
+        <p class="eyebrow">Come funziona</p>
+        <h2 data-split>Scegli, componi, ritira.</h2>
+      </div>
+      <div class="how-grid">
+        <div class="reveal"><b>01</b><h3>Scegli</h3><p>Una signature dalla lista o la tua bowl da zero. Il prezzo lo vedi mentre componi.</p></div>
+        <div class="reveal"><b>02</b><h3>Componiamo</h3><p>Il pesce è tagliato al mattino, la bowl si monta quando arriva l’ordine. Mai prima.</p></div>
+        <div class="reveal"><b>03</b><h3>Ritira o a domicilio</h3><p>Pronta in 15 minuti al banco, 20–30 minuti a casa. Vimercate e comuni limitrofi.</p></div>
+      </div>
+    </section>
+
+    <!-- Manifesto: the paragraph brightens word by word as the reader scrolls past it. -->
+    <section class="fresh">
+      <div class="fresh-track">
+        <div class="fresh-stage">
+          <div class="fresh-rule"></div>
+          <p class="eyebrow light">Freschezza</p>
+          <p class="fresh-copy" data-brighten>Il pesce arriva ogni mattina dal mercato di Milano e viene tagliato prima dell’apertura. Quello che non usiamo entro sera non lo serviamo il giorno dopo. La frutta si taglia a ordine, il riso si cuoce due volte al giorno. È più lavoro, ma è l’unico modo in cui una poke ha senso.</p>
+          <p class="fresh-sign">— Mumi Poke, Vimercate</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="store" id="dove">
+      <div class="store-copy reveal">
+        <p class="eyebrow">Dove siamo</p>
+        <h2>Via Vittorio Emanuele II 18<br />Vimercate (MB)</h2>
+        <p>Lun–Dom · 11:30–15:00 · 18:00–22:30<br />+39 039 660 1180</p>
+        <div class="store-actions">
+          <a class="btn dark magnet" href="https://wa.me/390396601180" data-magnet>Ordina su WhatsApp</a>
+          <button class="btn light" type="button" data-mode-direct="Ritiro">Imposta ritiro</button>
+        </div>
+      </div>
+      <div class="store-map" aria-hidden="true"><span>Vimercate</span><i></i></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-logo">MUMI <i>poke</i></div>
+    <div><a href="#componi">Componi</a><a href="#signature">Signature</a><a href="#come">Come funziona</a><a href="#dove">Dove siamo</a></div>
+    <p>Design dimostrativo — contenuti, prezzi e contatti sono fittizi. <a href="/templates" target="_top">Torna alla collezione</a></p>
+  </footer>
+
+  <div class="scrim" data-scrim></div>
+  <aside class="cart" data-cart aria-hidden="true" aria-label="Carrello">
+    <div class="cart-head"><div><p class="eyebrow">Il tuo ordine</p><h2>Carrello</h2></div><button class="press" type="button" aria-label="Chiudi carrello" data-close-cart>×</button></div>
+    <div class="cart-mode"><span>Modalità</span><b data-cart-mode>Consegna</b><button type="button" data-change-mode>Cambia</button></div>
+    <div class="cart-items" data-cart-items></div>
+    <div class="cart-foot"><div class="cart-total"><span>Totale</span><b data-cart-total>€ 0,00</b></div><button class="btn dark wide" type="button" data-checkout disabled>Conferma ordine</button><small>Demo: nessun pagamento reale.</small></div>
+  </aside>
+  <div class="toast" data-toast role="status" aria-live="polite">Aggiunto al carrello</div>
+</body>
+</html>

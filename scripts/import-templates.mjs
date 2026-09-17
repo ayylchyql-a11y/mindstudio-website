@@ -28,6 +28,7 @@ const FOLDERS = {
   "食品供应商模版": "food-supplier",
   "百货店模版": "department-store",
   "手机维修店模版": "phone-repair",
+  "Pokeria模版": "pokeria", // 09-18 自己写的（Mumi Poke），碗是 SVG 画的、没有照片
 };
 const STYLES = {
   "风格A-编辑杂志": "editorial",
@@ -86,11 +87,11 @@ for (const [folder, slug] of Object.entries(FOLDERS)) {
   });
   pages++;
 
-  // 只搬 CSS 里真正引用的图
+  // 只搬 CSS 里真正引用的图（pokeria 的碗是 SVG 画的，没有图，也就没有 assets 目录）
   const css = readFileSync(join(from, "styles.css"), "utf8");
   const used = [...css.matchAll(/url\(["']?\.\/assets\/([^"')]+)["']?\)/g)].map((m) => m[1]);
-  if (used.length === 0) throw new Error(`${slug}: no asset referenced`);
-  mkdirSync(join(to, "assets"), { recursive: true });
+  if (used.length === 0 && existsSync(join(from, "assets"))) throw new Error(`${slug}: assets dir present but nothing referenced`);
+  if (used.length) mkdirSync(join(to, "assets"), { recursive: true });
   for (const file of new Set(used)) cpSync(join(from, "assets", file), join(to, "assets", file));
 
   for (const [zh, style] of Object.entries(STYLES)) {
