@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#15120f" />
+    <meta name="description" content="Kumo Ramen — ramen artigianale, brodi lenti e ingredienti italiani nel cuore di Milano." />
+    <title>Kumo Ramen — Milano</title>
+    <link rel="preload" as="image" href="./assets/kumo-ramen-hero.jpg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#contenuto">Vai al contenuto</a>
+    <div class="announcement"><p><span>Nuovo</span> Hiyashi ramen, fresco per l'estate</p><a href="#menu">Scopri il piatto</a></div>
+
+    <header class="site-header" data-header>
+      <a class="logo pressable" href="#inizio" aria-label="Kumo Ramen, torna all'inizio">
+        <span class="logo-jp" aria-hidden="true">雲</span><span class="logo-type">KUMO<small>RAMEN · MILANO</small></span>
+      </a>
+      <nav class="desktop-nav" aria-label="Navigazione principale">
+        <a class="nav-link pressable" href="#menu">Menu</a><a class="nav-link pressable" href="#storia">La nostra storia</a><a class="nav-link pressable" href="#locale">Il locale</a>
+      </nav>
+      <div class="header-actions">
+        <button class="button button-ghost desktop-only" type="button" data-open-reservation>Prenota</button>
+        <button class="menu-toggle pressable" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-toggle><span></span><span></span></button>
+      </div>
+    </header>
+
+    <div class="mobile-menu" data-mobile-menu aria-hidden="true">
+      <nav aria-label="Navigazione mobile">
+        <a href="#menu" data-menu-link><span>01</span>Menu</a><a href="#storia" data-menu-link><span>02</span>La nostra storia</a><a href="#locale" data-menu-link><span>03</span>Il locale</a>
+      </nav>
+      <div class="mobile-menu-meta"><p>Via Vigevano 18, Milano</p><p>Mar–Dom · 12:00–23:00</p></div>
+      <button class="button button-primary" type="button" data-open-reservation>Prenota un tavolo</button>
+    </div>
+
+    <main id="contenuto">
+      <section class="hero" id="inizio" aria-labelledby="hero-title">
+        <div class="hero-media" role="img" aria-label="Ciotola di ramen shoyu artigianale sul bancone di Kumo"></div>
+        <div class="hero-shade"></div>
+        <div class="hero-content">
+          <p class="kicker reveal">Tokyo nel gesto.<br />Milano nel cuore.</p>
+          <h1 id="hero-title" class="reveal">Il tempo è il nostro<br /><em>ingrediente segreto.</em></h1>
+          <p class="hero-copy reveal">Brodi cotti per 18 ore, noodles freschi ogni mattina e ingredienti scelti uno ad uno.</p>
+          <div class="hero-actions reveal"><a class="button button-primary" href="#menu">Esplora il menu</a><button class="button button-glass" type="button" data-open-reservation>Prenota un tavolo</button></div>
+        </div>
+        <div class="hero-note"><span>Scroll</span><i></i><span>Via Vigevano 18 · Milano</span></div>
+      </section>
+
+      <section class="manifesto" aria-label="La filosofia Kumo">
+        <div class="manifesto-index">一</div>
+        <p class="reveal">Non serviamo semplicemente ramen. Coltiviamo il tempo, ascoltiamo gli ingredienti e mettiamo in ogni ciotola la cura di un gesto ripetuto mille volte.</p>
+        <div class="seal" aria-hidden="true"><span>雲</span><small>KUMO<br />MILANO</small></div>
+      </section>
+
+      <section class="menu-section" id="menu" aria-labelledby="menu-title">
+        <div class="section-head reveal">
+          <div><p class="section-label">02 — Il menu</p><h2 id="menu-title">Una ciotola<br />per ogni <em>umore.</em></h2></div>
+          <p>Dal profondo tonkotsu al leggero shio: ogni ricetta ha un carattere preciso, costruito strato dopo strato.</p>
+        </div>
+        <div class="menu-filters" role="group" aria-label="Filtra il menu">
+          <button class="filter-chip active" type="button" data-filter="tutti" aria-pressed="true">Tutti</button><button class="filter-chip" type="button" data-filter="ramen" aria-pressed="false">Ramen</button><button class="filter-chip" type="button" data-filter="piccoli" aria-pressed="false">Piccoli piatti</button><button class="filter-chip" type="button" data-filter="vegetale" aria-pressed="false">Vegetale</button>
+        </div>
+        <div class="menu-grid" aria-live="polite">
+          <article class="dish-card reveal" data-category="ramen">
+            <div class="dish-visual visual-shoyu"><div class="bowl-art"><i></i><i></i><i></i></div><span class="dish-number">01</span><span class="badge">Firma Kumo</span></div>
+            <div class="dish-body"><div><h3>Kumo Shoyu</h3><p>Brodo di pollo e dashi, chashu, ajitama, nori, cipollotto</p><small>1 · 3 · 6 · 11</small></div><strong>€ 15</strong></div>
+          </article>
+          <article class="dish-card reveal" data-category="ramen">
+            <div class="dish-visual visual-tonkotsu"><div class="bowl-art"><i></i><i></i><i></i></div><span class="dish-number">02</span><span class="heat">●●○</span></div>
+            <div class="dish-body"><div><h3>Akai Tonkotsu</h3><p>Brodo di maiale, miso piccante, chashu, mais, kikurage</p><small>1 · 3 · 6 · 7 · 11</small></div><strong>€ 17</strong></div>
+          </article>
+          <article class="dish-card reveal" data-category="vegetale ramen">
+            <div class="dish-visual visual-vegan"><div class="bowl-art"><i></i><i></i><i></i></div><span class="dish-number">03</span><span class="badge badge-green">Vegano</span></div>
+            <div class="dish-body"><div><h3>Mori Miso</h3><p>Brodo vegetale, miso bianco, tofu croccante, pak choi, sesamo</p><small>1 · 6 · 11</small></div><strong>€ 15</strong></div>
+          </article>
+          <article class="dish-card reveal" data-category="piccoli">
+            <div class="dish-visual visual-gyoza"><div class="gyoza-art"><i></i><i></i><i></i></div><span class="dish-number">04</span></div>
+            <div class="dish-body"><div><h3>Gyoza croccanti</h3><p>Maiale, cavolo, zenzero e salsa ponzu fatta in casa</p><small>1 · 6 · 11</small></div><strong>€ 7</strong></div>
+          </article>
+          <article class="dish-card reveal" data-category="vegetale piccoli">
+            <div class="dish-visual visual-edamame"><div class="edamame-art"><i></i><i></i><i></i></div><span class="dish-number">05</span><span class="badge badge-green">Vegano</span></div>
+            <div class="dish-body"><div><h3>Edamame yuzu</h3><p>Baccelli al vapore, sale marino, yuzu e togarashi</p><small>6</small></div><strong>€ 5</strong></div>
+          </article>
+          <article class="dish-card reveal" data-category="piccoli">
+            <div class="dish-visual visual-karaage"><div class="karaage-art"><i></i><i></i><i></i></div><span class="dish-number">06</span></div>
+            <div class="dish-body"><div><h3>Karaage</h3><p>Pollo marinato alla soia, maionese al sesamo, lime</p><small>1 · 3 · 6 · 11</small></div><strong>€ 8</strong></div>
+          </article>
+        </div>
+        <div class="allergen-note"><span>ⓘ</span><p>I numeri indicano gli allergeni secondo il Reg. UE 1169/2011. Chiedi al personale per qualsiasi necessità.</p></div>
+      </section>
+
+      <section class="story" id="storia" aria-labelledby="story-title">
+        <div class="story-art reveal" aria-hidden="true"><div class="paper-orb"></div><div class="kanji">十八</div><span>ORE DI COTTURA</span></div>
+        <div class="story-copy reveal"><p class="section-label">03 — La nostra storia</p><h2 id="story-title">Prima il brodo.<br /><em>Poi tutto il resto.</em></h2><p>Kumo nasce dall'incontro tra Haru Tanaka, cuoco di Yokohama, e il ritmo curioso di Milano. Ogni giorno cominciamo prima dell'alba: ossa, verdure e kombu entrano in pentola quando la città dorme ancora.</p><p>Non cerchiamo scorciatoie. Cerchiamo quella profondità che arriva soltanto quando si dà agli ingredienti il tempo di diventare qualcosa di più.</p><div class="signature">Haru <span>田中</span></div></div>
+      </section>
+
+      <section class="details" aria-label="I dettagli Kumo">
+        <div class="detail reveal"><strong>18h</strong><p>di cottura lenta<br />per il nostro brodo</p></div><div class="detail reveal"><strong>6</strong><p>ingredienti italiani<br />scelti ogni mattina</p></div><div class="detail reveal"><strong>42</strong><p>posti, per restare<br />piccoli e presenti</p></div>
+      </section>
+
+      <section class="location" id="locale" aria-labelledby="location-title">
+        <div class="location-copy reveal"><p class="section-label">04 — Vieni a trovarci</p><h2 id="location-title">Un angolo quieto<br />nel cuore dei <em>Navigli.</em></h2><div class="location-grid"><div><small>Indirizzo</small><p>Via Vigevano 18<br />20144 Milano</p></div><div><small>Orari</small><p>Mar–Ven 12:00–15:00 / 19:00–23:00<br />Sab–Dom 12:00–23:00</p></div><div><small>Contatti</small><p>+39 02 5550 1842<br />ciao@kumoramen.it</p></div></div><button class="button button-dark" type="button" data-open-reservation>Prenota un tavolo</button></div>
+        <div class="map-art" aria-label="Mappa illustrata della zona Navigli"><div class="canal"></div><span class="road r1">Ripa di Porta Ticinese</span><span class="road r2">Via Vigevano</span><div class="map-pin"><span>雲</span></div><p>NAVIGLIO GRANDE</p></div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><div class="footer-brand"><span>雲</span><h2>KUMO</h2><p>Ramen · Milano</p></div><div class="footer-links"><div><small>Esplora</small><a href="#menu">Menu</a><a href="#storia">La nostra storia</a><a href="#locale">Contatti</a></div><div><small>Seguici</small><a href="#">Instagram</a><a href="#">TikTok</a></div></div><div class="footer-bottom"><p>© 2026 Kumo Ramen — Brand dimostrativo</p><a href="/templates" target="_top">Torna alla collezione</a><p>Privacy · Cookie</p></div></footer>
+
+    <div class="mobile-cta"><a class="button button-dark" href="#menu">Menu</a><button class="button button-primary" type="button" data-open-reservation>Prenota</button></div>
+
+    <dialog class="reservation-dialog" data-reservation-dialog aria-labelledby="reservation-title">
+      <button class="dialog-close pressable" type="button" aria-label="Chiudi" data-close-reservation>×</button>
+      <div class="dialog-intro"><p class="section-label">La tua serata da Kumo</p><h2 id="reservation-title">Prenota<br /><em>il tuo tavolo.</em></h2><p>Per gruppi oltre 8 persone, scrivici a <a href="mailto:ciao@kumoramen.it">ciao@kumoramen.it</a>.</p></div>
+      <form class="reservation-form" data-reservation-form>
+        <label>Nome e cognome<input name="name" autocomplete="name" required placeholder="Giulia Rossi" /></label>
+        <div class="form-row"><label>Data<input name="date" type="date" required /></label><label>Ora<select name="time" required><option value="">Scegli</option><option>12:30</option><option>13:30</option><option>19:30</option><option>20:30</option><option>21:30</option></select></label></div>
+        <label>Numero di persone<select name="guests" required><option value="">Scegli</option><option>1 persona</option><option>2 persone</option><option>3 persone</option><option>4 persone</option><option>5 persone</option><option>6 persone</option><option>7 persone</option><option>8 persone</option></select></label>
+        <label>Email<input name="email" type="email" autocomplete="email" required placeholder="giulia@email.it" /></label>
+        <label class="consent"><input type="checkbox" required /><span>Ho letto l'informativa privacy e accetto il trattamento dei dati.</span></label>
+        <button class="button button-primary submit-button" type="submit"><span>Richiedi la prenotazione</span><span aria-hidden="true">→</span></button>
+      </form>
+    </dialog>
+    <div class="toast" role="status" aria-live="polite" data-toast><span>✓</span><div><strong>Richiesta inviata</strong><p>Ti confermeremo il tavolo via email.</p></div></div>
+  </body>
+</html>

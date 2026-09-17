@@ -48,7 +48,9 @@
     color: var(--nav-ink);
   }
   .nav-inner {
-    max-width: 980px; margin: 0 auto; height: 100%;
+    /* 09-17 从 980 加宽到 1040：加了「网页模版」这一项后 12 语里有 10 种
+       把品牌名挤成两行（.nav-logo 高 35 而不是 26）。断点在下面跟着改。 */
+    max-width: 1040px; margin: 0 auto; height: 100%;
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 22px;
     font-size: 13px; letter-spacing: 0.01em;
@@ -64,16 +66,17 @@
     width: 86px; height: 86px; border-radius: 24%;
     box-shadow: 0 14px 36px rgba(5, 5, 5, 0.28);
   }
-  /* 导航容量是有限的，而且**跟视口无关**：`.nav-inner` 封顶 980px，
+  /* 导航容量是有限的，而且**跟视口无关**：`.nav-inner` 封顶 1040px，
      所以余量在任何桌面宽度下都是同一个数。
      🩸 **「有没有溢出」这个检查测不出来**：flex 子项是收缩+换行、不是溢出，
      `.nav-inner` 的 scrollWidth 始终等于 clientWidth。要看的是链接行的高度
      （单行 15~19px，断成两行会变 37px）。我靠那个错误的检查放过去过一次。
-     余量必须按**最紧的那种语言**算：12 语里日语和葡语最紧（栏目名最长 +
-     语言菜单标签最宽），实测它们的 gap 上限是 33px，取 28 留出 35px 余量。
+     余量必须按**最紧的那种语言**算：09-17 加了「网页模版」一项后容器加宽到
+     1040、gap 收到 26，12 语实测（Playwright 量 .nav-links 与 .nav-lang 的间距）
+     最紧的是日语 14px、其次葡/俄 25px；品牌名 .nav-logo 高度全部 26（单行）。
      加/删导航项或改栏目名之后，这三个数都要重新量。
      nowrap 保证品牌名不会被断在中间。 */
-  .nav-links { display: flex; gap: 28px; }
+  .nav-links { display: flex; gap: 26px; }
   .nav-links > a { white-space: nowrap; }
   .nav-links a { opacity: 0.82; transition: opacity 0.15s ease; }
   .nav-links a:hover { opacity: 1; }
@@ -120,10 +123,10 @@
      所以 640~900 这一段**在加实验室之前就已经在压扁换行了**，
      只是两行文字挤在 48px 高的栏里，不细看发现不了。
      与其让它悄悄变形，不如按这个站原本的做法：窄屏只留 logo 和语言菜单。
-     断点取 980 是因为它正好等于 `.nav-inner` 的 max-width：过了这个宽度容器
+     断点取 1040 是因为它正好等于 `.nav-inner` 的 max-width：过了这个宽度容器
      就不再变化、余量恒定 34px，940 这类数字会留下一条 20px 宽的临界带
      （实测 941px 时余量 −5px）。 */
-  @media (max-width: 980px) { .nav-links { display: none; } }
+  @media (max-width: 1040px) { .nav-links { display: none; } }
 
   /* ── Hero ───────────────────────────── */
   .hero {
@@ -1627,4 +1630,146 @@
   font-size: 10.5px; letter-spacing: 0.03em;
   color: var(--ink-2);
   white-space: nowrap;
+}
+
+/* ── Templates：网页设计模版 ─────────────────────────────
+   总览与详情都走 .prose-page(760) 的阅读栏；卡片网格和取景框跟 /lab 的 .cat-list
+   一样用 margin-left:50% + translateX(-50%) 挣脱到 1080 —— 一个网站的桌面布局
+   在 760 里看是平板视图，不是它该有的样子。配色只用 :root 里已有的 token。 */
+.tpl-groupnav {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-top: 26px;
+}
+.tpl-groupnav a {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13.5px; font-weight: 500; color: var(--ink);
+  border: 1px solid var(--hairline); border-radius: 99px;
+  padding: 7px 14px 7px 12px;
+  transition: border-color 0.2s ease;
+}
+.prose-page .tpl-groupnav a { color: var(--ink); }
+.prose-page .tpl-groupnav a:hover { text-decoration: none; border-color: color-mix(in srgb, var(--ink) 26%, transparent); }
+.tpl-groupnav-n { font-size: 11.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+.tpl-group { margin-top: 56px; scroll-margin-top: 90px; }
+.tpl-group-head { max-width: 680px; }
+.prose-page .tpl-group-head h2 {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  font-size: 24px; margin: 0 0 8px;
+}
+.tpl-group-head h2 .cat-dot { width: 11px; height: 11px; }
+.prose-page .tpl-group-head p { margin-bottom: 0; }
+
+/* 卡片网格：挣脱阅读栏。auto-fill 而不是 auto-fit：只有一套模版的组
+   （百货、食品供应）也保持三列的卡宽，空轨道留着 —— auto-fit 会把那张卡
+   拉成整行宽的大扁框，跟隔壁三张小卡对不上。 */
+.tpl-grid {
+  list-style: none; padding: 0;
+  width: min(1080px, calc(100vw - 48px));
+  margin: 22px 0 0 50%;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+  gap: 16px;
+  align-items: start;
+}
+.tpl-card {
+  display: block;
+  background: var(--ground-elev);
+  border: 1px solid var(--hairline);
+  border-radius: 16px;
+  overflow: hidden;
+  color: inherit;
+  transition: transform 200ms var(--ease-out-strong), border-color 0.2s ease;
+}
+.prose-page .tpl-card { color: inherit; }
+.prose-page .tpl-card:hover { text-decoration: none; }
+@media (hover: hover) and (pointer: fine) {
+  .tpl-card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--ink) 22%, transparent); }
+}
+.tpl-card:active { transform: scale(0.99); }
+/* 海报是 1200×750 的桌面截图；底色先铺模版主色，图没到时也不是白框 */
+.tpl-card-shot { display: block; aspect-ratio: 1200 / 750; overflow: hidden; }
+.tpl-card-shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.tpl-card-body { display: grid; gap: 3px; padding: 14px 16px 16px; border-top: 1px solid var(--hairline); }
+.tpl-card-name { font-size: 17px; font-weight: 650; letter-spacing: -0.012em; color: var(--ink); }
+.tpl-card-meta { font-size: 13.5px; color: var(--ink-2); }
+.tpl-card-styles {
+  margin-top: 6px;
+  font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-2); font-variant-numeric: tabular-nums;
+}
+
+.prose-page .tpl-note { margin-top: 40px; font-size: 13.5px; color: var(--ink-2); }
+.prose-page .tpl-cta { margin-top: 8px; font-size: 16px; color: var(--ink); }
+.tpl-tail-links { margin-top: 18px; }
+
+/* ── 详情页：取景框 ── */
+.tpl-stage {
+  width: min(1080px, calc(100vw - 48px));
+  margin: 30px 0 0 50%;
+  transform: translateX(-50%);
+}
+.tpl-tabs {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  margin-bottom: 12px;
+}
+@media (max-width: 640px) { .tpl-tabs { grid-template-columns: repeat(2, 1fr); } }
+.tpl-tab {
+  display: grid; gap: 2px;
+  padding: 0; margin: 0;
+  background: var(--ground-elev);
+  border: 1px solid var(--hairline); border-radius: 12px;
+  overflow: hidden; cursor: pointer;
+  text-align: left; color: inherit; font: inherit;
+  transition: border-color 0.2s ease, transform 200ms var(--ease-out-strong);
+}
+.tpl-tab img {
+  /* height:auto 必须写：<img> 带着 height=750 的属性（给浏览器先算好占位用的），
+     不覆盖就真的画成 750px 高 */
+  display: block; width: 100%; height: auto; aspect-ratio: 1200 / 750; object-fit: cover;
+  border-bottom: 1px solid var(--hairline);
+}
+.tpl-tab-style {
+  padding: 8px 10px 0; font-size: 12.5px; font-weight: 600; color: var(--ink);
+}
+.tpl-tab-brand {
+  padding: 0 10px 9px; font-size: 11.5px; color: var(--ink-2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+@media (hover: hover) and (pointer: fine) {
+  .tpl-tab:hover { border-color: color-mix(in srgb, var(--ink) 26%, transparent); }
+}
+.tpl-tab:active { transform: scale(0.985); }
+/* 选中态：用页面的强调线色描边（详情页把 --accent-line 设成这套模版的主色） */
+.tpl-tab.on { border-color: var(--accent-line, #2f6fff); box-shadow: 0 0 0 1px var(--accent-line, #2f6fff); }
+.tpl-tab:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.tpl-frame {
+  position: relative;
+  background: var(--ground-elev);
+  border: 1px solid var(--hairline); border-radius: 16px;
+  overflow: hidden;
+}
+.tpl-frame iframe { display: block; width: 100%; border: 0; }
+.tpl-open {
+  position: absolute; right: 12px; top: 12px; z-index: 2;
+  font: 500 12px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  letter-spacing: 0.02em;
+  color: var(--ink) !important;
+  background: color-mix(in srgb, var(--ground-elev) 88%, transparent);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border: 1px solid var(--hairline); border-radius: 99px;
+  padding: 8px 13px;
+  transition: background 0.2s ease;
+}
+.tpl-open:hover { background: var(--ground-elev); text-decoration: none !important; }
+.prose-page .tpl-gist { margin-top: 12px; font-size: 14px; color: var(--ink-2); }
+.tpl-gist b { color: var(--ink); font-weight: 600; }
+/* 手机上 720 高的框占一屏半，缩到一屏内 */
+@media (max-width: 640px) {
+  .tpl-frame, .tpl-frame iframe { height: 560px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tpl-card, .tpl-tab, .tpl-groupnav a { transition: none; }
 }

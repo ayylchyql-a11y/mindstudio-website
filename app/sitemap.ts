@@ -4,6 +4,7 @@ import { privacy } from "@/data/legal";
 import { work } from "@/data/work";
 import { notes } from "@/data/notes";
 import { activeCategories, effectsIn } from "@/data/effects";
+import { TEMPLATES_LANGS, templates } from "@/data/templates";
 import { locales, type Locale } from "@/lib/i18n";
 
 const BASE = "https://mindstudioapps.com";
@@ -78,6 +79,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: 0.6,
       });
     }
+  }
+
+  // —— 网页设计模版：文案有 en / zh / zh-tw / it 四种原文（data/templates.ts）——
+  add(TEMPLATES_LANGS, (l) => `/${l}/templates`, { changeFrequency: "monthly", priority: 0.7 });
+  for (const tp of templates) {
+    add(TEMPLATES_LANGS, (l) => `/${l}/templates/${tp.slug}`, {
+      lastModified: new Date(`${tp.date}T00:00:00Z`),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    });
   }
 
   return entries;

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#071723" />
+    <meta name="description" content="Pronto Lab — riparazioni smartphone trasparenti e veloci nel centro di Milano." />
+    <title>Pronto Lab — Riparazioni smartphone Milano</title>
+    <link rel="preload" as="image" href="./assets/pronto-lab-hero.jpg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Vai al contenuto</a>
+
+    <header data-header>
+      <a class="logo press" href="#top" aria-label="Pronto Lab, torna all'inizio">
+        <span class="logo-mark" aria-hidden="true"><i></i></span>
+        <span><b>PRONTO</b><small>LAB · MILANO</small></span>
+      </a>
+      <nav aria-label="Navigazione principale">
+        <a href="#riparazioni">Riparazioni</a>
+        <a href="#metodo">Come funziona</a>
+        <a href="#garanzia">Garanzia</a>
+        <a href="#negozio">Negozio</a>
+      </nav>
+      <div class="header-actions">
+        <button class="header-estimate press" type="button" data-estimate>Preventivo</button>
+        <button class="menu press" type="button" data-menu aria-label="Apri il menu" aria-expanded="false"><i></i><i></i></button>
+      </div>
+    </header>
+
+    <div class="mobile-nav" data-mobile aria-hidden="true">
+      <a href="#riparazioni" data-link>Riparazioni</a>
+      <a href="#metodo" data-link>Come funziona</a>
+      <a href="#garanzia" data-link>Garanzia</a>
+      <a href="#negozio" data-link>Negozio</a>
+      <button type="button" data-estimate>Calcola il preventivo</button>
+    </div>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-image" role="img" aria-label="Tecnico Pronto Lab durante la riparazione di uno smartphone"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-copy">
+          <p class="eyebrow reveal">Riparazioni precise · Milano centro</p>
+          <h1 id="hero-title" class="reveal">Il tuo telefono.<br /><em>Di nuovo tuo.</em></h1>
+          <p class="hero-text reveal">Diagnosi chiara, ricambi selezionati e tempi comunicati prima di iniziare. Nessuna sorpresa, solo il tuo dispositivo che torna a funzionare.</p>
+          <div class="hero-cta reveal">
+            <button class="btn yellow" type="button" data-estimate>Calcola il preventivo <span aria-hidden="true">→</span></button>
+            <button class="btn glass" type="button" data-book>Prenota la diagnosi</button>
+          </div>
+        </div>
+        <div class="today-card reveal" aria-label="Disponibilità di oggi">
+          <span>Oggi</span>
+          <b>Ritiro disponibile</b>
+          <small>17:30 · 18:15</small>
+          <i aria-hidden="true"></i>
+        </div>
+      </section>
+
+      <section class="proof" aria-label="Punti di forza">
+        <div><strong>4,9/5</strong><span>Recensioni verificate</span></div>
+        <div><strong>12 mesi</strong><span>Garanzia intervento</span></div>
+        <div><strong>89 min</strong><span>Tempo medio</span></div>
+        <div><strong>Prima</strong><span>Preventivo, poi lavoro</span></div>
+      </section>
+
+      <section class="repairs" id="riparazioni" aria-labelledby="repairs-title">
+        <div class="section-head reveal">
+          <div><p class="eyebrow dark">01 — Riparazioni</p><h2 id="repairs-title">Sappiamo dove<br />mettere le mani.</h2></div>
+          <p>Dallo schermo alla batteria, ogni intervento parte da una diagnosi reale. Tocca un servizio per ricevere una prima stima.</p>
+        </div>
+        <div class="repair-grid">
+          <button class="repair-card reveal" type="button" data-repair="display">
+            <span class="repair-index">01</span><span class="repair-icon screen" aria-hidden="true"><i></i></span>
+            <span class="repair-copy"><b>Schermo</b><small>Vetro rotto, touch o display</small></span><span class="arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="repair-card reveal" type="button" data-repair="battery">
+            <span class="repair-index">02</span><span class="repair-icon battery" aria-hidden="true"><i></i></span>
+            <span class="repair-copy"><b>Batteria</b><small>Autonomia ridotta o spegnimenti</small></span><span class="arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="repair-card reveal" type="button" data-repair="charge">
+            <span class="repair-index">03</span><span class="repair-icon port" aria-hidden="true"><i></i></span>
+            <span class="repair-copy"><b>Ricarica</b><small>Connettore, cavo o ricarica lenta</small></span><span class="arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="repair-card reveal" type="button" data-repair="camera">
+            <span class="repair-index">04</span><span class="repair-icon camera" aria-hidden="true"><i></i></span>
+            <span class="repair-copy"><b>Fotocamera</b><small>Messa a fuoco, lente o stabilità</small></span><span class="arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="repair-card reveal" type="button" data-repair="audio">
+            <span class="repair-index">05</span><span class="repair-icon audio" aria-hidden="true"><i></i></span>
+            <span class="repair-copy"><b>Audio</b><small>Microfono, speaker o chiamate</small></span><span class="arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="repair-card diagnostic reveal" type="button" data-book>
+            <span class="repair-index">06</span><span class="diagnostic-mark" aria-hidden="true">?</span>
+            <span class="repair-copy"><b>Non sei sicuro?</b><small>Prenota una diagnosi completa</small></span><span class="arrow" aria-hidden="true">↗</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="method" id="metodo" aria-labelledby="method-title">
+        <div class="method-title reveal">
+          <p class="eyebrow">02 — Il metodo</p>
+          <h2 id="method-title">Tre passaggi.<br /><em>Zero dubbi.</em></h2>
+        </div>
+        <div class="steps">
+          <article class="reveal"><span>01</span><div><h3>Ci racconti il problema</h3><p>Online o in negozio. Bastano dispositivo, sintomo e pochi minuti.</p></div></article>
+          <article class="reveal"><span>02</span><div><h3>Confermi il preventivo</h3><p>Controlliamo il dispositivo e iniziamo solo dopo la tua approvazione.</p></div></article>
+          <article class="reveal"><span>03</span><div><h3>Torni connesso</h3><p>Test finali, report dell'intervento e garanzia scritta di 12 mesi.</p></div></article>
+        </div>
+      </section>
+
+      <section class="warranty" id="garanzia" aria-labelledby="warranty-title">
+        <div class="warranty-visual" aria-hidden="true"><span>12</span><small>MESI</small><i></i></div>
+        <div class="warranty-copy reveal">
+          <p class="eyebrow dark">03 — La promessa</p>
+          <h2 id="warranty-title">Riparato bene.<br />Garantito davvero.</h2>
+          <p>Ogni intervento include una scheda tecnica, i test eseguiti e 12 mesi di garanzia sul componente sostituito. I tuoi dati restano sul tuo dispositivo.</p>
+          <ul>
+            <li><span>✓</span> Ricambi selezionati e tracciabili</li>
+            <li><span>✓</span> Nessun accesso ai dati personali</li>
+            <li><span>✓</span> Prezzo confermato prima del lavoro</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="store" id="negozio" aria-labelledby="store-title">
+        <div class="store-copy reveal">
+          <p class="eyebrow">04 — Il laboratorio</p>
+          <h2 id="store-title">Passa quando vuoi.<br /><em>Esci più leggero.</em></h2>
+          <div class="store-details">
+            <p><small>Indirizzo</small>Via Solferino 18<br />20121 Milano</p>
+            <p><small>Orari</small>Lun–Sab<br />09:30–19:30</p>
+            <p><small>Contatti</small>+39 02 8718 2410<br />ciao@prontolab.it</p>
+          </div>
+          <button class="btn yellow" type="button" data-book>Prenota un banco <span aria-hidden="true">→</span></button>
+        </div>
+        <div class="store-art" aria-hidden="true"><span class="store-phone"><i></i></span><span class="store-pin">MI</span></div>
+      </section>
+    </main>
+
+    <footer>
+      <a class="logo footer-logo press" href="#top"><span class="logo-mark"><i></i></span><span><b>PRONTO</b><small>LAB · MILANO</small></span></a>
+      <div><a href="#riparazioni">Riparazioni</a><a href="#metodo">Metodo</a><a href="#garanzia">Garanzia</a><a href="#negozio">Negozio</a></div>
+      <div><a href="/templates" target="_top">Torna alla collezione</a><p>© 2026 Pronto Lab — Brand dimostrativo</p></div>
+    </footer>
+
+    <dialog class="estimate-dialog" data-estimate-dialog aria-labelledby="estimate-title">
+      <button class="dialog-close press" type="button" data-close-estimate aria-label="Chiudi preventivo">×</button>
+      <div class="dialog-intro">
+        <span class="mini-phone" aria-hidden="true"><i></i></span>
+        <p>Una stima in<br />meno di un minuto.</p>
+        <small>Il prezzo finale viene confermato dopo la diagnosi.</small>
+      </div>
+      <div class="dialog-main">
+        <p class="eyebrow dark">Preventivo rapido</p>
+        <h2 id="estimate-title">Cosa dobbiamo<br />rimettere a posto?</h2>
+        <form data-estimate-form>
+          <label>Dispositivo
+            <select name="device" data-device required>
+              <option value="smartphone">Smartphone</option>
+              <option value="tablet">Tablet</option>
+              <option value="watch">Smartwatch</option>
+            </select>
+          </label>
+          <label>Problema
+            <select name="repair" data-repair-select required>
+              <option value="display">Schermo</option>
+              <option value="battery">Batteria</option>
+              <option value="charge">Ricarica</option>
+              <option value="camera">Fotocamera</option>
+              <option value="audio">Audio</option>
+            </select>
+          </label>
+          <label>Modello <span>opzionale</span><input name="model" data-model placeholder="es. modello e anno" autocomplete="off" /></label>
+          <div class="quote" data-quote aria-live="polite">
+            <span>Stima indicativa</span>
+            <strong data-price>da € 89</strong>
+            <small data-time>circa 90 minuti</small>
+          </div>
+          <button class="btn navy" type="submit">Continua con la prenotazione <span aria-hidden="true">→</span></button>
+        </form>
+      </div>
+    </dialog>
+
+    <dialog class="booking-dialog" data-book-dialog aria-labelledby="booking-title">
+      <button class="dialog-close press" type="button" data-close-book aria-label="Chiudi prenotazione">×</button>
+      <div class="booking-head">
+        <p class="eyebrow dark">Prenotazione banco</p>
+        <h2 id="booking-title">Quando vuoi<br />passare?</h2>
+        <p data-book-summary>Diagnosi completa · stima in negozio</p>
+      </div>
+      <form data-book-form>
+        <div class="form-row">
+          <label>Data<input type="date" data-date required /></label>
+          <label>Ora<select required><option value="">Scegli</option><option>10:00</option><option>11:30</option><option>15:00</option><option>17:30</option><option>18:15</option></select></label>
+        </div>
+        <label>Nome e cognome<input required autocomplete="name" placeholder="Giulia Rossi" /></label>
+        <label>Email<input type="email" required autocomplete="email" placeholder="giulia@email.it" /></label>
+        <label class="consent"><input type="checkbox" required /><span>Accetto l'informativa privacy.</span></label>
+        <button class="btn yellow" type="submit">Conferma la richiesta <span aria-hidden="true">→</span></button>
+      </form>
+    </dialog>
+
+    <div class="toast" data-toast role="status" aria-live="polite">✓ Richiesta inviata · Ti confermeremo l'orario via email</div>
+  </body>
+</html>

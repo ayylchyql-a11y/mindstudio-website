@@ -1,6 +1,7 @@
 import MsLogo from "./MsLogo";
 import { apps } from "@/data/apps";
 import { labCopy } from "@/data/effects";
+import { templatesCopy } from "@/data/templates";
 import type { Locale } from "@/lib/i18n";
 import { getDictionary, locales, localeMeta, pick } from "@/lib/i18n";
 
@@ -22,6 +23,9 @@ export default function Nav({ lang }: { lang: Locale }) {
           */}
           <a className="nav-section" href={`/${lang}/lab`}>
             {pick(labCopy.navLabel, lang)}
+          </a>
+          <a className="nav-section" href={`/${lang}/templates`}>
+            {pick(templatesCopy.navLabel, lang)}
           </a>
           <span className="nav-sep" aria-hidden="true" />
           <a href={`/${lang}/work/m-desk`}>M Desk</a>

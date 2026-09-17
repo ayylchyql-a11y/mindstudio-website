@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#e9f4f6" />
+    <meta name="description" content="Mizu Infinity — all you can eat giapponese à la carte a Torino. Sushi preparato al momento, qualità senza limiti." />
+    <title>Mizu Infinity — All You Can Eat Torino</title>
+    <link rel="preload" as="image" href="./assets/mizu-infinity-hero.jpg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#contenuto">Vai al contenuto</a>
+    <header class="site-header" data-header>
+      <a class="logo pressable" href="#inizio" aria-label="Mizu Infinity, torna all'inizio"><span class="logo-word">MIZU</span><span class="logo-loop" aria-hidden="true">∞</span><small>ALL YOU CAN EAT · TORINO</small></a>
+      <nav class="desktop-nav" aria-label="Navigazione principale"><a href="#formula">La formula</a><a href="#menu">Menu</a><a href="#prezzi">Prezzi</a><a href="#regole">Come funziona</a></nav>
+      <div class="header-actions"><button class="lang-button pressable desktop-only" type="button" aria-label="Lingua italiana">IT</button><button class="button button-coral desktop-only" type="button" data-open-booking>Prenota</button><button class="menu-toggle pressable" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-toggle><i></i><i></i></button></div>
+    </header>
+
+    <div class="mobile-menu" data-mobile-menu aria-hidden="true">
+      <nav aria-label="Navigazione mobile"><a href="#formula" data-menu-link><span>01</span>La formula</a><a href="#menu" data-menu-link><span>02</span>Menu</a><a href="#prezzi" data-menu-link><span>03</span>Prezzi</a><a href="#regole" data-menu-link><span>04</span>Come funziona</a></nav>
+      <div class="mobile-meta"><p>Corso Vittorio Emanuele II 72, Torino</p><p>Aperto tutti i giorni · 12:00–23:30</p></div>
+      <button class="button button-coral" type="button" data-open-booking>Prenota un tavolo</button>
+    </div>
+
+    <main id="contenuto">
+      <section class="hero" id="inizio" aria-labelledby="hero-title">
+        <div class="hero-media" role="img" aria-label="Selezione di nigiri, uramaki e sashimi freschi su ceramica artigianale"></div>
+        <div class="hero-wash"></div>
+        <div class="hero-content">
+          <div class="hero-badge reveal"><span>∞</span><p>All you can eat<br /><strong>à la carte</strong></p></div>
+          <p class="eyebrow reveal">Sushi preparato al momento · Torino</p>
+          <h1 id="hero-title" class="reveal">Tutto quello<br />che <em>ami.</em></h1>
+          <p class="hero-copy reveal">Ordina dal tavolo, assaggia senza fretta. Più di 120 proposte preparate una ad una, ogni volta che le desideri.</p>
+          <div class="hero-actions reveal"><button class="button button-coral" type="button" data-open-booking>Prenota un tavolo</button><a class="button button-frost" href="#formula">Scopri la formula <span aria-hidden="true">↓</span></a></div>
+        </div>
+        <div class="hero-price"><small>A partire da</small><strong>€ 18,90</strong><span>a persona · pranzo</span></div>
+      </section>
+
+      <section class="intro" id="formula" aria-labelledby="formula-title">
+        <div class="intro-orbit" aria-hidden="true"><span>水</span><i></i><i></i></div>
+        <div class="intro-copy reveal"><p class="section-label">01 — La nostra formula</p><h2 id="formula-title">Non è un buffet.<br />È un viaggio <em>senza limiti.</em></h2><p>Ogni piatto nasce quando lo ordini. Il riso è ancora tiepido, il pesce viene tagliato al momento e tu puoi seguire soltanto la tua curiosità.</p><div class="quality-points"><span><i>01</i>Preparato espresso</span><span><i>02</i>Ordini dal tavolo</span><span><i>03</i>Tempo per assaggiare</span></div></div>
+      </section>
+
+      <section class="pricing" id="prezzi" aria-labelledby="pricing-title">
+        <div class="section-heading reveal"><p class="section-label">02 — Scegli il tuo momento</p><h2 id="pricing-title">Una formula<br /><em>trasparente.</em></h2><p>Nessuna sorpresa alla cassa. Scegli pranzo o cena e scopri subito cosa è incluso.</p></div>
+        <div class="pricing-switch" role="group" aria-label="Scegli tra pranzo e cena"><button class="active" type="button" data-period="pranzo" aria-pressed="true">Pranzo</button><button type="button" data-period="cena" aria-pressed="false">Cena</button><span aria-hidden="true"></span></div>
+        <div class="price-stage reveal" data-price-stage>
+          <div class="price-copy"><div class="price-title"><span data-price-kicker>Lun–Ven · esclusi festivi</span><h3 data-price-title>Pranzo Infinity</h3></div><div class="price-amount"><small>€</small><strong data-price>18,90</strong><span>a persona</span></div></div>
+          <div class="included"><p>Incluso nella formula</p><ul data-included><li>Oltre 100 piatti dal menu</li><li>Sushi, sashimi e cucina calda</li><li>Ordini illimitati per 2 ore</li></ul></div>
+          <div class="price-note"><p><strong>Bambini 4–8 anni</strong><span data-child-price>€ 10,90</span></p><p><strong>Sabato, domenica e festivi</strong><span data-weekend-price>€ 22,90</span></p><p><strong>Bevande e dolci</strong><span>Non inclusi</span></p></div>
+        </div>
+      </section>
+
+      <section class="menu-section" id="menu" aria-labelledby="menu-title">
+        <div class="section-heading reveal"><p class="section-label">03 — Segui la curiosità</p><h2 id="menu-title">Più di cento modi<br />per dire <em>ancora.</em></h2><p>Dai grandi classici alle creazioni Mizu: filtra una categoria e trova il prossimo assaggio.</p></div>
+        <div class="menu-tabs" role="group" aria-label="Categorie del menu"><button class="active" type="button" data-filter="tutti" aria-pressed="true">Tutto</button><button type="button" data-filter="nigiri" aria-pressed="false">Nigiri</button><button type="button" data-filter="roll" aria-pressed="false">Roll</button><button type="button" data-filter="caldo" aria-pressed="false">Cucina calda</button><button type="button" data-filter="vegetale" aria-pressed="false">Vegetale</button></div>
+        <div class="dish-grid" aria-live="polite">
+          <article class="dish-card reveal" data-category="nigiri"><div class="dish-art art-sake"><span class="rice"></span><span class="topping"></span><small>01</small></div><div><h3>Nigiri sake</h3><p>Salmone norvegese, riso sushi</p><span>2 pezzi</span></div></article>
+          <article class="dish-card reveal" data-category="roll"><div class="dish-art art-mizu"><span class="roll r1"></span><span class="roll r2"></span><span class="roll r3"></span><small>02</small><i>Firma Mizu</i></div><div><h3>Mizu cloud</h3><p>Salmone, avocado, ricciola, ponzu allo yuzu</p><span>8 pezzi</span></div></article>
+          <article class="dish-card reveal" data-category="caldo"><div class="dish-art art-ebi"><span class="ebi e1"></span><span class="ebi e2"></span><small>03</small></div><div><h3>Ebi tempura</h3><p>Gamberi in tempura leggera, tentsuyu</p><span>4 pezzi</span></div></article>
+          <article class="dish-card reveal" data-category="vegetale roll"><div class="dish-art art-green"><span class="roll r1"></span><span class="roll r2"></span><span class="roll r3"></span><small>04</small><i>Vegano</i></div><div><h3>Green garden</h3><p>Avocado, cetriolo, asparago, crema di edamame</p><span>8 pezzi</span></div></article>
+          <article class="dish-card reveal" data-category="nigiri"><div class="dish-art art-maguro"><span class="rice"></span><span class="topping"></span><small>05</small></div><div><h3>Nigiri maguro</h3><p>Tonno rosso, riso sushi</p><span>2 pezzi</span></div></article>
+          <article class="dish-card reveal" data-category="caldo vegetale"><div class="dish-art art-gyoza"><span class="gyoza g1"></span><span class="gyoza g2"></span><span class="gyoza g3"></span><small>06</small></div><div><h3>Gyoza yasai</h3><p>Verdure, zenzero, salsa di soia</p><span>4 pezzi</span></div></article>
+        </div>
+        <p class="allergen-link">Hai allergie o intolleranze? <button type="button" data-open-allergens>Consulta il registro allergeni <span aria-hidden="true">↗</span></button></p>
+      </section>
+
+      <section class="steps" id="regole" aria-labelledby="steps-title">
+        <div class="steps-intro reveal"><p class="section-label">04 — Semplice per davvero</p><h2 id="steps-title">Tu scegli.<br />Noi prepariamo.</h2></div>
+        <div class="step-list">
+          <article class="step reveal"><span>01</span><div class="step-icon tap-icon" aria-hidden="true"><i></i></div><h3>Ordina dal tavolo</h3><p>Scansiona il QR e componi il tuo ordine. Puoi inviare una nuova comanda ogni 10 minuti.</p></article>
+          <article class="step reveal"><span>02</span><div class="step-icon plate-icon" aria-hidden="true"><i></i></div><h3>Assaggia e condividi</h3><p>Ogni piatto arriva appena pronto. Ordina poco alla volta e prova qualcosa di nuovo.</p></article>
+          <article class="step reveal"><span>03</span><div class="step-icon loop-icon" aria-hidden="true">∞</div><h3>Continua quando vuoi</h3><p>Per due ore puoi ordinare tutte le volte che desideri, fino a quando sei soddisfatto.</p></article>
+        </div>
+        <div class="rules-panel reveal">
+          <div><p class="section-label">Piccole regole, grande rispetto</p><h3>Qualità senza sprechi.</h3></div>
+          <div class="accordion">
+            <article><button type="button" aria-expanded="true"><span>Quanto tempo ho a disposizione?</span><i>−</i></button><div class="answer"><p>La formula dura 2 ore dal primo ordine. L'ultima comanda può essere inviata 15 minuti prima della fine.</p></div></article>
+            <article><button type="button" aria-expanded="false"><span>Cosa succede ai piatti non consumati?</span><i>+</i></button><div class="answer" hidden><p>Per valorizzare ogni ingrediente, i piatti avanzati possono essere addebitati da € 2 a € 10. Ordina piccole quantità: puoi sempre chiedere ancora.</p></div></article>
+            <article><button type="button" aria-expanded="false"><span>Tutto il tavolo deve scegliere la formula?</span><i>+</i></button><div class="answer" hidden><p>Sì, la stessa formula deve essere scelta da tutti gli adulti del tavolo. Sono previste tariffe dedicate ai bambini.</p></div></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="location" aria-labelledby="location-title">
+        <div class="location-visual" aria-hidden="true"><div class="water-ring ring-one"></div><div class="water-ring ring-two"></div><span>水</span></div>
+        <div class="location-copy reveal"><p class="section-label">05 — Mizu Torino</p><h2 id="location-title">A due passi<br />da Porta Nuova.</h2><div class="contact-grid"><div><small>Indirizzo</small><p>Corso Vittorio Emanuele II 72<br />10121 Torino</p></div><div><small>Orari</small><p>Tutti i giorni<br />12:00–15:00 / 19:00–23:30</p></div><div><small>Contatti</small><p>+39 011 880 2600<br />ciao@mizuinfinity.it</p></div></div><button class="button button-navy" type="button" data-open-booking>Prenota il tuo tavolo</button></div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><div class="footer-logo"><span>MIZU</span><i>∞</i><small>ALL YOU CAN EAT · TORINO</small></div><div class="footer-nav"><div><small>Scopri</small><a href="#formula">La formula</a><a href="#menu">Menu</a><a href="#prezzi">Prezzi</a></div><div><small>Informazioni</small><a href="#regole">Regole</a><a href="#">Allergeni</a><a href="#">Privacy</a></div><div><small>Social</small><a href="#">Instagram</a><a href="#">TikTok</a></div></div><div class="footer-bottom"><p>© 2026 Mizu Infinity — Brand dimostrativo</p><a href="/templates" target="_top">Torna alla collezione</a><p>Made with respect for every ingredient.</p></div></footer>
+
+    <div class="mobile-cta"><a class="button button-frost" href="#prezzi">Prezzi</a><button class="button button-coral" type="button" data-open-booking>Prenota</button></div>
+    <dialog class="booking-dialog" data-booking-dialog aria-labelledby="booking-title"><button class="dialog-close pressable" type="button" aria-label="Chiudi" data-close-booking>×</button><div class="dialog-brand"><span>∞</span><p>Mizu Infinity<br />Torino</p></div><div class="dialog-content"><p class="section-label">Il tuo tavolo ti aspetta</p><h2 id="booking-title">Prenota<br /><em>senza pensieri.</em></h2><form data-booking-form><div class="form-row"><label>Nome e cognome<input name="name" autocomplete="name" required placeholder="Giulia Rossi" /></label><label>Email<input name="email" type="email" autocomplete="email" required placeholder="giulia@email.it" /></label></div><div class="form-row"><label>Data<input name="date" type="date" required /></label><label>Ora<select name="time" required><option value="">Scegli</option><option>12:30</option><option>13:30</option><option>19:30</option><option>20:30</option><option>21:30</option></select></label></div><label>Persone<select name="guests" required><option value="">Scegli</option><option>2 persone</option><option>3 persone</option><option>4 persone</option><option>5 persone</option><option>6 persone</option><option>7 persone</option><option>8 persone</option></select></label><label class="consent"><input type="checkbox" required /><span>Accetto l'informativa privacy e il trattamento dei dati.</span></label><button class="button button-coral submit-button" type="submit"><span>Richiedi la prenotazione</span><span aria-hidden="true">→</span></button></form></div></dialog>
+    <dialog class="allergen-dialog" data-allergen-dialog aria-labelledby="allergen-title"><button class="dialog-close pressable" type="button" aria-label="Chiudi registro allergeni" data-close-allergens>×</button><p class="section-label">Informazioni importanti</p><h2 id="allergen-title">Registro allergeni</h2><p>I nostri piatti possono contenere glutine, crostacei, uova, pesce, arachidi, soia, latte, frutta a guscio, sedano, senape, sesamo, solfiti, lupini e molluschi.</p><p>In caso di allergie o intolleranze, informaci prima di ordinare: il personale ti aiuterà a scegliere.</p></dialog>
+    <div class="toast" role="status" aria-live="polite" data-toast><span>✓</span><div><strong>Richiesta ricevuta</strong><p>Riceverai la conferma via email.</p></div></div>
+  </body>
+</html>

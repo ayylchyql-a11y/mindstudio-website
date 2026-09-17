@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="it"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111111"><meta name="description" content="TUTTO! — Moda, casa, beauty e food riuniti in un grande negozio nel centro della città."><title>TUTTO! — Department store Roma</title><link rel="stylesheet" href="./styles.css"><script src="./app.js" defer></script></head>
+<body><a class="skip" href="#main">Vai al contenuto</a>
+  <header><a class="brand press" href="#top" aria-label="TUTTO!, torna all'inizio"><span class="brand-mark">7</span><b>TUTTO!</b></a><nav><a href="#servizi">Servizi</a><a href="#metodo">Metodo</a><a href="#studio">Contatti</a></nav><button class="head-cta press" type="button" data-open>Prenota un servizio</button><button class="menu press" type="button" data-menu aria-label="Apri il menu" aria-expanded="false"><i></i><i></i></button></header>
+  <div class="mobile-nav" data-mobile aria-hidden="true"><a href="#servizi" data-link>Servizi</a><a href="#metodo" data-link>Metodo</a><a href="#studio" data-link>Contatti</a><button type="button" data-open>Prenota un servizio</button></div>
+  <main id="main"><section class="hero" id="top"><div class="hero-copy"><p class="style-label">STILE C · POP GEOMETRICO</p><p class="kicker">Department store · Roma</p><h1>Lo vuoi?<br /><em>Qui c’è.</em></h1><p class="intro">Un grande negozio giocoso, pieno di colori, regali e cose che non cercavi.</p><div class="hero-actions"><button class="button primary" type="button" data-open>Prenota un servizio<span>→</span></button><a class="button secondary" href="#servizi">Scopri i servizi</a></div></div><div class="hero-art" aria-hidden="true"><span>7</span><i></i><b>Pop geometrico</b></div><div class="hero-stamp">Roma<br>2026</div></section>
+    <section class="metrics" aria-label="Numeri principali"><div><strong>7</strong><span>piani</span></div><div><strong>180+</strong><span>brand</span></div><div><strong>7/7</strong><span>aperto</span></div></section>
+    <section class="services" id="servizi"><div class="section-title"><p>01 · Cosa trovi</p><h2>Una scelta chiara.<br /><em>Fatta bene.</em></h2><span>Moda, casa, beauty e food riuniti in un grande negozio nel centro della città.</span></div><div class="service-grid">
+          <button class="service-card" type="button" data-service-card data-open="Moda">
+            <span>01</span><div class="service-glyph" aria-hidden="true">7</div>
+            <div><h3>Moda</h3><p>Nuovi nomi · classici quotidiani</p><b>Piano 1</b></div><i aria-hidden="true">↗</i>
+          </button>
+          <button class="service-card" type="button" data-service-card data-open="Casa &amp; design">
+            <span>02</span><div class="service-glyph" aria-hidden="true">7</div>
+            <div><h3>Casa & design</h3><p>Oggetti · luci · tessili</p><b>Piano 3</b></div><i aria-hidden="true">↗</i>
+          </button>
+          <button class="service-card" type="button" data-service-card data-open="Beauty">
+            <span>03</span><div class="service-glyph" aria-hidden="true">7</div>
+            <div><h3>Beauty</h3><p>Profumi · skincare · make-up</p><b>Piano 4</b></div><i aria-hidden="true">↗</i>
+          </button>
+          <button class="service-card" type="button" data-service-card data-open="Food hall">
+            <span>04</span><div class="service-glyph" aria-hidden="true">7</div>
+            <div><h3>Food hall</h3><p>Sapori e regali da portare</p><b>Piano 7</b></div><i aria-hidden="true">↗</i>
+          </button></div></section>
+    <section class="feature"><div class="feature-mark" aria-hidden="true">7</div><div><p>02 · La nostra idea</p><h2>Entra per una cosa.<br />Esci con una storia.</h2><button class="text-action" type="button" data-open>Prenota un servizio <span>↗</span></button></div></section>
+    <section class="method" id="metodo"><div class="section-title"><p>03 · Come funziona</p><h2>Dal desiderio<br /><em>al risultato.</em></h2></div><div class="process"><article><span>01</span><div><h3>Esplora</h3><p>Sette piani, ognuno con un carattere.</p></div></article><article><span>02</span><div><h3>Scegli</h3><p>Dal piccolo oggetto al grande regalo.</p></div></article><article><span>03</span><div><h3>Vivi</h3><p>Servizi, eventi e persone che consigliano.</p></div></article></div></section>
+    <section class="contact" id="studio"><div><p>04 · Dove siamo</p><h2>Roma,<br /><em>ci vediamo qui.</em></h2></div><div class="contact-card"><span>Indirizzo</span><strong>Via del Corso 118 · Roma</strong><span>Orari</span><strong>Lun–Sab · 09:30–19:30</strong><span>Contatti</span><strong>ciao@tutto.it</strong><button class="button primary" type="button" data-open>Prenota un servizio</button></div></section>
+  </main>
+  <footer><a href="/templates/department-store" target="_top">← Tutti gli stili</a><b>TUTTO!</b><span>STILE C · POP GEOMETRICO · Brand dimostrativo</span></footer>
+  <dialog data-modal aria-labelledby="dialog-title"><button class="close press" type="button" data-close aria-label="Chiudi">×</button><p class="style-label">STILE C · POP GEOMETRICO</p><h2 id="dialog-title">Organizza la tua visita</h2><p>Lascia i dati essenziali. Ti confermeremo disponibilità e dettagli via email.</p><form data-form><label>Servizio<select data-service-select required><option>Moda</option><option>Casa & design</option><option>Beauty</option><option>Food hall</option></select></label><div class="form-row"><label>Data<input data-date type="date" required></label><label>Ora<select required><option value="">Scegli</option><option>10:00</option><option>12:30</option><option>16:00</option><option>18:30</option></select></label></div><label>Nome e cognome<input required autocomplete="name" placeholder="Giulia Rossi"></label><label>Email<input required type="email" autocomplete="email" placeholder="giulia@email.it"></label><label class="consent"><input type="checkbox" required><span>Accetto l'informativa privacy.</span></label><button class="button primary" type="submit">Invia la richiesta <span>→</span></button></form></dialog>
+  <div class="toast" data-toast role="status" aria-live="polite">✓ Richiesta inviata · Ti risponderemo via email</div>
+</body></html>
