@@ -308,7 +308,7 @@ export const mdesk = {
     },
   ] as DeskPrinciple[],
   stackLabel: { en: "Built with", zh: "技术栈", it: "Costruito con" } as Localized,
-  stack: ["Next.js", "NestJS", "Prisma", "PostgreSQL (Neon)", "Stripe", "HubRise", "ESC/POS", "Web Audio", "Claude"],
+  stack: ["Next.js", "NestJS", "Prisma", "PostgreSQL (Neon)", "Stripe", "HubRise", "ESC/POS", "Web Audio"],
   caseLabel: { en: "Part of the Mumi Sushi system", zh: "Mumi Sushi 系统的一部分", it: "Parte del sistema Mumi Sushi" } as Localized,
   caseCta: { en: "See the whole case study", zh: "看完整案例", it: "Vedi il caso completo" } as Localized,
   contactTitle: { en: "Running a restaurant?", zh: "你也开餐厅？", it: "Hai un ristorante?" } as Localized,
