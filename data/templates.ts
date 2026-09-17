@@ -77,7 +77,8 @@ export const groups: TemplateGroup[] = [
 /**
  * 5 种设计。`original` 是每个行业自己那套（有真实照片的 hero、自己的配色）；
  * editorial / night-glass / pop 是同一套内容的三种视觉解读；`claude` 是另一只手
- * （Claude Design）按同一个行业另起的一版，店名、版式、文案都是它自己的。
+ * 按同一个行业另起的一版，店名、版式、文案都是它自己的（对外叫「特别版」，
+ * 用户 09-18 拍板不露 Claude 字样；id 不改，路径 <slug>/claude/ 已上线）。
  * 不是每套模版都有全部 5 种 —— 看 SiteTemplate.designs。
  */
 export const styles: { id: StyleId; title: Localized; gist: Localized }[] = [
@@ -123,12 +124,12 @@ export const styles: { id: StyleId; title: Localized; gist: Localized }[] = [
   },
   {
     id: "claude",
-    title: { en: "Claude Design", zh: "Claude 版", "zh-tw": "Claude 版", it: "Versione Claude", ja: "Claude 版", ko: "Claude 버전" },
+    title: { en: "Special edition", zh: "特别版", "zh-tw": "特別版", it: "Edizione speciale", ja: "特別版", ko: "스페셜 에디션" },
     gist: {
-      en: "The same brief handed to Claude Design: its own name, layout and copy. Hero photo filled in; gallery slots are still placeholders.",
-      zh: "同一个行业交给 Claude Design 另做的一版：店名、版式、文案都是它自己的。首屏照片已填，画廊位还是占位框。",
-      "zh-tw": "同一個行業交給 Claude Design 另做的一版：店名、版式、文案都是它自己的。首屏照片已填，畫廊位還是佔位框。",
-      it: "Lo stesso brief affidato a Claude Design: nome, layout e testi tutti suoi. Foto hero inserita; le foto della galleria sono ancora segnaposto.",
+      en: "A second take on the same business: its own name, layout and copy. Hero photo filled in; gallery slots are still placeholders.",
+      zh: "同一个行业另起的一版：店名、版式、文案都是它自己的。首屏照片已填，画廊位还是占位框。",
+      "zh-tw": "同一個行業另起的一版：店名、版式、文案都是它自己的。首屏照片已填，畫廊位還是佔位框。",
+      it: "Una seconda lettura della stessa attività: nome, layout e testi tutti suoi. Foto hero inserita; le foto della galleria sono ancora segnaposto.",
     },
   },
 ];

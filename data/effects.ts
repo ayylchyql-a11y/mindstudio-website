@@ -1318,8 +1318,10 @@ export function demoPath(e: Effect): string {
  * （只有 en 必填、其余回落），加一句话就是加一行。
  */
 export const labCopy = {
-  navLabel: { en: "AI Library", zh: "AI 设计库", "zh-tw": "AI 設計庫", ja: "AI ライブラリ", ko: "AI 라이브러리", it: "Libreria AI" },
-  title: { en: "AI Library", zh: "AI 设计库", "zh-tw": "AI 設計庫", ja: "AI ライブラリ", ko: "AI 라이브러리", it: "Libreria AI" },
+  /* 09-18 用户拍板改名「设计资源库」（之前叫 AI 设计库 / 实验室）。路由仍是 /lab，别动。 */
+  /* 导航格比标题短：日语「デザインライブラリ」会把品牌名挤成两行，导航里用「デザイン集」 */
+  navLabel: { en: "Design Library", zh: "设计资源库", "zh-tw": "設計資源庫", ja: "デザイン集", ko: "디자인 라이브러리", it: "Libreria design" },
+  title: { en: "Design Library", zh: "设计资源库", "zh-tw": "設計資源庫", ja: "デザインライブラリ", ko: "디자인 라이브러리", it: "Libreria design" },
   intro: {
     en: "A working reference, not a gallery. Every sample here runs in the page — hover it, scroll it, replay it — and each one comes with the numbers it was built from, the whole source file, and a prompt that reproduces it from scratch.",
     zh: "这是一份能用的参考，不是灵感墙。这里每个样板都在页面里真的跑着 —— 可以碰、可以滚、可以重播；每一条都附带它是用什么数值搭出来的、完整源文件、以及一句能从零把它复现出来的提示词。",
