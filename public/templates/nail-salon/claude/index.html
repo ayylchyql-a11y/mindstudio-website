@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html{scroll-behavior:smooth}
+  body{margin:0;background:#f8f3ef;color:#2b2523;font-family:'Manrope',sans-serif}
+  a{color:#a86b60;text-decoration:none}
+  a:hover{color:#8f564c}
+</style>
+<script src="./image-slot.js"></script>
+</helmet>
+<div data-screen-label="NailSalon" style="min-width:320px">
+  <nav style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px clamp(20px,5vw,64px);background:rgba(248,243,239,0.94);backdrop-filter:blur(8px);border-bottom:1px solid rgba(43,37,35,0.08)">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;letter-spacing:1px">Atelier <span style="color:#a86b60;font-style:italic">Unghie</span></div>
+    <div style="display:flex;gap:28px;font-size:13px;font-weight:600;letter-spacing:2px;flex-wrap:wrap">
+      <a href="#servizi" style="color:#2b2523">SERVIZI</a>
+      <a href="#galleria" style="color:#2b2523">GALLERIA</a>
+      <a href="#orari" style="color:#2b2523">ORARI</a>
+      <a href="#prenota" style="color:#2b2523">PRENOTA</a>
+    </div>
+    <a href="https://wa.me/393357788990" style="background:#a86b60;color:#f8f3ef;padding:10px 22px;border-radius:999px;font-weight:700;font-size:14px;white-space:nowrap" style-hover="background:#8f564c;color:#f8f3ef">Prenota</a>
+  </nav>
+
+  <header style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));align-items:stretch">
+    <div style="padding:clamp(48px,8vw,110px) clamp(24px,5vw,64px);display:flex;flex-direction:column;justify-content:center;gap:24px">
+      <div style="color:#a86b60;font-weight:700;letter-spacing:4px;font-size:12px">NAIL ATELIER · BEAUTY STUDIO</div>
+      <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(42px,5.5vw,74px);line-height:1.05;margin:0;font-weight:600">Le tue mani, <em style="color:#a86b60">la nostra arte</em></h1>
+      <p style="font-size:17px;line-height:1.7;color:#6e625d;max-width:50ch;margin:0;text-wrap:pretty">Manicure, semipermanente e nail art su misura in un ambiente intimo e curato. Solo prodotti professionali, sterilizzazione certificata e appuntamenti senza attese.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <a href="https://wa.me/393357788990" style="background:#a86b60;color:#f8f3ef;padding:14px 30px;border-radius:999px;font-weight:700;font-size:15px" style-hover="background:#8f564c;color:#f8f3ef">Prenota su WhatsApp</a>
+        <a href="#servizi" style="border:1px solid rgba(43,37,35,0.25);color:#2b2523;padding:14px 30px;border-radius:999px;font-weight:600;font-size:15px" style-hover="border-color:#a86b60;color:#a86b60">Listino servizi</a>
+      </div>
+    </div>
+    <div style="min-height:440px;padding:clamp(16px,3vw,40px);display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div style="grid-row:span 2"><image-slot id="hero-1" src="../assets/atelier-lacca-hero.jpg" radius="140" placeholder="Foto: mani con nail art"></image-slot></div>
+      <div><image-slot id="hero-2" radius="20" placeholder="Foto: smalti"></image-slot></div>
+      <div><image-slot id="hero-3" radius="20" placeholder="Foto: interno studio"></image-slot></div>
+    </div>
+  </header>
+
+  <section id="servizi" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px);background:#f0e7e0">
+    <div style="max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:40px">
+      <div style="text-align:center">
+        <div style="color:#a86b60;font-weight:700;letter-spacing:4px;font-size:12px;margin-bottom:12px">LISTINO</div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,3.5vw,48px);margin:0;font-weight:600">I nostri servizi</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:48px">
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <h3 style="font-size:13px;letter-spacing:3px;color:#6e625d;margin:0;font-weight:700">MANI</h3>
+          <sc-for list="{{ mani }}" as="s" hint-placeholder-count="5">
+            <div style="display:flex;justify-content:space-between;gap:16px;align-items:baseline;border-bottom:1px solid rgba(43,37,35,0.12);padding-bottom:12px">
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600">{{ s.name }}</span>
+                <span style="color:#6e625d;font-size:13px">{{ s.time }}</span>
+              </div>
+              <span style="color:#a86b60;font-weight:700;font-size:17px;white-space:nowrap">{{ s.price }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <h3 style="font-size:13px;letter-spacing:3px;color:#6e625d;margin:0;font-weight:700">PIEDI &amp; EXTRA</h3>
+          <sc-for list="{{ piedi }}" as="s" hint-placeholder-count="5">
+            <div style="display:flex;justify-content:space-between;gap:16px;align-items:baseline;border-bottom:1px solid rgba(43,37,35,0.12);padding-bottom:12px">
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600">{{ s.name }}</span>
+                <span style="color:#6e625d;font-size:13px">{{ s.time }}</span>
+              </div>
+              <span style="color:#a86b60;font-weight:700;font-size:17px;white-space:nowrap">{{ s.price }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="galleria" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px)">
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:40px">
+      <div style="text-align:center">
+        <div style="color:#a86b60;font-weight:700;letter-spacing:4px;font-size:12px;margin-bottom:12px">PORTFOLIO</div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,3.5vw,48px);margin:0;font-weight:600">I nostri lavori</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
+        <div style="height:280px"><image-slot id="gal-1" radius="16" placeholder="Nail art 1"></image-slot></div>
+        <div style="height:280px"><image-slot id="gal-2" radius="16" placeholder="Nail art 2"></image-slot></div>
+        <div style="height:280px"><image-slot id="gal-3" radius="16" placeholder="Nail art 3"></image-slot></div>
+        <div style="height:280px"><image-slot id="gal-4" radius="16" placeholder="Nail art 4"></image-slot></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
+        <sc-for list="{{ reviews }}" as="r" hint-placeholder-count="3">
+          <div style="background:#ffffff;border-radius:16px;padding:26px;display:flex;flex-direction:column;gap:12px">
+            <div style="color:#a86b60;letter-spacing:3px;font-size:14px">★★★★★</div>
+            <p style="font-family:'Cormorant Garamond',serif;font-size:19px;font-style:italic;line-height:1.5;margin:0">{{ r.text }}</p>
+            <div style="font-size:13px;font-weight:700;color:#6e625d">— {{ r.name }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="orari" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px);background:#f0e7e0">
+    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:48px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,3.5vw,48px);margin:0;font-weight:600">Orari &amp; dove siamo</h2>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:15px">
+          <div style="display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(43,37,35,0.12);padding-bottom:10px"><span style="color:#6e625d">Mar – Ven</span><span style="font-weight:700">09:30 – 19:00</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(43,37,35,0.12);padding-bottom:10px"><span style="color:#6e625d">Sabato</span><span style="font-weight:700">09:00 – 18:00</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(43,37,35,0.12);padding-bottom:10px"><span style="color:#6e625d">Dom – Lun</span><span style="font-weight:700">Chiuso</span></div>
+        </div>
+        <div style="font-size:15px;line-height:1.8;color:#6e625d">
+          <div style="color:#2b2523;font-weight:700;margin-bottom:4px">Atelier Unghie</div>
+          Via Mazzini 27, 40137 Bologna<br>
+          Tel: <a href="tel:+390514455667">051 445 5667</a> · <a href="mailto:ciao@atelierunghie.it">ciao@atelierunghie.it</a>
+        </div>
+      </div>
+      <div style="min-height:360px;border-radius:16px;overflow:hidden;border:1px solid rgba(43,37,35,0.12)">
+        <iframe title="Mappa" src="https://www.google.com/maps?q=Via+Mazzini+27+Bologna&output=embed" style="width:100%;height:100%;min-height:360px;border:0"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <section id="prenota" style="padding:clamp(64px,9vw,120px) clamp(24px,5vw,64px);text-align:center;background:#2b2523;color:#f8f3ef">
+    <div style="max-width:600px;margin:0 auto;display:flex;flex-direction:column;gap:22px;align-items:center">
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,52px);margin:0;font-weight:600">Prenota il tuo appuntamento</h2>
+      <p style="color:#c9beb7;font-size:16px;line-height:1.7;margin:0;text-wrap:pretty">Scrivici su WhatsApp con il servizio che desideri: ti confermiamo data e ora in giornata.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center">
+        <a href="https://wa.me/393357788990" style="background:#a86b60;color:#f8f3ef;padding:15px 32px;border-radius:999px;font-weight:700;font-size:16px" style-hover="background:#c07f73;color:#f8f3ef">WhatsApp</a>
+        <a href="tel:+390514455667" style="border:1px solid rgba(248,243,239,0.35);color:#f8f3ef;padding:15px 32px;border-radius:999px;font-weight:600;font-size:16px" style-hover="border-color:#a86b60;color:#c07f73">051 445 5667</a>
+      </div>
+    </div>
+  </section>
+
+  <footer style="padding:28px clamp(24px,5vw,64px);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:#9c8f88;border-top:1px solid rgba(43,37,35,0.08)">
+    <span>© 2026 Atelier Unghie · Bologna</span>
+    <span>P.IVA 04455667788</span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      mani: [
+        {name: 'Manicure classica', time: '30 min', price: '€ 18'},
+        {name: 'Semipermanente', time: '60 min', price: '€ 30'},
+        {name: 'Ricostruzione in gel', time: '90 min', price: '€ 55'},
+        {name: 'Refill gel', time: '75 min', price: '€ 40'},
+        {name: 'Nail art (a dito)', time: '10 min', price: 'da € 3'}
+      ],
+      piedi: [
+        {name: 'Pedicure estetico', time: '45 min', price: '€ 28'},
+        {name: 'Pedicure curativo', time: '60 min', price: '€ 38'},
+        {name: 'Semipermanente piedi', time: '50 min', price: '€ 32'},
+        {name: 'Rimozione semipermanente', time: '20 min', price: '€ 10'},
+        {name: 'Trattamento paraffina', time: '20 min', price: '€ 15'}
+      ],
+      reviews: [
+        {text: 'Precisione incredibile e un ambiente rilassante. Il semipermanente dura settimane senza un graffio.', name: 'Giulia M.'},
+        {text: 'Finalmente un salone che rispetta gli orari. Nail art bellissima, esattamente come la volevo.', name: 'Francesca R.'},
+        {text: 'Professionalità e igiene impeccabili. Non cambio più.', name: 'Elena T.'}
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

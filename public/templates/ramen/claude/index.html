@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html{scroll-behavior:smooth}
+  body{margin:0;background:#141210;color:#efe9e1;font-family:'Manrope',sans-serif}
+  a{color:#e05a3a;text-decoration:none}
+  a:hover{color:#f0765a}
+</style>
+<script src="./image-slot.js"></script>
+</helmet>
+<div data-screen-label="Ramen" style="min-width:320px">
+  <nav style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px clamp(20px,5vw,64px);background:rgba(20,18,16,0.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(239,233,225,0.08)">
+    <div style="font-family:'Zen Old Mincho',serif;font-size:22px;font-weight:700;letter-spacing:2px">KUROBA <span style="color:#e05a3a">RAMEN</span></div>
+    <div style="display:flex;gap:28px;font-size:14px;font-weight:600;letter-spacing:1px;flex-wrap:wrap">
+      <a href="#menu" style="color:#efe9e1">MENÙ</a>
+      <a href="#galleria" style="color:#efe9e1">GALLERIA</a>
+      <a href="#orari" style="color:#efe9e1">ORARI</a>
+      <a href="#contatti" style="color:#efe9e1">CONTATTI</a>
+    </div>
+    <a href="tel:+390212345678" style="background:#e05a3a;color:#141210;padding:10px 20px;border-radius:999px;font-weight:700;font-size:14px;white-space:nowrap" style-hover="background:#f0765a;color:#141210">Prenota</a>
+  </nav>
+
+  <header style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:0;align-items:stretch">
+    <div style="padding:clamp(48px,8vw,110px) clamp(24px,5vw,64px);display:flex;flex-direction:column;justify-content:center;gap:24px">
+      <div style="color:#e05a3a;font-weight:700;letter-spacing:4px;font-size:13px">ラーメン · CUCINA GIAPPONESE</div>
+      <h1 style="font-family:'Zen Old Mincho',serif;font-size:clamp(40px,5.5vw,72px);line-height:1.08;margin:0;font-weight:700">Il vero ramen artigianale, nel cuore della città</h1>
+      <p style="font-size:17px;line-height:1.7;color:#b8b0a4;max-width:52ch;margin:0;text-wrap:pretty">Brodo cotto per 18 ore, noodles tirati a mano ogni mattina e ingredienti selezionati direttamente dal Giappone. Un'esperienza autentica di Tokyo, a due passi da casa tua.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <a href="https://wa.me/393331234567" style="background:#e05a3a;color:#141210;padding:14px 28px;border-radius:999px;font-weight:700;font-size:15px" style-hover="background:#f0765a;color:#141210">Ordina su WhatsApp</a>
+        <a href="#menu" style="border:1px solid rgba(239,233,225,0.3);color:#efe9e1;padding:14px 28px;border-radius:999px;font-weight:600;font-size:15px" style-hover="border-color:#e05a3a;color:#e05a3a">Scopri il menù</a>
+      </div>
+    </div>
+    <div style="min-height:420px;position:relative">
+      <image-slot id="hero-ramen" src="../assets/kumo-ramen-hero.jpg" shape="rect" placeholder="Foto: ciotola di ramen (hero)"></image-slot>
+    </div>
+  </header>
+
+  <section id="menu" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px);border-top:1px solid rgba(239,233,225,0.08)">
+    <div style="max-width:1100px;margin:0 auto">
+      <div style="color:#e05a3a;font-weight:700;letter-spacing:4px;font-size:13px;margin-bottom:12px">お品書き</div>
+      <h2 style="font-family:'Zen Old Mincho',serif;font-size:clamp(30px,3.5vw,44px);margin:0 0 40px;font-weight:700">Il nostro menù</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:48px">
+        <div style="display:flex;flex-direction:column;gap:22px">
+          <h3 style="font-size:14px;letter-spacing:3px;color:#b8b0a4;margin:0;font-weight:700">RAMEN</h3>
+          <sc-for list="{{ ramen }}" as="dish" hint-placeholder-count="4">
+            <div style="display:flex;flex-direction:column;gap:4px;border-bottom:1px dashed rgba(239,233,225,0.14);padding-bottom:16px">
+              <div style="display:flex;justify-content:space-between;gap:16px;align-items:baseline">
+                <span style="font-family:'Zen Old Mincho',serif;font-size:19px;font-weight:600">{{ dish.name }}</span>
+                <span style="color:#e05a3a;font-weight:700;font-size:17px;white-space:nowrap">{{ dish.price }}</span>
+              </div>
+              <span style="color:#b8b0a4;font-size:14px;line-height:1.5">{{ dish.desc }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:22px">
+          <h3 style="font-size:14px;letter-spacing:3px;color:#b8b0a4;margin:0;font-weight:700">ANTIPASTI &amp; EXTRA</h3>
+          <sc-for list="{{ sides }}" as="dish" hint-placeholder-count="4">
+            <div style="display:flex;flex-direction:column;gap:4px;border-bottom:1px dashed rgba(239,233,225,0.14);padding-bottom:16px">
+              <div style="display:flex;justify-content:space-between;gap:16px;align-items:baseline">
+                <span style="font-family:'Zen Old Mincho',serif;font-size:19px;font-weight:600">{{ dish.name }}</span>
+                <span style="color:#e05a3a;font-weight:700;font-size:17px;white-space:nowrap">{{ dish.price }}</span>
+              </div>
+              <span style="color:#b8b0a4;font-size:14px;line-height:1.5">{{ dish.desc }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="galleria" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px);border-top:1px solid rgba(239,233,225,0.08)">
+    <div style="max-width:1100px;margin:0 auto">
+      <div style="color:#e05a3a;font-weight:700;letter-spacing:4px;font-size:13px;margin-bottom:12px">ギャラリー</div>
+      <h2 style="font-family:'Zen Old Mincho',serif;font-size:clamp(30px,3.5vw,44px);margin:0 0 40px;font-weight:700">Galleria</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
+        <div style="height:260px"><image-slot id="gal-1" radius="8" placeholder="Foto: piatto"></image-slot></div>
+        <div style="height:260px"><image-slot id="gal-2" radius="8" placeholder="Foto: sala"></image-slot></div>
+        <div style="height:260px"><image-slot id="gal-3" radius="8" placeholder="Foto: chef"></image-slot></div>
+        <div style="height:260px"><image-slot id="gal-4" radius="8" placeholder="Foto: dettaglio"></image-slot></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="orari" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px);border-top:1px solid rgba(239,233,225,0.08)">
+    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:48px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <div>
+          <div style="color:#e05a3a;font-weight:700;letter-spacing:4px;font-size:13px;margin-bottom:12px">営業時間</div>
+          <h2 style="font-family:'Zen Old Mincho',serif;font-size:clamp(30px,3.5vw,44px);margin:0;font-weight:700">Orari &amp; dove siamo</h2>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:15px">
+          <div style="display:flex;justify-content:space-between;gap:16px;border-bottom:1px dashed rgba(239,233,225,0.14);padding-bottom:10px"><span style="color:#b8b0a4">Lun – Ven</span><span style="font-weight:600">12:00 – 15:00 · 19:00 – 23:00</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;border-bottom:1px dashed rgba(239,233,225,0.14);padding-bottom:10px"><span style="color:#b8b0a4">Sabato</span><span style="font-weight:600">12:00 – 23:30</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;border-bottom:1px dashed rgba(239,233,225,0.14);padding-bottom:10px"><span style="color:#b8b0a4">Domenica</span><span style="font-weight:600">Chiuso</span></div>
+        </div>
+        <div style="font-size:15px;line-height:1.8;color:#b8b0a4">
+          <div style="color:#efe9e1;font-weight:700;margin-bottom:4px">Kuroba Ramen</div>
+          Via Paolo Sarpi 42, 20154 Milano<br>
+          Tel: <a href="tel:+390212345678">02 1234 5678</a><br>
+          <a href="mailto:info@kurobaramen.it">info@kurobaramen.it</a>
+        </div>
+      </div>
+      <div style="min-height:340px;border-radius:8px;overflow:hidden;border:1px solid rgba(239,233,225,0.12)">
+        <iframe title="Mappa" src="https://www.google.com/maps?q=Via+Paolo+Sarpi+42+Milano&output=embed" style="width:100%;height:100%;min-height:340px;border:0;filter:grayscale(60%) contrast(95%)"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <section id="contatti" style="padding:clamp(64px,9vw,120px) clamp(24px,5vw,64px);text-align:center;background:#1b1815;border-top:1px solid rgba(239,233,225,0.08)">
+    <div style="max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:22px;align-items:center">
+      <h2 style="font-family:'Zen Old Mincho',serif;font-size:clamp(30px,4vw,48px);margin:0;font-weight:700">Prenota il tuo tavolo</h2>
+      <p style="color:#b8b0a4;font-size:16px;line-height:1.7;margin:0;text-wrap:pretty">Posti limitati al bancone. Prenota con un messaggio o chiamaci direttamente — ti rispondiamo in pochi minuti.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center">
+        <a href="https://wa.me/393331234567" style="background:#e05a3a;color:#141210;padding:15px 32px;border-radius:999px;font-weight:700;font-size:16px" style-hover="background:#f0765a;color:#141210">WhatsApp</a>
+        <a href="tel:+390212345678" style="border:1px solid rgba(239,233,225,0.3);color:#efe9e1;padding:15px 32px;border-radius:999px;font-weight:600;font-size:16px" style-hover="border-color:#e05a3a;color:#e05a3a">02 1234 5678</a>
+      </div>
+    </div>
+  </section>
+
+  <footer style="padding:28px clamp(24px,5vw,64px);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:#7d766c;border-top:1px solid rgba(239,233,225,0.08)">
+    <span>© 2026 Kuroba Ramen · Milano</span>
+    <span>P.IVA 01234567890</span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      ramen: [
+        {name: 'Tonkotsu Classico', price: '€ 14', desc: 'Brodo di maiale 18 ore, chashu, uovo marinato, negi, nori'},
+        {name: 'Shoyu Ramen', price: '€ 13', desc: 'Brodo di pollo e salsa di soia, bambù, spinaci, chashu'},
+        {name: 'Miso Spicy', price: '€ 14,50', desc: 'Miso rosso piccante, mais, burro, germogli, carne macinata'},
+        {name: 'Veggie Ramen', price: '€ 12,50', desc: 'Brodo di verdure e funghi shiitake, tofu grigliato, pak choi'}
+      ],
+      sides: [
+        {name: 'Gyoza (5 pz)', price: '€ 6', desc: 'Ravioli alla griglia di maiale e verza, salsa ponzu'},
+        {name: 'Karaage', price: '€ 7', desc: 'Pollo fritto giapponese, maionese allo yuzu'},
+        {name: 'Edamame', price: '€ 4,50', desc: 'Fagioli di soia al vapore con sale marino'},
+        {name: 'Uovo marinato extra', price: '€ 2', desc: 'Ajitama, marinato 24 ore in soia e mirin'}
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1711,7 +1711,8 @@
   transform: translateX(-50%);
 }
 .tpl-tabs {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  /* 一套最多 5 种设计；auto-fill 让 4 种的那套也铺满一行 */
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;
   margin-bottom: 12px;
 }
 @media (max-width: 640px) { .tpl-tabs { grid-template-columns: repeat(2, 1fr); } }

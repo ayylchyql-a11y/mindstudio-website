@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html{scroll-behavior:smooth}
+  body{margin:0;background:#faf7f2;color:#1e1c18;font-family:'Manrope',sans-serif}
+  a{color:#1f7a4d;text-decoration:none}
+  a:hover{color:#2c9963}
+</style>
+<script src="./image-slot.js"></script>
+</helmet>
+<div data-screen-label="AllYouCanEat" style="min-width:320px">
+  <nav style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px clamp(20px,5vw,64px);background:rgba(250,247,242,0.94);backdrop-filter:blur(8px);border-bottom:1px solid rgba(30,28,24,0.08)">
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;letter-spacing:0.5px">MOMIJI <span style="color:#1f7a4d">SUSHI &amp; GRILL</span></div>
+    <div style="display:flex;gap:28px;font-size:14px;font-weight:600;letter-spacing:1px;flex-wrap:wrap">
+      <a href="#formula" style="color:#1e1c18">FORMULA</a>
+      <a href="#menu" style="color:#1e1c18">MENÙ</a>
+      <a href="#galleria" style="color:#1e1c18">GALLERIA</a>
+      <a href="#orari" style="color:#1e1c18">ORARI</a>
+    </div>
+    <a href="tel:+390698765432" style="background:#1f7a4d;color:#faf7f2;padding:10px 20px;border-radius:999px;font-weight:700;font-size:14px;white-space:nowrap" style-hover="background:#2c9963;color:#faf7f2">Prenota</a>
+  </nav>
+
+  <header style="padding:clamp(48px,8vw,110px) clamp(24px,5vw,64px);text-align:center;display:flex;flex-direction:column;gap:24px;align-items:center">
+    <div style="background:#1f7a4d;color:#faf7f2;padding:8px 20px;border-radius:999px;font-weight:700;font-size:13px;letter-spacing:2px">ALL YOU CAN EAT</div>
+    <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(42px,6vw,84px);line-height:1.02;margin:0;font-weight:800;max-width:16ch">Mangia tutto quello che vuoi. Prezzo fisso.</h1>
+    <p style="font-size:17px;line-height:1.7;color:#6b6459;max-width:56ch;margin:0;text-wrap:pretty">Oltre 120 piatti tra sushi, grill giapponese e cucina fusion, ordinati al tavolo con il tablet e preparati al momento. Nessun buffet, solo qualità.</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center">
+      <a href="https://wa.me/393339876543" style="background:#1f7a4d;color:#faf7f2;padding:15px 30px;border-radius:999px;font-weight:700;font-size:16px" style-hover="background:#2c9963;color:#faf7f2">Prenota su WhatsApp</a>
+      <a href="#formula" style="border:1.5px solid rgba(30,28,24,0.25);color:#1e1c18;padding:15px 30px;border-radius:999px;font-weight:600;font-size:16px" style-hover="border-color:#1f7a4d;color:#1f7a4d">Vedi i prezzi</a>
+    </div>
+    <div style="width:100%;max-width:1100px;height:clamp(280px,40vw,460px);margin-top:16px"><image-slot id="hero-ayce" src="../assets/mizu-infinity-hero.jpg" radius="20" placeholder="Foto: tavolata / piatti sushi (hero)"></image-slot></div>
+  </header>
+
+  <section id="formula" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px);background:#1e1c18;color:#faf7f2">
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:40px">
+      <div style="text-align:center">
+        <div style="color:#d9a441;font-weight:700;letter-spacing:4px;font-size:13px;margin-bottom:12px">LA FORMULA</div>
+        <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(30px,3.5vw,44px);margin:0;font-weight:800">Prezzo fisso, zero sorprese</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px">
+        <sc-for list="{{ prices }}" as="p" hint-placeholder-count="4">
+          <div style="background:rgba(250,247,242,0.06);border:1px solid rgba(250,247,242,0.12);border-radius:16px;padding:28px 24px;display:flex;flex-direction:column;gap:8px;text-align:center">
+            <div style="font-size:13px;letter-spacing:2px;font-weight:700;color:#d9a441">{{ p.label }}</div>
+            <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:44px;font-weight:800">{{ p.price }}</div>
+            <div style="font-size:14px;color:#b3ac9f;line-height:1.5">{{ p.note }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <p style="text-align:center;color:#b3ac9f;font-size:14px;margin:0">Bevande, dessert e caffè esclusi · Bambini sotto i 4 anni gratis · Ogni piatto avanzato € 5</p>
+    </div>
+  </section>
+
+  <section id="menu" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px)">
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:40px">
+      <div>
+        <div style="color:#1f7a4d;font-weight:700;letter-spacing:4px;font-size:13px;margin-bottom:12px">120+ PIATTI</div>
+        <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(30px,3.5vw,44px);margin:0;font-weight:800">Cosa trovi nel menù</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px">
+        <sc-for list="{{ categories }}" as="c" hint-placeholder-count="6">
+          <div style="border:1px solid rgba(30,28,24,0.12);border-radius:16px;padding:26px;display:flex;flex-direction:column;gap:10px;background:#ffffff">
+            <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:20px;font-weight:700">{{ c.title }}</div>
+            <div style="color:#6b6459;font-size:14px;line-height:1.6">{{ c.desc }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="galleria" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px);background:#f2ede4">
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:40px">
+      <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(30px,3.5vw,44px);margin:0;font-weight:800">Galleria</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
+        <div style="height:260px"><image-slot id="gal-1" radius="16" placeholder="Foto: barche di sushi"></image-slot></div>
+        <div style="height:260px"><image-slot id="gal-2" radius="16" placeholder="Foto: sala ristorante"></image-slot></div>
+        <div style="height:260px"><image-slot id="gal-3" radius="16" placeholder="Foto: grill / robata"></image-slot></div>
+        <div style="height:260px"><image-slot id="gal-4" radius="16" placeholder="Foto: dessert"></image-slot></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="orari" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px)">
+    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:48px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(30px,3.5vw,44px);margin:0;font-weight:800">Orari &amp; dove siamo</h2>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:15px">
+          <div style="display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(30,28,24,0.1);padding-bottom:10px"><span style="color:#6b6459">Lun – Dom (pranzo)</span><span style="font-weight:700">12:00 – 15:00</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(30,28,24,0.1);padding-bottom:10px"><span style="color:#6b6459">Lun – Dom (cena)</span><span style="font-weight:700">19:00 – 23:30</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(30,28,24,0.1);padding-bottom:10px"><span style="color:#6b6459">Festivi</span><span style="font-weight:700">Sempre aperti</span></div>
+        </div>
+        <div style="font-size:15px;line-height:1.8;color:#6b6459">
+          <div style="color:#1e1c18;font-weight:700;margin-bottom:4px">Momiji Sushi &amp; Grill</div>
+          Viale Trastevere 88, 00153 Roma<br>
+          Tel: <a href="tel:+390698765432">06 9876 5432</a> · <a href="mailto:info@momijiroma.it">info@momijiroma.it</a>
+        </div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap">
+          <a href="https://wa.me/393339876543" style="background:#1f7a4d;color:#faf7f2;padding:14px 28px;border-radius:999px;font-weight:700;font-size:15px" style-hover="background:#2c9963;color:#faf7f2">Prenota su WhatsApp</a>
+          <a href="tel:+390698765432" style="border:1.5px solid rgba(30,28,24,0.25);color:#1e1c18;padding:14px 28px;border-radius:999px;font-weight:600;font-size:15px" style-hover="border-color:#1f7a4d;color:#1f7a4d">Chiama ora</a>
+        </div>
+      </div>
+      <div style="min-height:360px;border-radius:16px;overflow:hidden;border:1px solid rgba(30,28,24,0.12)">
+        <iframe title="Mappa" src="https://www.google.com/maps?q=Viale+Trastevere+88+Roma&output=embed" style="width:100%;height:100%;min-height:360px;border:0"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <footer style="padding:28px clamp(24px,5vw,64px);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:#8d8578;border-top:1px solid rgba(30,28,24,0.1)">
+    <span>© 2026 Momiji Sushi &amp; Grill · Roma</span>
+    <span>P.IVA 09876543210</span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      prices: [
+        {label: 'PRANZO · ADULTI', price: '€ 16,90', note: 'Lun–Ven, menù completo a rotazione'},
+        {label: 'PRANZO · BAMBINI', price: '€ 9,90', note: 'Dai 4 ai 10 anni'},
+        {label: 'CENA · ADULTI', price: '€ 24,90', note: 'Tutti i giorni, menù completo + grill'},
+        {label: 'CENA · BAMBINI', price: '€ 13,90', note: 'Dai 4 ai 10 anni'}
+      ],
+      categories: [
+        {title: 'Sushi & Sashimi', desc: 'Nigiri, uramaki, hosomaki e sashimi di salmone, tonno e branzino freschissimi.'},
+        {title: 'Robata Grill', desc: 'Spiedini yakitori, black cod, gamberoni e carni alla griglia giapponese.'},
+        {title: 'Cucina calda', desc: 'Tempura, gyoza, riso e noodles saltati, zuppe della tradizione.'},
+        {title: 'Fusion', desc: 'Tartare, tacos di sushi, special roll creativi dello chef.'},
+        {title: 'Vegetariano', desc: 'Roll veggie, tofu, verdure in tempura e insalate orientali.'},
+        {title: 'Dessert', desc: 'Mochi, dorayaki, cheesecake al tè matcha e frutta fresca.'}
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html{scroll-behavior:smooth}
+  body{margin:0;background:#f7f8f7;color:#171d1b;font-family:'Manrope',sans-serif}
+  a{color:#1d6155;text-decoration:none}
+  a:hover{color:#2a7d6e}
+</style>
+<script src="./image-slot.js"></script>
+</helmet>
+<div data-screen-label="FoodSupplier" style="min-width:320px">
+  <nav style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px clamp(20px,5vw,64px);background:rgba(247,248,247,0.94);backdrop-filter:blur(8px);border-bottom:1px solid rgba(23,29,27,0.08)">
+    <div style="font-family:'Archivo',sans-serif;font-size:21px;font-weight:800;letter-spacing:0.5px">ORIENTE <span style="color:#1d6155">FOOD SERVICE</span></div>
+    <div style="display:flex;gap:28px;font-size:14px;font-weight:600;letter-spacing:1px;flex-wrap:wrap">
+      <a href="#prodotti" style="color:#171d1b">PRODOTTI</a>
+      <a href="#servizi" style="color:#171d1b">SERVIZI</a>
+      <a href="#clienti" style="color:#171d1b">DIVENTA CLIENTE</a>
+      <a href="#contatti" style="color:#171d1b">CONTATTI</a>
+    </div>
+    <a href="tel:+390287654321" style="background:#1d6155;color:#f7f8f7;padding:10px 20px;border-radius:8px;font-weight:700;font-size:14px;white-space:nowrap" style-hover="background:#2a7d6e;color:#f7f8f7">Richiedi listino</a>
+  </nav>
+
+  <header style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));align-items:stretch">
+    <div style="padding:clamp(48px,8vw,110px) clamp(24px,5vw,64px);display:flex;flex-direction:column;justify-content:center;gap:24px">
+      <div style="color:#1d6155;font-weight:700;letter-spacing:4px;font-size:13px">INGROSSO ALIMENTARE · B2B</div>
+      <h1 style="font-family:'Archivo',sans-serif;font-size:clamp(38px,5vw,66px);line-height:1.06;margin:0;font-weight:800">Il fornitore di fiducia per la tua ristorazione</h1>
+      <p style="font-size:17px;line-height:1.7;color:#5a625f;max-width:54ch;margin:0;text-wrap:pretty">Oltre 3.000 referenze per ristoranti asiatici e non solo: fresco, surgelato, secco e attrezzature. Consegna in 24/48h in tutto il Nord Italia con mezzi refrigerati.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <a href="#clienti" style="background:#1d6155;color:#f7f8f7;padding:14px 28px;border-radius:8px;font-weight:700;font-size:15px" style-hover="background:#2a7d6e;color:#f7f8f7">Apri un account</a>
+        <a href="https://wa.me/393385566778" style="border:1.5px solid rgba(23,29,27,0.2);color:#171d1b;padding:14px 28px;border-radius:8px;font-weight:600;font-size:15px" style-hover="border-color:#1d6155;color:#1d6155">WhatsApp Business</a>
+      </div>
+      <div style="display:flex;gap:clamp(20px,4vw,48px);flex-wrap:wrap;margin-top:8px">
+        <div><div style="font-family:'Archivo',sans-serif;font-size:30px;font-weight:800;color:#1d6155">3.000+</div><div style="font-size:13px;color:#5a625f;font-weight:600">Referenze</div></div>
+        <div><div style="font-family:'Archivo',sans-serif;font-size:30px;font-weight:800;color:#1d6155">24/48h</div><div style="font-size:13px;color:#5a625f;font-weight:600">Consegna</div></div>
+        <div><div style="font-family:'Archivo',sans-serif;font-size:30px;font-weight:800;color:#1d6155">800+</div><div style="font-size:13px;color:#5a625f;font-weight:600">Clienti attivi</div></div>
+      </div>
+    </div>
+    <div style="min-height:420px;position:relative">
+      <image-slot id="hero-supplier" src="../assets/dispensa-pro-hero.jpg" shape="rect" placeholder="Foto: magazzino / prodotti (hero)"></image-slot>
+    </div>
+  </header>
+
+  <section id="prodotti" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px);background:#ffffff">
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:40px">
+      <div>
+        <div style="color:#1d6155;font-weight:700;letter-spacing:4px;font-size:13px;margin-bottom:12px">CATALOGO</div>
+        <h2 style="font-family:'Archivo',sans-serif;font-size:clamp(30px,3.5vw,44px);margin:0;font-weight:800">Categorie di prodotto</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px">
+        <sc-for list="{{ categories }}" as="c" hint-placeholder-count="6">
+          <div style="border:1px solid rgba(23,29,27,0.1);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;background:#f7f8f7">
+            <div style="height:160px"><image-slot id="{{ c.slot }}" shape="rect" placeholder="{{ c.photo }}"></image-slot></div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:8px">
+              <div style="font-family:'Archivo',sans-serif;font-size:18px;font-weight:700">{{ c.title }}</div>
+              <div style="color:#5a625f;font-size:14px;line-height:1.6">{{ c.desc }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="servizi" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px);background:#171d1b;color:#f7f8f7">
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:40px">
+      <h2 style="font-family:'Archivo',sans-serif;font-size:clamp(30px,3.5vw,44px);margin:0;font-weight:800">Perché lavorare con noi</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:32px">
+        <sc-for list="{{ services }}" as="s" hint-placeholder-count="4">
+          <div style="display:flex;flex-direction:column;gap:10px;border-top:3px solid #2a7d6e;padding-top:18px">
+            <div style="font-family:'Archivo',sans-serif;font-size:18px;font-weight:700">{{ s.title }}</div>
+            <div style="color:#a7b0ac;font-size:14px;line-height:1.7">{{ s.desc }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="clienti" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px)">
+    <div style="max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:40px;text-align:center;align-items:center">
+      <div>
+        <div style="color:#1d6155;font-weight:700;letter-spacing:4px;font-size:13px;margin-bottom:12px">SOLO PARTITA IVA</div>
+        <h2 style="font-family:'Archivo',sans-serif;font-size:clamp(30px,3.5vw,44px);margin:0;font-weight:800">Diventa cliente in 3 passi</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;width:100%;text-align:left">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+          <div style="background:#ffffff;border:1px solid rgba(23,29,27,0.1);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:10px">
+            <div style="font-family:'Archivo',sans-serif;font-size:14px;font-weight:800;color:#1d6155">{{ s.n }}</div>
+            <div style="font-family:'Archivo',sans-serif;font-size:17px;font-weight:700">{{ s.title }}</div>
+            <div style="color:#5a625f;font-size:14px;line-height:1.6">{{ s.desc }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center">
+        <a href="mailto:vendite@orientefood.it" style="background:#1d6155;color:#f7f8f7;padding:15px 32px;border-radius:8px;font-weight:700;font-size:16px" style-hover="background:#2a7d6e;color:#f7f8f7">vendite@orientefood.it</a>
+        <a href="tel:+390287654321" style="border:1.5px solid rgba(23,29,27,0.2);color:#171d1b;padding:15px 32px;border-radius:8px;font-weight:600;font-size:16px" style-hover="border-color:#1d6155;color:#1d6155">02 8765 4321</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="contatti" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px);background:#ffffff">
+    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:48px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <h2 style="font-family:'Archivo',sans-serif;font-size:clamp(30px,3.5vw,44px);margin:0;font-weight:800">Sede &amp; magazzino</h2>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:15px">
+          <div style="display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(23,29,27,0.1);padding-bottom:10px"><span style="color:#5a625f">Uffici (Lun – Ven)</span><span style="font-weight:700">08:30 – 17:30</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(23,29,27,0.1);padding-bottom:10px"><span style="color:#5a625f">Cash &amp; Carry (Lun – Sab)</span><span style="font-weight:700">07:00 – 18:00</span></div>
+        </div>
+        <div style="font-size:15px;line-height:1.8;color:#5a625f">
+          <div style="color:#171d1b;font-weight:700;margin-bottom:4px">Oriente Food Service S.r.l.</div>
+          Via dell'Industria 12, 20090 Segrate (MI)<br>
+          Tel: <a href="tel:+390287654321">02 8765 4321</a> · <a href="mailto:info@orientefood.it">info@orientefood.it</a>
+        </div>
+      </div>
+      <div style="min-height:360px;border-radius:12px;overflow:hidden;border:1px solid rgba(23,29,27,0.1)">
+        <iframe title="Mappa" src="https://www.google.com/maps?q=Via+dell'Industria+12+Segrate&output=embed" style="width:100%;height:100%;min-height:360px;border:0"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <footer style="padding:28px clamp(24px,5vw,64px);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:#7c8582;border-top:1px solid rgba(23,29,27,0.08)">
+    <span>© 2026 Oriente Food Service S.r.l.</span>
+    <span>P.IVA 05566778899</span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      categories: [
+        {slot: 'cat-1', photo: 'Foto: pesce fresco', title: 'Fresco & Ittico', desc: 'Salmone, tonno, branzino e crostacei con tracciabilità completa.'},
+        {slot: 'cat-2', photo: 'Foto: surgelati', title: 'Surgelati', desc: 'Gyoza, tempura, edamame, dim sum e materie prime surgelate.'},
+        {slot: 'cat-3', photo: 'Foto: dispensa secca', title: 'Secco & Dispensa', desc: 'Riso, noodles, salse, alghe, spezie e condimenti orientali.'},
+        {slot: 'cat-4', photo: 'Foto: bevande', title: 'Bevande', desc: 'Birre asiatiche, sakè, tè e soft drink d\u2019importazione.'},
+        {slot: 'cat-5', photo: 'Foto: packaging', title: 'Packaging', desc: 'Box take-away, bacchette, contenitori e monouso compostabile.'},
+        {slot: 'cat-6', photo: 'Foto: attrezzature', title: 'Attrezzature', desc: 'Cuociriso, wok, coltelleria giapponese e utensili professionali.'}
+      ],
+      services: [
+        {title: 'Consegna refrigerata 24/48h', desc: 'Flotta propria con tripla temperatura in Lombardia, Piemonte, Veneto ed Emilia.'},
+        {title: 'Nessun minimo il primo mese', desc: 'Prova il servizio senza vincoli; poi minimo d\u2019ordine di soli € 150.'},
+        {title: 'Agente dedicato', desc: 'Un referente unico per ordini, resi e novità di catalogo, anche via WhatsApp.'},
+        {title: 'Prezzi bloccati 30 giorni', desc: 'Listino trasparente con prezzi garantiti per tutto il mese in corso.'}
+      ],
+      steps: [
+        {n: '01', title: 'Richiedi il listino', desc: 'Inviaci partita IVA e tipologia di locale via e-mail o WhatsApp.'},
+        {n: '02', title: 'Ricevi il catalogo', desc: 'Listino personalizzato e credenziali per l\u2019ordine online in 24 ore.'},
+        {n: '03', title: 'Ordina quando vuoi', desc: 'Online, per telefono o dal tuo agente: consegna in 24/48h.'}
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

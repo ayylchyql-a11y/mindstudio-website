@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import TemplateViewer from "@/components/TemplateViewer";
-import { TEMPLATES_LANGS, brandOf, groupById, pagePath, posterPath, styles, templateBySlug, templates, templatesCopy, templatesIn } from "@/data/templates";
+import { TEMPLATES_LANGS, brandOf, designsOf, groupById, pagePath, posterPath, styles, templateBySlug, templates, templatesCopy, templatesIn } from "@/data/templates";
 import { altsFor, defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
@@ -53,7 +53,8 @@ export default async function TemplatePage({
   const t = getDictionary(lang);
   const siblings = templatesIn(group.id).filter((x) => x.slug !== tp.slug);
 
-  const designs = styles.map((s) => ({
+  const has = designsOf(tp);
+  const designs = styles.filter((s) => has.includes(s.id)).map((s) => ({
     id: s.id,
     brand: brandOf(tp, s.id),
     style: pick(s.title, lang),

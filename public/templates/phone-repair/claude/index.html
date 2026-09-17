@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html{scroll-behavior:smooth}
+  body{margin:0;background:#f4f6f9;color:#141a24;font-family:'Manrope',sans-serif}
+  a{color:#2360d8;text-decoration:none}
+  a:hover{color:#1a4cb0}
+</style>
+<script src="./image-slot.js"></script>
+</helmet>
+<div data-screen-label="PhoneRepair" style="min-width:320px">
+  <nav style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px clamp(20px,5vw,64px);background:rgba(244,246,249,0.94);backdrop-filter:blur(8px);border-bottom:1px solid rgba(20,26,36,0.08)">
+    <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:800">FIX<span style="color:#2360d8">POINT</span></div>
+    <div style="display:flex;gap:28px;font-size:14px;font-weight:600;letter-spacing:1px;flex-wrap:wrap">
+      <a href="#riparazioni" style="color:#141a24">RIPARAZIONI</a>
+      <a href="#come" style="color:#141a24">COME FUNZIONA</a>
+      <a href="#servizi" style="color:#141a24">ALTRI SERVIZI</a>
+      <a href="#orari" style="color:#141a24">ORARI</a>
+    </div>
+    <a href="https://wa.me/393482233445" style="background:#2360d8;color:#f4f6f9;padding:10px 20px;border-radius:8px;font-weight:700;font-size:14px;white-space:nowrap" style-hover="background:#1a4cb0;color:#f4f6f9">Preventivo gratis</a>
+  </nav>
+
+  <header style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));align-items:stretch">
+    <div style="padding:clamp(48px,8vw,110px) clamp(24px,5vw,64px);display:flex;flex-direction:column;justify-content:center;gap:24px">
+      <div style="color:#2360d8;font-weight:700;letter-spacing:4px;font-size:13px">RIPARAZIONE SMARTPHONE · TABLET · PC</div>
+      <h1 style="font-family:'Sora',sans-serif;font-size:clamp(38px,5vw,64px);line-height:1.08;margin:0;font-weight:800">Il tuo telefono, riparato in giornata</h1>
+      <p style="font-size:17px;line-height:1.7;color:#5b6472;max-width:52ch;margin:0;text-wrap:pretty">Schermi, batterie, connettori e danni da liquido. Preventivo gratuito in 10 minuti, ricambi di qualità e 12 mesi di garanzia su ogni intervento.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <a href="https://wa.me/393482233445" style="background:#2360d8;color:#f4f6f9;padding:14px 28px;border-radius:8px;font-weight:700;font-size:15px" style-hover="background:#1a4cb0;color:#f4f6f9">Preventivo su WhatsApp</a>
+        <a href="tel:+390817788990" style="border:1.5px solid rgba(20,26,36,0.2);color:#141a24;padding:14px 28px;border-radius:8px;font-weight:600;font-size:15px" style-hover="border-color:#2360d8;color:#2360d8">081 778 8990</a>
+      </div>
+      <div style="display:flex;gap:24px;font-size:13px;color:#5b6472;font-weight:600;flex-wrap:wrap">
+        <span>✓ Garanzia 12 mesi</span><span>✓ Riparazione express</span><span>✓ Senza appuntamento</span>
+      </div>
+    </div>
+    <div style="min-height:420px;position:relative">
+      <image-slot id="hero-repair" src="../assets/pronto-lab-hero.jpg" shape="rect" placeholder="Foto: banco riparazioni (hero)"></image-slot>
+    </div>
+  </header>
+
+  <section id="riparazioni" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px);background:#ffffff">
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:40px">
+      <div>
+        <div style="color:#2360d8;font-weight:700;letter-spacing:4px;font-size:13px;margin-bottom:12px">LISTINO INDICATIVO</div>
+        <h2 style="font-family:'Sora',sans-serif;font-size:clamp(30px,3.5vw,44px);margin:0;font-weight:800">Riparazioni più richieste</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px">
+        <sc-for list="{{ repairs }}" as="r" hint-placeholder-count="6">
+          <div style="border:1px solid rgba(20,26,36,0.1);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:10px;background:#f4f6f9">
+            <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+              <div style="font-family:'Sora',sans-serif;font-size:17px;font-weight:700">{{ r.name }}</div>
+              <div style="color:#2360d8;font-weight:800;font-size:17px;white-space:nowrap">{{ r.price }}</div>
+            </div>
+            <div style="color:#5b6472;font-size:14px;line-height:1.6">{{ r.desc }}</div>
+            <div style="font-size:12px;font-weight:700;color:#8b93a1;letter-spacing:1px">{{ r.time }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <p style="color:#5b6472;font-size:14px;margin:0">I prezzi variano in base al modello: inviaci marca e modello su WhatsApp per il preventivo esatto, gratuito e senza impegno.</p>
+    </div>
+  </section>
+
+  <section id="come" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px);background:#141a24;color:#f4f6f9">
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:40px">
+      <h2 style="font-family:'Sora',sans-serif;font-size:clamp(30px,3.5vw,44px);margin:0;font-weight:800">Come funziona</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:32px">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+          <div style="display:flex;flex-direction:column;gap:10px;border-top:3px solid #2360d8;padding-top:18px">
+            <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:800;color:#6f9bf0">{{ s.n }}</div>
+            <div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700">{{ s.title }}</div>
+            <div style="color:#9aa3b2;font-size:14px;line-height:1.7">{{ s.desc }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="servizi" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px)">
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:40px">
+      <h2 style="font-family:'Sora',sans-serif;font-size:clamp(30px,3.5vw,44px);margin:0;font-weight:800">Altri servizi</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px">
+        <sc-for list="{{ extras }}" as="e" hint-placeholder-count="4">
+          <div style="background:#ffffff;border:1px solid rgba(20,26,36,0.1);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:8px">
+            <div style="font-family:'Sora',sans-serif;font-size:17px;font-weight:700">{{ e.title }}</div>
+            <div style="color:#5b6472;font-size:14px;line-height:1.6">{{ e.desc }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
+        <div style="height:220px"><image-slot id="gal-1" radius="12" placeholder="Foto: negozio"></image-slot></div>
+        <div style="height:220px"><image-slot id="gal-2" radius="12" placeholder="Foto: riparazione schermo"></image-slot></div>
+        <div style="height:220px"><image-slot id="gal-3" radius="12" placeholder="Foto: accessori"></image-slot></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="orari" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px);background:#ffffff">
+    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:48px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <h2 style="font-family:'Sora',sans-serif;font-size:clamp(30px,3.5vw,44px);margin:0;font-weight:800">Orari &amp; dove siamo</h2>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:15px">
+          <div style="display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(20,26,36,0.1);padding-bottom:10px"><span style="color:#5b6472">Lun – Sab</span><span style="font-weight:700">09:30 – 13:30 · 15:30 – 19:30</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(20,26,36,0.1);padding-bottom:10px"><span style="color:#5b6472">Domenica</span><span style="font-weight:700">Chiuso</span></div>
+        </div>
+        <div style="font-size:15px;line-height:1.8;color:#5b6472">
+          <div style="color:#141a24;font-weight:700;margin-bottom:4px">FixPoint · Riparazione Smartphone</div>
+          Via Toledo 156, 80134 Napoli<br>
+          Tel: <a href="tel:+390817788990">081 778 8990</a> · <a href="mailto:info@fixpointnapoli.it">info@fixpointnapoli.it</a>
+        </div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap">
+          <a href="https://wa.me/393482233445" style="background:#2360d8;color:#f4f6f9;padding:14px 28px;border-radius:8px;font-weight:700;font-size:15px" style-hover="background:#1a4cb0;color:#f4f6f9">Scrivici su WhatsApp</a>
+        </div>
+      </div>
+      <div style="min-height:360px;border-radius:12px;overflow:hidden;border:1px solid rgba(20,26,36,0.1)">
+        <iframe title="Mappa" src="https://www.google.com/maps?q=Via+Toledo+156+Napoli&output=embed" style="width:100%;height:100%;min-height:360px;border:0"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <footer style="padding:28px clamp(24px,5vw,64px);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:#8b93a1;border-top:1px solid rgba(20,26,36,0.08)">
+    <span>© 2026 FixPoint · Napoli</span>
+    <span>P.IVA 07788990011</span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      repairs: [
+        {name: 'Sostituzione schermo', price: 'da € 49', desc: 'Display originali o compatibili premium per tutti i modelli.', time: '⏱ 1 – 2 ORE'},
+        {name: 'Sostituzione batteria', price: 'da € 29', desc: 'Batterie certificate con ciclo di test incluso.', time: '⏱ 45 MINUTI'},
+        {name: 'Connettore di ricarica', price: 'da € 35', desc: 'Riparazione porta USB-C / Lightning e pulizia contatti.', time: '⏱ 1 ORA'},
+        {name: 'Danni da liquido', price: 'da € 45', desc: 'Trattamento a ultrasuoni e recupero dati quando possibile.', time: '⏱ 24 – 48 ORE'},
+        {name: 'Vetro posteriore', price: 'da € 39', desc: 'Sostituzione back cover con sigillatura professionale.', time: '⏱ 2 ORE'},
+        {name: 'Recupero dati', price: 'da € 50', desc: 'Da dispositivi danneggiati, anche se non si accendono.', time: '⏱ SU DIAGNOSI'}
+      ],
+      steps: [
+        {n: '01', title: 'Preventivo gratuito', desc: 'Portaci il dispositivo o inviaci modello e problema su WhatsApp.'},
+        {n: '02', title: 'Diagnosi in 10 minuti', desc: 'Ti confermiamo costo e tempi prima di toccare qualsiasi vite.'},
+        {n: '03', title: 'Riparazione express', desc: 'La maggior parte degli interventi è pronta in giornata.'},
+        {n: '04', title: 'Garanzia 12 mesi', desc: 'Su ricambi e manodopera, con ricevuta di intervento.'}
+      ],
+      extras: [
+        {title: 'Accessori', desc: 'Cover, pellicole, caricatori e cavi per tutti i modelli.'},
+        {title: 'Usato garantito', desc: 'Smartphone ricondizionati testati, con 12 mesi di garanzia.'},
+        {title: 'Permuta', desc: 'Valutiamo il tuo vecchio dispositivo, anche se danneggiato.'},
+        {title: 'Assistenza PC & tablet', desc: 'Formattazione, upgrade SSD, rimozione virus e backup.'}
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

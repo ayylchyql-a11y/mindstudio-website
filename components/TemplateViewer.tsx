@@ -44,24 +44,26 @@ export default function TemplateViewer({
 
   return (
     <div className="tpl-viewer">
-      <div className="tpl-tabs" role="tablist">
-        {designs.map((d, i) => (
-          <button
-            key={d.id}
-            type="button"
-            role="tab"
-            aria-selected={i === idx}
-            className={i === idx ? "tpl-tab on" : "tpl-tab"}
-            onClick={() => setIdx(i)}
-          >
-            {/* 缩略图是 1200×750 的静态海报，四张一起也才 400KB；
-                真正的页面只在选中时才加载。 */}
-            <img src={d.poster} alt="" width={1200} height={750} loading="lazy" decoding="async" />
-            <span className="tpl-tab-style">{d.style}</span>
-            <span className="tpl-tab-brand">{d.brand}</span>
-          </button>
-        ))}
-      </div>
+      {designs.length > 1 ? (
+        <div className="tpl-tabs" role="tablist">
+          {designs.map((d, i) => (
+            <button
+              key={d.id}
+              type="button"
+              role="tab"
+              aria-selected={i === idx}
+              className={i === idx ? "tpl-tab on" : "tpl-tab"}
+              onClick={() => setIdx(i)}
+            >
+              {/* 缩略图是 1200×750 的静态海报，四张一起也才 400KB；
+                  真正的页面只在选中时才加载。 */}
+              <img src={d.poster} alt="" width={1200} height={750} loading="lazy" decoding="async" />
+              <span className="tpl-tab-style">{d.style}</span>
+              <span className="tpl-tab-brand">{d.brand}</span>
+            </button>
+          ))}
+        </div>
+      ) : null}
 
       <div className="tpl-frame" style={{ height }}>
         <iframe

@@ -1,8 +1,10 @@
-// 把桌面上 `网站模版/` 里的 7 套意大利语商铺模版（各 4 种设计）搬进
-// public/templates/<slug>/{,editorial,night-glass,pop}/ 。
+// 把桌面上的网站模版搬进 public/templates/<slug>/…：
+//   · `网站模版/`        7 个行业 × (原版 + editorial / night-glass / pop)，
+//                        外加绿达康生鲜（中文 B2B，只有原版；店名换成虚构的）
+//   · `网站模版Claude/`  同 7 个行业各一个 Claude Design 版 → <slug>/claude/
 //
 // 一次性脚本，但留在仓库里：以后桌面那边改了模版，重跑一遍就同步。
-//   node scripts/import-templates.mjs [源目录]
+//   node scripts/import-templates.mjs [源目录] [Claude 版源目录]
 //
 // 搬的时候只动三处：
 //   1. 目录名从中文改成 slug（URL 里不出现中文、也不出现「风格A」这种编号）
@@ -14,6 +16,7 @@ import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, write
 import { join } from "node:path";
 
 const SRC = process.argv[2] ?? join(process.env.HOME, "Desktop", "网站模版");
+const SRC_DC = process.argv[3] ?? join(process.env.HOME, "Desktop", "网站模版Claude");
 const DST = join(process.cwd(), "public", "templates");
 
 /** 桌面目录名 → slug。顺序无所谓，展示顺序在 data/templates.ts 里定。 */
@@ -31,6 +34,25 @@ const STYLES = {
   "风格B-夜间玻璃": "night-glass",
   "风格C-活力波普": "pop",
 };
+/**
+ * Claude Design 版：`<NN-Name-中文>/<Name>.dc.html` + 同目录 support.js / image-slot.js。
+ * 它们的图片位（<image-slot>）原本全空；把**首屏那一个**用同行业原版的 hero 照片填上，
+ * 画廊位保持占位 —— 每个行业只有一张照片。
+ */
+const DC = {
+  ramen: { dir: "01-Ramen-拉面店", file: "Ramen.dc.html", hero: ["hero-ramen"] },
+  "all-you-can-eat": { dir: "02-AllYouCanEat-自助餐", file: "AllYouCanEat.dc.html", hero: ["hero-ayce"] },
+  "sushi-takeaway": { dir: "03-SushiTakeaway-寿司外卖", file: "SushiTakeaway.dc.html", hero: ["hero-box"] },
+  "nail-salon": { dir: "04-NailSalon-美甲店", file: "NailSalon.dc.html", hero: ["hero-1"] },
+  "food-supplier": { dir: "05-FoodSupplier-食品供应商", file: "FoodSupplier.dc.html", hero: ["hero-supplier"] },
+  "department-store": { dir: "06-Emporio-百货店", file: "Emporio.dc.html", hero: ["hero-emporio"] },
+  "phone-repair": { dir: "07-PhoneRepair-手机维修", file: "PhoneRepair.dc.html", hero: ["hero-repair"] },
+};
+/**
+ * 绿达康是给真实客户做的稿，上个人站要把店名换掉（内容本身页脚就写着「演示品牌与内容」，
+ * 电话地址都是编的）。文件名里的 lvdakang 一起换，免得 URL 里还留着。
+ */
+const FRESH = { folder: "绿达康生鲜供应商模版", slug: "fresh-supply", from: "绿达康", to: "青禾鲜供", asset: ["lvdakang", "qinghe"] };
 
 function copyPage(from, to, rewrite) {
   mkdirSync(to, { recursive: true });
@@ -48,7 +70,10 @@ function copyPage(from, to, rewrite) {
   }
 }
 
-if (existsSync(DST)) rmSync(DST, { recursive: true });
+// 只清各模版目录，`_posters/`（截图海报）是另一条流水线产的，别一起删
+if (existsSync(DST)) {
+  for (const d of readdirSync(DST)) if (d !== "_posters") rmSync(join(DST, d), { recursive: true });
+}
 let pages = 0;
 for (const [folder, slug] of Object.entries(FOLDERS)) {
   const from = join(SRC, folder);
@@ -77,5 +102,45 @@ for (const [folder, slug] of Object.entries(FOLDERS)) {
     pages++;
   }
 }
+// —— Claude 版 ——
+for (const [slug, dc] of Object.entries(DC)) {
+  const from = join(SRC_DC, dc.dir);
+  const to = join(DST, slug, "claude");
+  mkdirSync(to, { recursive: true });
+  let html = readFileSync(join(from, dc.file), "utf8");
+  const heroFile = readdirSync(join(DST, slug, "assets"))[0];
+  for (const id of dc.hero) {
+    const re = new RegExp(`<image-slot id="${id}"`);
+    if (!re.test(html)) throw new Error(`${slug}/claude: slot ${id} not found`);
+    html = html.replace(re, `<image-slot id="${id}" src="../assets/${heroFile}"`);
+  }
+  writeFileSync(join(to, "index.html"), html);
+  for (const name of ["support.js", "image-slot.js"]) cpSync(join(from, name), join(to, name));
+  pages++;
+}
+
+// —— 绿达康 → 青禾鲜供 ——
+{
+  const from = join(SRC, FRESH.folder);
+  const to = join(DST, FRESH.slug);
+  const [oldA, newA] = FRESH.asset;
+  copyPage(from, to, (html) => {
+    const out = html.split(FRESH.from).join(FRESH.to).split(oldA).join(newA);
+    if (out.includes(FRESH.from)) throw new Error("fresh-supply: brand still present");
+    return out;
+  });
+  // styles.css 里也引用了图；copyPage 只对 index.html 跑 rewrite
+  const cssPath = join(to, "styles.css");
+  writeFileSync(cssPath, readFileSync(cssPath, "utf8").split(oldA).join(newA));
+  const js = join(to, "app.js");
+  if (readFileSync(js, "utf8").includes(FRESH.from)) throw new Error("fresh-supply: brand in app.js");
+  mkdirSync(join(to, "assets"), { recursive: true });
+  for (const f of readdirSync(join(from, "assets"))) {
+    if (!f.endsWith(".jpg")) continue; // 同样不搬 png 母图
+    cpSync(join(from, "assets", f), join(to, "assets", f.split(oldA).join(newA)));
+  }
+  pages++;
+}
+
 console.log(`imported ${pages} pages into public/templates/`);
 console.log(readdirSync(DST).join(" "));

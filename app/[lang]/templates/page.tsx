@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { TEMPLATES_LANGS, activeGroups, posterPath, styles, templatesCopy, templatesIn } from "@/data/templates";
+import { TEMPLATES_LANGS, activeGroups, designsOf, posterPath, templatesCopy, templatesIn } from "@/data/templates";
 import { altsFor, defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
@@ -62,7 +62,7 @@ export default async function TemplatesIndex({ params }: { params: Promise<{ lan
                 <span className="cat-dot" style={{ background: g.accent }} aria-hidden="true" />
                 {pick(g.title, lang)}
                 <span className="cat-count">
-                  {items.length} {pick(templatesCopy.count, lang)}
+                  {items.length} {pick(items.length === 1 ? templatesCopy.countOne : templatesCopy.count, lang)}
                 </span>
               </h2>
               <p>{pick(g.intro, lang)}</p>
@@ -87,7 +87,8 @@ export default async function TemplatesIndex({ params }: { params: Promise<{ lan
                         {pick(tp.industry, lang)} · {tp.city}
                       </span>
                       <span className="tpl-card-styles">
-                        {styles.length} {pick(templatesCopy.designs, lang)}
+                        {designsOf(tp).length}{" "}
+                        {pick(designsOf(tp).length === 1 ? templatesCopy.design : templatesCopy.designs, lang)}
                       </span>
                     </span>
                   </a>

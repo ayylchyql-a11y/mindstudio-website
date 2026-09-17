@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html{scroll-behavior:smooth}
+  body{margin:0;background:#fbf8f2;color:#221f19;font-family:'Manrope',sans-serif}
+  a{color:#c06514;text-decoration:none}
+  a:hover{color:#a35410}
+</style>
+<script src="./image-slot.js"></script>
+</helmet>
+<div data-screen-label="Emporio" style="min-width:320px">
+  <nav style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px clamp(20px,5vw,64px);background:rgba(251,248,242,0.94);backdrop-filter:blur(8px);border-bottom:1px solid rgba(34,31,25,0.08)">
+    <div style="font-family:'Outfit',sans-serif;font-size:22px;font-weight:800">GRANDE <span style="color:#c06514">EMPORIO</span></div>
+    <div style="display:flex;gap:28px;font-size:14px;font-weight:600;letter-spacing:1px;flex-wrap:wrap">
+      <a href="#reparti" style="color:#221f19">REPARTI</a>
+      <a href="#offerte" style="color:#221f19">OFFERTE</a>
+      <a href="#info" style="color:#221f19">INFO UTILI</a>
+      <a href="#orari" style="color:#221f19">ORARI</a>
+    </div>
+    <a href="tel:+390116677889" style="background:#c06514;color:#fbf8f2;padding:10px 20px;border-radius:999px;font-weight:700;font-size:14px;white-space:nowrap" style-hover="background:#a35410;color:#fbf8f2">Chiamaci</a>
+  </nav>
+
+  <header style="padding:clamp(48px,8vw,100px) clamp(24px,5vw,64px);display:flex;flex-direction:column;gap:28px;align-items:center;text-align:center">
+    <div style="background:#f3e3ce;color:#c06514;padding:8px 20px;border-radius:999px;font-weight:700;font-size:13px;letter-spacing:2px">2.000 M² · TUTTO PER LA CASA</div>
+    <h1 style="font-family:'Outfit',sans-serif;font-size:clamp(42px,6vw,80px);line-height:1.03;margin:0;font-weight:800;max-width:18ch">Tutto quello che cerchi, a un prezzo che non ti aspetti</h1>
+    <p style="font-size:17px;line-height:1.7;color:#6c6455;max-width:58ch;margin:0;text-wrap:pretty">Casalinghi, ferramenta, cartoleria, giocattoli, elettronica e molto altro: oltre 30.000 articoli su due piani, con nuovi arrivi ogni settimana.</p>
+    <div style="width:100%;max-width:1100px;height:clamp(280px,38vw,440px)"><image-slot id="hero-emporio" src="../assets/casa-mercato-hero.jpg" radius="20" placeholder="Foto: interno del negozio (hero)"></image-slot></div>
+  </header>
+
+  <section id="reparti" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px);background:#ffffff">
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:40px">
+      <div>
+        <div style="color:#c06514;font-weight:700;letter-spacing:4px;font-size:13px;margin-bottom:12px">SU DUE PIANI</div>
+        <h2 style="font-family:'Outfit',sans-serif;font-size:clamp(30px,3.5vw,44px);margin:0;font-weight:800">I nostri reparti</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px">
+        <sc-for list="{{ reparti }}" as="r" hint-placeholder-count="8">
+          <div style="border:1px solid rgba(34,31,25,0.1);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:8px;background:#fbf8f2" style-hover="border-color:#c06514">
+            <div style="font-family:'Outfit',sans-serif;font-size:18px;font-weight:700">{{ r.title }}</div>
+            <div style="color:#6c6455;font-size:14px;line-height:1.6">{{ r.desc }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="offerte" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px);background:#221f19;color:#fbf8f2">
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:40px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap">
+        <div>
+          <div style="color:#e89b4e;font-weight:700;letter-spacing:4px;font-size:13px;margin-bottom:12px">SOLO QUESTO MESE</div>
+          <h2 style="font-family:'Outfit',sans-serif;font-size:clamp(30px,3.5vw,44px);margin:0;font-weight:800">Offerte del mese</h2>
+        </div>
+        <div style="color:#a89e8d;font-size:14px">Valide fino a esaurimento scorte</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px">
+        <sc-for list="{{ offerte }}" as="o" hint-placeholder-count="4">
+          <div style="background:rgba(251,248,242,0.06);border:1px solid rgba(251,248,242,0.14);border-radius:14px;overflow:hidden;display:flex;flex-direction:column">
+            <div style="height:150px"><image-slot id="{{ o.slot }}" shape="rect" placeholder="{{ o.photo }}"></image-slot></div>
+            <div style="padding:20px;display:flex;flex-direction:column;gap:6px">
+              <div style="font-family:'Outfit',sans-serif;font-size:17px;font-weight:700">{{ o.name }}</div>
+              <div style="display:flex;gap:10px;align-items:baseline">
+                <span style="color:#e89b4e;font-family:'Outfit',sans-serif;font-size:24px;font-weight:800">{{ o.price }}</span>
+                <span style="color:#a89e8d;font-size:14px;text-decoration:line-through">{{ o.old }}</span>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="info" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px)">
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:40px">
+      <h2 style="font-family:'Outfit',sans-serif;font-size:clamp(30px,3.5vw,44px);margin:0;font-weight:800">Info utili</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:32px">
+        <div style="display:flex;flex-direction:column;gap:8px;border-top:3px solid #c06514;padding-top:16px">
+          <div style="font-family:'Outfit',sans-serif;font-size:17px;font-weight:700">Parcheggio gratuito</div>
+          <div style="color:#6c6455;font-size:14px;line-height:1.7">40 posti auto riservati ai clienti, direttamente davanti all'ingresso.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;border-top:3px solid #c06514;padding-top:16px">
+          <div style="font-family:'Outfit',sans-serif;font-size:17px;font-weight:700">Pagamenti</div>
+          <div style="color:#6c6455;font-size:14px;line-height:1.7">Contanti, carte, bancomat e pagamenti contactless senza importo minimo.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;border-top:3px solid #c06514;padding-top:16px">
+          <div style="font-family:'Outfit',sans-serif;font-size:17px;font-weight:700">Ordini su richiesta</div>
+          <div style="color:#6c6455;font-size:14px;line-height:1.7">Non trovi un articolo? Lo ordiniamo per te e ti avvisiamo su WhatsApp.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;border-top:3px solid #c06514;padding-top:16px">
+          <div style="font-family:'Outfit',sans-serif;font-size:17px;font-weight:700">Forniture per attività</div>
+          <div style="color:#6c6455;font-size:14px;line-height:1.7">Sconti dedicati per bar, ristoranti, uffici e imprese con partita IVA.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="orari" style="padding:clamp(56px,8vw,100px) clamp(24px,5vw,64px);background:#ffffff">
+    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:48px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <h2 style="font-family:'Outfit',sans-serif;font-size:clamp(30px,3.5vw,44px);margin:0;font-weight:800">Orari &amp; dove siamo</h2>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:15px">
+          <div style="display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(34,31,25,0.1);padding-bottom:10px"><span style="color:#6c6455">Lun – Sab</span><span style="font-weight:700">09:00 – 19:30</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(34,31,25,0.1);padding-bottom:10px"><span style="color:#6c6455">Domenica</span><span style="font-weight:700">09:30 – 13:00</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(34,31,25,0.1);padding-bottom:10px"><span style="color:#6c6455">Orario continuato</span><span style="font-weight:700">Sempre</span></div>
+        </div>
+        <div style="font-size:15px;line-height:1.8;color:#6c6455">
+          <div style="color:#221f19;font-weight:700;margin-bottom:4px">Grande Emporio</div>
+          Corso Giulio Cesare 210, 10154 Torino<br>
+          Tel: <a href="tel:+390116677889">011 667 7889</a> · <a href="https://wa.me/393336677889">WhatsApp</a>
+        </div>
+      </div>
+      <div style="min-height:360px;border-radius:14px;overflow:hidden;border:1px solid rgba(34,31,25,0.1)">
+        <iframe title="Mappa" src="https://www.google.com/maps?q=Corso+Giulio+Cesare+210+Torino&output=embed" style="width:100%;height:100%;min-height:360px;border:0"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <footer style="padding:28px clamp(24px,5vw,64px);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:#94897a;border-top:1px solid rgba(34,31,25,0.08)">
+    <span>© 2026 Grande Emporio · Torino</span>
+    <span>P.IVA 06677889900</span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      reparti: [
+        {title: 'Casalinghi', desc: 'Pentole, stoviglie, contenitori e piccoli elettrodomestici.'},
+        {title: 'Ferramenta & Fai da te', desc: 'Utensili, viteria, vernici e materiale elettrico.'},
+        {title: 'Cartoleria & Ufficio', desc: 'Scuola, ufficio, articoli regalo e feste.'},
+        {title: 'Giocattoli', desc: 'Giochi per tutte le età, palloni e articoli da spiaggia.'},
+        {title: 'Casa & Decorazione', desc: 'Tessile casa, cornici, candele e complementi d\u2019arredo.'},
+        {title: 'Elettronica', desc: 'Accessori telefonia, lampadine, batterie e piccola elettronica.'},
+        {title: 'Giardinaggio', desc: 'Vasi, terricci, attrezzi e arredo per esterni.'},
+        {title: 'Pulizia & Cura casa', desc: 'Detergenti, scope, organizzazione e bucato.'}
+      ],
+      offerte: [
+        {slot: 'off-1', photo: 'Foto: set pentole', name: 'Set pentole 8 pezzi', price: '€ 39,90', old: '€ 59,90'},
+        {slot: 'off-2', photo: 'Foto: ventilatore', name: 'Ventilatore a piantana', price: '€ 24,90', old: '€ 39,90'},
+        {slot: 'off-3', photo: 'Foto: set contenitori', name: 'Contenitori ermetici x10', price: '€ 12,90', old: '€ 19,90'},
+        {slot: 'off-4', photo: 'Foto: zaino scuola', name: 'Zaino scuola + astuccio', price: '€ 19,90', old: '€ 29,90'}
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

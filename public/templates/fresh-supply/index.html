@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#063d2d" />
+    <meta name="description" content="青禾鲜供——面向餐饮、酒店与团餐的长三角生鲜蔬菜供应服务。" />
+    <title>青禾鲜供｜长三角生鲜蔬菜供应</title>
+    <link rel="preload" as="image" href="./assets/qinghe-hero.jpg" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">跳到主要内容</a>
+
+    <div class="notice">当日 22:00 前下单 · 次日清晨送达 <span>上海核心区域满 ¥800 免运费</span></div>
+
+    <header data-header>
+      <a class="logo press" href="#top" aria-label="青禾鲜供，返回首页">
+        <span class="logo-mark" aria-hidden="true"><i></i></span>
+        <span><b>青禾鲜供</b><small>鲜蔬供应 · 长三角</small></span>
+      </a>
+      <nav aria-label="主导航">
+        <a href="#catalog">今日菜品</a>
+        <a href="#supply">供应链</a>
+        <a href="#coverage">配送区域</a>
+        <a href="#cooperate">合作流程</a>
+      </nav>
+      <div class="header-actions">
+        <button class="login press" type="button" data-login>客户登录</button>
+        <button class="quote-button press" type="button" data-open-quote>询价单 <b data-count>0</b></button>
+        <button class="menu press" type="button" data-menu aria-label="打开菜单" aria-expanded="false"><i></i><i></i></button>
+      </div>
+    </header>
+
+    <div class="mobile-nav" data-mobile aria-hidden="true">
+      <a href="#catalog" data-link>今日菜品</a>
+      <a href="#supply" data-link>供应链</a>
+      <a href="#coverage" data-link>配送区域</a>
+      <a href="#cooperate" data-link>合作流程</a>
+      <button type="button" data-open-quote>打开询价单</button>
+    </div>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-image" role="img" aria-label="青禾鲜供生鲜分拣中心正在检查新鲜蔬菜"></div>
+        <div class="hero-shade"></div>
+        <div class="hero-copy">
+          <p class="eyebrow reveal">青禾鲜供 · 长三角餐饮供应链</p>
+          <h1 id="hero-title" class="reveal">把清晨的鲜，<br /><em>准时送到后厨。</em></h1>
+          <p class="hero-text reveal">产地直采、标准分拣、全程冷链。为餐厅、酒店和团餐厨房提供稳定、透明、可追溯的生鲜蔬菜供应。</p>
+          <div class="hero-actions reveal">
+            <a class="button lime" href="#catalog">浏览今日菜品 <span aria-hidden="true">↓</span></a>
+            <button class="button glass" type="button" data-open-quote>获取专属报价</button>
+          </div>
+        </div>
+        <div class="dispatch-card reveal" aria-label="今日配送状态">
+          <span>今日首车</span><strong>06:00</strong><b>已发车</b><i aria-hidden="true"></i>
+        </div>
+        <div class="hero-stats" aria-label="青禾鲜供服务数据">
+          <div><strong>99.2%</strong><span>订单准时率</span></div>
+          <div><strong>24h</strong><span>采后预冷入仓</span></div>
+          <div><strong>6 天</strong><span>每周稳定配送</span></div>
+        </div>
+      </section>
+
+      <section class="customer-strip" aria-label="服务客户类型">
+        <span>每天服务于</span><b>连锁餐厅</b><i>·</i><b>精品酒店</b><i>·</i><b>企业团餐</b><i>·</i><b>烘焙工坊</b><i>·</i><b>社区零售</b>
+      </section>
+
+      <section class="catalog" id="catalog" aria-labelledby="catalog-title">
+        <div class="section-head reveal">
+          <div><p class="eyebrow dark">01 · 今日菜品</p><h2 id="catalog-title">今天到仓的，<br />都能准时到后厨。</h2></div>
+          <div><p>以下为演示价格，实际报价以当日等级、规格和采购量为准。所有批次均可提供产地与检测信息。</p><button class="text-button" type="button" data-open-quote>批量询价 <span>↗</span></button></div>
+        </div>
+        <div class="filters" role="group" aria-label="筛选蔬菜品类">
+          <button class="active" type="button" data-filter="all" aria-pressed="true">全部</button>
+          <button type="button" data-filter="leaf" aria-pressed="false">叶菜</button>
+          <button type="button" data-filter="root" aria-pressed="false">根茎</button>
+          <button type="button" data-filter="fruit" aria-pressed="false">茄果</button>
+          <button type="button" data-filter="mushroom" aria-pressed="false">菌菇</button>
+        </div>
+        <div class="product-grid">
+          <article class="product-card reveal" data-category="leaf">
+            <div class="product-art bokchoy"><span></span><i></i></div><span class="trace">可溯源</span>
+            <p>云南昆明 · 当日到仓</p><h3>精品小青菜</h3><small>5kg / 周转筐 · 15–20cm</small><div><b>¥4.8 / 斤</b><button type="button" data-add data-name="精品小青菜">加入询价 ＋</button></div>
+          </article>
+          <article class="product-card reveal" data-category="leaf">
+            <div class="product-art lettuce"><span></span><i></i></div><span class="trace">可溯源</span>
+            <p>河北张北 · 冷凉产区</p><h3>奶油生菜</h3><small>4kg / 箱 · 净菜可选</small><div><b>¥5.6 / 斤</b><button type="button" data-add data-name="奶油生菜">加入询价 ＋</button></div>
+          </article>
+          <article class="product-card reveal" data-category="fruit">
+            <div class="product-art tomato"><span></span><i></i></div><span class="trace">当日鲜采</span>
+            <p>山东寿光 · 一级果</p><h3>水果番茄</h3><small>5kg / 箱 · 20–25mm</small><div><b>¥7.2 / 斤</b><button type="button" data-add data-name="水果番茄">加入询价 ＋</button></div>
+          </article>
+          <article class="product-card reveal" data-category="fruit">
+            <div class="product-art pepper"><span></span><i></i></div><span class="trace">稳定供应</span>
+            <p>山东寿光 · 脆嫩型</p><h3>大果青椒</h3><small>10kg / 筐 · 规格均匀</small><div><b>¥4.2 / 斤</b><button type="button" data-add data-name="大果青椒">加入询价 ＋</button></div>
+          </article>
+          <article class="product-card reveal" data-category="mushroom">
+            <div class="product-art mushroom"><span></span><i></i></div><span class="trace">基地直发</span>
+            <p>浙江庆元 · 菌菇基地</p><h3>鲜香菇</h3><small>3kg / 箱 · 4–6cm</small><div><b>¥9.8 / 斤</b><button type="button" data-add data-name="鲜香菇">加入询价 ＋</button></div>
+          </article>
+          <article class="product-card reveal" data-category="root">
+            <div class="product-art carrot"><span></span><i></i></div><span class="trace">稳定供应</span>
+            <p>山东潍坊 · 清洗装</p><h3>精品胡萝卜</h3><small>10kg / 袋 · 规格均匀</small><div><b>¥2.6 / 斤</b><button type="button" data-add data-name="精品胡萝卜">加入询价 ＋</button></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="supply" id="supply" aria-labelledby="supply-title">
+        <div class="supply-copy reveal">
+          <p class="eyebrow">02 · 从产地到后厨</p>
+          <h2 id="supply-title">看得见的鲜，<br /><em>经得起每一程。</em></h2>
+          <p>我们把每个关键节点写进交付标准：采收时间、预冷温度、分拣等级和配送批次，都有记录可查。</p>
+          <button class="button lime" type="button" data-open-quote>获取供应方案 <span>→</span></button>
+        </div>
+        <div class="supply-steps">
+          <article class="reveal"><span>01</span><div><h3>产地直采</h3><p>合作基地按计划采收，减少多层中转。</p></div><b>0–6h</b></article>
+          <article class="reveal"><span>02</span><div><h3>预冷入仓</h3><p>叶菜、菌菇和茄果分类控温，锁住新鲜。</p></div><b>6–24h</b></article>
+          <article class="reveal"><span>03</span><div><h3>标准分拣</h3><p>按规格、等级和客户用途完成复检与装筐。</p></div><b>当日</b></article>
+          <article class="reveal"><span>04</span><div><h3>冷链交付</h3><p>固定线路与到店时段，让后厨排班更确定。</p></div><b>次日</b></article>
+        </div>
+      </section>
+
+      <section class="quality" aria-labelledby="quality-title">
+        <div class="quality-seal" aria-hidden="true"><span>绿</span><i></i><small>批次可查</small></div>
+        <div class="quality-copy reveal"><p class="eyebrow dark">03 · 品控承诺</p><h2 id="quality-title">不只送到，<br />还要交得明白。</h2><p>每批货物都对应入仓日期、产区、等级和配送线路。出现规格偏差，我们先处理问题，再复盘环节。</p><ul><li><span>✓</span> 农残检测信息可提供</li><li><span>✓</span> 缺货替代方案先确认</li><li><span>✓</span> 规格异常 2 小时内响应</li></ul></div>
+      </section>
+
+      <section class="coverage" id="coverage" aria-labelledby="coverage-title">
+        <div class="coverage-map" aria-hidden="true"><span class="sh">上海</span><span class="sz">苏州</span><span class="hz">杭州</span><span class="wx">无锡</span><span class="jx">嘉兴</span><i></i></div>
+        <div class="coverage-copy reveal"><p class="eyebrow">04 · 配送区域</p><h2 id="coverage-title">清晨到店，<br /><em>后厨不等菜。</em></h2><p>目前覆盖上海、苏州、杭州、嘉兴和无锡主要城区。选择城市，查看演示配送安排。</p><form data-coverage-form><label for="city">选择配送城市</label><div><select id="city" required><option value="">请选择</option><option value="上海">上海</option><option value="苏州">苏州</option><option value="杭州">杭州</option><option value="嘉兴">嘉兴</option><option value="无锡">无锡</option></select><button type="submit">查询配送</button></div></form><p class="coverage-result" data-coverage-result aria-live="polite"></p></div>
+      </section>
+
+      <section class="cooperate" id="cooperate" aria-labelledby="cooperate-title">
+        <div class="reveal"><p class="eyebrow">05 · 开始合作</p><h2 id="cooperate-title">告诉我们你的后厨，<br /><em>我们安排一条鲜路。</em></h2></div>
+        <button class="button lime" type="button" data-open-quote>提交采购需求 <span>→</span></button>
+      </section>
+    </main>
+
+    <footer>
+      <a class="logo footer-logo press" href="#top"><span class="logo-mark"><i></i></span><span><b>青禾鲜供</b><small>鲜蔬供应 · 长三角</small></span></a>
+      <div><a href="#catalog">今日菜品</a><a href="#supply">供应链</a><a href="#coverage">配送区域</a><a href="#cooperate">合作流程</a></div>
+      <div><p>上海市松江区新鲜路 88 号 · 400-808-6628</p><p>© 2026 青禾鲜供 · 演示品牌与内容</p></div>
+    </footer>
+
+    <aside class="quote-drawer" data-drawer aria-hidden="true" aria-labelledby="quote-title">
+      <div class="drawer-head"><div><span>企业采购</span><h2 id="quote-title">我的询价单</h2></div><button class="close press" type="button" data-close-quote aria-label="关闭询价单">×</button></div>
+      <div class="request-items" data-items><p class="empty">从今日菜品中加入商品，或直接填写采购需求。</p></div>
+      <form data-quote-form>
+        <label>企业 / 门店名称<input required placeholder="例如：青禾餐饮管理有限公司" /></label>
+        <div class="form-row"><label>联系人<input required autocomplete="name" placeholder="王经理" /></label><label>手机号码<input required inputmode="tel" placeholder="138 0000 0000" /></label></div>
+        <label>采购需求<textarea rows="4" placeholder="品类、日用量、送货地址、期望到店时间……"></textarea></label>
+        <label class="consent"><input type="checkbox" required /><span>我同意用于本次采购联系。</span></label>
+        <button class="button forest" type="submit">提交询价 <span>→</span></button>
+      </form>
+    </aside>
+    <div class="scrim" data-scrim></div>
+    <div class="toast" data-toast role="status" aria-live="polite">已加入询价单</div>
+  </body>
+</html>
