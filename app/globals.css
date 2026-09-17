@@ -1228,19 +1228,23 @@
    🩸 `var(--没定义的变量, fallback)` 不会报错，只会静默用 fallback —— 
       语言菜单那次的黑底黑字(1.06:1)就是这么来的。 */
 
-/* 陈列区不是正文。父列 .prose-page 是 760px 的**阅读宽度**，标题和引子该留在
-   那里；但这一排是作品陈列，关在阅读栏里等于桌面端再宽也只用 760。
-   margin-left:50% + translateX(-50%) 让它挣脱父列，auto-fit 自己决定放得下
-   几列 —— 放不下两列时自然回落成一列，不需要断点。
+/* 陈列区不是正文：页头留在 680 的阅读宽度，这一排按容器 1240 铺开，
+   auto-fit 自己决定放得下几列 —— 放不下两列时自然回落成一列，不需要断点。
    🩸 520px 这个下限是**量出来的**：14 个 demo 里写死宽度最大的是
-      aurora-drift 的 460px，低于这个值样板才会开始挤。
-   🩸 用 calc(100vw - 48px) 而不是 100%：100vw 含滚动条，减 48 之后仍比
-      内容区窄，所以不会在有滚动条的桌面端撑出横向滚动。 */
+      aurora-drift 的 460px，低于这个值样板才会开始挤。 */
+/* 09-18 用户圈图：标题/引子缩在 760 阅读栏里、卡片却铺到 1240，两者左边线对不上，
+   页头看着像「没适配网页版」。改法：整页容器放宽到 1240（+两侧 24 padding），
+   页头文字自己限宽 680，陈列区不再用 margin-left:50% + translate 那套挣脱术。
+   /templates 与之同理（见 .tpl-page）。 */
+.prose-page.lab-page { max-width: 1288px; }
+.lab-page > .eyebrow-link,
+.lab-page > h1,
+.lab-page > .prose-intro,
+.lab-page > .notes-lang-hint { max-width: 680px; }
 .cat-list {
   list-style: none; padding: 0;
-  width: min(1240px, calc(100vw - 48px));
-  margin: 34px 0 0 50%;
-  transform: translateX(-50%);
+  width: 100%;
+  margin: 34px 0 0;
   display: grid;
   /* 🩸 列数必须按 1fr 算、上限加在卡片上，不能写成 minmax(520px, 640px)：
         auto-fit 是拿**上限**算能放几列的，640×2+16=1296 > 1240，
@@ -1634,9 +1638,9 @@
 }
 
 /* ── Templates：网页设计模版 ─────────────────────────────
-   总览与详情都走 .prose-page(760) 的阅读栏；卡片网格和取景框跟 /lab 的 .cat-list
-   一样用 margin-left:50% + translateX(-50%) 挣脱到 1080 —— 一个网站的桌面布局
-   在 760 里看是平板视图，不是它该有的样子。配色只用 :root 里已有的 token。 */
+   容器 1080（.tpl-page），页头与正文限宽 680、网格与取景框满 1080，同一条左边线
+   （跟 /lab 总览一个做法）—— 一个网站的桌面布局在 760 里看是平板视图，
+   不是它该有的样子。配色只用 :root 里已有的 token。 */
 .tpl-groupnav {
   display: flex; flex-wrap: wrap; gap: 8px;
   margin-top: 26px;
@@ -1666,9 +1670,8 @@
    拉成整行宽的大扁框，跟隔壁三张小卡对不上。 */
 .tpl-grid {
   list-style: none; padding: 0;
-  width: min(1080px, calc(100vw - 48px));
-  margin: 22px 0 0 50%;
-  transform: translateX(-50%);
+  width: 100%;
+  margin: 22px 0 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
   gap: 16px;
@@ -1701,16 +1704,15 @@
   color: var(--ink-2); font-variant-numeric: tabular-nums;
 }
 
+/* 页头 / 正文限宽 680，网格与取景框满 1080 —— 同一条左边线 */
+.prose-page.tpl-page { max-width: 1128px; }
+.tpl-page > :not(.tpl-grid):not(.tpl-stage):not(.tpl-group) { max-width: 680px; }
 .prose-page .tpl-note { margin-top: 40px; font-size: 13.5px; color: var(--ink-2); }
 .prose-page .tpl-cta { margin-top: 8px; font-size: 16px; color: var(--ink); }
 .tpl-tail-links { margin-top: 18px; }
 
 /* ── 详情页：取景框 ── */
-.tpl-stage {
-  width: min(1080px, calc(100vw - 48px));
-  margin: 30px 0 0 50%;
-  transform: translateX(-50%);
-}
+.tpl-stage { width: 100%; margin: 30px 0 0; }
 .tpl-tabs {
   /* 一套最多 5 种设计；auto-fill 让 4 种的那套也铺满一行 */
   display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;
