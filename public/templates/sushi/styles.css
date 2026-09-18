@@ -67,13 +67,14 @@ section { padding: clamp(64px, 9vw, 120px) clamp(18px, 4vw, 60px); }
 [data-pin] canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
 /* ── Hero: frame sequence ──
-   Ten real plates stacked in the same spot; only the current one is visible.
-   The photos are studio shots on white — clipping to the plate's circle is
-   what lets them sit on the dark counter instead of arriving as white cards. */
-.hero { height: 460vh; background: radial-gradient(70% 60% at 70% 45%, #2a211c, var(--nero) 70%); }
+   Ten photographs of the courses stacked in the same place; only the current
+   one is visible. They were shot in the dining room at night, so they carry
+   their own dark ground and can run full-bleed on the right — a soft fade on
+   the left is all that keeps the copy legible. */
+.hero { height: 460vh; }
 .seq { position: absolute; inset: 0; }
-.seq::before { content: ""; position: absolute; left: 68%; top: 56%; width: min(46vw, 560px); aspect-ratio: 1; transform: translate(-50%, -46%); border-radius: 50%; background: radial-gradient(circle, rgba(212, 162, 76, .16), transparent 68%); filter: blur(30px); }
-.seq img { position: absolute; left: 68%; top: 56%; width: min(40vw, 500px); aspect-ratio: 1; object-fit: cover; transform: translate(-50%, -50%) scale(var(--s, 1)); border-radius: 50%; clip-path: circle(48% at 50% 50%); opacity: var(--o, 0); box-shadow: 0 40px 60px -20px rgba(0, 0, 0, .7); transition: opacity 220ms linear, transform 320ms var(--ease-soft); }
+.seq img { position: absolute; top: 0; right: 0; bottom: 0; width: 62%; height: 100%; object-fit: cover; object-position: 60% 50%; opacity: var(--o, 0); transform: scale(var(--s, 1)); transform-origin: 70% 50%; transition: opacity 260ms linear, transform 360ms var(--ease-soft); -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 34%, #000 100%); mask-image: linear-gradient(90deg, transparent 0%, #000 34%, #000 100%); }
+.seq::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14, 12, 11, .55), transparent 22%, transparent 78%, rgba(14, 12, 11, .7)); pointer-events: none; }
 .readout em { font-style: normal; color: var(--carta); }
 .hud { position: absolute; inset: 0; pointer-events: none; padding: 110px clamp(18px, 4vw, 60px) 60px; display: grid; align-content: center; justify-items: start; }
 .hud > .eyebrow, .hud > h1, .hud > .hero-actions { max-width: 560px; }
@@ -144,8 +145,8 @@ footer div a { margin-right: 18px; text-decoration: none; }
   .modal .row { grid-template-columns: 1fr; }
 }
 @media (max-width: 980px) {
-  .seq img, .seq::before { left: 50%; top: 68%; width: min(70vw, 340px); }
-  .hud { align-content: start; padding-top: 100px; }
+  .seq img { width: 100%; object-position: 50% 50%; opacity: calc(var(--o, 0) * .55); -webkit-mask-image: none; mask-image: none; }
+  .hud { align-content: end; padding-bottom: 90px; }
 }
 @media (max-width: 560px) {
   .hud h1 { font-size: 42px; }

@@ -28,18 +28,19 @@ const sizeCanvas = (cv, host) => { const DPR = Math.min(devicePixelRatio || 1, 2
 
 /* ── Hero: ten real plates, and the scroll picks the one on the counter ──
    The same maths as a rendered frame sequence (index = round(p × (N−1)));
-   the frames just happen to be photographs of the courses. */
+   the frames are the restaurant's own photographs, shot in the room at
+   night — the dark bokeh is what lets them sit full-bleed on this page. */
 {
   const COURSES = [
-    ['sashimi-misto', 'Sashimi misto'], ['tartare-tonno', 'Tartare di tonno'], ['gunkan-ikura', 'Gunkan salmone e ikura'],
-    ['nigiri-salmone', 'Nigiri di salmone'], ['nigiri-tonno', 'Nigiri di tonno'], ['nigiri-gambero-rosso', 'Nigiri di gambero rosso'],
-    ['nigiri-branzino', 'Nigiri di branzino'], ['nigiri-anguilla', 'Nigiri di anguilla'], ['miso', 'Zuppa di miso'], ['dorayaki', 'Dorayaki'],
+    ['hd-sashimi-piatto', 'Sashimi del giorno'], ['hd-sashimi-vetro', 'Ricciola, tonno e branzino'], ['hd-tartare-ardesia', 'Tartare in tre modi'],
+    ['hd-tartare-coppe', 'Tartare di salmone e mango'], ['hd-gunkan-ikura', 'Gunkan salmone e ikura'], ['hd-nigiri-salmone', 'Nigiri di salmone'],
+    ['hd-nigiri-gambero', 'Nigiri di gambero'], ['hd-nigiri-salmone-2', 'Nigiri di salmone scottato'], ['hd-uramaki', 'Uramaki salmone e avocado'], ['hd-tempura', 'Tempura di gamberi'],
   ];
   const N = COURSES.length;
   const sec = $('[data-seq]'), stage = $('[data-seq-stage]', sec);
   const fr = $('[data-frame]'), fname = $('[data-frame-name]'), rail = $('[data-rail]');
   $('[data-frames]').textContent = N;
-  const imgs = COURSES.map(([file, name], i) => { const im = document.createElement('img'); im.src = `./assets/${file}.webp`; im.alt = ''; im.decoding = 'async'; if (i > 1) im.loading = 'lazy'; stage.appendChild(im); return im; });
+  const imgs = COURSES.map(([file, name], i) => { const im = document.createElement('img'); im.src = `./assets/${file}.jpg`; im.alt = ''; im.decoding = 'async'; if (i > 1) im.loading = 'lazy'; stage.appendChild(im); return im; });
   let drawn = -1;
   const update = () => {
     const p = reduce ? 0 : progressOf(sec);
