@@ -5,6 +5,7 @@ import { work } from "@/data/work";
 import { notes } from "@/data/notes";
 import { activeCategories, effectsIn } from "@/data/effects";
 import { TEMPLATES_LANGS, templates } from "@/data/templates";
+import { SERVIZI_LANGS } from "@/data/servizi";
 import { locales, type Locale } from "@/lib/i18n";
 
 const BASE = "https://mindstudioapps.com";
@@ -90,6 +91,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     });
   }
+
+  // —— 报价页：原文意大利语，en / zh 有译文（data/servizi.ts）——
+  add(SERVIZI_LANGS, (l) => `/${l}/servizi`, { changeFrequency: "monthly", priority: 0.6 });
 
   return entries;
 }
