@@ -1,0 +1,88 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Score gauge</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif; background: #0b0b0d; color: #f2f2f2; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .win { width: min(560px, calc(100% - 32px)); border-radius: 16px; background: #141416; border: 1px solid #ffffff14; box-shadow: 0 30px 60px -30px #000; }
+  .bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #ffffff10; font-size: 11px; }
+  .bar b { font-weight: 600; } .bar span { color: #8a8a90; }
+  .dots { margin-left: auto; display: flex; gap: 5px; } .dots i { width: 6px; height: 6px; border-radius: 50%; }
+  .panel { margin: 12px; padding: 14px 16px; border-radius: 10px; background: #0e0e10; background-image: linear-gradient(#ffffff07 1px, transparent 1px), linear-gradient(90deg, #ffffff07 1px, transparent 1px); background-size: 24px 24px; }
+  .label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #6f6f76; }
+
+  .stage { position: relative; width: 280px; max-width: 100%; margin: 4px auto 0; }
+  svg { width: 100%; display: block; }
+  .seg { fill: none; stroke-width: 22; }
+  .tick { font-size: 8px; letter-spacing: .16em; text-transform: uppercase; fill: #8a8a90; text-anchor: middle; }
+  .tick.hot { fill: #e8564a; }
+  /* The needle is a group rotated about the pivot; the number and the verdict
+     under it are written by the same clock so they cannot disagree. */
+  #needle { transform-origin: 150px 140px; }
+  .num { text-anchor: middle; fill: #fff; font-size: 30px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .verdict { text-anchor: middle; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; font-weight: 700; }
+  .foot { display: flex; justify-content: space-between; margin-top: 2px; }
+  .replay { font: inherit; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: #8a8a90; background: none; border: 1px solid #ffffff22; border-radius: 99px; padding: 4px 9px; cursor: pointer; }
+</style>
+<div class="win">
+  <div class="bar"><b>Insights</b><span>Focus</span><div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div></div>
+  <div class="panel">
+    <div class="label">Score gauge</div>
+    <div class="stage">
+      <svg viewBox="0 0 300 175" aria-label="Focus score gauge">
+        <!-- three bands: low 0–35 (grey), normal 35–70 (red), high 70–100 (grey);
+             the gaps between them are real gaps, not a stroke trick -->
+        <path class="seg" id="s0" stroke="#5c5c62"/>
+        <path class="seg" id="s1" stroke="#e8564a"/>
+        <path class="seg" id="s2" stroke="#8a8a90"/>
+        <text class="tick" x="40" y="162">Low</text>
+        <text class="tick hot" x="150" y="11">Normal</text>
+        <text class="tick" x="260" y="162">High</text>
+        <g id="needle">
+          <line x1="150" y1="140" x2="150" y2="48" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="150" cy="140" r="7" fill="#fff"/><circle cx="150" cy="140" r="3" fill="#0e0e10"/>
+        </g>
+        <text class="num" x="150" y="168" id="num">0</text>
+      </svg>
+    </div>
+    <div class="foot"><span class="label">Focus score</span><span class="verdict" id="verdict" style="color:#8a8a90">Low</span><button class="replay" id="replay" type="button">Replay</button></div>
+  </div>
+</div>
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const CX = 150, CY = 140, R = 110, GAP = 2.5;   // degrees of gap between bands
+  const BANDS = [[0, 35, 'Low', '#8a8a90'], [35, 70, 'Normal', '#e8564a'], [70, 100, 'High', '#8a8a90']];
+  const ang = (v) => Math.PI * (1 - v / 100);       // 0 → 180° (left), 100 → 0° (right)
+  const pt = (a) => [CX + R * Math.cos(a), CY - R * Math.sin(a)];
+  const arc = (from, to) => { const [x1, y1] = pt(ang(from)), [x2, y2] = pt(ang(to)); return `M${x1} ${y1} A${R} ${R} 0 0 1 ${x2} ${y2}`; };
+  BANDS.forEach(([a, b], i) => document.getElementById('s' + i).setAttribute('d', arc(a + (i ? GAP : 0), b - (i < 2 ? GAP : 0))));
+
+  const needle = document.getElementById('needle'), num = document.getElementById('num'), verdict = document.getElementById('verdict');
+  const VALUE = 64;
+  const band = (v) => BANDS.find(([a, b]) => v >= a && v <= b);
+  const show = (v) => {
+    needle.style.transform = `rotate(${-90 + v * 1.8}deg)`;     // -90° = left end, +90° = right end
+    num.textContent = Math.round(v);
+    const [, , name, col] = band(Math.max(0, Math.min(100, v)));
+    verdict.textContent = name; verdict.style.color = col;
+  };
+  // A sweep with a small overshoot: it passes the target by ~4 points and
+  // settles back. One damped sine on top of an ease-out gives that in one
+  // formula — no spring library, no keyframes.
+  const sweep = () => {
+    if (reduce) return show(VALUE);
+    const DUR = 1500, t0 = performance.now();
+    const tick = (now) => {
+      const t = Math.min(1, (now - t0) / DUR);
+      const e = 1 - Math.pow(1 - t, 3);
+      const over = Math.sin(t * Math.PI * 2.2) * Math.pow(1 - t, 2.2) * 9;   // ≈ +4 at the peak
+      show(VALUE * e + over);
+      if (t < 1) requestAnimationFrame(tick); else show(VALUE);
+    };
+    requestAnimationFrame(tick);
+  };
+  sweep();
+  document.getElementById('replay').addEventListener('click', () => { show(0); sweep(); });
+</script>

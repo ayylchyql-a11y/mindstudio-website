@@ -1,0 +1,72 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bubble chart nudge</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif; background: #0b0b0d; color: #f2f2f2; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .win { width: min(560px, calc(100% - 32px)); border-radius: 16px; background: #141416; border: 1px solid #ffffff14; box-shadow: 0 30px 60px -30px #000; }
+  .bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #ffffff10; font-size: 11px; }
+  .bar b { font-weight: 600; } .bar span { color: #8a8a90; }
+  .dots { margin-left: auto; display: flex; gap: 5px; } .dots i { width: 6px; height: 6px; border-radius: 50%; }
+  .panel { margin: 12px; padding: 14px 16px; border-radius: 10px; background: #0e0e10; background-image: linear-gradient(#ffffff07 1px, transparent 1px), linear-gradient(90deg, #ffffff07 1px, transparent 1px); background-size: 24px 24px; }
+  .label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #6f6f76; }
+
+  .field { position: relative; height: 210px; margin-top: 6px; }
+  /* Every bubble is placed by its centre (left/top) and sized by its value
+     (area ∝ minutes, so radius ∝ √minutes). The nudge is a translate; the
+     grow is a scale; both are transitions on the same element. */
+  .bub { position: absolute; left: var(--x); top: var(--y); width: var(--d); height: var(--d); border-radius: 50%; background: var(--c); color: #111; display: grid; place-content: center; text-align: center; cursor: pointer; user-select: none;
+    transform: translate(-50%, -50%) translate(var(--dx, 0px), var(--dy, 0px)) scale(var(--s, 1));
+    transition: transform 520ms cubic-bezier(.22,.61,.36,1), filter 220ms;
+    animation: pop 600ms cubic-bezier(.34,1.4,.64,1) both; animation-delay: var(--delay); }
+  .bub b { font-size: var(--f, 12px); font-weight: 700; letter-spacing: -.01em; }
+  .bub small { display: block; font-size: 9px; font-weight: 600; letter-spacing: .06em; opacity: 0; max-height: 0; transition: opacity 200ms, max-height 200ms; }
+  .bub.on small { opacity: .8; max-height: 14px; }
+  .field.pick .bub:not(.on) { filter: brightness(.7); }
+  @keyframes pop { from { transform: translate(-50%, -50%) scale(0); } }
+  @media (prefers-reduced-motion: reduce) { .bub { animation: none; transition: none; } }
+</style>
+<div class="win">
+  <div class="bar"><b>Insights</b><span>Workouts</span><div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div></div>
+  <div class="panel">
+    <div class="label">Bubble chart</div>
+    <div class="field" id="field"></div>
+  </div>
+</div>
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // name, minutes, colour, centre x/y in % of the field
+  const ITEMS = [['Yoga', 64, '#a8a06e', 50, 50], ['Walk', 180, '#9a9be0', 22, 50], ['Run', 38, '#b5c4b0', 78, 30], ['Swim', 20, '#f0efe9', 40, 16], ['Bike', 26, '#8a8a90', 36, 84], ['Gym', 15, '#f0efe9', 82, 78]];
+  const field = document.getElementById('field');
+  const K = 7;                                                // px of diameter per √minute
+  const bubs = ITEMS.map(([name, min, c, x, y], i) => {
+    const b = document.createElement('div'); b.className = 'bub';
+    b.style.cssText = `--x:${x}%;--y:${y}%;--d:${Math.sqrt(min) * K}px;--c:${c};--delay:${i * 60}ms;--f:${min < 30 ? 9 : 12}px`;
+    b.innerHTML = `<b>${name}</b><small>${min} min</small>`;
+    b.addEventListener('click', () => pick(i)); field.appendChild(b); return b;
+  });
+  let cur = -1;
+  const GROW = 1.35, PAD = 10;
+  function pick(i) { cur = cur === i ? -1 : i; apply(); }
+  function apply() {
+    field.classList.toggle('pick', cur >= 0);
+    const W = field.clientWidth, H = field.clientHeight;
+    bubs.forEach((b, k) => {
+      b.classList.toggle('on', k === cur);
+      b.style.setProperty('--s', k === cur ? GROW : 1);
+      if (cur < 0 || k === cur) { b.style.setProperty('--dx', '0px'); b.style.setProperty('--dy', '0px'); return; }
+      // Push each neighbour straight away from the grown bubble by however
+      // much the grown radius now overlaps it. Bubbles already clear of it
+      // do not move — the nudge is local, not a re-layout.
+      const p = ITEMS[cur], q = ITEMS[k];
+      const dx = (q[3] - p[3]) / 100 * W, dy = (q[4] - p[4]) / 100 * H, dist = Math.hypot(dx, dy) || 1;
+      const rp = Math.sqrt(p[1]) * K / 2 * GROW, rq = Math.sqrt(q[1]) * K / 2;
+      const push = Math.max(0, rp + rq + PAD - dist);
+      b.style.setProperty('--dx', (dx / dist * push) + 'px'); b.style.setProperty('--dy', (dy / dist * push) + 'px');
+    });
+  }
+  addEventListener('resize', apply);
+  setTimeout(() => pick(0), reduce ? 0 : 900);
+</script>

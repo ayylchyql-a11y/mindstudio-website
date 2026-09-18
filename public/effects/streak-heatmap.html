@@ -1,0 +1,99 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Streak heatmap</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif; background: #0b0b0d; color: #f2f2f2; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .win { width: min(560px, calc(100% - 32px)); border-radius: 16px; background: #141416; border: 1px solid #ffffff14; box-shadow: 0 30px 60px -30px #000; }
+  .bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #ffffff10; font-size: 11px; }
+  .bar b { font-weight: 600; } .bar span { color: #8a8a90; }
+  .dots { margin-left: auto; display: flex; gap: 5px; } .dots i { width: 6px; height: 6px; border-radius: 50%; }
+  .panel { margin: 12px; padding: 14px 16px; border-radius: 10px; background: #0e0e10; background-image: linear-gradient(#ffffff07 1px, transparent 1px), linear-gradient(90deg, #ffffff07 1px, transparent 1px); background-size: 24px 24px; }
+  .label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #6f6f76; }
+
+  .months { display: grid; grid-template-columns: repeat(18, 1fr); gap: 4px; margin: 8px 0 4px; width: min(100%, 340px); font-size: 8px; letter-spacing: .14em; color: #6f6f76; text-transform: uppercase; }
+  .grid { position: relative; display: grid; width: min(100%, 340px); grid-template-columns: repeat(18, 1fr); grid-auto-flow: column; grid-template-rows: repeat(7, 1fr); gap: 4px; }
+  .cell {
+    aspect-ratio: 1; border-radius: 3px; cursor: pointer; background: var(--c);
+    /* cells scale in column by column at load — a wall of 126 squares appearing
+       at once reads as a texture, appearing left→right reads as a year passing */
+    transform: scale(0); animation: pop 360ms cubic-bezier(.22,.61,.36,1) forwards; animation-delay: calc(var(--col) * 28ms);
+    transition: box-shadow 160ms, transform 160ms;
+  }
+  .cell:hover { transform: scale(1.18); }
+  .cell.on { box-shadow: 0 0 0 2px #fff; transform: scale(1.18); }
+  @keyframes pop { to { transform: scale(1); } }
+  /* a missed day breaks the streak: a teal tick under the column says so
+     before you have counted anything */
+  .miss { position: absolute; bottom: -12px; width: 14px; height: 2px; border-radius: 2px; background: #6fc7b8; }
+  .miss::after { content: "missed"; position: absolute; top: 4px; left: 50%; transform: translateX(-50%); font-size: 7px; letter-spacing: .14em; text-transform: uppercase; color: #6fc7b8; }
+
+  .foot { display: flex; align-items: end; justify-content: space-between; margin-top: 22px; }
+  .legend { display: flex; align-items: center; gap: 4px; font-size: 8px; letter-spacing: .14em; color: #6f6f76; text-transform: uppercase; }
+  .legend i { width: 10px; height: 10px; border-radius: 2px; }
+  .streak { text-align: right; } .streak b { display: block; font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
+
+  /* The detail card pops out beside the clicked cell. It is positioned from the
+     cell's rect, flips to the left half when the cell sits in the right half. */
+  .pop { position: absolute; z-index: 2; width: 128px; padding: 9px 10px; border-radius: 8px; background: #16181a; border: 1px solid #6fc7b866; box-shadow: 0 16px 30px -16px #000; pointer-events: none; opacity: 0; transform: translateY(6px) scale(.96); transition: opacity 180ms, transform 220ms cubic-bezier(.22,.61,.36,1); }
+  .pop.show { opacity: 1; transform: none; }
+  .pop .d { font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #8a8a90; }
+  .pop .n { display: flex; align-items: baseline; gap: 6px; margin-top: 3px; } .pop .n b { font-size: 22px; font-weight: 700; color: #6fc7b8; } .pop .n span { font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: #cfcfd4; }
+  .pop .bars { display: flex; gap: 3px; margin-top: 6px; } .pop .bars i { height: 3px; flex: 1; border-radius: 2px; background: #6fc7b8; } .pop .bars i.off { background: #ffffff1c; }
+  @media (prefers-reduced-motion: reduce) { .cell { animation: none; transform: none; } .pop { transition: none; } }
+</style>
+<div class="win">
+  <div class="bar"><b>Insights</b><span>Habits</span><div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div></div>
+  <div class="panel">
+    <div class="label">Streak heatmap</div>
+    <div class="months"><span>Jun</span><span></span><span></span><span></span><span>Jul</span><span></span><span></span><span></span><span></span><span>Aug</span><span></span><span></span><span></span><span>Sep</span><span></span><span></span><span></span><span></span></div>
+    <div class="grid" id="grid"></div>
+    <div class="foot">
+      <div class="legend">Less <i style="background:#2a2a2e"></i><i style="background:#4a4a50"></i><i style="background:#8b8b83"></i><i style="background:#d8cfb9"></i><i style="background:#6fc7b8"></i> More</div>
+      <div class="streak"><span class="label">Streak</span><b>26 days</b></div>
+    </div>
+  </div>
+</div>
+<div class="pop" id="pop"><div class="d" id="pd">Sep 12</div><div class="n"><b id="pn">3</b><span>sessions</span></div><div class="bars" id="pb"></div></div>
+<script>
+  const COLORS = ['#2a2a2e', '#4a4a50', '#8b8b83', '#d8cfb9', '#6fc7b8'];
+  const grid = document.getElementById('grid'), pop = document.getElementById('pop');
+  const COLS = 18, ROWS = 7, MISSED = 12;          // column 12 has the break
+  // Deterministic pseudo-data: a seeded LCG so the wall looks the same on every
+  // load and the tick lands where the copy says it does.
+  let seed = 7; const rnd = () => (seed = (seed * 48271) % 2147483647) / 2147483647;
+  const start = new Date(2026, 5, 1);
+  const cells = [];
+  for (let c = 0; c < COLS; c++) for (let r = 0; r < ROWS; r++) {
+    const late = c >= 13;                          // the current streak is the last five columns
+    let v = late ? 3 + (rnd() > .5 ? 1 : 0) : Math.floor(rnd() * 4);
+    if (c === MISSED && r === 3) v = 0;
+    const d = document.createElement('div'); d.className = 'cell';
+    d.style.setProperty('--c', COLORS[v]); d.style.setProperty('--col', c);
+    const date = new Date(start); date.setDate(1 + c * 7 + r);
+    d.dataset.date = date.toLocaleDateString('en', { month: 'short', day: 'numeric' }); d.dataset.v = v;
+    d.addEventListener('click', () => open(d));
+    grid.appendChild(d); cells.push(d);
+  }
+  const miss = document.createElement('div'); miss.className = 'miss';
+  grid.appendChild(miss);
+  const placeMiss = () => { const c = cells[MISSED * ROWS]; miss.style.left = (c.offsetLeft + c.offsetWidth / 2 - 7) + 'px'; };
+  placeMiss(); addEventListener('resize', placeMiss);
+
+  let cur = null;
+  function open(cell) {
+    if (cur === cell) { cur.classList.remove('on'); cur = null; pop.classList.remove('show'); return; }
+    cur && cur.classList.remove('on'); cur = cell; cell.classList.add('on');
+    document.getElementById('pd').textContent = cell.dataset.date;
+    document.getElementById('pn').textContent = cell.dataset.v;
+    document.getElementById('pb').innerHTML = [0, 1, 2, 3].map((i) => `<i class="${i < +cell.dataset.v ? '' : 'off'}"></i>`).join('');
+    const r = cell.getBoundingClientRect();
+    const left = r.left + r.width / 2 < innerWidth / 2 ? r.right + 10 : r.left - 10 - 128;
+    pop.style.left = left + 'px'; pop.style.top = (r.top + r.height / 2 - 34) + 'px';
+    pop.classList.add('show');
+  }
+  // open the cell the copy points at, once the wall has finished appearing
+  setTimeout(() => open(cells[14 * ROWS + 4]), matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 900);
+</script>

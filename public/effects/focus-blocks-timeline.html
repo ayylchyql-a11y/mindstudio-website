@@ -1,0 +1,99 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Focus blocks timeline</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif; background: #0b0b0d; color: #f2f2f2; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .win { width: min(560px, calc(100% - 32px)); border-radius: 16px; background: #141416; border: 1px solid #ffffff14; box-shadow: 0 30px 60px -30px #000; }
+  .bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #ffffff10; font-size: 11px; }
+  .bar b { font-weight: 600; } .bar span { color: #8a8a90; }
+  .dots { margin-left: auto; display: flex; gap: 5px; } .dots i { width: 6px; height: 6px; border-radius: 50%; }
+  .panel { margin: 12px; padding: 14px 16px; border-radius: 10px; background: #0e0e10; background-image: linear-gradient(#ffffff07 1px, transparent 1px), linear-gradient(90deg, #ffffff07 1px, transparent 1px); background-size: 24px 24px; }
+  .label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #6f6f76; }
+
+  .head { display: flex; justify-content: space-between; align-items: center; height: 26px; }
+  .now { display: flex; align-items: center; gap: 8px; opacity: 0; transition: opacity 160ms; }
+  .now.show { opacity: 1; }
+  .now b { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+  .now .pill { padding: 3px 8px; border-radius: 99px; font-size: 8px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #111; background: var(--c); transition: background-color 200ms; }
+
+  .tl { position: relative; display: grid; grid-template-columns: 52px 1fr; margin-top: 8px; }
+  .rows { display: grid; grid-template-rows: repeat(3, 40px); }
+  .rows span { font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #6f6f76; display: flex; align-items: center; }
+  .lanes { position: relative; height: 120px; cursor: crosshair; }
+  /* Each block is placed by time: left = start / span, width = length / span;
+     the row is its level. Blocks are absolutely positioned so hover math is a
+     single division of x by width. */
+  .blk { position: absolute; height: 20px; border-radius: 4px; background: var(--c); transform-origin: left center; animation: grow 500ms cubic-bezier(.22,.61,.36,1) both; animation-delay: var(--d); transition: filter 160ms; }
+  .blk.dim { filter: brightness(.55); }
+  @keyframes grow { from { transform: scaleX(0); } }
+  /* the step between two consecutive blocks — a vertical hairline from the end
+     of one to the start of the next, so the day reads as one path */
+  .step { position: absolute; width: 1px; background: #ffffff33; }
+  .cursor { position: absolute; top: 0; bottom: 0; width: 1px; background: #fff; opacity: 0; pointer-events: none; }
+  .knob { position: absolute; width: 9px; height: 9px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 3px #0e0e10; transform: translate(-50%, -50%); opacity: 0; pointer-events: none; transition: top 160ms cubic-bezier(.22,.61,.36,1); }
+  .lanes.live .cursor, .lanes.live .knob { opacity: 1; }
+  .axis { display: grid; grid-template-columns: 52px 1fr; margin-top: 4px; }
+  .axis div { display: flex; justify-content: space-between; font-size: 8px; letter-spacing: .1em; color: #6f6f76; }
+  .sum { margin-top: 12px; text-align: center; font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #8a8a90; }
+  .sum b { color: #f2f2f2; }
+  @media (prefers-reduced-motion: reduce) { .blk { animation: none; } .knob, .now, .now .pill { transition: none; } }
+</style>
+<div class="win">
+  <div class="bar"><b>Insights</b><span>Focus</span><div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div></div>
+  <div class="panel">
+    <div class="head"><span class="label">Focus blocks</span><div class="now" id="now"><b id="time">16:20</b><span class="pill" id="phase">Normal</span></div></div>
+    <div class="tl">
+      <div class="rows"><span>Break</span><span>Normal</span><span>Deep</span></div>
+      <div class="lanes" id="lanes"><div class="cursor" id="cursor"></div><div class="knob" id="knob"></div></div>
+    </div>
+    <div class="axis"><span></span><div><span>09:00</span><span>11:00</span><span>13:00</span><span>15:00</span><span>17:00</span></div></div>
+    <div class="sum" id="sum"></div>
+  </div>
+</div>
+<script>
+  const LEVEL = { break: [0, '#9a9aa2'], normal: [1, '#b5c4b0'], deep: [2, '#c9d54a'] };
+  // [start, end] in minutes from 09:00; the day is one path through the levels
+  const DAY = [['normal', 0, 40], ['deep', 40, 100], ['break', 100, 115], ['normal', 115, 160], ['normal', 175, 215], ['deep', 215, 275], ['break', 275, 290], ['normal', 300, 360], ['break', 360, 375], ['normal', 380, 420], ['break', 420, 435], ['normal', 435, 480]];
+  const SPAN = 480, ROW = 40;
+  const lanes = document.getElementById('lanes'), cursor = document.getElementById('cursor'), knob = document.getElementById('knob');
+  const now = document.getElementById('now'), time = document.getElementById('time'), phase = document.getElementById('phase');
+  DAY.forEach(([lv, a, b], i) => {
+    const [row, c] = LEVEL[lv];
+    const el = document.createElement('div'); el.className = 'blk';
+    el.style.cssText = `left:${a / SPAN * 100}%;width:${(b - a) / SPAN * 100}%;top:${row * ROW + 10}px;--c:${c};--d:${i * 70}ms`;
+    lanes.appendChild(el);
+    const next = DAY[i + 1];
+    if (next && LEVEL[next[0]][0] !== row) {                    // draw the step to the next level
+      const r2 = LEVEL[next[0]][0], top = Math.min(row, r2) * ROW + 20, h = Math.abs(row - r2) * ROW;
+      const s = document.createElement('div'); s.className = 'step';
+      s.style.cssText = `left:${(b + next[1]) / 2 / SPAN * 100}%;top:${top}px;height:${h}px`;
+      lanes.appendChild(s);
+    }
+  });
+  const totals = {}; DAY.forEach(([lv, a, b]) => totals[lv] = (totals[lv] || 0) + b - a);
+  const fmt = (m) => `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}m`;
+  document.getElementById('sum').innerHTML = ['deep', 'normal', 'break'].map((k) => `${k} <b>${fmt(totals[k])}</b>`).join(' · ');
+
+  const blocks = [...lanes.querySelectorAll('.blk')];
+  function scrub(x) {
+    const m = Math.max(0, Math.min(SPAN, x / lanes.clientWidth * SPAN));
+    const i = DAY.findIndex(([, a, b]) => m >= a && m <= b);
+    const h = 9 + Math.floor(m / 60), mm = Math.round(m % 60);
+    time.textContent = `${String(h).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+    cursor.style.left = (m / SPAN * 100) + '%'; knob.style.left = cursor.style.left;
+    blocks.forEach((b, k) => b.classList.toggle('dim', i >= 0 && k !== i));
+    if (i >= 0) {
+      const [lv] = DAY[i], [row, c] = LEVEL[lv];
+      knob.style.top = (row * ROW + 20) + 'px';
+      phase.textContent = lv; phase.style.setProperty('--c', c);
+    } else phase.textContent = 'idle';
+    now.classList.add('show'); lanes.classList.add('live');
+  }
+  lanes.addEventListener('pointermove', (e) => scrub(e.clientX - lanes.getBoundingClientRect().left));
+  lanes.addEventListener('pointerleave', () => { now.classList.remove('show'); lanes.classList.remove('live'); blocks.forEach((b) => b.classList.remove('dim')); });
+  // land on 16:20 so the header is never empty at load
+  setTimeout(() => scrub(lanes.clientWidth * 440 / SPAN), 1000);
+</script>

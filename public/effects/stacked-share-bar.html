@@ -1,0 +1,66 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stacked share bar</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif; background: #0b0b0d; color: #f2f2f2; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .win { width: min(560px, calc(100% - 32px)); border-radius: 16px; background: #141416; border: 1px solid #ffffff14; box-shadow: 0 30px 60px -30px #000; }
+  .bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #ffffff10; font-size: 11px; }
+  .bar b { font-weight: 600; } .bar span { color: #8a8a90; }
+  .dots { margin-left: auto; display: flex; gap: 5px; } .dots i { width: 6px; height: 6px; border-radius: 50%; }
+  .panel { margin: 12px; padding: 14px 16px; border-radius: 10px; background: #0e0e10; background-image: linear-gradient(#ffffff07 1px, transparent 1px), linear-gradient(90deg, #ffffff07 1px, transparent 1px); background-size: 24px 24px; }
+  .label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #6f6f76; }
+
+  .kpi { margin-top: 8px; } .kpi b { display: block; font-size: 24px; font-weight: 700; letter-spacing: -.02em; }
+  .stack { position: relative; display: flex; gap: 3px; height: 44px; margin-top: 34px; }
+  /* Width is the share. Segments grow in one after another at load — the
+     sum reads as "a whole being divided" instead of four blocks appearing. */
+  .seg { position: relative; flex: 0 0 var(--w); border-radius: 7px; background: var(--c); cursor: pointer; transform-origin: left center; animation: grow 480ms cubic-bezier(.22,.61,.36,1) both; animation-delay: var(--d); transition: transform 260ms cubic-bezier(.22,.61,.36,1), filter 200ms; }
+  .seg:hover { filter: brightness(1.08); }
+  /* the picked segment is pulled out of the bar — up, not scaled — so the
+     bar stays the same length and nothing else moves */
+  .seg.on { transform: translateY(-8px); }
+  .stack.pick .seg:not(.on) { filter: brightness(.6); }
+  @keyframes grow { from { transform: scaleX(0); } }
+  .tip { position: absolute; bottom: calc(100% + 14px); transform: translateX(-50%); padding: 5px 9px; border-radius: 6px; background: #fff; color: #111; font-size: 10px; font-weight: 700; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 180ms, left 260ms cubic-bezier(.22,.61,.36,1); }
+  .tip::after { content: ""; position: absolute; top: 100%; left: 50%; width: 1px; height: 10px; background: #fff; }
+  .tip.show { opacity: 1; }
+  .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; margin-top: 22px; }
+  .legend div { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #cfcfd4; cursor: pointer; }
+  .legend i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+  .legend b { margin-left: auto; font-variant-numeric: tabular-nums; }
+  @media (prefers-reduced-motion: reduce) { .seg { animation: none; transition: none; } .tip { transition: none; } }
+</style>
+<div class="win">
+  <div class="bar"><b>Insights</b><span>Today</span><div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div></div>
+  <div class="panel">
+    <div class="label">Stacked share</div>
+    <div class="kpi"><span class="label">Today</span><b>9h 40m</b></div>
+    <div class="stack" id="stack"><div class="tip" id="tip"></div></div>
+    <div class="legend" id="legend"></div>
+  </div>
+</div>
+<script>
+  const PARTS = [['Focus', 38, '#e9c93a'], ['Meetings', 22, '#b5c4b0'], ['Learning', 16, '#9a9068'], ['Rest', 24, '#e0ddd2']];
+  const stack = document.getElementById('stack'), tip = document.getElementById('tip'), legend = document.getElementById('legend');
+  const segs = PARTS.map(([name, pct, c], i) => {
+    const s = document.createElement('div'); s.className = 'seg';
+    // the 3px gaps come out of the segments' own share so the bar stays 100 % wide
+    s.style.cssText = `--w:calc(${pct}% - ${3 * (PARTS.length - 1) / PARTS.length}px);--c:${c};--d:${i * 110}ms`;
+    s.addEventListener('click', () => pick(i)); stack.insertBefore(s, tip);
+    const l = document.createElement('div'); l.style.setProperty('--c', c); l.innerHTML = `<i></i>${name}<b>${pct}%</b>`; l.addEventListener('click', () => pick(i)); legend.appendChild(l);
+    return s;
+  });
+  let cur = -1;
+  function pick(i) {
+    cur = cur === i ? -1 : i;
+    segs.forEach((s, k) => s.classList.toggle('on', k === cur));
+    stack.classList.toggle('pick', cur >= 0);
+    if (cur < 0) return tip.classList.remove('show');
+    const s = segs[cur]; tip.textContent = `${PARTS[cur][0]} ${PARTS[cur][1]}%`;
+    tip.style.left = (s.offsetLeft + s.offsetWidth / 2) + 'px'; tip.classList.add('show');
+  }
+  setTimeout(() => pick(1), matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1000);
+</script>

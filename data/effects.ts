@@ -14,7 +14,7 @@ import type { Localized } from "@/lib/i18n";
  *    在这里再抄一份 = 两处真相，改了 demo 忘了改展示，页面上给的代码就是错的。
  */
 
-export type CategoryId = "web-effects" | "creative" | "mobile-ui";
+export type CategoryId = "web-effects" | "chart-widgets" | "creative" | "mobile-ui";
 
 export interface Category {
   id: CategoryId;
@@ -46,6 +46,23 @@ export const categories: Category[] = [
       "zh-tw": "把網頁介面的特效拆開重做一遍：它由什麼構成、精確到多少的數值、以及一句能把它複現出來的提示詞。捲動驅動的轉場、跟著指標走的材質、一個字一個字進場的標題。",
     },
     accent: "#2f6fff",
+  },
+  {
+    id: "chart-widgets",
+    title: {
+      en: "Interaction details · Chart widgets",
+      zh: "交互细节 · 图表控件",
+      "zh-tw": "互動細節 · 圖表控件",
+      ja: "インタラクション · チャート部品",
+      ko: "인터랙션 · 차트 위젯",
+      it: "Dettagli di interazione · Widget grafici",
+    },
+    intro: {
+      en: "The small chart controls inside an app, rebuilt one interaction at a time: rings that draw from zero, bars that morph instead of redrawing, a goal line you drag, slices that push out under the pointer. Each one runs live, with the numbers it was built from and a prompt that reproduces it.",
+      zh: "App 里那些小图表控件，一条交互一条交互地重做：从零画起的圆环、切换时变形而不重画的柱子、能拖的目标线、指针一到就弹出的扇区。每一条都在页面里真的跑着，附它赖以成立的数值和一句能复现它的提示词。",
+      "zh-tw": "App 裡那些小圖表控件，一條互動一條互動地重做：從零畫起的圓環、切換時變形而不重畫的柱子、能拖的目標線、指標一到就彈出的扇區。每一條都在頁面裡真的跑著，附它賴以成立的數值和一句能複現它的提示詞。",
+    },
+    accent: "#e8a33a",
   },
   {
     id: "creative",
@@ -1282,6 +1299,310 @@ export const effects: Effect[] = [
       "If the animation is disabled without also freezing a <code>background-position</code>, some engines leave the text fully transparent — an invisible headline is a far worse accessibility outcome than the motion was.",
       "Gradient text has no reliable contrast ratio. Keep it for display type that is decorative; never run body copy or anything a screen reader user needs to find visually through this.",
     ],
+  },
+  /* ── 交互细节 · 图表控件（2026-09-19，抖音 @叨叨AI 第 6 集「10 个图表交互控件」）──
+     十条各一个自包含 HTML，共用同一套「Insights 窗口 + 网格面板」外壳。
+     源视频是渲染稿；这里全部按视频里的说明重建，数值是量出来或按视频节奏定的。 */
+  {
+    slug: "activity-rings",
+    category: "chart-widgets",
+    date: "2026-09-19",
+    plays: "self",
+    title: { en: "Activity rings", zh: "活动圆环", "zh-tw": "活動圓環" },
+    gist: {
+      en: "Three concentric rings, one goal each. They draw from zero on load while the numbers count up in step, and the ring that beats its goal keeps going round in a darker tint instead of stopping at 100%.",
+      zh: "三个同心圆环，一圈一个目标。进场时从零画到当前值、右边的数字同步增长；超过目标的那一圈不在 100% 停下，而是用深一档的颜色再绕一段。",
+      "zh-tw": "三個同心圓環，一圈一個目標。進場時從零畫到當前值、右邊的數字同步增長；超過目標的那一圈不在 100% 停下，而是用深一檔的顏色再繞一段。",
+    },
+    height: 360,
+    accent: "#e8a33a",
+    anatomy: [
+      "Each ring is an SVG <code>&lt;circle&gt;</code> with <code>stroke-dasharray</code> = its circumference, so one dash unit is one full turn. Drawing is <code>stroke-dashoffset</code> going from the circumference down to <code>circumference × (1 − value)</code>. The group is rotated −90° so every ring starts at 12 o'clock.",
+      "One requestAnimationFrame clock drives everything: the three offsets, the three percentages and the centre total all read the same eased <code>t</code> (ease-out cubic, 1400ms). Numbers and arcs cannot drift apart because there is no second timer.",
+      "Over-goal is a <b>second circle</b> on the same radius, in a darker tint, drawn on top, whose dash length is <code>value − 1</code>. It only starts once the first lap reaches 100%, so the darker lap visibly begins where the bright one ends — the same moment the OVER GOAL pill fades in.",
+      "Round line caps make the leading edge read as a growing pill rather than a cut arc. The trade-off: at exactly 0% a round cap still paints a dot, so the value starts at 0 and the first frame is genuinely empty.",
+    ],
+    tokens: [
+      { label: "Draw-in", value: "1400ms · ease-out cubic" },
+      { label: "Ring radii / stroke", value: "70 · 54 · 38 / 13px, round caps" },
+      { label: "Over-goal tint", value: "#e8a33a → #a8701a" },
+      { label: "Pill", value: "opacity + translateX(−6px) · 300ms" },
+    ],
+    prompt:
+      "Build three concentric activity rings in vanilla HTML/CSS/JS on a dark card. SVG viewBox 0 0 170 170, radii 70/54/38, stroke-width 13, round line caps, group rotated -90deg so rings start at 12 o'clock. Track circles at #ffffff12 under each ring. Ring colours #e8a33a, #ffffff, #b5c4b0 with targets 1.24, 0.78, 0.58. Set stroke-dasharray to each circumference and animate stroke-dashoffset from the circumference to circumference*(1-min(value,1)) with a single requestAnimationFrame clock, 1400ms, ease-out cubic; in the same tick write the three percentages (Math.round(value*100)+'%') into a right-hand stat column and the centre total (620 kcal) into the middle of the SVG. For the ring that exceeds 1, add a second circle on the same radius in #a8701a drawn on top whose dashoffset covers max(0,value-1), and show an 'OVER GOAL' pill (fade + translateX -6px→0, 300ms) as soon as that extra lap is > 0. Under prefers-reduced-motion render the final state immediately.",
+    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 01 活动圆环", at: "0:03" },
+  },
+  {
+    slug: "streak-heatmap",
+    category: "chart-widgets",
+    date: "2026-09-19",
+    plays: "click",
+    title: { en: "Streak heatmap", zh: "打卡热力格", "zh-tw": "打卡熱力格" },
+    gist: {
+      en: "A year laid out as a wall of squares, five shades from nothing to a lot. The wall appears column by column, a missed day is ticked underneath so the break is visible without counting, and clicking any square pops that day's detail out beside it.",
+      zh: "一年铺成一面格子，五档深浅。格子按列先后出现，断掉的那天在下面打一个记号、不用数就看得见；点任何一格，那天的详情从旁边弹出来。",
+      "zh-tw": "一年鋪成一面格子，五檔深淺。格子按列先後出現，斷掉的那天在下面打一個記號、不用數就看得見；點任何一格，那天的詳情從旁邊彈出來。",
+    },
+    height: 360,
+    accent: "#6fc7b8",
+    anatomy: [
+      "The wall is a CSS grid with <code>grid-auto-flow: column</code> and 7 rows, so weeks are columns and days run down — the reading order people already know from contribution graphs. Cells are <code>aspect-ratio: 1</code>, capped to a 340px-wide grid so the widget keeps its height on wide cards.",
+      "Load: each cell scales from 0 with <code>animation-delay: var(--col) × 28ms</code>. Column-by-column rather than all at once is what makes it read as time passing; per-cell random delays read as noise.",
+      "The palette is five flat colours, not an opacity ramp: opacity ramps on a dark ground go muddy in the middle two steps. The top step is the accent (teal) so the current streak is a different <i>hue</i>, not just a lighter grey.",
+      "The MISSED tick is a 14×2 bar positioned under the broken column from the cell's <code>offsetLeft</code> at load and on resize — it is not a grid child, so it does not shift the wall.",
+      "Click: the detail card is positioned from the cell's <code>getBoundingClientRect()</code>, to the right if the cell is in the left half, to the left otherwise. It scales from .96 and rises 6px over 220ms; clicking the same cell again closes it.",
+    ],
+    tokens: [
+      { label: "Cell pop-in", value: "360ms · delay col×28ms" },
+      { label: "Palette", value: "#2a2a2e · #4a4a50 · #8b8b83 · #d8cfb9 · #6fc7b8" },
+      { label: "Detail card", value: "translateY(6px) scale(.96) → 0 · 220ms" },
+      { label: "Hover", value: "scale(1.18) · 160ms" },
+    ],
+    prompt:
+      "Build a streak heatmap in vanilla HTML/CSS/JS on a dark card. 18 columns × 7 rows as a CSS grid with grid-auto-flow: column, 4px gaps, cells aspect-ratio 1, grid width min(100%, 340px). Five flat level colours #2a2a2e, #4a4a50, #8b8b83, #d8cfb9, #6fc7b8; the last five columns use levels 3–4 (the current streak), one cell in column 12 is level 0 (the missed day). At load animate each cell from scale(0) to 1 over 360ms cubic-bezier(.22,.61,.36,1) with animation-delay = column index × 28ms. Under the missed column place a 14×2px teal tick with the word MISSED (7px, letter-spaced) positioned from that cell's offsetLeft. On cell click, show a 128px detail card (date, big session count in teal, four tiny bars) positioned beside the cell using getBoundingClientRect — right of it when the cell is in the left half of the viewport, left otherwise — animating opacity and translateY(6px) scale(.96) → none over 220ms; clicking the same cell closes it. Hover scales a cell to 1.18. Under prefers-reduced-motion skip the pop-in.",
+    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 02 打卡热力格", at: "0:09" },
+  },
+  {
+    slug: "score-gauge",
+    category: "chart-widgets",
+    date: "2026-09-19",
+    plays: "self",
+    title: { en: "Score gauge", zh: "仪表盘", "zh-tw": "儀表盤" },
+    gist: {
+      en: "One number, shown as a half-circle in three coloured bands. The needle sweeps in from the left, goes a little past the target and settles back; the number counts with it and the verdict under it takes the colour of whichever band the needle is in.",
+      zh: "只看一个数，用半圆和三段颜色表示。指针从左边扫进来，稍微过头一点再回稳；数字跟着指针走，下面的结论按指针落在哪一段变色。",
+      "zh-tw": "只看一個數，用半圓和三段顏色表示。指針從左邊掃進來，稍微過頭一點再回穩；數字跟著指針走，下面的結論按指針落在哪一段變色。",
+    },
+    height: 360,
+    accent: "#e8564a",
+    anatomy: [
+      "The three bands are three <code>&lt;path&gt;</code> arcs computed from a value→angle map (<code>0 → 180°</code>, <code>100 → 0°</code>) with a 2.5° gap trimmed off each shared edge. Real gaps, not a dashed stroke: a dash pattern cannot land on 35 and 70 exactly.",
+      "The needle is a group with <code>transform-origin</code> at the pivot; <code>rotate(−90° + value × 1.8°)</code> maps the same 0–100 scale. The number and the verdict are written in the same function as the rotation, so they are always describing the needle's actual angle.",
+      "The overshoot is one formula on top of the ease-out: <code>sin(t·2.2π) · (1−t)^2.2 · 9</code>. That peaks around +4 points just after the needle reaches the target and dies out by the end — a spring feel without a spring library. The last frame snaps to the exact value.",
+      "The verdict colour comes from <code>band(value)</code> evaluated every frame, so it flips from LOW to NORMAL mid-sweep at 35, and would flip to HIGH during a big overshoot — which is what you want: the label is telling the truth about where the needle is.",
+    ],
+    tokens: [
+      { label: "Sweep", value: "1500ms · ease-out cubic + damped sine" },
+      { label: "Overshoot", value: "≈ +4 points, 2.2 half-cycles" },
+      { label: "Bands", value: "0–35 #5c5c62 · 35–70 #e8564a · 70–100 #8a8a90 · gap 2.5°" },
+      { label: "Needle", value: "rotate(−90° + v × 1.8°)" },
+    ],
+    prompt:
+      "Build a semicircle score gauge in vanilla HTML/CSS/JS on a dark card. SVG viewBox 0 0 300 175, pivot at (150,140), radius 110, stroke-width 22. Draw three arc paths for bands 0–35 (#5c5c62), 35–70 (#e8564a), 70–100 (#8a8a90), mapping value v to angle π·(1−v/100) and trimming 2.5° from each shared edge so there are visible gaps. Labels LOW / NORMAL / HIGH in 8px letter-spaced caps, NORMAL in the red. A needle group (3px white line from the pivot to y=48 plus a 7px white pivot dot) with transform-origin 150px 140px rotated by -90deg + v*1.8deg. Animate v from 0 to 64 over 1500ms with ease-out cubic plus an overshoot term sin(t*2.2*π)*(1−t)^2.2*9, snapping to 64 on the last frame; every frame also write Math.round(v) as a 30px number under the pivot and the band name as a coloured verdict label. Add a Replay button that resets to 0 and sweeps again. Under prefers-reduced-motion show 64 immediately.",
+    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 03 仪表盘", at: "0:18" },
+  },
+  {
+    slug: "bar-chart-period-switch",
+    category: "chart-widgets",
+    date: "2026-09-19",
+    plays: "click",
+    title: { en: "Bar chart with period switch", zh: "切换周期的柱状图", "zh-tw": "切換週期的柱狀圖" },
+    gist: {
+      en: "Week ↔ month without a redraw: bars that exist in both periods slide to their new height, the extra ones rise from the baseline, the missing ones sink away. Tap a bar and it lights up with its value while the rest dim.",
+      zh: "周和月之间切换不重画：两边都有的柱子滑到新高度，多出来的从底线冒出来，没有的沉下去。点一根柱子，它亮起并显示数值，其他的暗下去。",
+      "zh-tw": "週和月之間切換不重畫：兩邊都有的柱子滑到新高度，多出來的從底線冒出來，沒有的沉下去。點一根柱子，它亮起並顯示數值，其他的暗下去。",
+    },
+    height: 360,
+    accent: "#5aa3e0",
+    anatomy: [
+      "Bars are flex children with <code>height: var(--h)</code> and <code>transition: height 520ms, flex-basis 520ms</code>. A period switch is three operations on the existing DOM, never <code>innerHTML =</code>: survivors get a new <code>--h</code>; newcomers are inserted with a <code>.new</code> class (height 0) and lose it two frames later so the transition runs; leavers get <code>.new</code> back and are removed after 540ms.",
+      "Newcomers carry <code>transition-delay: index × 12ms</code> for the first run, then the delay is cleared — a stagger on entry, no stagger on later height changes.",
+      "Because the flex container re-distributes width, the survivors also narrow from 7-wide to 30-wide layout; that is a <code>flex-basis</code> transition riding along with the height one, so nothing jumps.",
+      "Selection is a class on the chart (<code>.sel</code>) that dims every bar without <code>.on</code> to .45; the tooltip is one absolutely-positioned element moved with a <code>left</code> transition, so it slides between bars instead of blinking.",
+      "The daily average in the header is recomputed from the data on every switch, and the selected index is re-applied after the transition so the tooltip lands on the bar's new height.",
+    ],
+    tokens: [
+      { label: "Height / width morph", value: "520ms cubic-bezier(.22,.61,.36,1)" },
+      { label: "Newcomer stagger", value: "12ms per bar, first run only" },
+      { label: "Selection dim", value: "others opacity .45 · 220ms" },
+      { label: "Tooltip slide", value: "left 300ms" },
+    ],
+    prompt:
+      "Build a bar chart with a week/month segmented control in vanilla HTML/CSS/JS on a dark card. Chart is a 150px-tall flex row (align-items flex-end, gap 6px) of bar divs with height: var(--h) and transition: height 520ms cubic-bezier(.22,.61,.36,1), flex-basis 520ms, background-color 220ms, opacity 220ms. Data: week = [52,71,38,44,66,57,30]; month = the same seven followed by 23 more values 20–75; max 80. On switch do NOT rebuild: for bars that exist in both, set the new --h; for new bars insert them with a .new class (height 0) and a transition-delay of index×12ms, then remove .new on the second animation frame so they grow; for bars that no longer exist add .new and remove them after 540ms. Recompute the 'daily avg' label. Clicking a bar toggles .on (background #5aa3e0), adds .sel to the chart which sets every other bar to opacity .45, and positions a white tooltip showing the value above the bar with a 300ms left transition. Segmented control: white pill on the active option, 200ms. Under prefers-reduced-motion drop the transitions.",
+    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 04 柱状图", at: "0:27" },
+  },
+  {
+    slug: "focus-blocks-timeline",
+    category: "chart-widgets",
+    date: "2026-09-19",
+    plays: "hover",
+    title: { en: "Focus blocks timeline", zh: "专注分段图", "zh-tw": "專注分段圖" },
+    gist: {
+      en: "A day as one path stepping between three levels — break, normal, deep — each block coloured by level and placed by time. Move along it and a cursor follows, the header shows the exact time and phase, and the block under the cursor stays lit while the rest dim.",
+      zh: "一天排成一条在三个层级（休息 / 正常 / 深度）之间走的台阶线，每一段按层级配色、按时间摆位。沿着它移动，光标跟着走，顶部显示精确时刻和阶段，光标下的那段保持亮、其余暗下。",
+      "zh-tw": "一天排成一條在三個層級（休息 / 正常 / 深度）之間走的台階線，每一段按層級配色、按時間擺位。沿著它移動，游標跟著走，頂部顯示精確時刻和階段，游標下的那段保持亮、其餘暗下。",
+    },
+    height: 360,
+    accent: "#c9d54a",
+    anatomy: [
+      "Blocks are absolutely positioned inside a lane area: <code>left = start / span</code>, <code>width = length / span</code>, <code>top = level × 40px</code>. That makes hover a single division — <code>x / width × span</code> gives minutes — with no element hit-testing.",
+      "Consecutive blocks at different levels are joined by a 1px vertical hairline placed at the midpoint between them. Without the steps the chart is three unrelated rows; with them it is one day.",
+      "Load: blocks grow from <code>scaleX(0)</code> with <code>transform-origin: left</code> and a 70ms stagger in time order, so the day fills in left to right.",
+      "Scrub: the cursor and knob are moved with <code>left</code> in %, the knob's <code>top</code> transitions 160ms so it hops between levels instead of teleporting; the header time is formatted from minutes and the phase pill takes the level colour.",
+      "The header starts on 16:20 rather than empty, and pointer leave hides the cursor but leaves the totals line — the widget is never blank.",
+    ],
+    tokens: [
+      { label: "Block grow-in", value: "500ms · stagger 70ms" },
+      { label: "Levels", value: "break #9a9aa2 · normal #b5c4b0 · deep #c9d54a" },
+      { label: "Knob hop", value: "top 160ms cubic-bezier(.22,.61,.36,1)" },
+      { label: "Dim others", value: "brightness(.55) · 160ms" },
+    ],
+    prompt:
+      "Build a focus-blocks timeline in vanilla HTML/CSS/JS on a dark card. Three lanes labelled BREAK / NORMAL / DEEP, each 40px tall, spanning 09:00–17:00 (480 minutes). Data is an ordered list of [level, startMin, endMin]; render each as a 20px-tall absolutely positioned block with left = start/480, width = (end−start)/480, top = laneIndex×40+10, coloured #9a9aa2 / #b5c4b0 / #c9d54a by level, 4px radius. Between consecutive blocks on different lanes draw a 1px vertical hairline at the midpoint x from one lane centre to the other. At load animate blocks from scaleX(0) (transform-origin left) over 500ms with a 70ms stagger in order. On pointermove over the lane area convert x to minutes, move a 1px white cursor line and a 9px white knob (knob top transitions 160ms to the current block's lane), write the time as HH:MM and the level name into a header pill coloured by level, and set filter: brightness(.55) on every block except the one under the cursor. Show DEEP / NORMAL / BREAK totals under the axis. On pointerleave hide the cursor and un-dim. Land the cursor on 16:20 one second after load.",
+    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 05 专注分段图", at: "0:36" },
+  },
+  {
+    slug: "range-line-morph",
+    category: "chart-widgets",
+    date: "2026-09-19",
+    plays: "click",
+    title: { en: "Range line morph", zh: "范围折线图", "zh-tw": "範圍折線圖" },
+    gist: {
+      en: "1W / 1M / 1Y on one line. Switching range does not redraw: every point slides to where it is in the new data, the area fill under it follows, and the headline number counts across. The line never blinks.",
+      zh: "一周 / 一月 / 一年用同一条线。切换范围不重画：每个点直接滑到新数据里的位置，下面的面积渐变跟着走，顶部的数字也滑过去。线不会闪一下。",
+      "zh-tw": "一週 / 一月 / 一年用同一條線。切換範圍不重畫：每個點直接滑到新資料裡的位置，下面的面積漸層跟著走，頂部的數字也滑過去。線不會閃一下。",
+    },
+    height: 360,
+    accent: "#c9a6e6",
+    anatomy: [
+      "Every range is resampled to the <b>same</b> point count (24). That is the entire trick: a path with a fixed vertex count can be interpolated vertex-by-vertex, so the morph is <code>from[i] + (to[i] − from[i]) × e</code> per point, per frame, and one <code>setAttribute('d')</code>.",
+      "The curve is Catmull-Rom converted to cubic Béziers at paint time, from the interpolated points — the smoothing is applied to whatever the points currently are, so intermediate frames are also smooth curves, not a polyline morphing into a curve.",
+      "The area is the same path string with <code>L x_last H L x_first H Z</code> appended and a vertical gradient fill (45% → 0 alpha). Being derived from the same string, it cannot lag the line.",
+      "The headline value interpolates on the same clock (7.9K → 8.8K), and the axis labels swap instantly at the start — the one thing that should not morph is text.",
+      "<code>preserveAspectRatio=\"none\"</code> with <code>vector-effect: non-scaling-stroke</code> lets the SVG stretch to the card width without the stroke getting fat.",
+    ],
+    tokens: [
+      { label: "Morph", value: "650ms · ease-out cubic" },
+      { label: "Point count", value: "24, every range" },
+      { label: "Curve", value: "Catmull-Rom → cubic Bézier, tension 1/6" },
+      { label: "Area fill", value: "#b48ad6 45% → 0%" },
+    ],
+    prompt:
+      "Build a range line chart with a 1W / 1M / 1Y segmented control in vanilla HTML/CSS/JS on a dark card. Generate three series that each have exactly 24 points (resample if needed), values 4–11. SVG viewBox 0 0 500 150 with preserveAspectRatio none; the line path uses vector-effect non-scaling-stroke, stroke #c9a6e6 2.5px; the area path is the same path plus L lastX 150 L firstX 150 Z, filled with a vertical gradient from #b48ad6 at 45% opacity to 0. Convert the points to a Catmull-Rom curve (control points at ±1/6 of the neighbour deltas) when building the d string. On switch, interpolate every point from its current y to the target y over 650ms with ease-out cubic in requestAnimationFrame, rebuilding both d strings each frame, and interpolate the headline number (e.g. 7.9K → 8.8K, one decimal) on the same clock; swap the four x-axis labels immediately. Keep an end-point dot at the last vertex. Under prefers-reduced-motion jump to the target.",
+    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 06 范围折线图", at: "0:43" },
+  },
+  {
+    slug: "draggable-goal-line",
+    category: "chart-widgets",
+    date: "2026-09-19",
+    plays: "click",
+    title: { en: "Draggable goal line", zh: "可拖动的目标线", "zh-tw": "可拖動的目標線" },
+    gist: {
+      en: "A dashed goal across a bar chart with a handle you can drag. As it moves, every bar that clears it lights up and every bar that falls under it goes dark, and the 'days on goal' count in the header follows in real time.",
+      zh: "柱状图上一条带把手的虚线目标线，可以拖。拖动时，过线的柱子马上亮起、没过线的立刻暗下去，顶部的「达标天数」实时跟着变。",
+      "zh-tw": "柱狀圖上一條帶把手的虛線目標線，可以拖。拖動時，過線的柱子馬上亮起、沒過線的立刻暗下去，頂部的「達標天數」即時跟著變。",
+    },
+    height: 360,
+    accent: "#f07b3f",
+    anatomy: [
+      "The goal is a single absolutely positioned row with <code>bottom: var(--y)</code>; its dashed line is a <code>::before</code>, the label pill and the round handle are children. Only one number exists — the goal in data units — and layout converts it to a bottom offset.",
+      "Pointer Events with <code>setPointerCapture</code> on the row: the drag keeps working when the pointer leaves the row, and the same code serves mouse and touch (<code>touch-action: none</code> stops the page scrolling).",
+      "Each move recomputes <i>everything</i> from that one number: bar class (<code>value ≥ goal</code>), the pill text, the count. There is no cached state to go stale, and there is no debounce — the pass/fail flip has to happen on the exact pixel the line crosses the bar top or it feels laggy.",
+      "The value is snapped to 0.1 and clamped to 1–9.5 so the pill reads a sensible number and the line cannot be dragged off the chart.",
+      "A short scripted drag (7.0 → 5.5 → 7.0 over 800ms) runs once after load so the mechanism is visible without touching it.",
+    ],
+    tokens: [
+      { label: "Bar state", value: "background-color 200ms · #3a3a40 ↔ #f07b3f" },
+      { label: "Handle", value: "24px · scale(1.15) on hover/drag · 160ms" },
+      { label: "Snap / clamp", value: "0.1 · 1.0–9.5" },
+      { label: "Events", value: "pointerdown + setPointerCapture, touch-action none" },
+    ],
+    prompt:
+      "Build a bar chart with a draggable goal line in vanilla HTML/CSS/JS on a dark card. Seven bars (M–S) with values [5.6,7.2,4.9,8.4,6.4,8.9,5.1] on a 0–10 scale in a 150px flex row, resting colour #3a3a40, 40px right padding. Add a .goal row absolutely positioned with bottom: var(--y), containing a 2px white dashed line (::before), a white pill 'GOAL 7.0K' at the left, and a 24px white round handle at the right; cursor ns-resize, touch-action none. On pointerdown call setPointerCapture; on pointermove convert clientY to a goal value via the chart's bounding rect, round to 0.1, clamp 1–9.5, and call apply(): set --y = goal/10*100%, update the pill text, toggle a .hit class (background #f07b3f, 200ms) on every bar whose value ≥ goal, and write the number of hits into a 'DAYS ON GOAL n / 7' header. Scale the handle to 1.15 while hovering or dragging. After load run a scripted drag from 7.0 down to 5.5 and back over 800ms so the effect is visible.",
+    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 07 目标线", at: "0:50" },
+  },
+  {
+    slug: "stacked-share-bar",
+    category: "chart-widgets",
+    date: "2026-09-19",
+    plays: "click",
+    title: { en: "Stacked share bar", zh: "分段占比条", "zh-tw": "分段佔比條" },
+    gist: {
+      en: "A whole day as one bar split by share, with a hairline gap between parts so the pieces stay countable. The parts grow in one after another, and tapping one pulls it up out of the bar with its name and percentage over it.",
+      zh: "一整天用一条横条按占比分段，段与段之间留一条细缝，所以每一段都数得出来。各段依次长出来；点某一段，它从条里往上抽出来，名字和占比贴在上面。",
+      "zh-tw": "一整天用一條橫條按佔比分段，段與段之間留一條細縫，所以每一段都數得出來。各段依次長出來；點某一段，它從條裡往上抽出來，名字和佔比貼在上面。",
+    },
+    height: 360,
+    accent: "#e9c93a",
+    anatomy: [
+      "One flex row, <code>gap: 3px</code>; each segment's <code>flex-basis</code> is its percentage minus its share of the gaps (<code>calc(38% − 2.25px)</code>), so the bar is exactly 100% wide with the gaps included. Rounded corners on every segment, not just the ends — the gaps are the point.",
+      "Load: segments animate from <code>scaleX(0)</code> with <code>transform-origin: left</code> and a 110ms stagger. Because each one starts after the previous, the bar reads as a whole being divided rather than four blocks arriving.",
+      "Pick: the chosen segment gets <code>translateY(−8px)</code> — pulled out, not scaled — so the bar keeps its length and the neighbours do not shift. The others drop to <code>brightness(.6)</code>.",
+      "The tooltip is one element whose <code>left</code> transitions 260ms; it slides from segment to segment rather than blinking. Its stem is a <code>::after</code> hairline down to the segment.",
+      "The legend rows are clickable too and share the same <code>pick()</code>, so the mapping between colour, name and segment is learnable from either end.",
+    ],
+    tokens: [
+      { label: "Grow-in", value: "480ms · stagger 110ms" },
+      { label: "Gap", value: "3px, taken out of the segments' own share" },
+      { label: "Pull-out", value: "translateY(−8px) · 260ms cubic-bezier(.22,.61,.36,1)" },
+      { label: "Dim others", value: "brightness(.6) · 200ms" },
+    ],
+    prompt:
+      "Build a stacked share bar in vanilla HTML/CSS/JS on a dark card. Parts: Focus 38% #e9c93a, Meetings 22% #b5c4b0, Learning 16% #9a9068, Rest 24% #e0ddd2. Render a 44px-tall flex row with gap 3px; each segment has flex: 0 0 calc(P% - 2.25px), border-radius 7px, its colour, and an entry animation from scaleX(0) (transform-origin left) over 480ms cubic-bezier(.22,.61,.36,1) with animation-delay index×110ms. Clicking a segment (or its legend row) toggles .on = transform translateY(-8px) with a 260ms transition, adds .pick to the bar so the other segments get filter brightness(.6), and shows one white tooltip 'Name P%' above the segment whose left transitions 260ms and which has a 1px white stem down to the bar. Legend below as a 2-column grid with colour dots and right-aligned percentages; headline '9h 40m'. Under prefers-reduced-motion skip the grow-in and transitions.",
+    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 08 分段占比条", at: "0:56" },
+  },
+  {
+    slug: "share-ring",
+    category: "chart-widgets",
+    date: "2026-09-19",
+    plays: "hover",
+    title: { en: "Share ring", zh: "环形占比图", "zh-tw": "環形佔比圖" },
+    gist: {
+      en: "A donut for a handful of categories, drawn slice by slice clockwise on load with the total in the hole. Hover a slice or its legend row and the slice pushes outward while the centre swaps to that category's name and share.",
+      zh: "几个分类用一个圆环来分，进场时各段顺时针依次画出，中间空的地方放总数。悬停某一段或它的图例，那段往外弹出一点，中心换成这一类的名字和占比。",
+      "zh-tw": "幾個分類用一個圓環來分，進場時各段順時針依次畫出，中間空的地方放總數。停留在某一段或它的圖例，那段往外彈出一點，中心換成這一類的名字和佔比。",
+    },
+    height: 360,
+    accent: "#d9a0b8",
+    anatomy: [
+      "Each slice is its own <code>&lt;circle&gt;</code> stroked 26px, with <code>stroke-dasharray = [length, circumference]</code> and the CSS <code>rotate</code> property set to where the previous slice ended (−90° origin so the ring starts at 12 o'clock). Gaps are 2.5% of the circle taken off each slice's length.",
+      "Draw-in is sequential, not parallel: slice <i>n</i>'s <code>stroke-dashoffset</code> is released after the sum of the previous slices' durations (600ms × share + 60ms each). Parallel draw-in makes four arcs appear at once; sequential reads as the ring being <i>divided</i>.",
+      "The push-out uses the individual <code>rotate</code> property plus a <code>transform: translate()</code>. Per the spec the property applies outside <code>transform</code>, so the translate is expressed in the slice's own rotated frame: outward is along its mid-angle measured from its own start.",
+      "The centre text is swapped out → in (160ms opacity) rather than cross-faded; hovering a legend row calls the same <code>pick(i)</code> as hovering the slice, and the non-picked slices and rows both drop to .45.",
+      "The sample picks slice 2 at 1.4s and releases it at 3.4s so the behaviour is shown once without a pointer.",
+    ],
+    tokens: [
+      { label: "Draw-in", value: "600ms × share + 60ms, sequential" },
+      { label: "Push-out", value: "6px along mid-angle · 260ms" },
+      { label: "Centre swap", value: "out 160ms → replace → in 160ms" },
+      { label: "Gap", value: "2.5% of circumference" },
+    ],
+    prompt:
+      "Build a donut share ring in vanilla HTML/CSS/JS on a dark card. Parts: Video 42% #d9a0b8, Reading 26% #f0efe9, Games 18% #9a9068, Music 14% #6b6b72. SVG viewBox 0 0 180 180, one <circle> per part at r=62 with stroke-width 26, fill none, transform-origin 90 90. For each part set the CSS rotate property to (-90 + cumulative% × 3.6)deg, stroke-dasharray to [C×(P−2.5)/100, C] where C is the circumference, and animate stroke-dashoffset from the dash length to 0 over a 600ms cubic-bezier(.22,.61,.36,1) transition, starting each part after the previous one finishes (600ms×share + 60ms). On pointerenter of a slice or its legend row add .out = translate(dx,dy) with a 260ms transition where (dx,dy) is 6px along the slice's mid-angle expressed relative to its own start angle; set the other slices and legend rows to opacity .45; fade the centre text out over 160ms, replace it with 'P%' and the name (default '5h 12m' / 'Screen time'), fade back in. Legend on the right with colour dots and right-aligned percentages. Under prefers-reduced-motion draw the ring immediately.",
+    caveats: [
+      "The push-out direction depends on the CSS <code>rotate</code> property being applied <b>outside</b> <code>transform</code> (spec order: translate · rotate · scale · transform). If you rotate inside <code>transform</code> instead, the translate must be in page coordinates — compute it from the absolute mid-angle.",
+    ],
+    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 09 环形占比图", at: "1:01" },
+  },
+  {
+    slug: "bubble-chart-nudge",
+    category: "chart-widgets",
+    date: "2026-09-19",
+    plays: "click",
+    title: { en: "Bubble chart with nudge", zh: "气泡图", "zh-tw": "氣泡圖" },
+    gist: {
+      en: "One circle per category, area by amount, packed together. Tap one and it grows to show its number while the neighbours it now overlaps get pushed straight away from it — only as far as they need to, and the rest stay put.",
+      zh: "一类一个圆，面积按数量，挤在一起。点一个，它变大并显示数值，被它压到的邻居顺着方向被推开——只推开需要的距离，没碰到的原地不动。",
+      "zh-tw": "一類一個圓，面積按數量，擠在一起。點一個，它變大並顯示數值，被它壓到的鄰居順著方向被推開——只推開需要的距離，沒碰到的原地不動。",
+    },
+    height: 360,
+    accent: "#9a9be0",
+    anatomy: [
+      "Diameter is <code>√minutes × 7px</code> — area proportional to the value, which is the only honest encoding for circles. Positions are hand-placed percentages; this is a widget with six categories, not a force layout.",
+      "One transform per bubble, three parts: <code>translate(−50%,−50%)</code> to centre on its point, <code>translate(var(--dx), var(--dy))</code> for the nudge, <code>scale(var(--s))</code> for the grow. Both custom properties transition through the single 520ms transform transition.",
+      "The nudge is local overlap resolution, not a re-layout: for each neighbour, <code>push = max(0, r_grown + r_neighbour + 10 − distance)</code> along the centre-to-centre direction. Bubbles that were already clear get push 0 and do not move — that stillness is what makes the one that moved look pushed.",
+      "The grown bubble reveals its minutes line (<code>max-height 0 → 14px</code> + opacity) and the others drop to <code>brightness(.7)</code>. Tapping it again, or resizing, recomputes from the same <code>apply()</code>.",
+      "Entry is a pop from <code>scale(0)</code> with a slightly overshooting curve (<code>cubic-bezier(.34,1.4,.64,1)</code>) and a 60ms stagger.",
+    ],
+    tokens: [
+      { label: "Size", value: "diameter = √min × 7px" },
+      { label: "Grow", value: "scale 1.35 · 520ms cubic-bezier(.22,.61,.36,1)" },
+      { label: "Push", value: "max(0, r₁·1.35 + r₂ + 10 − d) along the centre line" },
+      { label: "Entry", value: "scale 0 → 1 · 600ms cubic-bezier(.34,1.4,.64,1) · stagger 60ms" },
+    ],
+    prompt:
+      "Build a bubble chart in vanilla HTML/CSS/JS on a dark card. Items [name, minutes, colour, cx%, cy%]: Yoga 64 #a8a06e (50,50), Walk 180 #9a9be0 (22,50), Run 38 #b5c4b0 (78,30), Swim 20 #f0efe9 (40,16), Bike 26 #8a8a90 (36,84), Gym 15 #f0efe9 (82,78) in a 210px-tall field. Each bubble is an absolutely positioned circle with diameter √minutes×7px, left/top at its centre, and transform: translate(-50%,-50%) translate(var(--dx,0), var(--dy,0)) scale(var(--s,1)) with a 520ms cubic-bezier(.22,.61,.36,1) transition; name in bold, minutes line hidden (max-height 0, opacity 0). Entry: animate from translate(-50%,-50%) scale(0) over 600ms cubic-bezier(.34,1.4,.64,1) with a 60ms stagger. On click set the picked bubble's --s to 1.35 and reveal its minutes; for every other bubble compute the centre-to-centre vector in pixels, push = max(0, pickedRadius×1.35 + otherRadius + 10 − distance), and set --dx/--dy to that push along the vector (0 if no overlap); set filter brightness(.7) on the others. Clicking the picked bubble again resets everything; recompute on resize. Pick Yoga automatically 900ms after load.",
+    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 10 气泡图", at: "1:05" },
   },
 ];
 

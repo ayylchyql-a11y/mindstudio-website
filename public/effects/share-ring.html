@@ -1,0 +1,93 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Share ring</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif; background: #0b0b0d; color: #f2f2f2; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .win { width: min(560px, calc(100% - 32px)); border-radius: 16px; background: #141416; border: 1px solid #ffffff14; box-shadow: 0 30px 60px -30px #000; }
+  .bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #ffffff10; font-size: 11px; }
+  .bar b { font-weight: 600; } .bar span { color: #8a8a90; }
+  .dots { margin-left: auto; display: flex; gap: 5px; } .dots i { width: 6px; height: 6px; border-radius: 50%; }
+  .panel { margin: 12px; padding: 14px 16px; border-radius: 10px; background: #0e0e10; background-image: linear-gradient(#ffffff07 1px, transparent 1px), linear-gradient(90deg, #ffffff07 1px, transparent 1px); background-size: 24px 24px; }
+  .label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #6f6f76; }
+
+  .body { display: grid; grid-template-columns: 180px 1fr; gap: 24px; align-items: center; margin-top: 6px; }
+  svg { width: 180px; height: 180px; display: block; overflow: visible; }
+  /* each slice is a stroked arc; dashoffset draws it in, a translate along
+     its own mid-angle pulls it out on hover */
+  .slice { fill: none; stroke-width: 26; cursor: pointer; transition: transform 260ms cubic-bezier(.22,.61,.36,1), opacity 200ms, stroke-dashoffset 600ms cubic-bezier(.22,.61,.36,1); transform: translate(0, 0); }
+  .slice.out { transform: translate(var(--dx), var(--dy)); }
+  svg.pick .slice:not(.out) { opacity: .45; }
+  .c1 { text-anchor: middle; fill: #fff; font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
+  .c2 { text-anchor: middle; fill: #8a8a90; font-size: 7.5px; letter-spacing: .16em; text-transform: uppercase; }
+  .centre { transition: opacity 160ms; } .centre.swap { opacity: 0; }
+  .legend { display: grid; gap: 12px; }
+  .legend div { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #cfcfd4; cursor: pointer; transition: opacity 200ms; }
+  .legend.pick div:not(.on) { opacity: .45; }
+  .legend div.on { color: #fff; font-weight: 600; }
+  .legend i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+  .legend b { margin-left: auto; font-variant-numeric: tabular-nums; }
+  @media (max-width: 420px) { .body { grid-template-columns: 1fr; justify-items: center; } }
+  @media (prefers-reduced-motion: reduce) { .slice, .centre, .legend div { transition: none; } }
+</style>
+<div class="win">
+  <div class="bar"><b>Insights</b><span>Screen time</span><div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div></div>
+  <div class="panel">
+    <div class="label">Share ring</div>
+    <div class="body">
+      <svg viewBox="0 0 180 180" id="svg" aria-label="Screen-time share">
+        <g id="slices"></g>
+        <g class="centre" id="centre"><text class="c1" x="90" y="88" id="c1">5h 12m</text><text class="c2" x="90" y="102" id="c2">Screen time</text></g>
+      </svg>
+      <div class="legend" id="legend"></div>
+    </div>
+  </div>
+</div>
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const PARTS = [['Video', 42, '#d9a0b8'], ['Reading', 26, '#f0efe9'], ['Games', 18, '#9a9068'], ['Music', 14, '#6b6b72']];
+  const R = 62, C = 2 * Math.PI * R, GAP = 2.5;              // gap in % of the circle
+  const svg = document.getElementById('svg'), g = document.getElementById('slices'), legend = document.getElementById('legend');
+  const centre = document.getElementById('centre'), c1 = document.getElementById('c1'), c2 = document.getElementById('c2');
+  let acc = 0, delay = 0;
+  const slices = PARTS.map(([name, pct, col], i) => {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    el.setAttribute('cx', 90); el.setAttribute('cy', 90); el.setAttribute('r', R); el.setAttribute('stroke', col); el.setAttribute('class', 'slice');
+    const len = C * (pct - GAP) / 100;
+    // rotate so this slice starts where the previous one ended (12 o'clock origin)
+    el.setAttribute('transform-origin', '90 90');
+    el.style.rotate = `${-90 + acc * 3.6}deg`;
+    el.style.strokeDasharray = `${len} ${C}`;
+    el.style.strokeDashoffset = reduce ? 0 : len;             // drawn in from 0
+    // outward push direction = the slice's middle angle
+    const mid = (-90 + (acc + pct / 2) * 3.6) * Math.PI / 180;
+    // the translate happens after the rotate, so express the push in the
+    // slice's rotated frame: pushing "outward" is along the local x axis
+    el.style.setProperty('--dx', `${6 * Math.cos(mid - (-90 + acc * 3.6) * Math.PI / 180)}px`);
+    el.style.setProperty('--dy', `${6 * Math.sin(mid - (-90 + acc * 3.6) * Math.PI / 180)}px`);
+    acc += pct;
+    el.addEventListener('pointerenter', () => pick(i)); el.addEventListener('pointerleave', () => pick(-1));
+    g.appendChild(el);
+    // sequential draw: each slice starts when the previous one finishes
+    setTimeout(() => el.style.strokeDashoffset = 0, delay); delay += 600 * pct / 100 + 60;
+    const l = document.createElement('div'); l.style.setProperty('--c', col); l.innerHTML = `<i></i>${name}<b>${pct}%</b>`;
+    l.addEventListener('pointerenter', () => pick(i)); l.addEventListener('pointerleave', () => pick(-1)); legend.appendChild(l);
+    return el;
+  });
+  let timer = 0;
+  function pick(i) {
+    slices.forEach((s, k) => s.classList.toggle('out', k === i));
+    [...legend.children].forEach((l, k) => l.classList.toggle('on', k === i));
+    svg.classList.toggle('pick', i >= 0); legend.classList.toggle('pick', i >= 0);
+    // swap the centre text out → in rather than cross-fading two numbers
+    clearTimeout(timer); centre.classList.add('swap');
+    timer = setTimeout(() => {
+      c1.textContent = i < 0 ? '5h 12m' : PARTS[i][1] + '%'; c2.textContent = i < 0 ? 'Screen time' : PARTS[i][0];
+      centre.classList.remove('swap');
+    }, reduce ? 0 : 160);
+  }
+  setTimeout(() => pick(1), reduce ? 0 : 1400);
+  setTimeout(() => pick(-1), reduce ? 0 : 3400);
+</script>

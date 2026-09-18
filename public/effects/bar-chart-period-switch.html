@@ -1,0 +1,100 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bar chart with period switch</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif; background: #0b0b0d; color: #f2f2f2; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .win { width: min(560px, calc(100% - 32px)); border-radius: 16px; background: #141416; border: 1px solid #ffffff14; box-shadow: 0 30px 60px -30px #000; }
+  .bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #ffffff10; font-size: 11px; }
+  .bar b { font-weight: 600; } .bar span { color: #8a8a90; }
+  .dots { margin-left: auto; display: flex; gap: 5px; } .dots i { width: 6px; height: 6px; border-radius: 50%; }
+  .panel { margin: 12px; padding: 14px 16px; border-radius: 10px; background: #0e0e10; background-image: linear-gradient(#ffffff07 1px, transparent 1px), linear-gradient(90deg, #ffffff07 1px, transparent 1px); background-size: 24px 24px; }
+  .label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #6f6f76; }
+
+  .head { display: flex; justify-content: space-between; align-items: start; margin-top: 8px; }
+  .avg b { display: block; font-size: 22px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .seg { display: inline-flex; padding: 3px; border-radius: 99px; background: #ffffff12; }
+  .seg button { border: 0; background: transparent; color: #8a8a90; font: 600 9px/1 inherit; letter-spacing: .14em; text-transform: uppercase; padding: 6px 10px; border-radius: 99px; cursor: pointer; transition: color 200ms, background-color 200ms; }
+  .seg button.on { background: #fff; color: #111; }
+
+  .chart { position: relative; height: 150px; margin-top: 14px; display: flex; align-items: flex-end; gap: 6px; border-bottom: 1px solid #ffffff22; padding-bottom: 1px; }
+  .b {
+    position: relative; flex: 1; min-width: 0; height: var(--h); border-radius: 4px 4px 2px 2px; background: #6b6b72; cursor: pointer;
+    /* the whole switch is this one transition: a bar that survives the period
+       change has its --h rewritten and slides to it; a new bar starts at 0 */
+    transition: height 520ms cubic-bezier(.22,.61,.36,1), background-color 220ms, opacity 220ms, flex-basis 520ms;
+  }
+  .b.new { height: 0; }
+  .chart.sel .b:not(.on) { opacity: .45; }
+  .b.on { background: #5aa3e0; }
+  .b.on::after { content: ""; position: absolute; left: 50%; bottom: 100%; width: 1px; height: 8px; background: #5aa3e0; }
+  .tip { position: absolute; top: 0; transform: translate(-50%, -6px); padding: 4px 8px; border-radius: 6px; background: #fff; color: #111; font-size: 10px; font-weight: 700; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 160ms, left 300ms cubic-bezier(.22,.61,.36,1); }
+  .tip.show { opacity: 1; }
+  .x { display: flex; gap: 6px; margin-top: 6px; font-size: 8px; letter-spacing: .1em; color: #6f6f76; text-transform: uppercase; }
+  .x span { flex: 1; text-align: center; min-width: 0; overflow: hidden; }
+  @media (prefers-reduced-motion: reduce) { .b, .tip, .seg button { transition: none; } }
+</style>
+<div class="win">
+  <div class="bar"><b>Insights</b><span>Screen time</span><div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div></div>
+  <div class="panel">
+    <div class="label">Bar chart</div>
+    <div class="head">
+      <div class="avg"><span class="label">Daily avg</span><b id="avg">51 min</b></div>
+      <div class="seg" role="group"><button class="on" data-p="week" type="button">Week</button><button data-p="month" type="button">Month</button></div>
+    </div>
+    <div class="chart" id="chart"><div class="tip" id="tip"></div></div>
+    <div class="x" id="x"></div>
+  </div>
+</div>
+<script>
+  const chart = document.getElementById('chart'), tip = document.getElementById('tip'), xs = document.getElementById('x'), avgEl = document.getElementById('avg');
+  const WEEK = [52, 71, 38, 44, 66, 57, 30];
+  // Month = 30 values; the first 7 are the week, so those bars survive the
+  // switch and morph — the other 23 are "new" and rise from the baseline.
+  let seed = 3; const rnd = () => (seed = (seed * 48271) % 2147483647) / 2147483647;
+  const MONTH = WEEK.concat(Array.from({ length: 23 }, () => 20 + Math.round(rnd() * 55)));
+  const DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  const MAX = 80;
+  let bars = [], period = 'week', sel = -1;
+
+  const setH = (b, v) => b.style.setProperty('--h', (v / MAX * 100) + '%');
+  function render(next) {
+    const data = next === 'week' ? WEEK : MONTH;
+    // 1. bars that no longer exist: collapse then remove
+    bars.slice(data.length).forEach((b) => { b.classList.add('new'); setTimeout(() => b.remove(), 540); });
+    bars = bars.slice(0, data.length);
+    // 2. survivors: rewrite height, the transition does the rest
+    bars.forEach((b, i) => setH(b, data[i]));
+    // 3. newcomers: insert at 0, then next frame give them their height so
+    //    they grow instead of appearing
+    for (let i = bars.length; i < data.length; i++) {
+      const b = document.createElement('div'); b.className = 'b new'; setH(b, data[i]);
+      b.style.transitionDelay = ((i - bars.length) * 12) + 'ms';
+      b.addEventListener('click', () => select(bars.indexOf(b)));
+      chart.insertBefore(b, tip); bars.push(b);
+      requestAnimationFrame(() => requestAnimationFrame(() => { b.classList.remove('new'); setTimeout(() => b.style.transitionDelay = '', 900); }));
+    }
+    xs.innerHTML = (next === 'week' ? DAYS : Array.from({ length: 30 }, (_, i) => (i % 5 === 0 ? String(i + 1) : ''))).map((d) => `<span>${d}</span>`).join('');
+    avgEl.textContent = Math.round(data.reduce((s, v) => s + v, 0) / data.length) + ' min';
+    period = next;
+    if (sel >= data.length) select(-1); else if (sel >= 0) setTimeout(() => select(sel), 540);
+  }
+  function select(i) {
+    sel = i; bars.forEach((b, k) => b.classList.toggle('on', k === i));
+    chart.classList.toggle('sel', i >= 0);
+    if (i < 0) return tip.classList.remove('show');
+    const b = bars[i], data = period === 'week' ? WEEK : MONTH;
+    tip.textContent = data[i] + ' min';
+    tip.style.left = (b.offsetLeft + b.offsetWidth / 2) + 'px';
+    tip.style.top = (chart.clientHeight - b.offsetHeight - 22) + 'px';
+    tip.classList.add('show');
+  }
+  document.querySelectorAll('.seg button').forEach((btn) => btn.addEventListener('click', () => {
+    document.querySelectorAll('.seg button').forEach((x) => x.classList.toggle('on', x === btn));
+    render(btn.dataset.p);
+  }));
+  render('week');
+  setTimeout(() => select(5), 700);
+</script>

@@ -1,0 +1,71 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Draggable goal line</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif; background: #0b0b0d; color: #f2f2f2; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .win { width: min(560px, calc(100% - 32px)); border-radius: 16px; background: #141416; border: 1px solid #ffffff14; box-shadow: 0 30px 60px -30px #000; }
+  .bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #ffffff10; font-size: 11px; }
+  .bar b { font-weight: 600; } .bar span { color: #8a8a90; }
+  .dots { margin-left: auto; display: flex; gap: 5px; } .dots i { width: 6px; height: 6px; border-radius: 50%; }
+  .panel { margin: 12px; padding: 14px 16px; border-radius: 10px; background: #0e0e10; background-image: linear-gradient(#ffffff07 1px, transparent 1px), linear-gradient(90deg, #ffffff07 1px, transparent 1px); background-size: 24px 24px; }
+  .label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #6f6f76; }
+
+  .kpi { margin-top: 8px; } .kpi b { font-size: 24px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; } .kpi small { font-size: 11px; color: #6f6f76; }
+  .chart { position: relative; height: 150px; margin-top: 8px; padding: 0 40px 0 0; display: flex; align-items: flex-end; gap: 14px; border-bottom: 1px solid #ffffff22; }
+  .b { flex: 1; height: var(--h); border-radius: 4px 4px 2px 2px; background: #3a3a40; transition: background-color 200ms, transform 200ms; }
+  .b.hit { background: #f07b3f; }
+  /* The goal is one absolutely-positioned row: a dashed line across, a label
+     pill at the left, a handle at the right. Dragging moves --goal in data
+     units; layout converts it to a bottom offset. */
+  .goal { position: absolute; left: 0; right: 0; bottom: var(--y); height: 0; cursor: ns-resize; touch-action: none; }
+  .goal::before { content: ""; position: absolute; left: 0; right: 40px; top: -1px; border-top: 2px dashed #fff; opacity: .9; }
+  .goal .tag { position: absolute; left: 0; bottom: 8px; padding: 3px 8px; border-radius: 99px; background: #fff; color: #111; font-size: 8px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .goal .knob { position: absolute; right: 4px; top: -12px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 6px 14px -6px #000; display: grid; place-items: center; transition: transform 160ms cubic-bezier(.22,.61,.36,1); }
+  .goal .knob::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #111; }
+  .goal.drag .knob, .goal:hover .knob { transform: scale(1.15); }
+  .x { display: flex; gap: 14px; padding-right: 40px; margin-top: 6px; font-size: 8px; letter-spacing: .1em; color: #6f6f76; text-transform: uppercase; } .x span { flex: 1; text-align: center; }
+  .hint { margin-top: 8px; font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #6f6f76; text-align: right; }
+  @media (prefers-reduced-motion: reduce) { .b, .goal .knob { transition: none; } }
+</style>
+<div class="win">
+  <div class="bar"><b>Insights</b><span>Steps</span><div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div></div>
+  <div class="panel">
+    <div class="label">Goal line</div>
+    <div class="kpi"><span class="label">Days on goal</span><br><b id="days">3</b><small> / 7</small></div>
+    <div class="chart" id="chart">
+      <div class="goal" id="goal"><span class="tag" id="tag">Goal 7.0K</span><span class="knob"></span></div>
+    </div>
+    <div class="x"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+    <div class="hint">Drag the line</div>
+  </div>
+</div>
+<script>
+  const DATA = [5.6, 7.2, 4.9, 8.4, 6.4, 8.9, 5.1], MAX = 10;
+  const chart = document.getElementById('chart'), goal = document.getElementById('goal'), tag = document.getElementById('tag'), days = document.getElementById('days');
+  const bars = DATA.map((v) => { const b = document.createElement('div'); b.className = 'b'; b.style.setProperty('--h', (v / MAX * 100) + '%'); chart.insertBefore(b, goal); return b; });
+  let g = 7.0;
+  // Everything downstream of the goal — bar colour, the count, the pill — is
+  // recomputed from one number on every pointer move. No state to get stale.
+  function apply() {
+    goal.style.setProperty('--y', (g / MAX * 100) + '%');
+    tag.textContent = `Goal ${g.toFixed(1)}K`;
+    let n = 0; bars.forEach((b, i) => { const hit = DATA[i] >= g; b.classList.toggle('hit', hit); n += hit; });
+    days.textContent = n;
+  }
+  let dragging = false;
+  const fromY = (clientY) => { const r = chart.getBoundingClientRect(); return Math.max(1, Math.min(9.5, Math.round((r.bottom - clientY) / r.height * MAX * 10) / 10)); };
+  goal.addEventListener('pointerdown', (e) => { dragging = true; goal.classList.add('drag'); goal.setPointerCapture(e.pointerId); });
+  goal.addEventListener('pointermove', (e) => { if (!dragging) return; g = fromY(e.clientY); apply(); });
+  const stop = () => { dragging = false; goal.classList.remove('drag'); };
+  goal.addEventListener('pointerup', stop); goal.addEventListener('pointercancel', stop);
+  apply();
+  // a short scripted drag at load so the mechanism is visible without touching it
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const t0 = performance.now(), from = 7, to = 5.5;
+    const tick = (now) => { const t = Math.min(1, (now - t0 - 900) / 800); if (t < 0) return requestAnimationFrame(tick); const e = .5 - Math.cos(t * Math.PI) / 2; g = Math.round((from + (to - from) * Math.sin(e * Math.PI)) * 10) / 10; apply(); if (t < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  }
+</script>

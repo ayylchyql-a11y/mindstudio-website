@@ -1,0 +1,110 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activity rings</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+    background: #0b0b0d; color: #f2f2f2; overflow: hidden;
+    display: grid; place-items: center; -webkit-font-smoothing: antialiased;
+  }
+  /* The window chrome is the same in all ten widgets: a title bar, then a
+     gridded panel. Nothing here animates; it just makes the widget read as
+     "a control inside an app" rather than a chart floating on a page. */
+  .win { width: min(560px, calc(100% - 32px)); border-radius: 16px; background: #141416; border: 1px solid #ffffff14; box-shadow: 0 30px 60px -30px #000; }
+  .bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #ffffff10; font-size: 11px; }
+  .bar b { font-weight: 600; } .bar span { color: #8a8a90; }
+  .dots { margin-left: auto; display: flex; gap: 5px; } .dots i { width: 6px; height: 6px; border-radius: 50%; }
+  .panel {
+    margin: 12px; padding: 14px 16px; border-radius: 10px; background: #0e0e10;
+    background-image: linear-gradient(#ffffff07 1px, transparent 1px), linear-gradient(90deg, #ffffff07 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #6f6f76; }
+
+  .body { display: grid; grid-template-columns: 170px 1fr; gap: 20px; align-items: center; margin-top: 10px; }
+  svg { width: 170px; height: 170px; display: block; }
+  circle { fill: none; stroke-width: 13; stroke-linecap: round; }
+  .track { stroke: #ffffff12; }
+  /* Rings start at 12 o'clock: rotate the whole group -90°. Dash offset is
+     what animates; dasharray is the circumference so 1 unit = 1 turn. */
+  .ring { transform: rotate(-90deg); transform-origin: 50% 50%; }
+  .center { text-anchor: middle; fill: #fff; font-weight: 700; font-size: 20px; }
+  .center-sub { text-anchor: middle; fill: #8a8a90; font-size: 7.5px; letter-spacing: .16em; }
+
+  .stats { display: grid; gap: 10px; }
+  .stat { display: grid; grid-template-columns: auto 1fr; column-gap: 8px; align-items: center; }
+  .stat .name { grid-column: 1 / 3; display: flex; align-items: center; gap: 6px; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #8a8a90; }
+  .stat .name i { width: 6px; height: 6px; border-radius: 50%; background: var(--c); }
+  .stat .pct { font-size: 24px; font-weight: 700; letter-spacing: -.02em; color: var(--c); font-variant-numeric: tabular-nums; }
+  .stat .sub { grid-column: 1 / 3; font-size: 9px; letter-spacing: .1em; color: #6f6f76; }
+  /* The OVER GOAL pill only appears once the ring has actually crossed 100%,
+     at the moment the darker lap starts — not at load. */
+  .pill { justify-self: start; padding: 4px 8px; border-radius: 99px; background: #e8a33a26; color: #e8a33a; font-size: 8px; font-weight: 700; letter-spacing: .12em; opacity: 0; transform: translateX(-6px); transition: opacity 300ms, transform 300ms cubic-bezier(.22,.61,.36,1); }
+  .pill.show { opacity: 1; transform: none; }
+  @media (max-width: 420px) { .body { grid-template-columns: 1fr; justify-items: center; } }
+</style>
+<div class="win">
+  <div class="bar"><b>Insights</b><span>Activity</span><div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div></div>
+  <div class="panel">
+    <div class="label">Activity rings</div>
+    <div class="body">
+      <svg viewBox="0 0 170 170" aria-label="Three activity rings">
+        <g class="ring">
+          <circle class="track" cx="85" cy="85" r="70"/>
+          <circle class="track" cx="85" cy="85" r="54"/>
+          <circle class="track" cx="85" cy="85" r="38"/>
+          <circle id="r0" cx="85" cy="85" r="70" stroke="#e8a33a"/>
+          <!-- the lap beyond 100 % is a second arc in a darker tint, drawn on top -->
+          <circle id="r0x" cx="85" cy="85" r="70" stroke="#a8701a"/>
+          <circle id="r1" cx="85" cy="85" r="54" stroke="#ffffff"/>
+          <circle id="r2" cx="85" cy="85" r="38" stroke="#b5c4b0"/>
+        </g>
+        <text class="center" x="85" y="86" id="kcal">0</text>
+        <text class="center-sub" x="85" y="99">KCAL</text>
+      </svg>
+      <div class="stats">
+        <div class="stat" style="--c:#e8a33a"><div class="name"><i></i>Move</div><div class="pct" id="p0">0%</div><div class="pill" id="pill">Over goal</div><div class="sub">620 / 500 kcal</div></div>
+        <div class="stat" style="--c:#ffffff"><div class="name"><i></i>Exercise</div><div class="pct" id="p1">0%</div><div></div><div class="sub">47 / 60 min</div></div>
+        <div class="stat" style="--c:#b5c4b0"><div class="name"><i></i>Stand</div><div class="pct" id="p2">0%</div><div></div><div class="sub">7 / 12 hrs</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const TARGET = [1.24, 0.78, 0.58], KCAL = 620;
+  const rings = [0, 1, 2].map((i) => document.getElementById('r' + i));
+  const extra = document.getElementById('r0x');
+  const pcts = [0, 1, 2].map((i) => document.getElementById('p' + i));
+  const kcal = document.getElementById('kcal'), pill = document.getElementById('pill');
+
+  const setup = (c) => { const L = 2 * Math.PI * c.r.baseVal.value; c.style.strokeDasharray = L; c.style.strokeDashoffset = L; return L; };
+  const LEN = rings.map(setup); const LENX = setup(extra);
+
+  // One clock drives everything: the three arcs, the three numbers and the
+  // centre total all read the same eased t, so nothing can drift apart.
+  const ease = (t) => 1 - Math.pow(1 - t, 3);
+  const draw = (t) => {
+    TARGET.forEach((goal, i) => {
+      const v = goal * t;
+      const first = Math.min(v, 1);                 // the first lap fills the ring
+      rings[i].style.strokeDashoffset = LEN[i] * (1 - first);
+      pcts[i].textContent = Math.round(v * 100) + '%';
+      if (i === 0) {
+        const over = Math.max(0, v - 1);            // the second lap in the darker tint
+        extra.style.strokeDashoffset = LENX * (1 - over);
+        pill.classList.toggle('show', over > 0);
+      }
+    });
+    kcal.textContent = Math.round(KCAL * t);
+  };
+  if (reduce) draw(1);
+  else {
+    const DUR = 1400, t0 = performance.now();
+    const tick = (now) => { const t = Math.min(1, (now - t0) / DUR); draw(ease(t)); if (t < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  }
+</script>
