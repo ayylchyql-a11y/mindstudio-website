@@ -10,7 +10,7 @@
  */
 export const LAB_LOCKED = true;
 export const LAB_COOKIE = "lab_key";
-const DEFAULT_PASSWORD = "mindstudio";
+const DEFAULT_PASSWORD = "07976662564";
 const SALT = "mindstudio-lab-2026";
 
 export function labPassword(): string {
