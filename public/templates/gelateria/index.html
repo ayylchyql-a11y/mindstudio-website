@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#fff6e9" />
+  <meta name="description" content="Nuvola — gelateria artigianale a Monza. Gusti fatti ogni mattina con latte fresco della Brianza, torte gelato su prenotazione." />
+  <title>Nuvola — Gelateria artigianale Monza</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+  <div class="promo">Aperti fino alle 23:00 <span>·</span> Gusti del giorno aggiornati alle 11:00</div>
+
+  <header data-header>
+    <a class="logo press" href="#top" aria-label="Nuvola, torna all'inizio"><i>Nuvola</i><small>Gelateria artigianale · Monza</small></a>
+    <nav>
+      <a href="#gusti">Gusti di oggi</a>
+      <a href="#prezzi">Formati</a>
+      <a href="#laboratorio">Laboratorio</a>
+      <a href="#stagioni">Stagioni</a>
+      <a href="#dove">Dove siamo</a>
+    </nav>
+    <div class="actions">
+      <button class="btn choc press" type="button" data-open="Torta gelato">Prenota una torta</button>
+      <button class="menu-button press" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-button><i></i><i></i></button>
+    </div>
+  </header>
+  <div class="mobile-nav" data-mobile-nav aria-hidden="true">
+    <a href="#gusti" data-nav-link>Gusti di oggi</a>
+    <a href="#prezzi" data-nav-link>Formati</a>
+    <a href="#laboratorio" data-nav-link>Laboratorio</a>
+    <a href="#stagioni" data-nav-link>Stagioni</a>
+    <a href="#dove" data-nav-link>Dove siamo</a>
+    <button type="button" data-open="Torta gelato">Prenota una torta</button>
+  </div>
+
+  <main id="main">
+    <!-- Hero: the cone mascot watches the cursor — pupils clamped to their
+         sockets, brows a beat behind, the whole head leaning a touch. -->
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <p class="tag reveal">Monza · via Italia 42 · dal 2026</p>
+        <h1 class="reveal">Fatto stamattina.<br /><em>Finito stasera.</em></h1>
+        <p class="lead reveal">Dodici gusti al giorno, mai gli stessi due giorni di fila. Latte fresco della Brianza, frutta di stagione, zero semilavorati.</p>
+        <div class="hero-actions reveal">
+          <a class="btn choc" href="#gusti">Gusti di oggi <span>↓</span></a>
+          <button class="btn light" type="button" data-open="Torta gelato">Prenota una torta</button>
+        </div>
+      </div>
+      <div class="mascot" id="mascot" aria-hidden="true">
+        <div class="scoop top">
+          <div class="brow l"></div><div class="brow r"></div>
+          <div class="eye l"><div class="pupil"></div><div class="lid"></div></div>
+          <div class="eye r"><div class="pupil"></div><div class="lid"></div></div>
+          <div class="smile"></div>
+          <div class="cheek l"></div><div class="cheek r"></div>
+        </div>
+        <div class="scoop mid"></div>
+        <div class="drip"></div>
+        <div class="cone"></div>
+        <p class="mascot-hint">muovi il cursore · ti guarda</p>
+      </div>
+    </section>
+
+    <!-- Flavours on a cylinder: each tub's place on the ring is set once at
+         build time, scroll only rotates the ring. Four screens of scroll. -->
+    <section class="gusti" id="gusti" data-pin data-ring-section>
+      <div class="stage">
+        <div class="section-head">
+          <p class="eyebrow">Gusti di oggi</p>
+          <h2>Dodici vaschette.<br /><em>Scorri il banco.</em></h2>
+        </div>
+        <div class="ring-wrap"><div class="ring" data-ring></div></div>
+        <div class="caption" data-caption></div>
+        <p class="cue" aria-hidden="true">scorri ↓</p>
+      </div>
+    </section>
+
+    <section class="prezzi" id="prezzi">
+      <div class="section-head reveal">
+        <p class="eyebrow">Formati</p>
+        <h2>Coppetta, cono<br /><em>o da portare a casa.</em></h2>
+      </div>
+      <div class="price-grid">
+        <div class="price reveal"><b>Piccolo</b><span>2 gusti</span><strong>€ 3,00</strong></div>
+        <div class="price reveal"><b>Medio</b><span>3 gusti</span><strong>€ 4,00</strong></div>
+        <div class="price reveal"><b>Grande</b><span>4 gusti · panna inclusa</span><strong>€ 5,50</strong></div>
+        <div class="price reveal"><b>Vaschetta 500 g</b><span>fino a 3 gusti</span><strong>€ 12,00</strong></div>
+        <div class="price reveal"><b>Vaschetta 1 kg</b><span>fino a 5 gusti</span><strong>€ 22,00</strong></div>
+        <div class="price reveal"><b>Torta gelato</b><span>da 6 a 20 persone</span><strong>da € 28</strong></div>
+      </div>
+      <p class="price-note reveal">Cono di cialda artigianale + € 0,50 · Panna montata al momento + € 0,50 · Gusti vegani segnalati sul banco.</p>
+    </section>
+
+    <!-- The lab: a small card that scroll opens out to full bleed. The card
+         never scales — the window cut out of it does — so the type inside
+         stays pixel-exact the whole way. -->
+    <section class="lab" id="laboratorio" data-pin data-expand-section>
+      <div class="stage">
+        <div class="backdrop"><span>LATTE</span></div>
+        <div class="card">
+          <div class="art"><div class="art-scoops"><i></i><i></i><i></i></div></div>
+          <div class="label">
+            <b>Il laboratorio è dietro il banco.</b>
+            <i>Latte fresco della Brianza · frutta del mercato · nessun semilavorato</i>
+          </div>
+        </div>
+        <p class="cue" aria-hidden="true">scorri ↓</p>
+        <div class="rail"><i></i></div>
+      </div>
+    </section>
+
+    <!-- Seasons: four full-bleed scenes scrubbed by scroll. The outgoing panel
+         rotates away in 3D as the next one swings in; captions cross-fade. -->
+    <section class="stagioni" id="stagioni" data-pin data-scenes-section>
+      <div class="stage">
+        <div class="section-head">
+          <p class="eyebrow">Le stagioni</p>
+          <h2>Un gusto<br /><em>per ogni mese.</em></h2>
+        </div>
+        <div class="scenes" data-scenes>
+          <div class="panel"><div class="art s1"></div><div class="veil"></div><div class="tag">Primavera · Fragola di Verona</div></div>
+          <div class="panel"><div class="art s2"></div><div class="veil"></div><div class="tag">Estate · Anguria e menta</div></div>
+          <div class="panel"><div class="art s3"></div><div class="veil"></div><div class="tag">Autunno · Castagna e miele</div></div>
+          <div class="panel"><div class="art s4"></div><div class="veil"></div><div class="tag">Inverno · Cioccolato fondente 72%</div></div>
+        </div>
+        <div class="caption" data-scene-caption></div>
+        <p class="cue" aria-hidden="true">scorri ↓</p>
+      </div>
+    </section>
+
+    <section class="store" id="dove">
+      <div class="store-copy reveal">
+        <p class="eyebrow">Dove siamo</p>
+        <h2>Via Italia 42<br />Monza</h2>
+        <p>Lun–Dom · 12:00–23:00<br />+39 039 230 4410 · ciao@nuvolagelato.it</p>
+        <div class="hero-actions">
+          <button class="btn choc" type="button" data-open="Torta gelato">Prenota una torta</button>
+          <a class="btn light" href="tel:+390392304410">Chiama</a>
+        </div>
+      </div>
+      <div class="store-art" aria-hidden="true"><span></span><span></span><span></span></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-logo"><i>Nuvola</i></div>
+    <div><a href="#gusti">Gusti</a><a href="#prezzi">Formati</a><a href="#laboratorio">Laboratorio</a><a href="#dove">Dove siamo</a></div>
+    <p>Design dimostrativo — contenuti, prezzi e contatti sono fittizi. <a href="/templates" target="_top">Torna alla collezione</a></p>
+  </footer>
+
+  <dialog class="modal" data-modal aria-labelledby="dialog-title">
+    <button class="close press" type="button" data-close aria-label="Chiudi">×</button>
+    <p class="eyebrow">Torte gelato</p>
+    <h2 id="dialog-title">Prenota la tua torta</h2>
+    <p class="modal-lead">Ci servono due giorni. Ti confermiamo per telefono entro sera.</p>
+    <form data-form>
+      <label>Gusti (fino a 3)<input type="text" name="gusti" placeholder="Pistacchio, fragola, fior di latte" required /></label>
+      <div class="row">
+        <label>Persone<select name="persone" data-service-select><option>6</option><option>8</option><option>12</option><option>16</option><option>20</option></select></label>
+        <label>Per il giorno<input type="date" name="data" data-date required /></label>
+      </div>
+      <div class="row">
+        <label>Nome<input type="text" name="nome" required /></label>
+        <label>Telefono<input type="tel" name="telefono" required /></label>
+      </div>
+      <button class="btn choc wide" type="submit">Invia la richiesta</button>
+    </form>
+  </dialog>
+  <div class="toast" data-toast role="status" aria-live="polite">✓ Richiesta inviata · Ti chiamiamo entro sera</div>
+</body>
+</html>

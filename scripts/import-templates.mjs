@@ -29,6 +29,7 @@ const FOLDERS = {
   "百货店模版": "department-store",
   "手机维修店模版": "phone-repair",
   "Pokeria模版": "pokeria", // 09-18 自己写的（Mumi Poke），碗是 SVG 画的、没有照片
+  "Gelateria模版": "gelateria", // 09-18 自己写的（Nuvola），插画全是 CSS
 };
 const STYLES = {
   "风格A-编辑杂志": "editorial",
