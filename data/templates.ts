@@ -14,7 +14,7 @@ import type { Locale, Localized } from "@/lib/i18n";
  */
 
 export type GroupId = "food" | "retail" | "supply" | "services";
-export type StyleId = "original" | "editorial" | "night-glass" | "pop" | "claude";
+export type StyleId = "original" | "editorial" | "night-glass" | "pop" | "claude" | "abisso" | "mercato";
 
 export interface TemplateGroup {
   id: GroupId;
@@ -132,6 +132,27 @@ export const styles: { id: StyleId; title: Localized; gist: Localized }[] = [
       it: "Una seconda lettura della stessa attività: nome, layout e testi tutti suoi. Foto hero inserita; le foto della galleria sono ancora segnaposto.",
     },
   },
+  // 09-18 为 pokeria 手作的两套；别的模版没有
+  {
+    id: "abisso",
+    title: { en: "Deep sea", zh: "深海", "zh-tw": "深海", it: "Abisso", ja: "深海", ko: "심해" },
+    gist: {
+      en: "Dark chapters that stack as you scroll; the bowl of the day assembles itself from the scroll position; a shimmering headline and a bowl that tilts with the pointer.",
+      zh: "深色章节随滚动一层层叠上来；当日碗按滚动位置自己组装；流光标题、跟着指针分层倾斜的碗。",
+      "zh-tw": "深色章節隨捲動一層層疊上來；當日碗按捲動位置自己組裝；流光標題、跟著指標分層傾斜的碗。",
+      it: "Capitoli scuri che si impilano scorrendo; la bowl del giorno si compone dalla posizione di scroll; titolo cangiante e una bowl che si inclina col puntatore.",
+    },
+  },
+  {
+    id: "mercato",
+    title: { en: "Market board", zh: "市集板", "zh-tw": "市集板", it: "Mercato", ja: "マーケットボード", ko: "마켓 보드" },
+    gist: {
+      en: "Paper, ink and one coral: a menu board with a ticket, filter tabs that re-sort the cards with FLIP motion, a rolling chapter strip, a receipt that writes itself, and a remove button that eats its own label.",
+      zh: "纸白、墨黑、一点珊瑚红：菜单板配小票；筛选标签重排卡片带 FLIP 位移；粘顶章节条翻滚；小票自己写；删除按钮把自己的字吃掉。",
+      "zh-tw": "紙白、墨黑、一點珊瑚紅：菜單板配小票；篩選標籤重排卡片帶 FLIP 位移；黏頂章節條翻滾；小票自己寫；刪除按鈕把自己的字吃掉。",
+      it: "Carta, inchiostro e un corallo: una lavagna con lo scontrino, filtri che riordinano le card con moto FLIP, una striscia di capitoli che rotola, uno scontrino che si scrive da solo e un tasto rimuovi che mangia la propria etichetta.",
+    },
+  },
 ];
 
 export interface SiteTemplate {
@@ -219,10 +240,10 @@ export const templates: SiteTemplate[] = [
     industry: { en: "Poke bowl bar", zh: "波奇碗店", "zh-tw": "波奇碗店", it: "Pokeria", ja: "ポキ丼店", ko: "포케 바" },
     city: "Vimercate",
     gist: {
-      en: "Fast-casual poke: build your own bowl step by step with a live price and a bowl that draws itself as you pick, six signature bowls on a snap rail, a manifesto that lights up as you scroll, and a cart. Built with six effects from the Design Library.",
-      zh: "快餐式 poke：一步步配碗、价格实时加总、碗随选择当场画出来；六款招牌碗横向甩动一格一格停；滚到哪一行亮到哪的宣言；购物车。用了设计资源库里的六条效果。",
-      "zh-tw": "快餐式 poke：一步步配碗、價格即時加總、碗隨選擇當場畫出來；六款招牌碗橫向甩動一格一格停；捲到哪一行亮到哪的宣言；購物車。用了設計資源庫裡的六條效果。",
-      it: "Poke fast-casual: componi la bowl passo per passo con il prezzo che si aggiorna e una bowl che si disegna mentre scegli, sei signature su una rail che scatta una card alla volta, un manifesto che si illumina scorrendo, e il carrello. Sei effetti presi dalla Libreria design.",
+      en: "Fast-casual poke in six designs, three of them hand-built from the Design Library: a bowl builder with a live price and a bowl that draws itself, a dark version where the bowl assembles from the scroll position, and a market-board version with FLIP-sorted cards and a self-writing receipt. All with a cart.",
+      zh: "快餐式 poke，六种设计，其中三种是用设计资源库的效果手作的：配碗器价格实时加总、碗当场画出来；深海版的碗按滚动位置自己组装；市集板版卡片带 FLIP 重排、小票自己写。都带购物车。",
+      "zh-tw": "快餐式 poke，六種設計，其中三種是用設計資源庫的效果手作的：配碗器價格即時加總、碗當場畫出來；深海版的碗按捲動位置自己組裝；市集板版卡片帶 FLIP 重排、小票自己寫。都帶購物車。",
+      it: "Poke fast-casual in sei design, tre costruiti a mano con la Libreria design: una bowl da comporre con prezzo in tempo reale, una versione scura dove la bowl si compone scorrendo, e una lavagna da mercato con card riordinate in FLIP e uno scontrino che si scrive da solo. Tutte con carrello.",
     },
     features: [
       "Bowl builder: size, base, protein, toppings, sauce — live price",
@@ -232,8 +253,10 @@ export const templates: SiteTemplate[] = [
       "Manifesto paragraph brightens word by word on scroll",
       "Staggered character reveal, drifting colour blobs, magnetic CTA",
       "Cart drawer with totals, delivery / pickup switch",
+      "Deep sea: stacking chapters, scroll-assembled bowl, shimmer headline, pointer parallax",
+      "Market board: FLIP-sorted cards, rolling chapter strip, self-writing receipt, label-eating remove button",
     ],
-    variants: { editorial: "Onda Poke", "night-glass": "Poke Notte", pop: "Poke Pop" },
+    variants: { editorial: "Onda Poke", "night-glass": "Poke Notte", pop: "Poke Pop", abisso: "Mumi Poke", mercato: "Mumi Poke" },
     accent: "#ff7a59",
     lang: "it",
   },

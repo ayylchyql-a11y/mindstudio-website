@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#061a24" />
+  <meta name="description" content="Mumi Poke — pokeria a Vimercate. Scorri e la bowl si compone da sola: base, tonno, topping, ponzu. Pronta in 15 minuti." />
+  <title>Mumi Poke — Abisso · Pokeria Vimercate</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+
+  <header data-header>
+    <a class="logo press" href="#top" aria-label="Mumi Poke, torna all'inizio"><span class="logo-mark" aria-hidden="true"></span><b>MUMI</b><i>poke</i></a>
+    <nav>
+      <a href="#componi">Componi</a>
+      <a href="#signature">Signature</a>
+      <a href="#dove">Dove siamo</a>
+    </nav>
+    <div class="actions">
+      <button class="cart-button press" type="button" aria-label="Apri carrello, 0 articoli" data-open-cart><span>Carrello</span><b data-cart-count>0</b></button>
+      <button class="menu-button press" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-button><i></i><i></i></button>
+    </div>
+  </header>
+  <div class="mobile-nav" data-mobile-nav aria-hidden="true">
+    <a href="#componi" data-nav-link>Componi</a>
+    <a href="#signature" data-nav-link>Signature</a>
+    <a href="#dove" data-nav-link>Dove siamo</a>
+    <button type="button" data-open-cart>Apri il carrello</button>
+  </div>
+
+  <!-- Four chapters. Each one sticks at the top and the next climbs over it;
+       the one underneath is dimmed and pushed back 6% (--k, driven from JS). -->
+  <main id="main">
+    <section class="sec hero" id="top" data-sec>
+      <div class="inner">
+        <div class="hero-grid" id="scene" style="--x:0;--y:0">
+          <div class="hero-copy">
+            <p class="eyebrow">Pokeria · Vimercate</p>
+            <h1 class="shimmer">Il mare,<br />in una bowl.</h1>
+            <p class="lead">Pesce tagliato ogni mattina, riso cotto due volte al giorno. Scorri e guarda la bowl comporsi.</p>
+            <div class="hero-actions">
+              <a class="btn coral" href="#componi">Componi scorrendo <span>↓</span></a>
+              <a class="btn ghost" href="#signature">Le signature</a>
+            </div>
+          </div>
+          <div class="hero-bowl" aria-hidden="true">
+            <div class="halo"></div>
+            <svg viewBox="0 0 320 320" data-bowl="hero"></svg>
+            <div class="glass"></div>
+          </div>
+        </div>
+        <p class="cue" aria-hidden="true">scorri ↓</p>
+      </div>
+      <div class="shade"></div>
+    </section>
+
+    <!-- Scroll builds the bowl: the reader is the transport control. The
+         chapter itself is one screen and sticks like the others; the 200vh
+         spacer after it is what the assembly is scrubbed against. A sticky
+         element taller than a screen cannot stay pinned — the later chapters
+         would shove it up — so the extra scroll has to live outside it. -->
+    <section class="sec build" id="componi" data-sec data-build>
+      <div class="stage">
+        <div class="build-grid">
+          <div class="build-copy">
+            <p class="eyebrow">Bowl del giorno · Abisso</p>
+            <h2>Scorri.<br />Si compone.</h2>
+            <ol class="build-steps">
+              <li data-step="0"><span>01</span><b>Riso venere</b><small>la base</small></li>
+              <li data-step="1"><span>02</span><b>Tonno</b><small>pinna gialla, tagliato al mattino</small></li>
+              <li data-step="2"><span>03</span><b>Avocado · mango · edamame · wakame</b><small>quattro topping</small></li>
+              <li data-step="3"><span>04</span><b>Ponzu</b><small>la salsa</small></li>
+            </ol>
+            <div class="build-done" data-build-done>
+              <b>€ 14,40</b>
+              <button class="btn coral" type="button" data-add data-name="Bowl Abisso" data-price="14.40">Aggiungi al carrello <span>＋</span></button>
+            </div>
+          </div>
+          <div class="build-bowl" aria-hidden="true">
+            <svg viewBox="0 0 320 420" data-bowl="build"></svg>
+          </div>
+        </div>
+        <div class="build-bar" aria-hidden="true"><i data-build-bar></i></div>
+      </div>
+      <div class="shade"></div>
+    </section>
+    <div class="build-space" data-build-space aria-hidden="true"></div>
+
+    <section class="sec signature" id="signature" data-sec>
+      <div class="inner">
+        <div class="sig-head">
+          <p class="eyebrow">Le signature</p>
+          <h2>Sei bowl.<br />Nessuna attesa.</h2>
+        </div>
+        <div class="sig-grid">
+          <article class="sig" style="--c:#ff6b5a"><svg viewBox="0 0 320 320" data-bowl="sig" data-recipe="Riso sushi|Salmone|Avocado,Edamame,Mango,Sesamo|Soia"></svg><div><h3>Salmone classica</h3><p>Riso, salmone, avocado, edamame, mango, sesamo</p></div><b>€ 12,90</b><button type="button" data-add data-name="Salmone classica" data-price="12.90" aria-label="Aggiungi Salmone classica">＋</button></article>
+          <article class="sig" style="--c:#e04b5a"><svg viewBox="0 0 320 320" data-bowl="sig" data-recipe="Riso venere|Tonno|Avocado,Cetriolo,Pomodorini,Cipolla croccante|Spicy mayo"></svg><div><h3>Tonno spicy</h3><p>Riso venere, tonno, avocado, cetriolo, pomodorini</p></div><b>€ 14,40</b><button type="button" data-add data-name="Tonno spicy" data-price="14.40" aria-label="Aggiungi Tonno spicy">＋</button></article>
+          <article class="sig" style="--c:#ffa07a"><svg viewBox="0 0 320 320" data-bowl="sig" data-recipe="Quinoa|Gamberi|Mango,Edamame,Ravanello,Sesamo|Ponzu"></svg><div><h3>Gamberi &amp; mango</h3><p>Quinoa, gamberi, mango, edamame, ravanello</p></div><b>€ 14,40</b><button type="button" data-add data-name="Gamberi &amp; mango" data-price="14.40" aria-label="Aggiungi Gamberi e mango">＋</button></article>
+          <article class="sig" style="--c:#7cb56b"><svg viewBox="0 0 320 320" data-bowl="sig" data-recipe="Insalata mista|Tofu|Avocado,Edamame,Alga wakame,Mais|Sesamo"></svg><div><h3>Verde vegana</h3><p>Insalata, tofu al sesamo, avocado, wakame, mais</p></div><b>€ 11,90</b><button type="button" data-add data-name="Verde vegana" data-price="11.90" aria-label="Aggiungi Verde vegana">＋</button></article>
+          <article class="sig" style="--c:#c98a52"><svg viewBox="0 0 320 320" data-bowl="sig" data-recipe="Riso sushi|Pollo teriyaki|Mais,Cetriolo,Cipolla croccante,Sesamo|Teriyaki"></svg><div><h3>Pollo teriyaki</h3><p>Riso, pollo glassato, mais, cetriolo, cipolla croccante</p></div><b>€ 12,40</b><button type="button" data-add data-name="Pollo teriyaki" data-price="12.40" aria-label="Aggiungi Pollo teriyaki">＋</button></article>
+          <article class="sig" style="--c:#ffd166"><svg viewBox="0 0 320 320" data-bowl="sig" data-recipe="Riso sushi|Salmone|Mango,Avocado,Ravanello,Pomodorini|Ponzu"></svg><div><h3>Tropicale</h3><p>Riso, salmone, mango, avocado, ravanello, pomodorini</p></div><b>€ 13,40</b><button type="button" data-add data-name="Tropicale" data-price="13.40" aria-label="Aggiungi Tropicale">＋</button></article>
+        </div>
+      </div>
+      <div class="shade"></div>
+    </section>
+
+    <section class="sec store" id="dove" data-sec>
+      <div class="inner">
+        <div class="store-grid">
+          <div>
+            <p class="eyebrow">Dove siamo</p>
+            <h2>Via Vittorio Emanuele II 18<br />Vimercate (MB)</h2>
+            <p class="lead">Lun–Dom · 11:30–15:00 · 18:00–22:30<br />+39 039 660 1180 · Consegna gratuita sopra € 25</p>
+            <div class="hero-actions">
+              <a class="btn coral" href="https://wa.me/390396601180">Ordina su WhatsApp</a>
+              <button class="btn ghost" type="button" data-open-cart>Vedi il carrello</button>
+            </div>
+          </div>
+          <div class="depth" aria-hidden="true"><span>−18 m</span><span>−12 m</span><span>−6 m</span><span>0 m</span></div>
+        </div>
+        <footer>
+          <span>MUMI <i>poke</i> · Abisso</span>
+          <span>Design dimostrativo — contenuti, prezzi e contatti sono fittizi. <a href="/templates/pokeria" target="_top">← Tutti gli stili</a></span>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <div class="scrim" data-scrim></div>
+  <aside class="cart" data-cart aria-hidden="true" aria-label="Carrello">
+    <div class="cart-head"><div><p class="eyebrow">Il tuo ordine</p><h2>Carrello</h2></div><button class="press" type="button" aria-label="Chiudi carrello" data-close-cart>×</button></div>
+    <div class="cart-items" data-cart-items></div>
+    <div class="cart-foot"><div class="cart-total"><span>Totale</span><b data-cart-total>€ 0,00</b></div><button class="btn coral wide" type="button" data-checkout disabled>Conferma ordine</button><small>Demo: nessun pagamento reale.</small></div>
+  </aside>
+  <div class="toast" data-toast role="status" aria-live="polite">Aggiunto al carrello</div>
+</body>
+</html>

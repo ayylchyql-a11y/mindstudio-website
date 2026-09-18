@@ -34,6 +34,9 @@ const STYLES = {
   "风格A-编辑杂志": "editorial",
   "风格B-夜间玻璃": "night-glass",
   "风格C-活力波普": "pop",
+  // 手作的两套（目前只有 pokeria 有）：目录不存在就跳过
+  "风格D-深海": "abisso",
+  "风格E-市集": "mercato",
 };
 /**
  * Claude Design 版：`<NN-Name-中文>/<Name>.dc.html` + 同目录 support.js / image-slot.js。
@@ -95,6 +98,7 @@ for (const [folder, slug] of Object.entries(FOLDERS)) {
   for (const file of new Set(used)) cpSync(join(from, "assets", file), join(to, "assets", file));
 
   for (const [zh, style] of Object.entries(STYLES)) {
+    if (!existsSync(join(from, zh))) continue;
     copyPage(join(from, zh), join(to, style), (html) => {
       const out = html.replace(/href="\.\.\/stili\.html"/g, `href="/templates/${slug}" target="_top"`);
       if (out === html) throw new Error(`${slug}/${style}: back-link not found`);
