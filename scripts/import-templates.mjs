@@ -42,6 +42,12 @@ const STYLES = {
   "风格E-市集": "mercato",
 };
 /**
+ * 09-18 用户拍板：「夜间玻璃」只有 Vinaia（enoteca）那套合适，其它模版的不上站。
+ * 桌面源里生成器照样会生成它，搬的时候在这里拦。
+ */
+const KEEP_STYLE = (slug, style) => style !== "night-glass" || slug === "enoteca";
+
+/**
  * Claude Design 版：`<NN-Name-中文>/<Name>.dc.html` + 同目录 support.js / image-slot.js。
  * 它们的图片位（<image-slot>）原本全空；把**首屏那一个**用同行业原版的 hero 照片填上，
  * 画廊位保持占位 —— 每个行业只有一张照片。
@@ -102,6 +108,7 @@ for (const [folder, slug] of Object.entries(FOLDERS)) {
 
   for (const [zh, style] of Object.entries(STYLES)) {
     if (!existsSync(join(from, zh))) continue;
+    if (!KEEP_STYLE(slug, style)) continue;
     copyPage(join(from, zh), join(to, style), (html) => {
       const out = html.replace(/href="\.\.\/stili\.html"/g, `href="/templates/${slug}" target="_top"`);
       if (out === html) throw new Error(`${slug}/${style}: back-link not found`);

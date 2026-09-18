@@ -75,8 +75,9 @@ export const groups: TemplateGroup[] = [
 ];
 
 /**
- * 5 种设计。`original` 是每个行业自己那套（有真实照片的 hero、自己的配色）；
- * editorial / night-glass / pop 是同一套内容的三种视觉解读；`claude` 是另一只手
+ * `original` 是每个行业自己那套（有真实照片的 hero、自己的配色）；
+ * editorial / night-glass / pop 是同一套内容的三种视觉解读（🩸 night-glass 09-18 起
+ * 只有 enoteca 保留，用户觉得别的行业不合适——import 脚本里也拦了）；`claude` 是另一只手
  * 按同一个行业另起的一版，店名、版式、文案都是它自己的（对外叫「特别版」，
  * 用户 09-18 拍板不露 Claude 字样；id 不改，路径 <slug>/claude/ 已上线）。
  * 不是每套模版都有全部 5 种 —— 看 SiteTemplate.designs。
@@ -192,7 +193,7 @@ export const templates: SiteTemplate[] = [
       it: "Un ramen bar sui Navigli: una ciotola per ogni umore, prima il brodo, un angolo quieto, e la prenotazione del tavolo.",
     },
     features: ["Menu with category filter", "Table booking dialog + toast", "Sticky header, mobile menu", "Reduced-motion aware"],
-    variants: { editorial: "Kado Ramen", "night-glass": "Neon Broth", pop: "Ramen Pop", claude: "Kuroba Ramen" },
+    variants: { editorial: "Kado Ramen", pop: "Ramen Pop", claude: "Kuroba Ramen" },
     accent: "#c8442a",
     lang: "it",
   },
@@ -210,7 +211,7 @@ export const templates: SiteTemplate[] = [
       it: "All you can eat à la carte: la formula e le regole, prezzi per servizio, cento piatti con filtri, registro allergeni.",
     },
     features: ["Formula + rules section", "Price table by service", "Menu filter", "Booking dialog", "Allergen register"],
-    variants: { editorial: "Senza Fine", "night-glass": "Orbit Sushi", pop: "Mangia! Club", claude: "Momiji Sushi & Grill" },
+    variants: { editorial: "Senza Fine", pop: "Mangia! Club", claude: "Momiji Sushi & Grill" },
     accent: "#1f6f8b",
     lang: "it",
   },
@@ -228,7 +229,7 @@ export const templates: SiteTemplate[] = [
       it: "Asporto e consegna: scegli i box, aggiungili a un carrello che fa il totale, la confezione, dove siamo.",
     },
     features: ["Box picker with filter", "Cart drawer with totals", "Group ordering section", "Packaging explainer"],
-    variants: { editorial: "Maki 12", "night-glass": "Nori Night", pop: "Box Box", claude: "SakéBox Takeaway" },
+    variants: { editorial: "Maki 12", pop: "Box Box", claude: "SakéBox Takeaway" },
     accent: "#e76649",
     lang: "it",
   },
@@ -256,7 +257,7 @@ export const templates: SiteTemplate[] = [
       "Deep sea: stacking chapters, scroll-assembled bowl, shimmer headline, pointer parallax",
       "Market board: FLIP-sorted cards, rolling chapter strip, self-writing receipt, label-eating remove button",
     ],
-    variants: { editorial: "Onda Poke", "night-glass": "Poke Notte", pop: "Poke Pop", abisso: "Mumi Poke", mercato: "Mumi Poke" },
+    variants: { editorial: "Onda Poke", pop: "Poke Pop", abisso: "Mumi Poke", mercato: "Mumi Poke" },
     accent: "#ff7a59",
     lang: "it",
   },
@@ -280,7 +281,7 @@ export const templates: SiteTemplate[] = [
       "Four seasonal scenes scrubbed in 3D",
       "Price grid, cake-booking dialog with a +2-day minimum date",
     ],
-    variants: { editorial: "Latte & Frutta", "night-glass": "Notte Gelato", pop: "Scoop!" },
+    variants: { editorial: "Latte & Frutta", pop: "Scoop!" },
     accent: "#ff8fa3",
     lang: "it",
   },
@@ -322,7 +323,7 @@ export const templates: SiteTemplate[] = [
       it: "Sette piani: reparti, novità della settimana, la casa a colori, servizi, lo store, la shopping bag.",
     },
     features: ["Departments by floor", "New arrivals filter", "Shopping bag dialog", "Services grid", "Store hours"],
-    variants: { editorial: "Piano Sette", "night-glass": "Nova Store", pop: "Tutto!", claude: "Grande Emporio" },
+    variants: { editorial: "Piano Sette", pop: "Tutto!", claude: "Grande Emporio" },
     accent: "#f4c63f",
     lang: "it",
   },
@@ -340,7 +341,7 @@ export const templates: SiteTemplate[] = [
       it: "Forniture fresche per ristoranti, hotel e catering: catalogo con filtri, la filiera, le zone di consegna, il modulo preventivo.",
     },
     features: ["Catalogue with category filter", "Supply chain steps", "Delivery zones", "Quote request form"],
-    variants: { editorial: "Fonte", "night-glass": "Chain Pro", pop: "Buono Bulk", claude: "Oriente Food Service" },
+    variants: { editorial: "Fonte", pop: "Buono Bulk", claude: "Oriente Food Service" },
     accent: "#234431",
     lang: "it",
   },
@@ -376,7 +377,7 @@ export const templates: SiteTemplate[] = [
       it: "Uno studio una persona alla volta: rituali con prezzi, galleria di atmosfere, lo spazio, la prenotazione.",
     },
     features: ["Services with prices", "Mood gallery", "Booking dialog", "Sticky header"],
-    variants: { editorial: "Unghia Studio", "night-glass": "Gloss Lab", pop: "Pop Nails", claude: "Atelier Unghie" },
+    variants: { editorial: "Unghia Studio", pop: "Pop Nails", claude: "Atelier Unghie" },
     accent: "#782f43",
     lang: "it",
   },
@@ -399,7 +400,7 @@ export const templates: SiteTemplate[] = [
       "Click-drop seed with gravity, squash and a spreading green front (canvas)",
       "Services grid, same-day order dialog, handwritten-card field",
     ],
-    variants: { editorial: "Foglio & Gambo", "night-glass": "Notte in Fiore", pop: "Pop Petali" },
+    variants: { editorial: "Foglio & Gambo", pop: "Pop Petali" },
     accent: "#e26d8f",
     lang: "it",
   },
@@ -417,7 +418,7 @@ export const templates: SiteTemplate[] = [
       it: "Riparazioni trasparenti: cosa ripariamo, tre passaggi, la garanzia, il negozio, e un modulo che chiede cosa si è rotto e quando puoi passare.",
     },
     features: ["Repairs list with prices", "Three-step process", "Guarantee section", "Two-step booking form"],
-    variants: { editorial: "Officina Mobile", "night-glass": "Pixel Fix", pop: "Pronto Pop", claude: "FixPoint Riparazioni" },
+    variants: { editorial: "Officina Mobile", pop: "Pronto Pop", claude: "FixPoint Riparazioni" },
     accent: "#1d4ed8",
     lang: "it",
   },
