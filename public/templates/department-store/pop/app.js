@@ -1,8 +1,0 @@
-const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
-const menu=$('[data-menu]'),nav=$('[data-mobile]'),modal=$('[data-modal]'),form=$('[data-form]'),service=$('[data-service-select]'),toast=$('[data-toast]'),date=$('[data-date]');
-function setMenu(open){menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Chiudi il menu':'Apri il menu');nav.classList.toggle('open',open);nav.setAttribute('aria-hidden',String(!open));document.body.classList.toggle('lock',open)}
-menu.onclick=()=>setMenu(menu.getAttribute('aria-expanded')!=='true');$$('[data-link]').forEach(a=>a.onclick=()=>setMenu(false));
-function openModal(value=''){setMenu(false);if(value)service.value=value;const d=new Date();d.setDate(d.getDate()+1);date.min=new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().split('T')[0];modal.showModal()}
-$$('[data-open]').forEach(b=>b.onclick=()=>openModal(b.dataset.open));$('[data-close]').onclick=()=>modal.close();modal.onclick=e=>{const r=modal.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)modal.close()};
-form.onsubmit=e=>{e.preventDefault();modal.close();form.reset();toast.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>toast.classList.remove('show'),3200)};
-$$('[data-service-card]').forEach(card=>card.onpointermove=e=>{if(!matchMedia('(pointer:fine)').matches)return;const r=card.getBoundingClientRect();card.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');card.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%')});

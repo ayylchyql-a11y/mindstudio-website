@@ -45,10 +45,13 @@ const STYLES = {
   "风格E-桌边": "tavolo",
 };
 /**
- * 09-18 用户拍板：「夜间玻璃」只有 Vinaia（enoteca）那套合适，其它模版的不上站。
- * 桌面源里生成器照样会生成它，搬的时候在这里拦。
+ * 09-18 用户拍板：生成器出的同款变体不再一律上站 ——「夜间玻璃」只留 Vinaia（enoteca），
+ * 「活力波普」只留 Nuvola（gelateria）。**以后新板块不跑生成器出变体，每种设计都单独设计。**
+ * 桌面源里生成器照样会生成它们，搬的时候在这里拦。
  */
-const KEEP_STYLE = (slug, style) => style !== "night-glass" || slug === "enoteca";
+const KEEP_STYLE = (slug, style) =>
+  (style !== "night-glass" || slug === "enoteca") &&
+  (style !== "pop" || slug === "gelateria");
 
 /**
  * Claude Design 版：`<NN-Name-中文>/<Name>.dc.html` + 同目录 support.js / image-slot.js。

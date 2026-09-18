@@ -76,8 +76,9 @@ export const groups: TemplateGroup[] = [
 
 /**
  * `original` 是每个行业自己那套（有真实照片的 hero、自己的配色）；
- * editorial / night-glass / pop 是同一套内容的三种视觉解读（🩸 night-glass 09-18 起
- * 只有 enoteca 保留，用户觉得别的行业不合适——import 脚本里也拦了）；`claude` 是另一只手
+ * editorial / night-glass / pop 是同一套内容的三种视觉解读（🩸 09-18 起 night-glass 只有
+ * enoteca 保留、pop 只有 gelateria 保留——用户觉得同款变体不适合别的行业，import 脚本里
+ * 也拦了；**以后新板块不做生成器变体，每种设计都单独设计**）；`claude` 是另一只手
  * 按同一个行业另起的一版，店名、版式、文案都是它自己的（对外叫「特别版」，
  * 用户 09-18 拍板不露 Claude 字样；id 不改，路径 <slug>/claude/ 已上线）。
  * 不是每套模版都有全部 5 种 —— 看 SiteTemplate.designs。
@@ -214,7 +215,7 @@ export const templates: SiteTemplate[] = [
       it: "Un ramen bar sui Navigli: una ciotola per ogni umore, prima il brodo, un angolo quieto, e la prenotazione del tavolo.",
     },
     features: ["Menu with category filter", "Table booking dialog + toast", "Sticky header, mobile menu", "Reduced-motion aware"],
-    variants: { editorial: "Kado Ramen", pop: "Ramen Pop", claude: "Kuroba Ramen" },
+    variants: { editorial: "Kado Ramen", claude: "Kuroba Ramen" },
     accent: "#c8442a",
     lang: "it",
   },
@@ -232,7 +233,7 @@ export const templates: SiteTemplate[] = [
       it: "All you can eat à la carte: la formula e le regole, prezzi per servizio, cento piatti con filtri, registro allergeni.",
     },
     features: ["Formula + rules section", "Price table by service", "Menu filter", "Booking dialog", "Allergen register"],
-    variants: { editorial: "Senza Fine", pop: "Mangia! Club", claude: "Momiji Sushi & Grill" },
+    variants: { editorial: "Senza Fine", claude: "Momiji Sushi & Grill" },
     accent: "#1f6f8b",
     lang: "it",
   },
@@ -250,7 +251,7 @@ export const templates: SiteTemplate[] = [
       it: "Asporto e consegna: scegli i box, aggiungili a un carrello che fa il totale, la confezione, dove siamo.",
     },
     features: ["Box picker with filter", "Cart drawer with totals", "Group ordering section", "Packaging explainer"],
-    variants: { editorial: "Maki 12", pop: "Box Box", claude: "SakéBox Takeaway" },
+    variants: { editorial: "Maki 12", claude: "SakéBox Takeaway" },
     accent: "#e76649",
     lang: "it",
   },
@@ -278,7 +279,7 @@ export const templates: SiteTemplate[] = [
       "Deep sea: stacking chapters, scroll-assembled bowl, shimmer headline, pointer parallax",
       "Market board: FLIP-sorted cards, rolling chapter strip, self-writing receipt, label-eating remove button",
     ],
-    variants: { editorial: "Onda Poke", pop: "Poke Pop", abisso: "Mumi Poke", mercato: "Mumi Poke" },
+    variants: { editorial: "Onda Poke", abisso: "Mumi Poke", mercato: "Mumi Poke" },
     accent: "#ff7a59",
     lang: "it",
   },
@@ -326,7 +327,7 @@ export const templates: SiteTemplate[] = [
       "Loyalty card: pointer tilt, foil phase tied to the angle, not a clock",
       "Wine list in three columns, kitchen menu, Thursday tasting dialog that defaults to the next Thursday",
     ],
-    variants: { editorial: "Calice & Carta", "night-glass": "Notte in Cantina", pop: "Cin Cin!" },
+    variants: { editorial: "Calice & Carta", "night-glass": "Notte in Cantina" },
     accent: "#7a1f3d",
     lang: "it",
   },
@@ -349,7 +350,7 @@ export const templates: SiteTemplate[] = [
       "Tavolo: vortex transit hero, hue-follows-focus menu, staggered character titles, procedural QR",
       "Real dish photos from the restaurant’s own menu",
     ],
-    variants: { editorial: "Banco & Riso", pop: "Sushi Pop", kaiten: "Mumi Sushi", tavolo: "Mumi Sushi" },
+    variants: { editorial: "Banco & Riso", kaiten: "Mumi Sushi", tavolo: "Mumi Sushi" },
     accent: "#d4a24c",
     lang: "it",
   },
@@ -367,7 +368,7 @@ export const templates: SiteTemplate[] = [
       it: "Sette piani: reparti, novità della settimana, la casa a colori, servizi, lo store, la shopping bag.",
     },
     features: ["Departments by floor", "New arrivals filter", "Shopping bag dialog", "Services grid", "Store hours"],
-    variants: { editorial: "Piano Sette", pop: "Tutto!", claude: "Grande Emporio" },
+    variants: { editorial: "Piano Sette", claude: "Grande Emporio" },
     accent: "#f4c63f",
     lang: "it",
   },
@@ -385,7 +386,7 @@ export const templates: SiteTemplate[] = [
       it: "Forniture fresche per ristoranti, hotel e catering: catalogo con filtri, la filiera, le zone di consegna, il modulo preventivo.",
     },
     features: ["Catalogue with category filter", "Supply chain steps", "Delivery zones", "Quote request form"],
-    variants: { editorial: "Fonte", pop: "Buono Bulk", claude: "Oriente Food Service" },
+    variants: { editorial: "Fonte", claude: "Oriente Food Service" },
     accent: "#234431",
     lang: "it",
   },
@@ -421,7 +422,7 @@ export const templates: SiteTemplate[] = [
       it: "Uno studio una persona alla volta: rituali con prezzi, galleria di atmosfere, lo spazio, la prenotazione.",
     },
     features: ["Services with prices", "Mood gallery", "Booking dialog", "Sticky header"],
-    variants: { editorial: "Unghia Studio", pop: "Pop Nails", claude: "Atelier Unghie" },
+    variants: { editorial: "Unghia Studio", claude: "Atelier Unghie" },
     accent: "#782f43",
     lang: "it",
   },
@@ -444,7 +445,7 @@ export const templates: SiteTemplate[] = [
       "Click-drop seed with gravity, squash and a spreading green front (canvas)",
       "Services grid, same-day order dialog, handwritten-card field",
     ],
-    variants: { editorial: "Foglio & Gambo", pop: "Pop Petali" },
+    variants: { editorial: "Foglio & Gambo" },
     accent: "#e26d8f",
     lang: "it",
   },
@@ -462,7 +463,7 @@ export const templates: SiteTemplate[] = [
       it: "Riparazioni trasparenti: cosa ripariamo, tre passaggi, la garanzia, il negozio, e un modulo che chiede cosa si è rotto e quando puoi passare.",
     },
     features: ["Repairs list with prices", "Three-step process", "Guarantee section", "Two-step booking form"],
-    variants: { editorial: "Officina Mobile", pop: "Pronto Pop", claude: "FixPoint Riparazioni" },
+    variants: { editorial: "Officina Mobile", claude: "FixPoint Riparazioni" },
     accent: "#1d4ed8",
     lang: "it",
   },
