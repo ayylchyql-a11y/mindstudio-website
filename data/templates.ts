@@ -514,21 +514,21 @@ export function designsOf(t: SiteTemplate): StyleId[] {
 
 export const templatesCopy = {
   /** 导航栏那一格比页面标题短：导航容量是固定的 980px，加一项就得从别处省（见 globals.css .nav-links 的注释） */
-  navLabel: { en: "Templates", zh: "网页模版", "zh-tw": "網頁模版", ja: "テンプレート", ko: "템플릿", it: "Template", fr: "Modèles", de: "Vorlagen", es: "Plantillas", pt: "Modelos", ru: "Шаблоны", ar: "قوالب" },
-  title: { en: "Web templates", zh: "网页设计模版", "zh-tw": "網頁設計模版", ja: "Web テンプレート", ko: "웹 템플릿", it: "Template web" },
+  navLabel: { en: "Web design", zh: "网页设计", "zh-tw": "網頁設計", ja: "Web デザイン", ko: "웹 디자인", it: "Web design", fr: "Web design", de: "Webdesign", es: "Diseño web", pt: "Sites", ru: "Сайты", ar: "تصميم الويب" },
+  title: { en: "Web design", zh: "网页设计", "zh-tw": "網頁設計", ja: "Web デザイン", ko: "웹 디자인", it: "Web design" },
   intro: {
-    en: "Complete websites for local businesses, built as working pages rather than mockups: menus you can filter, bookings you can open, carts that add up. Most are in Italian, one is in Chinese, and each business comes in up to five designs. Everything you see runs live in the page — scroll it, click it, or open it full screen.",
-    zh: "为本地商家做的整站模版，做成能用的页面而不是效果图：菜单能筛选、预约能弹出、购物车能加总。大多是意大利语，有一套中文；每个行业最多五种设计。这里看到的都在页面里真的跑着 —— 可以滚、可以点、也可以整页打开。",
-    "zh-tw": "為本地商家做的整站模版，做成能用的頁面而不是效果圖：菜單能篩選、預約能彈出、購物車能加總。大多是義大利語，有一套中文；每個行業最多五種設計。這裡看到的都在頁面裡真的跑著 —— 可以捲、可以點、也可以整頁打開。",
-    it: "Siti completi per attività locali, costruiti come pagine funzionanti e non come mockup: menù con filtri, prenotazioni che si aprono, carrelli che fanno il totale. Quasi tutti in italiano, uno in cinese, e ogni attività in fino a cinque design. Tutto quello che vedi gira davvero nella pagina: scorri, clicca, oppure aprilo a schermo intero.",
+    en: "Websites designed for local businesses — restaurants, shops, studios — and built as working pages, not mockups: menus you can filter, bookings you can open, carts that add up. Each business is designed more than once, every design from scratch, with the effects from the Design Library doing the work. Most are in Italian, one in Chinese. Scroll them, click them, or open them full screen.",
+    zh: "为本地商家——餐厅、店铺、工作室——设计的网站，做成能用的页面而不是效果图：菜单能筛选、预约能弹出、购物车能加总。同一家店会设计不止一版，每一版都从头来，动效用的是「设计库」里的零件。大多是意大利语，有一套中文。可以滚、可以点、也可以整页打开。",
+    "zh-tw": "為本地商家——餐廳、店鋪、工作室——設計的網站，做成能用的頁面而不是效果圖：菜單能篩選、預約能彈出、購物車能加總。同一家店會設計不止一版，每一版都從頭來，動效用的是「設計庫」裡的零件。大多是義大利語，有一套中文。可以捲、可以點、也可以整頁打開。",
+    it: "Siti progettati per attività locali — ristoranti, negozi, studi — e costruiti come pagine funzionanti, non mockup: menù con filtri, prenotazioni che si aprono, carrelli che fanno il totale. Ogni attività è progettata più di una volta, ogni versione da zero, con gli effetti della Libreria design a fare il lavoro. Quasi tutti in italiano, uno in cinese. Scorri, clicca, oppure apri a schermo intero.",
   },
-  count: { en: "templates", zh: "套模版", "zh-tw": "套模版", it: "template", ja: "テンプレート", ko: "템플릿" },
-  countOne: { en: "template", zh: "套模版", "zh-tw": "套模版", it: "template", ja: "テンプレート", ko: "템플릿" },
+  count: { en: "sites", zh: "个站", "zh-tw": "個站", it: "siti", ja: "サイト", ko: "사이트" },
+  countOne: { en: "site", zh: "个站", "zh-tw": "個站", it: "sito", ja: "サイト", ko: "사이트" },
   designs: { en: "designs", zh: "种设计", "zh-tw": "種設計", it: "design", ja: "デザイン", ko: "디자인" },
   openFull: { en: "Open full screen", zh: "整页打开", "zh-tw": "整頁打開", it: "Apri a schermo intero", ja: "全画面で開く", ko: "전체 화면으로 열기" },
   design: { en: "design", zh: "种设计", "zh-tw": "種設計", it: "design", ja: "デザイン", ko: "디자인" },
   featuresTitle: { en: "What is in it", zh: "里面有什么", "zh-tw": "裡面有什麼", it: "Cosa contiene", ja: "内容", ko: "구성" },
-  allGroups: { en: "All templates", zh: "全部模版", "zh-tw": "全部模版", it: "Tutti i template", ja: "すべてのテンプレート", ko: "모든 템플릿" },
+  allGroups: { en: "All sites", zh: "全部网站", "zh-tw": "全部網站", it: "Tutti i siti", ja: "すべてのサイト", ko: "모든 사이트" },
   demoNote: {
     en: "Names, addresses, prices and contacts are fictional demo content.",
     zh: "店名、地址、价格与联系方式均为虚构的演示内容。",
@@ -536,9 +536,9 @@ export const templatesCopy = {
     it: "Nomi, indirizzi, prezzi e contatti sono contenuti dimostrativi e fittizi.",
   },
   cta: {
-    en: "Want one of these for your business? Write to",
-    zh: "想给自己的店做一个？写信到",
-    "zh-tw": "想給自己的店做一個？寫信到",
-    it: "Ne vuoi uno per la tua attività? Scrivi a",
+    en: "Want a site like this for your business? Write to",
+    zh: "想给自己的店做一个这样的网站？写信到",
+    "zh-tw": "想給自己的店做一個這樣的網站？寫信到",
+    it: "Vuoi un sito così per la tua attività? Scrivi a",
   },
 } satisfies Record<string, Localized>;

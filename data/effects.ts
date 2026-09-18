@@ -1320,12 +1320,12 @@ export function demoPath(e: Effect): string {
 export const labCopy = {
   /* 09-18 用户拍板改名「设计资源库」（之前叫 AI 设计库 / 实验室）。路由仍是 /lab，别动。 */
   /* 导航格比标题短：日语「デザインライブラリ」会把品牌名挤成两行，导航里用「デザイン集」 */
-  navLabel: { en: "Design Library", zh: "设计资源库", "zh-tw": "設計資源庫", ja: "デザイン集", ko: "디자인 라이브러리", it: "Libreria design" },
-  title: { en: "Design Library", zh: "设计资源库", "zh-tw": "設計資源庫", ja: "デザインライブラリ", ko: "디자인 라이브러리", it: "Libreria design" },
+  navLabel: { en: "Design Library", zh: "设计库", "zh-tw": "設計庫", ja: "デザイン集", ko: "디자인 라이브러리", it: "Libreria design" },
+  title: { en: "Design Library", zh: "设计库", "zh-tw": "設計庫", ja: "デザインライブラリ", ko: "디자인 라이브러리", it: "Libreria design" },
   intro: {
-    en: "A working reference, not a gallery. Every sample here runs in the page — hover it, scroll it, replay it — and each one comes with the numbers it was built from, the whole source file, and a prompt that reproduces it from scratch.",
-    zh: "这是一份能用的参考，不是灵感墙。这里每个样板都在页面里真的跑着 —— 可以碰、可以滚、可以重播；每一条都附带它是用什么数值搭出来的、完整源文件、以及一句能从零把它复现出来的提示词。",
-    "zh-tw": "這是一份能用的參考，不是靈感牆。這裡每個樣板都在頁面裡真的跑著 —— 可以碰、可以捲、可以重播；每一條都附帶它是用什麼數值搭出來的、完整原始檔、以及一句能從零把它複現出來的提示詞。",
+    en: "Interface effects and whole interfaces, rebuilt so they can be taken apart: every sample runs live in the page — hover it, scroll it, replay it — and comes with the numbers it was built from, the full source file, and a prompt that reproduces it from scratch. The web templates next door are assembled from these parts.",
+    zh: "网页特效与整套界面，拆开重做成能用的样板：每一条都在页面里真的跑着 —— 可以碰、可以滚、可以重播；附它赖以成立的数值、完整源文件、以及一句能从零复现它的提示词。隔壁「网页设计」里的整站，就是用这些零件搭出来的。",
+    "zh-tw": "網頁特效與整套介面，拆開重做成能用的樣板：每一條都在頁面裡真的跑著 —— 可以碰、可以捲、可以重播；附它賴以成立的數值、完整原始檔、以及一句能從零複現它的提示詞。隔壁「網頁設計」裡的整站，就是用這些零件搭出來的。",
   },
   englishOnly: {
     en: "",
