@@ -118,6 +118,7 @@ export const addons: Addon[] = [
 ];
 
 export const copy = {
+  navLabel: { it: "Preventivo", en: "Pricing", zh: "报价", "zh-tw": "報價" },   // 首页页脚的入口
   title: { it: "Siti, gestionali e app per chi ha un’attività.", en: "Sites, back offices and apps for people who run a business.", zh: "给开店的人做网站、后台和 App。" },
   intro: {
     it: "Una persona sola fa il sito, il gestionale e le app, quindi le tre cose si parlano davvero. Nessun costo iniziale: un canone mensile, tutto incluso, disdici quando vuoi con 30 giorni di preavviso.",
