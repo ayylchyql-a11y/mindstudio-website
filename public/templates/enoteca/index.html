@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#1b1420" />
+  <meta name="description" content="Vinaia — enoteca con cucina in Bergamo Alta. Venti vini al calice, trecento etichette in cantina, taglieri e primi fino a mezzanotte, degustazioni il giovedì." />
+  <title>Vinaia — Enoteca con cucina · Bergamo Alta</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+
+  <header data-header>
+    <a class="logo press" href="#top" aria-label="Vinaia, torna all'inizio"><i>Vinaia</i><small>Enoteca con cucina · Bergamo Alta</small></a>
+    <nav>
+      <a href="#cantina">La cantina</a>
+      <a href="#carta">In carta</a>
+      <a href="#tessera">Tessera</a>
+      <a href="#cucina">Cucina</a>
+      <a href="#dove">Dove siamo</a>
+    </nav>
+    <div class="actions">
+      <button class="btn oro press" type="button" data-open>Prenota una degustazione</button>
+      <button class="menu-button press" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-button><i></i><i></i></button>
+    </div>
+  </header>
+  <div class="mobile-nav" data-mobile-nav aria-hidden="true">
+    <a href="#cantina" data-nav-link>La cantina</a>
+    <a href="#carta" data-nav-link>In carta</a>
+    <a href="#tessera" data-nav-link>Tessera</a>
+    <a href="#cucina" data-nav-link>Cucina</a>
+    <a href="#dove" data-nav-link>Dove siamo</a>
+    <button type="button" data-open>Prenota una degustazione</button>
+  </div>
+
+  <main id="main">
+    <!-- Hero: pinned for three screens while scroll takes it apart. Glass and
+         bottle slide away along their diagonals, the ring of light swells, the
+         centred title empties and four fragments arrive in the corners. The
+         windows overlap (0.35–0.45) on purpose: the hero is never empty. -->
+    <section class="hero" id="top" data-pin data-hero>
+      <div class="stage" style="--p:0;--p1:0;--p2:0">
+        <div class="ring"></div>
+        <div class="glass" aria-hidden="true"><i class="bowl"></i><i class="wine"></i><i class="stem"></i><i class="foot"></i></div>
+        <div class="bottle" aria-hidden="true"><i class="neck"></i><i class="body"></i><i class="label"></i></div>
+        <div class="title">
+          <p class="eyebrow">Bergamo Alta · via Colleoni 9</p>
+          <h1>Vinaia</h1>
+          <p class="sub">enoteca <b>con cucina</b></p>
+        </div>
+        <div class="lede"><small>Dalle 17 a mezzanotte</small>Venti vini al calice che cambiano ogni settimana, trecento etichette in cantina, e una cucina che chiude quando chiudiamo noi.</div>
+        <div class="chips"><span>Al calice</span><span>Naturali</span><span>Taglieri</span></div>
+        <div class="frag tl"><h2>Venti calici.<br /><span>Mai gli stessi.</span></h2><p>La lavagna cambia ogni lunedì. Chiedi un assaggio prima di scegliere: si può.</p></div>
+        <div class="frag tr"><small>01 / La cantina</small><h2>Trecento<br />etichette.</h2><p>Lombardia, Piemonte, Alto Adige e una parete di naturali francesi.</p></div>
+        <div class="frag bl"><small>02 / La cucina</small><p>Taglieri di salumi bergamaschi, casoncelli, polenta e formaggi di malga. Fino a mezzanotte.</p></div>
+        <div class="frag br"><small>03 / Il giovedì</small><h2>Degustazioni<br /><span>con chi li fa.</span></h2><p>Sei vini, un produttore al tavolo, 28 euro. Otto posti, si prenota.</p></div>
+        <div class="tabs"><span>Calici</span><span>Cantina</span><span>Cucina</span><span>Degustazioni</span><span>Tessera</span></div>
+        <p class="cue">scorri ↓</p>
+      </div>
+    </section>
+
+    <!-- The cellar door: a dusk over the hills with one lit doorway. Layers slide
+         by depth with the pointer, mist rises off the ground, the whole scene
+         creeps closer over 16 seconds. -->
+    <section class="cantina" id="cantina">
+      <div class="gate" id="gate" style="--px:0;--py:0">
+        <div class="layer sky"></div>
+        <div class="layer ridge far"><svg viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true"><path fill="#3a2430" d="M0 268 L40 250 L90 262 L140 232 L190 244 L240 220 L300 236 L350 214 L400 230 L460 222 L520 238 L580 226 L640 240 L700 224 L760 236 L820 218 L880 232 L940 224 L1000 236 L1000 400 L0 400 Z"/></svg></div>
+        <div class="layer ridge near"><svg viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true"><path fill="#1f1420" d="M0 290 L50 276 L110 284 L160 262 L220 272 L280 258 L340 268 L400 256 L460 266 L520 254 L580 262 L640 250 L700 262 L760 254 L820 264 L880 252 L940 262 L1000 256 L1000 400 L0 400 Z"/></svg></div>
+        <div class="layer wall"><div class="door"></div></div>
+        <div class="layer ground"></div>
+        <div class="layer fog"><i></i><i></i><i></i></div>
+      </div>
+      <div class="gate-copy">
+        <p class="eyebrow light">La cantina</p>
+        <h2><span class="line"><span>Scendi.</span></span><span class="line"><span>Sono dodici gradini.</span></span></h2>
+        <p>Trecento etichette a 14 gradi costanti, sotto le mura venete. Si visita con un calice in mano, il giovedì sera con chi il vino lo fa.</p>
+        <button class="btn oro" type="button" data-open>Prenota una degustazione</button>
+      </div>
+      <p class="hint" aria-hidden="true">muovi il cursore</p>
+    </section>
+
+    <!-- The list: a tilted band of glass follows the pointer across the
+         headline and refracts what is behind it. No WebGL — a clipped, shifted
+         copy of the same scene with a screen-blended sheen. -->
+    <section class="carta" id="carta">
+      <div class="lens-stage" id="lensStage">
+        <div class="scene"><div class="section-head"><p class="eyebrow light">In carta questa settimana</p><h2>Rosso. Bianco.<br /><em>Bollicine.</em></h2></div></div>
+        <div class="lens" id="lens"><div class="scene"><div class="section-head"><p class="eyebrow light">In carta questa settimana</p><h2>Rosso. Bianco.<br /><em>Bollicine.</em></h2></div></div></div>
+        <i class="edge edge-l" id="edgeL"></i><i class="edge edge-r" id="edgeR"></i>
+      </div>
+      <div class="wine-grid">
+        <div class="wine-col"><h3>Rossi</h3>
+          <div class="wine"><span>Valcalepio Rosso · Tallarini</span><i></i><b>€ 6</b></div>
+          <div class="wine"><span>Barbera d’Asti · Cascina Castlèt</span><i></i><b>€ 7</b></div>
+          <div class="wine"><span>Schiava · Alto Adige</span><i></i><b>€ 6,50</b></div>
+          <div class="wine"><span>Sangiovese naturale · Podere Sequerciani</span><i></i><b>€ 8</b></div>
+        </div>
+        <div class="wine-col"><h3>Bianchi</h3>
+          <div class="wine"><span>Moscato di Scanzo secco · Biava</span><i></i><b>€ 7</b></div>
+          <div class="wine"><span>Lugana · Cà Maiol</span><i></i><b>€ 6,50</b></div>
+          <div class="wine"><span>Kerner · Abbazia di Novacella</span><i></i><b>€ 8</b></div>
+          <div class="wine"><span>Orange · Ribolla macerata</span><i></i><b>€ 9</b></div>
+        </div>
+        <div class="wine-col"><h3>Bollicine</h3>
+          <div class="wine"><span>Franciacorta Brut · Barone Pizzini</span><i></i><b>€ 9</b></div>
+          <div class="wine"><span>Pét-nat · Costadilà</span><i></i><b>€ 7,50</b></div>
+          <div class="wine"><span>Champagne · Larmandier-Bernier</span><i></i><b>€ 14</b></div>
+          <div class="wine"><span>Lambrusco di Sorbara · Paltrinieri</span><i></i><b>€ 6</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The card: turn it with the pointer. The foil sheen's phase follows the
+         viewing angle, not a clock — the same choice that makes a real
+         holographic card read as a material rather than an animation. -->
+    <section class="tessera" id="tessera">
+      <div class="tessera-grid">
+        <div class="tessera-copy reveal">
+          <p class="eyebrow">Tessera Vinaia</p>
+          <h2>Dieci calici.<br /><em>L’undicesimo lo offriamo noi.</em></h2>
+          <p class="lead">Gratis, si fa in cassa in un minuto. Vale anche per le degustazioni del giovedì e per le bottiglie da portare via.</p>
+          <button class="btn ink" type="button" data-open>Chiedila alla prossima visita</button>
+        </div>
+        <div class="card-stage" id="cardStage">
+          <div class="card" id="card" style="--rx:0;--ry:0">
+            <div class="card-foil"></div>
+            <div class="card-face">
+              <span class="card-n">N° 0417</span>
+              <b>Vinaia</b>
+              <small>Enoteca con cucina · Bergamo Alta</small>
+              <div class="card-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+              <span class="card-foot">7 / 10 calici · il prossimo giovedì</span>
+            </div>
+            <div class="card-glare"></div>
+          </div>
+          <p class="hint" aria-hidden="true">muovi il cursore · girala</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cucina" id="cucina">
+      <div class="section-head reveal">
+        <p class="eyebrow">Cucina</p>
+        <h2>Da mangiare,<br /><em>fino a mezzanotte.</em></h2>
+      </div>
+      <div class="menu-grid">
+        <div class="dish reveal"><b>Tagliere bergamasco</b><p>Salame nostrano, pancetta, formaggella, miele di castagno</p><strong>€ 16</strong></div>
+        <div class="dish reveal"><b>Casoncelli alla bergamasca</b><p>Burro, salvia e pancetta croccante</p><strong>€ 13</strong></div>
+        <div class="dish reveal"><b>Polenta e formaggi di malga</b><p>Tre stagionature, cipolla in agrodolce</p><strong>€ 12</strong></div>
+        <div class="dish reveal"><b>Acciughe del Cantabrico</b><p>Burro salato, pane di Sopra</p><strong>€ 11</strong></div>
+        <div class="dish reveal"><b>Torta di mele</b><p>Con la crema, o senza</p><strong>€ 6</strong></div>
+        <div class="dish reveal"><b>Selezione del giovedì</b><p>Sei calici, un produttore al tavolo</p><strong>€ 28</strong></div>
+      </div>
+    </section>
+
+    <section class="store" id="dove">
+      <div class="store-copy reveal">
+        <p class="eyebrow">Dove siamo</p>
+        <h2>Via Colleoni 9<br />Bergamo Alta</h2>
+        <p>Mar–Dom · 17:00–00:00 · lunedì chiuso<br />+39 035 24 71 30 · ciao@vinaia.it</p>
+        <div class="hero-actions">
+          <button class="btn ink" type="button" data-open>Prenota una degustazione</button>
+          <a class="btn line" href="tel:+39035247130">Chiama</a>
+        </div>
+      </div>
+      <div class="store-art" aria-hidden="true"><span></span><span></span><span></span></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-logo"><i>Vinaia</i></div>
+    <div><a href="#cantina">La cantina</a><a href="#carta">In carta</a><a href="#tessera">Tessera</a><a href="#dove">Dove siamo</a></div>
+    <p>Design dimostrativo — contenuti, prezzi e contatti sono fittizi. <a href="/templates" target="_top">Torna alla collezione</a></p>
+  </footer>
+
+  <dialog class="modal" data-modal aria-labelledby="dialog-title">
+    <button class="close press" type="button" data-close aria-label="Chiudi">×</button>
+    <p class="eyebrow">Degustazioni del giovedì</p>
+    <h2 id="dialog-title">Sei vini, otto posti.</h2>
+    <p class="modal-lead">Confermiamo per messaggio entro sera. Si paga al tavolo.</p>
+    <form data-form>
+      <div class="row">
+        <label>Giovedì<input type="date" name="data" data-date required /></label>
+        <label>Persone<select name="persone"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+      </div>
+      <div class="row">
+        <label>Nome<input type="text" name="nome" required /></label>
+        <label>Telefono<input type="tel" name="telefono" required /></label>
+      </div>
+      <button class="btn ink wide" type="submit">Prenota</button>
+    </form>
+  </dialog>
+  <div class="toast" data-toast role="status" aria-live="polite">✓ Richiesta inviata · Ti confermiamo entro sera</div>
+</body>
+</html>

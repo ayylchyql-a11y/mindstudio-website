@@ -31,6 +31,7 @@ const FOLDERS = {
   "Pokeria模版": "pokeria", // 09-18 自己写的（Mumi Poke），碗是 SVG 画的、没有照片
   "Gelateria模版": "gelateria", // 09-18 自己写的（Nuvola），插画全是 CSS
   "Fiorista模版": "florist", // 09-18 自己写的（Petalo），花束/种子都是 CSS + canvas
+  "Enoteca模版": "enoteca", // 09-18 自己写的（Vinaia），酒杯/酒瓶/会员卡全 CSS
 };
 const STYLES = {
   "风格A-编辑杂志": "editorial",
