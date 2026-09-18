@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#f8f3ec" />
+  <meta name="description" content="Petalo — fiorista a Lecco. Fiori tagliati ogni mattina, bouquet composti al momento, consegna in giornata in città e sul lago." />
+  <title>Petalo — Fiorista Lecco</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+  <div class="promo">Consegna in giornata a Lecco e sul lago per ordini entro le 14:00</div>
+
+  <header data-header>
+    <a class="logo press" href="#top" aria-label="Petalo, torna all'inizio"><i>Petalo</i><small>Fiorista · Lecco</small></a>
+    <nav>
+      <a href="#bouquet">Il bouquet</a>
+      <a href="#servizi">Servizi</a>
+      <a href="#seme">Un seme</a>
+      <a href="#dove">Dove siamo</a>
+    </nav>
+    <div class="actions">
+      <button class="btn ink press" type="button" data-open>Ordina un bouquet</button>
+      <button class="menu-button press" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-button><i></i><i></i></button>
+    </div>
+  </header>
+  <div class="mobile-nav" data-mobile-nav aria-hidden="true">
+    <a href="#bouquet" data-nav-link>Il bouquet</a>
+    <a href="#servizi" data-nav-link>Servizi</a>
+    <a href="#seme" data-nav-link>Un seme</a>
+    <a href="#dove" data-nav-link>Dove siamo</a>
+    <button type="button" data-open>Ordina un bouquet</button>
+  </div>
+
+  <main id="main">
+    <!-- Hero: hover the wrapped bouquet and the paper opens with flowers pouring
+         out; leave and it rewinds from wherever it got to. One clock, ±1/DUR
+         per ms, every part reads its own slice of it. -->
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <p class="tag reveal">Lecco · via Cavour 28 · dal 2026</p>
+        <h1 class="reveal">Tagliati stamattina.<br /><em>Consegnati oggi.</em></h1>
+        <p class="lead reveal">Fiori dal mercato di Milano alle sei, composti al momento in negozio. Nessun bouquet uguale a un altro, nessuna cella frigo.</p>
+        <div class="hero-actions reveal">
+          <button class="btn ink" type="button" data-open>Ordina un bouquet <span>→</span></button>
+          <a class="btn light" href="#bouquet">Il bouquet della settimana</a>
+        </div>
+      </div>
+      <div class="wrap-scene" id="wrap" aria-hidden="true">
+        <div class="blooms" id="blooms"></div>
+        <div class="paper back"></div>
+        <div class="paper front"></div>
+        <div class="ribbon"></div>
+        <p class="hint">passa sopra · si apre</p>
+      </div>
+    </section>
+
+    <!-- Bouquet of the week: scroll walks the camera a full circle around it.
+         The camera never moves — the world rotates by p × 360° — and each note
+         surfaces at the angle it belongs to. -->
+    <section class="orbit" id="bouquet" data-pin data-orbit-section>
+      <div class="stage">
+        <div class="orbit-title">
+          <p class="eyebrow">Il bouquet della settimana</p>
+          <h2>Peonie, eucalipto,<br /><em>ranuncoli.</em></h2>
+        </div>
+        <div class="cam">
+          <div class="world">
+            <div class="floor"></div><div class="shadow"></div>
+            <div class="vase"></div>
+            <div class="stems"></div>
+            <div class="plane p1"><i class="fl peonia big"></i><i class="fl peonia"></i><i class="fl ranuncolo"></i><i class="lf"></i><i class="lf b"></i></div>
+            <div class="plane p2"><i class="fl peonia"></i><i class="fl ranuncolo big"></i><i class="fl bianco"></i><i class="lf"></i></div>
+            <div class="plane p3"><i class="fl bianco big"></i><i class="fl peonia"></i><i class="lf"></i><i class="lf b"></i></div>
+            <div class="plane p4"><i class="fl ranuncolo"></i><i class="fl bianco"></i><i class="fl peonia big"></i><i class="lf"></i></div>
+          </div>
+        </div>
+        <div class="note a" data-note="0.18,0.42"><small>Davanti</small>Peonie di Pescia, aperte al punto giusto: durano sei giorni in acqua fredda.</div>
+        <div class="note b" data-note="0.44,0.68"><small>Il lato</small>Eucalipto cinerea per il verde e il profumo. Si secca bene, non buttarlo.</div>
+        <div class="note c" data-note="0.62,0.86"><small>Dietro</small>Ranuncoli in tre toni: gli steli sono corti apposta, per la vista dall’alto.</div>
+        <div class="end" data-end><b>€ 35</b><span>carta kraft · biglietto scritto a mano · consegna in giornata</span><button class="btn ink" type="button" data-open>Ordina questo</button></div>
+        <p class="cue" aria-hidden="true">scorri per girare ↓</p>
+      </div>
+    </section>
+
+    <section class="servizi" id="servizi">
+      <div class="section-head reveal">
+        <p class="eyebrow">Servizi</p>
+        <h2>Un bouquet, un matrimonio,<br /><em>o un vaso ogni lunedì.</em></h2>
+      </div>
+      <div class="serv-grid">
+        <article class="serv reveal"><b>Bouquet del giorno</b><p>Fiori del mercato, composti al momento. Dici il budget, scegliamo noi.</p><strong>€ 25 · 35 · 50</strong></article>
+        <article class="serv reveal"><b>Abbonamento ufficio</b><p>Un vaso nuovo ogni lunedì mattina, ritiro del vecchio incluso.</p><strong>da € 60 / mese</strong></article>
+        <article class="serv reveal"><b>Matrimoni ed eventi</b><p>Sopralluogo, prova del bouquet, allestimento e smontaggio.</p><strong>su preventivo</strong></article>
+        <article class="serv reveal"><b>Piante da interno</b><p>Monstera, ficus, pothos: scelte per la luce che hai davvero.</p><strong>da € 18</strong></article>
+      </div>
+    </section>
+
+    <!-- A seed: click to drop it. It lands with a squash and from the point of
+         impact green creeps over the hill, sprouts and small flowers included. -->
+    <section class="seme" id="seme">
+      <div class="seme-grid">
+        <div class="seme-copy reveal">
+          <p class="eyebrow">Un seme per ogni bouquet</p>
+          <h2>Quello che vendiamo<br /><em>lo ripiantiamo.</em></h2>
+          <p class="lead">Per ogni bouquet piantiamo un seme di fiori di campo in Valsassina, con l’azienda agricola Colombo. Nel 2026 sono 4.180 semi.</p>
+        </div>
+        <div class="seme-stage" data-seme>
+          <canvas data-canvas></canvas>
+          <p class="seme-hint" data-seme-hint>clicca · lascia cadere il seme</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="store" id="dove">
+      <div class="store-copy reveal">
+        <p class="eyebrow">Dove siamo</p>
+        <h2>Via Cavour 28<br />Lecco</h2>
+        <p>Lun–Sab · 8:30–19:30 · Domenica 9:00–13:00<br />+39 0341 36 20 40 · ciao@petalolecco.it</p>
+        <div class="hero-actions">
+          <button class="btn ink" type="button" data-open>Ordina un bouquet</button>
+          <a class="btn light" href="https://wa.me/390341362040">WhatsApp</a>
+        </div>
+      </div>
+      <div class="store-art" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-logo"><i>Petalo</i></div>
+    <div><a href="#bouquet">Il bouquet</a><a href="#servizi">Servizi</a><a href="#seme">Un seme</a><a href="#dove">Dove siamo</a></div>
+    <p>Design dimostrativo — contenuti, prezzi e contatti sono fittizi. <a href="/templates" target="_top">Torna alla collezione</a></p>
+  </footer>
+
+  <dialog class="modal" data-modal aria-labelledby="dialog-title">
+    <button class="close press" type="button" data-close aria-label="Chiudi">×</button>
+    <p class="eyebrow">Ordina</p>
+    <h2 id="dialog-title">Un bouquet per…</h2>
+    <p class="modal-lead">Dicci l’occasione e il budget. Ti scriviamo su WhatsApp con una foto prima di consegnare.</p>
+    <form data-form>
+      <div class="row">
+        <label>Occasione<select name="occasione"><option>Compleanno</option><option>Anniversario</option><option>Scuse</option><option>Nascita</option><option>Nessuna, così</option></select></label>
+        <label>Budget<select name="budget"><option>€ 25</option><option>€ 35</option><option>€ 50</option><option>€ 80</option></select></label>
+      </div>
+      <div class="row">
+        <label>Consegna il<input type="date" name="data" data-date required /></label>
+        <label>Telefono<input type="tel" name="telefono" required /></label>
+      </div>
+      <label>Biglietto (lo scriviamo a mano)<input type="text" name="biglietto" placeholder="Per Giulia, che ha detto sì" /></label>
+      <button class="btn ink wide" type="submit">Invia l’ordine</button>
+    </form>
+  </dialog>
+  <div class="toast" data-toast role="status" aria-live="polite">✓ Ordine ricevuto · Ti scriviamo entro un’ora</div>
+</body>
+</html>
