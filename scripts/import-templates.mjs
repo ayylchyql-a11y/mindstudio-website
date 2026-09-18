@@ -32,6 +32,7 @@ const FOLDERS = {
   "Gelateria模版": "gelateria", // 09-18 自己写的（Nuvola），插画全是 CSS
   "Fiorista模版": "florist", // 09-18 自己写的（Petalo），花束/种子都是 CSS + canvas
   "Enoteca模版": "enoteca", // 09-18 自己写的（Vinaia），酒杯/酒瓶/会员卡全 CSS
+  "Sushi模版": "sushi", // 09-18 自己写的（Mumi Sushi），照片是 Mumi 线上 API 的真菜品图
 };
 const STYLES = {
   "风格A-编辑杂志": "editorial",
@@ -40,6 +41,8 @@ const STYLES = {
   // 手作的两套（目前只有 pokeria 有）：目录不存在就跳过
   "风格D-深海": "abisso",
   "风格E-市集": "mercato",
+  "风格D-回转": "kaiten",
+  "风格E-桌边": "tavolo",
 };
 /**
  * 09-18 用户拍板：「夜间玻璃」只有 Vinaia（enoteca）那套合适，其它模版的不上站。
@@ -99,12 +102,20 @@ for (const [folder, slug] of Object.entries(FOLDERS)) {
   });
   pages++;
 
-  // 只搬 CSS 里真正引用的图（pokeria 的碗是 SVG 画的，没有图，也就没有 assets 目录）
-  const css = readFileSync(join(from, "styles.css"), "utf8");
-  const used = [...css.matchAll(/url\(["']?\.\/assets\/([^"')]+)["']?\)/g)].map((m) => m[1]);
-  if (used.length === 0 && existsSync(join(from, "assets"))) throw new Error(`${slug}: assets dir present but nothing referenced`);
-  if (used.length) mkdirSync(join(to, "assets"), { recursive: true });
-  for (const file of new Set(used)) cpSync(join(from, "assets", file), join(to, "assets", file));
+  // 只搬真正被引用的图。引用可能在 CSS 的 url()、HTML 的 src，或者 JS 里拼出来的
+  // 模板串（sushi：`../assets/${file}.webp`，文件名只以 'nigiri-tonno' 这种裸字符串出现），
+  // 所以判据是「assets 里每个文件的主名是否出现在任何 html/css/js 里」。
+  // 2MB 的 .png 母图主名跟 jpg 一样，要额外按扩展名排除。
+  const assetsDir = join(from, "assets");
+  if (existsSync(assetsDir)) {
+    let text = "";
+    const scan = (dir) => { for (const f of readdirSync(dir, { withFileTypes: true })) { const fp = join(dir, f.name); if (f.isDirectory()) { if (f.name !== "assets") scan(fp); continue; } if (/\.(html|css|js)$/.test(f.name)) text += readFileSync(fp, "utf8") + "\n"; } };
+    scan(from);
+    const used = readdirSync(assetsDir).filter((f) => !f.endsWith(".png") && text.includes(f.replace(/\.[a-z]+$/i, "")));
+    if (used.length === 0) throw new Error(`${slug}: assets dir present but nothing referenced`);
+    mkdirSync(join(to, "assets"), { recursive: true });
+    for (const file of used) cpSync(join(assetsDir, file), join(to, "assets", file));
+  }
 
   for (const [zh, style] of Object.entries(STYLES)) {
     if (!existsSync(join(from, zh))) continue;

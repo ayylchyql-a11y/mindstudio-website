@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:wght@400;500;600&display=swap');
+
+:root {
+  --bianco: #fbfaf6;
+  --bianco-2: #ffffff;
+  --ink: #1c1a17;
+  --ink-2: rgba(28, 26, 23, .62);
+  --legno: #d9c3a3;
+  --legno-2: #b89a72;
+  --line: rgba(28, 26, 23, .12);
+  --ease: cubic-bezier(.23, 1, .32, 1);
+  --ease-soft: cubic-bezier(.22, .61, .36, 1);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+body { margin: 0; background: var(--bianco); color: var(--ink); font-family: "DM Sans", sans-serif; -webkit-font-smoothing: antialiased; }
+body.lock { overflow: hidden; }
+button, input { font: inherit; }
+a { color: inherit; }
+h1, h2, h3, p, ul { margin: 0; }
+.skip { position: fixed; z-index: 100; top: 8px; left: 8px; padding: 10px; background: var(--ink); color: var(--bianco); transform: translateY(-150%); }
+.skip:focus { transform: none; }
+.press, .btn, .dish button { transition: transform 140ms var(--ease); }
+.press:active, .btn:active, .dish button:active { transform: scale(.97); }
+.promo { display: flex; height: 30px; align-items: center; justify-content: center; background: var(--ink); color: var(--bianco); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+
+/* ── Header ── */
+header { position: absolute; z-index: 20; top: 30px; left: 0; right: 0; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 76px; padding: 0 clamp(18px, 4vw, 60px); }
+header.fixed { position: fixed; top: 0; background: rgba(251, 250, 246, .88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: inset 0 -1px var(--line); }
+.logo { display: flex; align-items: baseline; gap: 6px; text-decoration: none; font-family: "Bricolage Grotesque", sans-serif; }
+.logo b { font-weight: 800; font-size: 20px; letter-spacing: .06em; }
+.logo i { font-style: normal; font-weight: 500; font-size: 20px; color: var(--ink-2); }
+header nav { display: flex; gap: 22px; font-size: 14px; font-weight: 500; }
+header nav a { text-decoration: none; opacity: .78; transition: opacity 160ms; }
+header nav a:hover { opacity: 1; }
+.actions { display: flex; justify-content: flex-end; align-items: center; gap: 10px; }
+.cart-button, .menu-button { height: 40px; border: 1px solid var(--line); border-radius: 99px; background: var(--bianco-2); padding: 0 16px; cursor: pointer; font-weight: 600; }
+.cart-button { display: flex; align-items: center; gap: 8px; background: var(--ink); color: var(--bianco); border-color: var(--ink); }
+.cart-button b { display: grid; place-items: center; min-width: 20px; height: 20px; border-radius: 99px; background: #c93b3b; color: #fff; font-size: 11px; padding: 0 5px; }
+.menu-button { display: none; width: 40px; padding: 0; place-items: center; gap: 5px; }
+.menu-button i { display: block; width: 16px; height: 2px; background: var(--ink); }
+.mobile-nav { position: fixed; z-index: 19; inset: 0; display: none; flex-direction: column; justify-content: center; gap: 22px; padding: 40px; background: var(--bianco); font-family: "Bricolage Grotesque", sans-serif; font-size: 36px; font-weight: 700; }
+.mobile-nav.open { display: flex; }
+.mobile-nav a { text-decoration: none; }
+.mobile-nav button { align-self: flex-start; border: 0; background: var(--ink); color: var(--bianco); padding: 12px 20px; border-radius: 99px; font: 600 15px "DM Sans", sans-serif; }
+
+/* ── Buttons / type ── */
+.btn { display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 22px; border-radius: 99px; border: 1px solid transparent; text-decoration: none; font-weight: 600; font-size: 15px; cursor: pointer; }
+.btn.ink { background: var(--ink); color: var(--bianco); }
+.btn.light { background: var(--bianco-2); border-color: var(--line); color: var(--ink); }
+.btn.wide { width: 100%; justify-content: center; }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn span { transition: transform 200ms var(--ease); }
+.btn:hover span { transform: translateY(2px); }
+.eyebrow { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; font-weight: 600; color: var(--ink-2); margin-bottom: 14px; }
+.section-head { max-width: 640px; margin-bottom: 34px; }
+h2 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: clamp(34px, 5vw, 58px); line-height: 1; letter-spacing: -.03em; }
+.section-head > p:last-child { margin-top: 16px; font-size: 16px; line-height: 1.6; color: var(--ink-2); max-width: 520px; }
+.lead { margin-top: 20px; font-size: clamp(16px, 1.6vw, 19px); line-height: 1.6; max-width: 460px; color: var(--ink-2); }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+section { padding: clamp(64px, 9vw, 120px) clamp(18px, 4vw, 60px); }
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity 600ms var(--ease), transform 600ms var(--ease); }
+.reveal.show { opacity: 1; transform: none; }
+.hint { font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase; opacity: .45; }
+
+/* ── The plate (shared): a coloured rim, and inside it the real photo,
+   clipped to the circle. The tier colour is the rim — that is how a kaiten
+   prices a plate. ── */
+.plate { display: block; width: 64px; height: 64px; border-radius: 50%; background: var(--c, #3b9d6e); padding: 5px; box-shadow: 0 6px 14px rgba(28, 26, 23, .16); position: relative; overflow: hidden; }
+.plate img { display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #fff; transform: scale(1.32); }   /* the studio shot is mostly white plate: zoom to the food */
+
+/* ── Hero + belt ── */
+.hero { position: relative; overflow: hidden; min-height: 100vh; min-height: 100svh; display: grid; align-content: start; padding-top: 140px; padding-bottom: 240px; background: radial-gradient(50% 60% at 85% 20%, #fde7d6, transparent 60%), var(--bianco); }
+.tag { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; margin-bottom: 22px; color: var(--ink-2); }
+.hero h1 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: clamp(48px, 7vw, 92px); line-height: .9; letter-spacing: -.04em; }
+.hero h1 em { font-style: normal; color: #c93b3b; }
+/* the belt: a wooden band with plates sliding on it, forever */
+.belt { position: absolute; left: 0; right: 0; bottom: 60px; height: 150px; background: linear-gradient(180deg, var(--legno), var(--legno-2)); overflow: hidden; }
+.belt::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 58px, rgba(0, 0, 0, .06) 58px 60px); }
+.belt-edge { position: absolute; left: 0; right: 0; height: 10px; background: var(--ink); }
+.belt-edge.top { top: 0; } .belt-edge.bottom { bottom: 0; }
+.belt-track { position: absolute; top: 30px; left: 0; display: flex; gap: 40px; padding-left: 40px; animation: belt 28s linear infinite; will-change: transform; }
+.belt-track .plate { width: 96px; height: 96px; flex: none; padding: 7px; }
+@keyframes belt { to { transform: translateX(-50%); } }
+.belt:hover .belt-track { animation-play-state: paused; }
+
+/* ── The colours: hover-tinted list ── */
+.colori { background: var(--tint); transition: background-color 600ms var(--ease-soft); color: #fff; }
+.colori .eyebrow { color: rgba(255, 255, 255, .7); }
+.colori-grid { display: grid; grid-template-columns: 1fr 340px; gap: 40px; align-items: start; }
+.tiers { list-style: none; padding: 0; margin-top: 30px; }
+.row { display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto; column-gap: 14px; align-items: baseline; padding: 14px 6px; border-top: 1px solid rgba(255, 255, 255, .25); cursor: pointer; opacity: .42; transition: opacity 300ms var(--ease-soft), transform 300ms var(--ease-soft); }
+.row span { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: clamp(28px, 3.6vw, 44px); line-height: 1; letter-spacing: -.02em; }
+.row small { grid-column: 1; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; opacity: .8; margin-top: 4px; }
+.row em { grid-column: 2; grid-row: 1 / 3; font-style: normal; font-family: ui-monospace, Menlo, monospace; font-size: 14px; }
+.row.on { opacity: 1; transform: translateX(6px); }
+.row:hover { opacity: 1; }
+.row:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.tier-side { position: sticky; top: 120px; display: grid; justify-items: end; text-align: right; gap: 8px; }
+.plate-preview { position: relative; width: 200px; height: 200px; margin-bottom: 10px; }
+.plate-preview .plate { width: 200px; height: 200px; padding: 12px; --c: var(--tint); transition: background 400ms; box-shadow: 0 30px 40px -20px rgba(0, 0, 0, .4); }
+.tier-price { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 44px; line-height: 1; }
+.tier-name { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; opacity: .8; }
+.tier-blurb { font-size: 14px; line-height: 1.55; max-width: 300px; opacity: .9; }
+.fade { transition: opacity 220ms, transform 220ms; }
+.fade.swap { opacity: 0; transform: translateY(4px); }
+.tier-side .hint { margin-top: 12px; color: rgba(255, 255, 255, .7); }
+
+/* ── Plates on the belt ── */
+.plates { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.dish { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 12px; padding: 14px 14px 14px 12px; background: var(--bianco-2); border: 1px solid var(--line); border-radius: 18px; }
+.dish h3 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 16px; }
+.dish p { font-size: 12.5px; color: var(--ink-2); margin-top: 2px; }
+.dish b { font-family: ui-monospace, Menlo, monospace; font-size: 13px; white-space: nowrap; }
+.dish button { width: 36px; height: 36px; border-radius: 99px; border: 0; background: var(--c); color: #fff; font-size: 20px; cursor: pointer; }
+.come { background: var(--bianco-2); }
+.rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.rules > div { padding: 26px; border: 1px solid var(--line); border-radius: 22px; }
+.rules b { display: block; font-size: 11px; letter-spacing: .16em; color: var(--ink-2); margin-bottom: 36px; }
+.rules h3 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -.02em; margin-bottom: 8px; }
+.rules p { font-size: 14.5px; line-height: 1.6; color: var(--ink-2); }
+
+/* ── Store / footer ── */
+.store { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.store-copy > p:not(.eyebrow) { margin-top: 16px; font-size: 16px; line-height: 1.6; color: var(--ink-2); }
+.magnet { --mx: 0px; --my: 0px; transform: translate(var(--mx), var(--my)); transition: transform 450ms cubic-bezier(.23, 1, .32, 1), box-shadow 300ms ease; }
+.magnet.tracking { transition-duration: 0ms, 300ms; }
+.magnet:hover { box-shadow: 0 14px 34px rgba(28, 26, 23, .26); }
+.store-art { position: relative; aspect-ratio: 4 / 3; border-radius: 26px; overflow: hidden; border: 1px solid var(--line); }
+.store-art img { display: block; width: 100%; height: 100%; object-fit: cover; }
+footer { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 24px; padding: 30px clamp(18px, 4vw, 60px); border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-2); }
+.footer-logo { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; color: var(--ink); }
+.footer-logo i { font-style: normal; font-weight: 500; color: var(--ink-2); }
+footer div a { margin-right: 18px; text-decoration: none; }
+
+/* ── The pile (cart) ── */
+.scrim { position: fixed; z-index: 30; inset: 0; background: rgba(28, 26, 23, .4); opacity: 0; pointer-events: none; transition: opacity 300ms; }
+.scrim.show { opacity: 1; pointer-events: auto; }
+.cart { position: fixed; z-index: 31; top: 0; right: 0; bottom: 0; width: min(420px, 100%); display: grid; grid-template-rows: auto auto 1fr auto; background: var(--bianco); transform: translateX(100%); transition: transform 420ms var(--ease); }
+.cart.open { transform: none; }
+.cart-head { display: flex; justify-content: space-between; align-items: flex-start; padding: 26px 24px 8px; }
+.cart-head h2 { font-size: 32px; }
+.cart-head button { width: 40px; height: 40px; border-radius: 99px; border: 1px solid var(--line); background: #fff; font-size: 22px; cursor: pointer; }
+/* the pile itself: one ellipse per plate, in its colour, stacked */
+.stack { position: relative; height: 120px; margin: 0 24px; border-bottom: 1px solid var(--line); }
+.stack i { position: absolute; left: 50%; width: 120px; height: 18px; margin-left: -60px; border-radius: 50%; background: var(--c); box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .18); animation: drop 320ms var(--ease) both; }
+.stack i::after { content: ""; position: absolute; left: 14%; right: 14%; top: 25%; height: 40%; border-radius: 50%; background: #fff; }
+@keyframes drop { from { transform: translateY(-40px); opacity: 0; } }
+.cart-items { overflow: auto; padding: 12px 24px; }
+.cart-item { display: grid; grid-template-columns: 14px 1fr auto auto; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.cart-item i { width: 14px; height: 14px; border-radius: 50%; background: var(--c); }
+.cart-item button { width: 28px; height: 28px; border-radius: 99px; border: 1px solid var(--line); background: #fff; cursor: pointer; }
+.empty { text-align: center; padding: 30px 10px; color: var(--ink-2); }
+.empty h3 { font-family: "Bricolage Grotesque", sans-serif; font-size: 22px; color: var(--ink); }
+.cart-foot { display: grid; gap: 12px; padding: 16px 24px 26px; border-top: 1px solid var(--line); }
+.cart-total { display: flex; justify-content: space-between; align-items: baseline; }
+.cart-total b { font-family: "Bricolage Grotesque", sans-serif; font-size: 30px; font-weight: 800; }
+.cart-foot small { text-align: center; color: var(--ink-2); font-size: 11.5px; }
+.toast { position: fixed; z-index: 40; left: 50%; bottom: 26px; transform: translate(-50%, 20px); padding: 12px 18px; border-radius: 99px; background: var(--ink); color: var(--bianco); font-size: 14px; font-weight: 500; opacity: 0; pointer-events: none; transition: opacity 250ms, transform 300ms var(--ease); }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ── Responsive ── */
+@media (max-width: 980px) {
+  header { grid-template-columns: 1fr auto; }
+  header nav { display: none; }
+  .menu-button { display: grid; }
+  .colori-grid { grid-template-columns: 1fr; }
+  .tier-side { position: static; justify-items: start; text-align: left; }
+  .plates { grid-template-columns: 1fr 1fr; }
+  .rules, .store { grid-template-columns: 1fr; }
+  footer { grid-template-columns: 1fr; gap: 12px; }
+}
+@media (max-width: 560px) {
+  .hero h1 { font-size: 60px; }
+  .plates { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .belt-track { animation: none; }
+  .colori, .row, .fade, .cart, .scrim, .toast, .magnet { transition: none; }
+  .stack i { animation: none; }
+  .magnet { --mx: 0px !important; --my: 0px !important; }
+  .hint { display: none; }
+}

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#fbfaf6" />
+  <meta name="description" content="Mumi Sushi Kaiten — sushi sul nastro a Vimercate. Prendi il piatto che passa, il colore dice il prezzo, alla fine contiamo i piatti." />
+  <title>Mumi Sushi — Kaiten · Vimercate</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+  <div class="promo">Nastro attivo tutti i giorni · 11:00–14:30 · 18:00–22:30</div>
+
+  <header data-header>
+    <a class="logo press" href="#top" aria-label="Mumi Sushi, torna all'inizio"><b>MUMI</b><i>kaiten</i></a>
+    <nav>
+      <a href="#colori">I colori</a>
+      <a href="#nastro">Sul nastro</a>
+      <a href="#come">Come funziona</a>
+      <a href="#dove">Dove siamo</a>
+    </nav>
+    <div class="actions">
+      <button class="cart-button press" type="button" aria-label="Apri la pila, 0 piatti" data-open-cart><span>La pila</span><b data-cart-count>0</b></button>
+      <button class="menu-button press" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-button><i></i><i></i></button>
+    </div>
+  </header>
+  <div class="mobile-nav" data-mobile-nav aria-hidden="true">
+    <a href="#colori" data-nav-link>I colori</a>
+    <a href="#nastro" data-nav-link>Sul nastro</a>
+    <a href="#come" data-nav-link>Come funziona</a>
+    <a href="#dove" data-nav-link>Dove siamo</a>
+    <button type="button" data-open-cart>Apri la pila</button>
+  </div>
+
+  <main id="main">
+    <!-- Hero: the belt never stops. One track duplicated, translated by exactly
+         its own width on a linear loop, so the seam lands where the copy begins. -->
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <p class="tag reveal">Vimercate · piazzale Marconi 12</p>
+        <h1 class="reveal">Prendi.<br />Mangia.<br /><em>Impila.</em></h1>
+        <p class="lead reveal">Il sushi passa davanti a te. Il colore del piatto è il prezzo. Alla fine contiamo la pila.</p>
+        <div class="hero-actions reveal">
+          <a class="btn ink" href="#nastro">Guarda il nastro <span>↓</span></a>
+          <a class="btn light" href="#colori">I colori dei piatti</a>
+        </div>
+      </div>
+      <div class="belt" aria-hidden="true">
+        <div class="belt-track" data-belt></div>
+        <div class="belt-edge top"></div><div class="belt-edge bottom"></div>
+      </div>
+    </section>
+
+    <!-- The colours: each tier owns a colour; hover one and the whole section
+         repaints to it, the tier steps forward, the price and blurb follow. -->
+    <section class="colori" id="colori" style="--tint:#3b9d6e">
+      <div class="colori-grid">
+        <div>
+          <p class="eyebrow">I colori</p>
+          <h2>Quattro colori.<br />Quattro prezzi.</h2>
+          <ul class="tiers" data-tiers>
+            <li class="row on" tabindex="0" data-tint="#3b9d6e" data-price="€ 2,50" data-name="Verde" data-img="hoso-cetriolo" data-blurb="Maki di cetriolo, edamame, gyoza al vapore, riso e alga. Il piatto da riempire."><span>Verde</span><small>base</small><em>€ 2,50</em></li>
+            <li class="row" tabindex="0" data-tint="#2f6fb3" data-price="€ 3,50" data-name="Blu" data-img="nigiri-salmone" data-blurb="Uramaki California, nigiri di salmone, tamago. Quello che prendi più spesso."><span>Blu</span><small>classici</small><em>€ 3,50</em></li>
+            <li class="row" tabindex="0" data-tint="#c93b3b" data-price="€ 4,50" data-name="Rosso" data-img="nigiri-tonno" data-blurb="Nigiri di tonno, gambero cotto, salmone flambé, uramaki tempura."><span>Rosso</span><small>premium</small><em>€ 4,50</em></li>
+            <li class="row" tabindex="0" data-tint="#c9922e" data-price="€ 6,00" data-name="Oro" data-img="nigiri-gambero-rosso" data-blurb="Ricciola, capasanta, anguilla, tonno rosso e i piatti dello chef. Passa raramente: prendilo."><span>Oro</span><small>chef</small><em>€ 6,00</em></li>
+          </ul>
+        </div>
+        <aside class="tier-side">
+          <div class="plate-preview"><i class="plate"><img data-tier-img src="../assets/hoso-cetriolo.webp" alt="" /></i></div>
+          <div class="tier-price fade" data-tier-price>€ 2,50</div>
+          <div class="tier-name fade" data-tier-name>Verde</div>
+          <p class="tier-blurb fade" data-tier-blurb>Maki di cetriolo, edamame, gyoza al vapore, riso e alga. Il piatto da riempire.</p>
+          <p class="hint">passa sopra un colore</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="nastro" id="nastro">
+      <div class="section-head reveal">
+        <p class="eyebrow">Sul nastro adesso</p>
+        <h2>Prendi quello<br />che passa.</h2>
+        <p>Da casa non passa niente, ma puoi ordinare la tua pila: la portiamo in 30 minuti.</p>
+      </div>
+      <div class="plates">
+        <article class="dish reveal" style="--c:#3b9d6e"><i class="plate"><img src="../assets/hoso-cetriolo.webp" alt="" loading="lazy" /></i><div><h3>Kappa maki</h3><p>Cetriolo, sesamo</p></div><b>€ 2,50</b><button type="button" data-add data-name="Kappa maki" data-price="2.50" data-tier="Verde">＋</button></article>
+        <article class="dish reveal" style="--c:#3b9d6e"><i class="plate"><img src="../assets/edamame.webp" alt="" loading="lazy" /></i><div><h3>Edamame</h3><p>Sale di Cervia</p></div><b>€ 2,50</b><button type="button" data-add data-name="Edamame" data-price="2.50" data-tier="Verde">＋</button></article>
+        <article class="dish reveal" style="--c:#2f6fb3"><i class="plate"><img src="../assets/nigiri-salmone.webp" alt="" loading="lazy" /></i><div><h3>Nigiri salmone</h3><p>Due pezzi</p></div><b>€ 3,50</b><button type="button" data-add data-name="Nigiri salmone" data-price="3.50" data-tier="Blu">＋</button></article>
+        <article class="dish reveal" style="--c:#2f6fb3"><i class="plate"><img src="../assets/ura-salmone.webp" alt="" loading="lazy" /></i><div><h3>California</h3><p>Surimi, avocado, tobiko</p></div><b>€ 3,50</b><button type="button" data-add data-name="California" data-price="3.50" data-tier="Blu">＋</button></article>
+        <article class="dish reveal" style="--c:#c93b3b"><i class="plate"><img src="../assets/nigiri-tonno.webp" alt="" loading="lazy" /></i><div><h3>Nigiri tonno</h3><p>Due pezzi</p></div><b>€ 4,50</b><button type="button" data-add data-name="Nigiri tonno" data-price="4.50" data-tier="Rosso">＋</button></article>
+        <article class="dish reveal" style="--c:#c93b3b"><i class="plate"><img src="../assets/special-salmon-maki.webp" alt="" loading="lazy" /></i><div><h3>Salmone flambé</h3><p>Salsa teriyaki, cipollotto</p></div><b>€ 4,50</b><button type="button" data-add data-name="Salmone flambé" data-price="4.50" data-tier="Rosso">＋</button></article>
+        <article class="dish reveal" style="--c:#c9922e"><i class="plate"><img src="../assets/nigiri-branzino.webp" alt="" loading="lazy" /></i><div><h3>Ricciola e yuzu</h3><p>Due pezzi</p></div><b>€ 6,00</b><button type="button" data-add data-name="Ricciola e yuzu" data-price="6.00" data-tier="Oro">＋</button></article>
+        <article class="dish reveal" style="--c:#c9922e"><i class="plate"><img src="../assets/nigiri-anguilla.webp" alt="" loading="lazy" /></i><div><h3>Anguilla</h3><p>Glassa, sesamo</p></div><b>€ 6,00</b><button type="button" data-add data-name="Anguilla" data-price="6.00" data-tier="Oro">＋</button></article>
+      </div>
+    </section>
+
+    <section class="come" id="come">
+      <div class="section-head reveal"><p class="eyebrow">Come funziona</p><h2>Tre regole.<br />Poi si mangia.</h2></div>
+      <div class="rules">
+        <div class="reveal"><b>01</b><h3>Siediti dove vuoi</h3><p>Il nastro fa il giro completo: da ogni posto passa tutto.</p></div>
+        <div class="reveal"><b>02</b><h3>Prendi, non toccare</h3><p>Un piatto preso è tuo. Quelli che lasci passare tornano in cucina dopo due giri.</p></div>
+        <div class="reveal"><b>03</b><h3>Contiamo la pila</h3><p>Ogni colore ha il suo prezzo. Il cameriere conta i piatti al tavolo, davanti a te.</p></div>
+      </div>
+    </section>
+
+    <section class="store" id="dove">
+      <div class="store-copy reveal">
+        <p class="eyebrow">Dove siamo</p>
+        <h2>Piazzale Guglielmo Marconi 12<br />Vimercate (MB)</h2>
+        <p>Tutti i giorni · 11:00–14:30 · 18:00–22:30<br />+39 392 416 6908</p>
+        <div class="hero-actions">
+          <a class="btn ink magnet" href="https://wa.me/393924166908" data-magnet>Ordina su WhatsApp</a>
+          <button class="btn light" type="button" data-open-cart>Vedi la pila</button>
+        </div>
+      </div>
+      <div class="store-art" aria-hidden="true"><img src="../assets/sushi-mix.webp" alt="" loading="lazy" /></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-logo">MUMI <i>kaiten</i></div>
+    <div><a href="#colori">I colori</a><a href="#nastro">Sul nastro</a><a href="#come">Come funziona</a><a href="#dove">Dove siamo</a></div>
+    <p>Design dimostrativo — prezzi e piatti sono indicativi. <a href="/templates/sushi" target="_top">← Tutti gli stili</a></p>
+  </footer>
+
+  <div class="scrim" data-scrim></div>
+  <aside class="cart" data-cart aria-hidden="true" aria-label="La pila">
+    <div class="cart-head"><div><p class="eyebrow">Il tuo ordine</p><h2>La pila</h2></div><button class="press" type="button" aria-label="Chiudi" data-close-cart>×</button></div>
+    <div class="stack" data-stack aria-hidden="true"></div>
+    <div class="cart-items" data-cart-items></div>
+    <div class="cart-foot"><div class="cart-total"><span>Totale</span><b data-cart-total>€ 0,00</b></div><button class="btn ink wide" type="button" data-checkout disabled>Ordina la pila</button><small>Demo: nessun pagamento reale.</small></div>
+  </aside>
+  <div class="toast" data-toast role="status" aria-live="polite">Piatto sulla pila</div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0e0c0b" />
+  <meta name="description" content="Mumi Sushi — ristorante giapponese a Vimercate. Omakase di dodici portate al banco, nigiri e crudo, aperti tutti i giorni." />
+  <title>Mumi Sushi — Omakase · Vimercate</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+
+  <header data-header>
+    <a class="logo press" href="#top" aria-label="Mumi Sushi, torna all'inizio"><b>MUMI</b><i>sushi</i><small>Vimercate</small></a>
+    <nav>
+      <a href="#omakase">Omakase</a>
+      <a href="#menu">Menù</a>
+      <a href="#banco">Il banco</a>
+      <a href="#dove">Dove siamo</a>
+    </nav>
+    <div class="actions">
+      <button class="btn oro press" type="button" data-open>Prenota il banco</button>
+      <button class="menu-button press" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-button><i></i><i></i></button>
+    </div>
+  </header>
+  <div class="mobile-nav" data-mobile-nav aria-hidden="true">
+    <a href="#omakase" data-nav-link>Omakase</a>
+    <a href="#menu" data-nav-link>Menù</a>
+    <a href="#banco" data-nav-link>Il banco</a>
+    <a href="#dove" data-nav-link>Dove siamo</a>
+    <button type="button" data-open>Prenota il banco</button>
+  </div>
+
+  <main id="main">
+    <!-- Hero: the twelve courses as a frame sequence — real plates, and the
+         scroll position picks which one is on the counter. Nothing plays on
+         its own — the reader is the transport control; letting go stops it. -->
+    <section class="hero" id="top" data-pin data-seq>
+      <div class="stage">
+        <div class="seq" data-seq-stage aria-hidden="true"></div>
+        <div class="hud">
+          <p class="eyebrow">Vimercate · piazzale Marconi 12</p>
+          <h1>Una cosa<br /><em>alla volta.</em></h1>
+          <p class="lead">Riso a temperatura del corpo, pesce tagliato davanti a te, un pezzo ogni volta che sei pronto. Dodici portate, un banco da otto.</p>
+          <div class="hero-actions">
+            <button class="btn oro" type="button" data-open>Prenota il banco <span>→</span></button>
+            <a class="btn ghost" href="#omakase">Le dodici portate</a>
+          </div>
+          <div class="readout"><span>portata</span> <b data-frame>1</b> / <span data-frames>10</span> · <em data-frame-name>Sashimi misto</em></div>
+          <div class="rail"><i data-rail></i></div>
+          <p class="cue">scorri · una portata alla volta</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- The twelve courses as stations along a lit path: scroll is one
+         continuous dolly, the camera swings wide → close → wide again, and
+         three notes surface where they belong. -->
+    <section class="omakase" id="omakase" data-pin data-helix>
+      <div class="stage">
+        <canvas data-helix-canvas></canvas>
+        <div class="copy c1" data-station="0"><p class="eyebrow">Omakase · portate 1–4</p><h2>Si comincia<br />dal crudo.</h2><p>Sashimi di ricciola, tonno rosso, capasanta con yuzu, gambero rosso di Mazara. Freddo, pulito, senza soia.</p></div>
+        <div class="copy c2" data-station="1"><p class="eyebrow">Portate 5–10</p><h2>Poi il riso.</h2><p>Sei nigiri, uno alla volta, ognuno già condito: nikiri sul tonno, sale e lime sulla ricciola, tartufo sull’anguilla. Non serve la soia.</p></div>
+        <div class="copy c3" data-station="2"><p class="eyebrow">Portate 11–12</p><h2>Brodo,<br />poi dolce.</h2><p>Miso di stagione e un dorayaki con crema al tè matcha. Il tè lo offriamo noi.</p></div>
+        <div class="readout"><span>stazione</span> <b data-station-n>1</b> / 3</div>
+        <p class="cue" data-helix-cue>scorri ↓</p>
+      </div>
+    </section>
+
+    <section class="menu" id="menu">
+      <div class="section-head reveal">
+        <p class="eyebrow">Formule</p>
+        <h2>Al banco<br /><em>o al tavolo.</em></h2>
+      </div>
+      <div class="formule">
+        <article class="formula reveal"><small>Al banco · 8 posti</small><b>Omakase 12</b><p>Dodici portate scelte dallo chef, due turni: 19:00 e 21:15.</p><strong>€ 65</strong></article>
+        <article class="formula reveal"><small>Al banco · pranzo</small><b>Omakase 8</b><p>Otto portate, solo a pranzo, in cinquanta minuti.</p><strong>€ 45</strong></article>
+        <article class="formula reveal"><small>Al tavolo</small><b>Alla carta</b><p>Nigiri, uramaki, crudo e cucina calda. Il menù completo è al tavolo.</p><strong>da € 3</strong></article>
+      </div>
+    </section>
+
+    <section class="banco" id="banco">
+      <div class="banco-grid">
+        <div class="reveal">
+          <p class="eyebrow">Il banco</p>
+          <h2>Otto sgabelli.<br /><em>Nessun tavolo dietro.</em></h2>
+          <p class="lead">Il banco è di cipresso, senza vernice: si lava con acqua calda ogni sera. Lo chef taglia a un metro da te e ti passa ogni pezzo con la mano.</p>
+        </div>
+        <ul class="rules reveal">
+          <li><b>Si mangia con le mani.</b> Le bacchette ci sono, ma non servono.</li>
+          <li><b>Un pezzo, dieci secondi.</b> Il riso è tiepido solo per un momento.</li>
+          <li><b>Niente soia sul tavolo.</b> Ogni nigiri arriva già condito.</li>
+          <li><b>Allergie e intolleranze</b> si dicono alla prenotazione, non al banco.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="store" id="dove">
+      <div class="store-copy reveal">
+        <p class="eyebrow">Dove siamo</p>
+        <h2>Piazzale Guglielmo Marconi 12<br />Vimercate (MB)</h2>
+        <p>Tutti i giorni · 11:00–14:30 · 18:00–22:30<br />+39 392 416 6908</p>
+        <div class="hero-actions">
+          <button class="btn oro" type="button" data-open>Prenota il banco</button>
+          <a class="btn ghost" href="https://wa.me/393924166908">WhatsApp</a>
+        </div>
+      </div>
+      <div class="store-art" aria-hidden="true"><img src="./assets/nigiri-misto.webp" alt="" loading="lazy" /></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-logo">MUMI <i>sushi</i></div>
+    <div><a href="#omakase">Omakase</a><a href="#menu">Menù</a><a href="#banco">Il banco</a><a href="#dove">Dove siamo</a></div>
+    <p>Design dimostrativo — prezzi e portate sono indicativi. <a href="/templates" target="_top">Torna alla collezione</a></p>
+  </footer>
+
+  <dialog class="modal" data-modal aria-labelledby="dialog-title">
+    <button class="close press" type="button" data-close aria-label="Chiudi">×</button>
+    <p class="eyebrow">Il banco</p>
+    <h2 id="dialog-title">Prenota l’omakase</h2>
+    <p class="modal-lead">Otto posti per turno. Confermiamo su WhatsApp entro un’ora.</p>
+    <form data-form>
+      <div class="row">
+        <label>Giorno<input type="date" name="data" data-date required /></label>
+        <label>Turno<select name="turno"><option>Pranzo · 12:30</option><option>Sera · 19:00</option><option>Sera · 21:15</option></select></label>
+      </div>
+      <div class="row">
+        <label>Persone<select name="persone"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+        <label>Telefono<input type="tel" name="telefono" required /></label>
+      </div>
+      <label>Allergie o intolleranze<input type="text" name="note" placeholder="Crostacei, glutine…" /></label>
+      <button class="btn oro wide" type="submit">Prenota</button>
+    </form>
+  </dialog>
+  <div class="toast" data-toast role="status" aria-live="polite">✓ Richiesta inviata · Ti confermiamo entro un’ora</div>
+</body>
+</html>

@@ -14,7 +14,7 @@ import type { Locale, Localized } from "@/lib/i18n";
  */
 
 export type GroupId = "food" | "retail" | "supply" | "services";
-export type StyleId = "original" | "editorial" | "night-glass" | "pop" | "claude" | "abisso" | "mercato";
+export type StyleId = "original" | "editorial" | "night-glass" | "pop" | "claude" | "abisso" | "mercato" | "kaiten" | "tavolo";
 
 export interface TemplateGroup {
   id: GroupId;
@@ -152,6 +152,27 @@ export const styles: { id: StyleId; title: Localized; gist: Localized }[] = [
       zh: "纸白、墨黑、一点珊瑚红：菜单板配小票；筛选标签重排卡片带 FLIP 位移；粘顶章节条翻滚；小票自己写；删除按钮把自己的字吃掉。",
       "zh-tw": "紙白、墨黑、一點珊瑚紅：菜單板配小票；篩選標籤重排卡片帶 FLIP 位移；黏頂章節條翻滾；小票自己寫；刪除按鈕把自己的字吃掉。",
       it: "Carta, inchiostro e un corallo: una lavagna con lo scontrino, filtri che riordinano le card con moto FLIP, una striscia di capitoli che rotola, uno scontrino che si scrive da solo e un tasto rimuovi che mangia la propria etichetta.",
+    },
+  },
+  // 09-18 为 sushi 手作的两套
+  {
+    id: "kaiten",
+    title: { en: "Conveyor belt", zh: "回转", "zh-tw": "迴轉", it: "Kaiten", ja: "回転", ko: "회전" },
+    gist: {
+      en: "Bright and quick: a belt of real plates that never stops, four rim colours that are the prices — hover one and the section repaints — and a pile that stacks as you order.",
+      zh: "明快：一条永不停的真盘子传送带；四种盘沿颜色就是价格，悬停哪个整段跟着换色；点单堆成一摞盘子。",
+      "zh-tw": "明快：一條永不停的真盤子傳送帶；四種盤緣顏色就是價格，懸停哪個整段跟著換色；點單堆成一疊盤子。",
+      it: "Chiaro e veloce: un nastro di piatti veri che non si ferma, quattro colori del bordo che sono i prezzi — passa su uno e la sezione si ridipinge — e una pila che cresce mentre ordini.",
+    },
+  },
+  {
+    id: "tavolo",
+    title: { en: "At the table", zh: "桌边点单", "zh-tw": "桌邊點單", it: "Tavolo", ja: "テーブル注文", ko: "테이블 주문" },
+    gist: {
+      en: "QR ordering: scroll pushes you through a cloud tunnel into the menu, whose background hue follows the category you touch; titles rise one glyph at a time.",
+      zh: "扫码点单：滚动穿过云雾隧道进入菜单，菜单背景色相跟着你碰的分类走；标题逐字升起。",
+      "zh-tw": "掃碼點單：捲動穿過雲霧隧道進入菜單，菜單背景色相跟著你碰的分類走；標題逐字升起。",
+      it: "Ordine dal tavolo: lo scroll ti spinge in un tunnel di nubi fino al menù, il cui colore segue la categoria che tocchi; i titoli salgono una lettera alla volta.",
     },
   },
 ];
@@ -307,6 +328,29 @@ export const templates: SiteTemplate[] = [
     ],
     variants: { editorial: "Calice & Carta", "night-glass": "Notte in Cantina", pop: "Cin Cin!" },
     accent: "#7a1f3d",
+    lang: "it",
+  },
+  {
+    slug: "sushi",
+    group: "food",
+    date: "2026-09-18",
+    name: "Mumi Sushi",
+    industry: { en: "Sushi restaurant", zh: "寿司店", "zh-tw": "壽司店", it: "Ristorante giapponese", ja: "寿司店", ko: "스시 레스토랑" },
+    city: "Vimercate",
+    gist: {
+      en: "Three hand-built designs for one sushi restaurant, with the restaurant’s real dish photos. Omakase: the ten courses as a scroll-scrubbed sequence of real plates on a dark counter, then the twelve courses as stations along a lit path. Kaiten: a belt that never stops and rim colours that are the prices. Tavolo: a cloud tunnel into a menu whose hue follows the category.",
+      zh: "同一家寿司店的三套手作设计，用的是店里真实的菜品照片。Omakase：十道菜做成滚动逐帧序列摆在深色台面上，再把十二道当作发光路径上的站点；Kaiten：永不停的传送带、盘沿颜色就是价格；Tavolo：穿过云雾隧道进菜单，色相跟着分类走。",
+      "zh-tw": "同一家壽司店的三套手作設計，用的是店裡真實的菜品照片。Omakase：十道菜做成捲動逐幀序列擺在深色檯面上，再把十二道當作發光路徑上的站點；Kaiten：永不停的傳送帶、盤緣顏色就是價格；Tavolo：穿過雲霧隧道進菜單，色相跟著分類走。",
+      it: "Tre design costruiti a mano per un ristorante di sushi, con le foto vere dei piatti. Omakase: le dieci portate come sequenza di fotogrammi guidata dallo scroll su un banco scuro, poi le dodici portate come stazioni lungo un sentiero di luce. Kaiten: un nastro che non si ferma e i colori del bordo che sono i prezzi. Tavolo: un tunnel di nubi fino a un menù il cui colore segue la categoria.",
+    },
+    features: [
+      "Omakase: scroll-scrubbed frame sequence (real photos), helix flythrough with three stations, counter booking dialog",
+      "Kaiten: looping belt, hover-tinted price tiers, plate pile cart, magnetic CTA",
+      "Tavolo: vortex transit hero, hue-follows-focus menu, staggered character titles, procedural QR",
+      "Real dish photos from the restaurant’s own menu",
+    ],
+    variants: { editorial: "Banco & Riso", pop: "Sushi Pop", kaiten: "Mumi Sushi", tavolo: "Mumi Sushi" },
+    accent: "#d4a24c",
     lang: "it",
   },
   {
