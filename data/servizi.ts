@@ -95,7 +95,7 @@ export const tiers: Tier[] = [
   {
     id: "ai",
     name: { it: "Assistente AI", en: "AI assistant", zh: "AI 助理" },
-    who: { it: "Per chi vuole che il sito risponda e il gestionale pensi.", en: "For a site that answers and a back office that thinks.", zh: "给想让网站会回答顾客、后台会替你想事的店。" },
+    who: { it: "Per chi vuole che il sito risponda e il gestionale pensi.", en: "For a site that answers and a back office that thinks.", zh: "给想让网站会回答顾客、后台会帮你干活的店。" },
     monthly: 269,
     includes: [
       { it: "Tutto di Piattaforme e rider", en: "Everything in Platforms and riders", zh: "平台对接与骑手的全部" },
