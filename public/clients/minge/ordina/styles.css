@@ -110,7 +110,7 @@ img { display: block; max-width: 100%; height: auto; }
 .dish-thumb { width: 80px; height: 80px; border-radius: 16px; object-fit: cover; background: #fff; border: 1px solid var(--border); }
 .dish-thumb.taco { object-fit: contain; transform: scale(1.25); }
 .dish-thumb.ph { display: grid; place-items: center; font-weight: 800; color: var(--accent); background: rgb(var(--accent-rgb) / .1); border: 0; }
-.dish-body { display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto 1fr auto; gap: 4px 10px; min-width: 0; }
+.dish-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(84px, auto); grid-template-rows: auto 1fr auto; gap: 4px 10px; min-width: 0; }
 .badge { grid-column: 1; justify-self: start; padding: 3px 8px; border-radius: 999px; background: rgb(var(--accent-rgb) / .12); color: var(--accent); font-size: 11px; font-weight: 700; }
 .badge.veg { background: #e2f2dd; color: #2f5b1f; }
 .dish-name { grid-column: 1; font-weight: 600; font-size: 15px; line-height: 1.3; }

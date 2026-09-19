@@ -70,7 +70,6 @@ $('[data-sections]').innerHTML = CATS.map((c) => `
         <div class="dish-body">
           ${TOP.has(p.id) ? '<span class="badge">Più venduto</span>' : p.veg ? '<span class="badge veg">Vegano</span>' : ''}
           <div class="dish-name">${p.name}</div>
-          ${p.desc && !p.modifierGroups.length ? `<p class="dish-desc">${p.desc}</p>` : p.modifierGroups.length ? `<p class="dish-desc">${p.desc.split('.')[0]}</p>` : ''}
           <div class="dish-price">${euro(p.price)}</div>
           <div class="dish-actions"><button class="btn primary sm" type="button" data-add="${p.id}">Aggiungi</button></div>
         </div>
