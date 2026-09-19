@@ -30,7 +30,7 @@ export const tiers: Tier[] = [
   {
     id: "vetrina",
     name: { it: "Sito vetrina", en: "Showcase site", zh: "展示型网站" },
-    who: { it: "Per chi vuole essere trovato e chiamato.", en: "For being found and called.", zh: "给只想让顾客找得到、打得通电话的店。" },
+    who: { it: "Per chi vuole essere trovato e chiamato.", en: "For being found and called.", zh: "给想增加网上流量、让客人在网上找得到自己的店。" },
     monthly: 49,
     includes: [
       { it: "Sito da 5 a 8 pagine, disegnato per la tua attività", en: "5–8 page site designed for your business", zh: "5–8 页、按你的店设计" },
