@@ -1,0 +1,79 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pull summary</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f3f2ee; background-image: linear-gradient(#00000009 1px, transparent 1px), linear-gradient(90deg, #00000009 1px, transparent 1px); background-size: 28px 28px; color: #f5f5f7; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .card { width: 320px; border-radius: 28px; background: #0f0f11; padding: 20px 18px 18px; box-shadow: 0 30px 60px -30px #0008, 0 0 0 1px #00000014; position: relative; overflow: hidden; }
+  .eyebrow { display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; }
+  .pill { padding: 4px 8px; border-radius: 99px; background: #ffffff14; color: #f5f5f7; font-size: 9px; font-weight: 600; letter-spacing: .02em; text-transform: none; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+  .stat { background: #1a1a1d; border-radius: 12px; padding: 10px 11px; }
+  .stat small { display: block; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: #8e8e93; }
+  .stat b { display: block; margin-top: 4px; font-size: 18px; font-weight: 700; letter-spacing: -.02em; } .stat b i { font-style: normal; font-size: 10px; font-weight: 500; color: #8e8e93; margin-left: 2px; }
+  .stat em { display: block; font-style: normal; font-size: 8.5px; color: #8e8e93; margin-top: 2px; } .stat em::before { content: "• "; color: var(--c, #8e8e93); }
+  .hint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; white-space: nowrap; }
+  .card { padding: 10px 10px 14px; }
+  /* The summary is one element whose height is driven by the drag. Collapsed
+     it is a 40px strip of three numbers; past the threshold it snaps to the
+     full orange panel. The list below is in normal flow, so it is pushed
+     down by the same height change — no second animation to keep in sync. */
+  .sum { position: relative; height: var(--h, 40px); border-radius: 18px; background: #1c1c1f; overflow: hidden; cursor: grab; touch-action: none; user-select: none; transition: height 420ms cubic-bezier(.22,.61,.36,1), background-color 300ms; }
+  .sum.drag { transition: none; cursor: grabbing; }
+  .sum.open { background: #f2733f; }
+  .strip { position: absolute; inset: 0; height: 40px; display: flex; align-items: center; justify-content: space-around; font-size: 10px; color: #c7c7cc; transition: opacity 200ms; }
+  .strip b { color: #f5f5f7; font-weight: 700; margin-right: 3px; } .strip i { font-style: normal; color: var(--c); margin-right: 4px; }
+  .sum.open .strip { opacity: 0; }
+  .panel { position: absolute; inset: 0; padding: 14px 16px; color: #2a1200; opacity: 0; transition: opacity 240ms; }
+  .sum.open .panel { opacity: 1; transition-delay: 120ms; }
+  .panel .eyebrow { color: #7a3a10; } .panel .pill { background: #2a1200; color: #fff; }
+  .panel .big { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 8px; } .panel .big b { font-size: 44px; font-weight: 800; letter-spacing: -.04em; line-height: 1; } .panel .big b i { font-style: normal; font-size: 14px; margin-left: 2px; }
+  .panel .bars { display: flex; align-items: flex-end; gap: 3px; height: 34px; } .panel .bars i { width: 5px; background: #2a1200; opacity: .8; border-radius: 2px; height: var(--h); }
+  .panel .sub { font-size: 10px; color: #7a3a10; margin-top: 4px; }
+  .panel .stats { margin-top: 12px; } .panel .stat { background: #00000022; } .panel .stat small, .panel .stat em { color: #7a3a10; } .panel .stat b { color: #2a1200; }
+  .grip { position: absolute; left: 50%; bottom: 6px; width: 32px; height: 4px; border-radius: 2px; background: #ffffff55; transform: translateX(-50%); }
+  .agenda { margin: 12px 6px 0; }
+  .agenda .eyebrow { margin-bottom: 8px; }
+  ul { list-style: none; display: grid; gap: 6px; }
+  li { display: grid; grid-template-columns: 26px 1fr auto; gap: 10px; align-items: center; font-size: 11.5px; }
+  li i { width: 26px; height: 26px; border-radius: 8px; background: var(--c); display: grid; place-items: center; font-size: 12px; color: #111; }
+  li small { display: block; font-size: 9px; color: #8e8e93; } li time { font-size: 10px; color: #c7c7cc; font-variant-numeric: tabular-nums; }
+  @media (prefers-reduced-motion: reduce) { .sum, .strip, .panel { transition: none; } }
+</style>
+<div class="card">
+  <div class="sum" id="sum" style="--h:40px">
+    <div class="strip"><span><i style="--c:#f2733f">●</i><b>8420</b>steps</span><span><i style="--c:#6ee7c8">●</i><b>3.5h</b>focus</span><span><i style="--c:#b4a7ff">●</i><b>5</b>done</span></div>
+    <div class="panel">
+      <div class="eyebrow"><span>Today · Overview</span><span class="pill">● Weekly goal</span></div>
+      <div class="big"><b>94<i>%</i></b><div class="bars"><i style="--h:30%"></i><i style="--h:45%"></i><i style="--h:60%"></i><i style="--h:50%"></i><i style="--h:80%"></i><i style="--h:100%"></i><i style="--h:70%"></i></div></div>
+      <div class="sub">1 more day for a two-week streak</div>
+      <div class="stats"><div class="stat"><small>Steps</small><b>8420</b></div><div class="stat"><small>Focus</small><b>3.5<i>h</i></b></div><div class="stat"><small>Done</small><b>5/6</b></div></div>
+      <span class="grip"></span>
+    </div>
+  </div>
+  <div class="agenda">
+    <div class="eyebrow"><span>Agenda · Today</span><span class="pill">● 5 items</span></div>
+    <ul>
+      <li><i style="--c:#8ec5ff">✎</i><div>Brand review<small>Room 3</small></div><time>10:00</time></li>
+      <li><i style="--c:#6ee7c8">▥</i><div>Market notes<small>Last week's data</small></div><time>12:00</time></li>
+      <li><i style="--c:#ffb3c7">☺</i><div>Team sync<small>Online · 30 min</small></div><time>14:00</time></li>
+      <li><i style="--c:#b4a7ff">✉</i><div>Replies<small>3 to answer</small></div><time>16:00</time></li>
+      <li><i style="--c:#e5e36b">▤</i><div>Weekly recap<small>This week's progress</small></div><time>17:30</time></li>
+    </ul>
+  </div>
+</div>
+<div class="hint">Pull the strip down</div>
+<script>
+  const sum = document.getElementById('sum');
+  const MIN = 40, MAX = 184, SNAP = 90;
+  let open = false, y0 = 0, h0 = MIN, dragging = false;
+  const set = (h) => sum.style.setProperty('--h', h + 'px');
+  const settle = (h) => { open = h > SNAP; sum.classList.toggle('open', open); set(open ? MAX : MIN); };
+  sum.addEventListener('pointerdown', (e) => { dragging = true; y0 = e.clientY; h0 = open ? MAX : MIN; sum.classList.add('drag'); sum.setPointerCapture(e.pointerId); });
+  sum.addEventListener('pointermove', (e) => { if (!dragging) return; const h = Math.max(MIN, Math.min(MAX + 24, h0 + (e.clientY - y0))); set(h); sum.classList.toggle('open', h > SNAP); });
+  const up = (e) => { if (!dragging) return; dragging = false; sum.classList.remove('drag'); const moved = Math.abs(e.clientY - y0) > 6; settle(moved ? parseFloat(getComputedStyle(sum).height) : (open ? MIN : MAX)); };
+  sum.addEventListener('pointerup', up); sum.addEventListener('pointercancel', up);
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { setTimeout(() => settle(MAX), 1100); setTimeout(() => settle(MIN), 3800); }
+</script>

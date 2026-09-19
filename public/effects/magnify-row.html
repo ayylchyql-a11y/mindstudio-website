@@ -1,0 +1,71 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Magnify row</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f3f2ee; background-image: linear-gradient(#00000009 1px, transparent 1px), linear-gradient(90deg, #00000009 1px, transparent 1px); background-size: 28px 28px; color: #f5f5f7; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .card { width: 320px; border-radius: 28px; background: #0f0f11; padding: 20px 18px 18px; box-shadow: 0 30px 60px -30px #0008, 0 0 0 1px #00000014; position: relative; overflow: hidden; }
+  .eyebrow { display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; }
+  .pill { padding: 4px 8px; border-radius: 99px; background: #ffffff14; color: #f5f5f7; font-size: 9px; font-weight: 600; letter-spacing: .02em; text-transform: none; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+  .stat { background: #1a1a1d; border-radius: 12px; padding: 10px 11px; }
+  .stat small { display: block; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: #8e8e93; }
+  .stat b { display: block; margin-top: 4px; font-size: 18px; font-weight: 700; letter-spacing: -.02em; } .stat b i { font-style: normal; font-size: 10px; font-weight: 500; color: #8e8e93; margin-left: 2px; }
+  .stat em { display: block; font-style: normal; font-size: 8.5px; color: #8e8e93; margin-top: 2px; } .stat em::before { content: "• "; color: var(--c, #8e8e93); }
+  .hint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; white-space: nowrap; }
+  .card { min-height: 300px; }
+  h2 { margin-top: 12px; font-size: 30px; font-weight: 800; letter-spacing: -.03em; min-height: 36px; }
+  .sub { display: flex; justify-content: space-between; font-size: 9px; color: #8e8e93; margin-top: 4px; letter-spacing: .04em; }
+  .dockLabel { margin-top: 18px; font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; }
+  /* The dock: six 40px tiles. Every tile gets a scale from a Gaussian of its
+     distance to the pointer; neighbours grow a little, everything else shrinks
+     slightly so the row keeps roughly the same visual mass. */
+  .dock { position: relative; display: flex; justify-content: space-between; align-items: flex-end; height: 64px; margin-top: 8px; padding: 0 2px; touch-action: none; cursor: grab; user-select: none; }
+  .dock.live { cursor: grabbing; }
+  .tile { width: 40px; height: 40px; border-radius: 11px; background: #1e1e22; display: grid; place-items: center; font-size: 16px; transform-origin: 50% 100%; transform: scale(var(--s, 1)); transition: transform 160ms cubic-bezier(.22,.61,.36,1), background-color 200ms; position: relative; }
+  .tile.sel { background: #b4a7ff; color: #14103a; }
+  .tile.hot { background: #2a2a30; }
+  .tag { position: absolute; left: var(--x); top: -26px; transform: translateX(-50%); padding: 4px 8px; border-radius: 99px; background: #fff; color: #111; font-size: 9px; font-weight: 700; white-space: nowrap; opacity: 0; transition: opacity 160ms, left 120ms cubic-bezier(.22,.61,.36,1); pointer-events: none; }
+  .dock.live .tag { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .tile { transition: none; } }
+</style>
+<div class="card">
+  <div class="eyebrow"><span>Shortcuts</span><span class="pill" id="mode">● Hold &amp; slide</span></div>
+  <h2 id="name">Pick one</h2>
+  <div class="sub"><span id="which">6 shortcuts</span><span id="idx">— / 06</span></div>
+  <div class="dockLabel">Dock</div>
+  <div class="dock" id="dock"><span class="tag" id="tag"></span></div>
+  <div class="stats"><div class="stat"><small>Opened</small><b>38</b><em>today</em></div><div class="stat"><small>Top</small><b>#2</b><em>most used</em></div><div class="stat"><small>New</small><b>2</b><em>added</em></div></div>
+</div>
+<div class="hint">Hold &amp; slide across the dock</div>
+<script>
+  const APPS = [['⌂', 'Home'], ['▤', 'Notes'], ['▦', 'Calendar'], ['▭', 'Files'], ['◫', 'Photos'], ['♪', 'Music']];
+  const dock = document.getElementById('dock'), tag = document.getElementById('tag'), name = document.getElementById('name'), idx = document.getElementById('idx'), which = document.getElementById('which'), mode = document.getElementById('mode');
+  const tiles = APPS.map(([g, n]) => { const t = document.createElement('div'); t.className = 'tile'; t.textContent = g; t.title = n; dock.insertBefore(t, tag); return t; });
+  let live = false, cur = -1, sel = -1;
+  // Gaussian magnification: s = 1 + 0.6·e^(−(d/38)²), d = px between the pointer
+  // and the tile centre. At d = 0 the tile is 1.6×, one tile over ≈ 1.25×,
+  // two tiles over ≈ 1.03× — then a tiny shrink for the far ones.
+  function magnify(x) {
+    const r = dock.getBoundingClientRect(); let best = -1, bd = 1e9;
+    tiles.forEach((t, i) => { const c = t.offsetLeft + t.offsetWidth / 2, d = Math.abs(x - r.left - c); const s = 1 + .6 * Math.exp(-((d / 38) ** 2)) - (d > 80 ? .06 : 0); t.style.setProperty('--s', s.toFixed(3)); t.classList.toggle('hot', d < 22); if (d < bd) { bd = d; best = i; } });
+    if (best !== cur) { cur = best; name.textContent = APPS[best][1]; idx.textContent = String(best + 1).padStart(2, '0') + ' / 06'; which.textContent = 'Shortcut ' + (best + 1) + ' of 6'; tag.textContent = APPS[best][1]; }
+    tag.style.setProperty('--x', (tiles[best].offsetLeft + tiles[best].offsetWidth / 2) + 'px');
+  }
+  function release() {
+    live = false; dock.classList.remove('live');
+    tiles.forEach((t, i) => { t.style.setProperty('--s', 1); t.classList.remove('hot'); t.classList.toggle('sel', i === cur); });
+    sel = cur; mode.textContent = '● Selected'; which.textContent = 'Shortcut ' + (sel + 1) + ' of 6';
+  }
+  dock.addEventListener('pointerdown', (e) => { live = true; dock.classList.add('live'); mode.textContent = '● Sliding'; dock.setPointerCapture(e.pointerId); magnify(e.clientX); });
+  dock.addEventListener('pointermove', (e) => { if (live) magnify(e.clientX); });
+  dock.addEventListener('pointerup', release); dock.addEventListener('pointercancel', release);
+  // scripted pass so the mechanism is visible without touching it
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    setTimeout(() => { const r = dock.getBoundingClientRect(); live = true; dock.classList.add('live'); mode.textContent = '● Sliding'; const t0 = performance.now();
+      const tick = (now) => { const t = Math.min(1, (now - t0) / 1800); magnify(r.left + 24 + (r.width - 48) * (t < .7 ? t / .7 : 1 - (t - .7) / .3 * .35)); if (t < 1) requestAnimationFrame(tick); else release(); };
+      requestAnimationFrame(tick); }, 900);
+  }
+</script>

@@ -1,0 +1,59 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Card tray</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f3f2ee; background-image: linear-gradient(#00000009 1px, transparent 1px), linear-gradient(90deg, #00000009 1px, transparent 1px); background-size: 28px 28px; color: #f5f5f7; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .card { width: 320px; border-radius: 28px; background: #0f0f11; padding: 20px 18px 18px; box-shadow: 0 30px 60px -30px #0008, 0 0 0 1px #00000014; position: relative; overflow: hidden; }
+  .eyebrow { display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; }
+  .pill { padding: 4px 8px; border-radius: 99px; background: #ffffff14; color: #f5f5f7; font-size: 9px; font-weight: 600; letter-spacing: .02em; text-transform: none; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+  .stat { background: #1a1a1d; border-radius: 12px; padding: 10px 11px; }
+  .stat small { display: block; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: #8e8e93; }
+  .stat b { display: block; margin-top: 4px; font-size: 18px; font-weight: 700; letter-spacing: -.02em; } .stat b i { font-style: normal; font-size: 10px; font-weight: 500; color: #8e8e93; margin-left: 2px; }
+  .stat em { display: block; font-style: normal; font-size: 8.5px; color: #8e8e93; margin-top: 2px; } .stat em::before { content: "• "; color: var(--c, #8e8e93); }
+  .hint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; white-space: nowrap; }
+  .card { padding: 10px; }
+  /* The main card is a solid tile with its own radius; the tray is a darker
+     sheet BEHIND it that grows downward. Because the tile never changes, the
+     tray reads as sliding out from underneath rather than the card growing. */
+  .main { position: relative; z-index: 2; border-radius: 20px; background: #8ec5ff; color: #0b1a2b; padding: 16px 16px 14px; }
+  .main .eyebrow { color: #2b4a6b; } .main .pill { background: #0b1a2b; color: #fff; }
+  .big { margin-top: 10px; font-size: 40px; font-weight: 800; letter-spacing: -.04em; line-height: 1; } .big i { font-style: normal; font-size: 13px; font-weight: 600; margin: 0 6px 0 2px; }
+  .sub { font-size: 10px; color: #2b4a6b; margin-top: 4px; }
+  .bars { display: flex; align-items: flex-end; gap: 2px; height: 30px; margin-top: 12px; } .bars i { flex: 1; background: #0b1a2b; opacity: .75; border-radius: 1px; height: var(--h); }
+  .tray { position: relative; z-index: 1; margin: -18px 4px 0; padding: 26px 12px 10px; border-radius: 0 0 18px 18px; background: #1c1c1f; cursor: pointer; overflow: hidden;
+    max-height: 78px; transition: max-height 420ms cubic-bezier(.22,.61,.36,1); }
+  .tray.open { max-height: 200px; }
+  .tray .head { display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; }
+  .tray .head b { font-size: 11px; transition: transform 300ms; display: inline-block; } .tray.open .head b { transform: rotate(180deg); }
+  .tray ul { list-style: none; margin-top: 10px; display: grid; gap: 8px; }
+  .tray li { display: grid; grid-template-columns: 74px 1fr 46px; gap: 10px; align-items: center; font-size: 11px; opacity: 0; transform: translateY(-6px); transition: opacity 240ms, transform 240ms; }
+  .tray.open li { opacity: 1; transform: none; transition-delay: calc(var(--i) * 60ms + 120ms); }
+  .tray li b { font-weight: 500; } .tray li b::before { content: "• "; color: #8ec5ff; }
+  .tray li i { display: block; height: 3px; border-radius: 2px; background: #ffffff22; overflow: hidden; } .tray li i::after { content: ""; display: block; height: 100%; width: var(--w); background: #e5e5ea; }
+  .tray li span { text-align: right; font-size: 10px; color: #c7c7cc; font-variant-numeric: tabular-nums; }
+  .stats { margin: 10px 4px 0; }
+  @media (prefers-reduced-motion: reduce) { .tray, .tray li, .tray .head b { transition: none; } }
+</style>
+<div class="card">
+  <div class="main">
+    <div class="eyebrow"><span>Deep work</span><span class="pill">● Logged</span></div>
+    <div class="big">2<i>hr</i>40<i>min</i></div>
+    <div class="sub">25 min more than yesterday</div>
+    <div class="bars"><i style="--h:30%"></i><i style="--h:45%"></i><i style="--h:70%"></i><i style="--h:100%"></i><i style="--h:80%"></i><i style="--h:55%"></i><i style="--h:35%"></i><i style="--h:60%"></i><i style="--h:90%"></i><i style="--h:75%"></i><i style="--h:40%"></i><i style="--h:65%"></i><i style="--h:50%"></i><i style="--h:85%"></i><i style="--h:45%"></i><i style="--h:30%"></i><i style="--h:70%"></i><i style="--h:55%"></i></div>
+  </div>
+  <div class="tray" id="tray">
+    <div class="head"><span>3 sessions today</span><b>⌄</b></div>
+    <ul><li style="--i:0"><b>Morning</b><i style="--w:45%"></i><span>50m</span></li><li style="--i:1"><b>Midday</b><i style="--w:80%"></i><span>1h 10m</span></li><li style="--i:2"><b>Evening</b><i style="--w:38%"></i><span>40m</span></li></ul>
+  </div>
+  <div class="stats"><div class="stat"><small>Best</small><b>1h10<i>m</i></b><em>longest</em></div><div class="stat"><small>Breaks</small><b>4</b><em>taken</em></div><div class="stat"><small>Week</small><b>14<i>h</i></b><em>so far</em></div></div>
+</div>
+<div class="hint">Tap the tray</div>
+<script>
+  const tray = document.getElementById('tray');
+  tray.addEventListener('click', () => tray.classList.toggle('open'));
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { setTimeout(() => tray.classList.add('open'), 1100); setTimeout(() => tray.classList.remove('open'), 3600); }
+</script>

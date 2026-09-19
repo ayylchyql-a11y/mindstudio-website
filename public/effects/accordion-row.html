@@ -1,0 +1,58 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accordion row</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f3f2ee; background-image: linear-gradient(#00000009 1px, transparent 1px), linear-gradient(90deg, #00000009 1px, transparent 1px); background-size: 28px 28px; color: #f5f5f7; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .card { width: 320px; border-radius: 28px; background: #0f0f11; padding: 20px 18px 18px; box-shadow: 0 30px 60px -30px #0008, 0 0 0 1px #00000014; position: relative; overflow: hidden; }
+  .eyebrow { display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; }
+  .pill { padding: 4px 8px; border-radius: 99px; background: #ffffff14; color: #f5f5f7; font-size: 9px; font-weight: 600; letter-spacing: .02em; text-transform: none; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+  .stat { background: #1a1a1d; border-radius: 12px; padding: 10px 11px; }
+  .stat small { display: block; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: #8e8e93; }
+  .stat b { display: block; margin-top: 4px; font-size: 18px; font-weight: 700; letter-spacing: -.02em; } .stat b i { font-style: normal; font-size: 10px; font-weight: 500; color: #8e8e93; margin-left: 2px; }
+  .stat em { display: block; font-style: normal; font-size: 8.5px; color: #8e8e93; margin-top: 2px; } .stat em::before { content: "• "; color: var(--c, #8e8e93); }
+  .hint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; white-space: nowrap; }
+  .strips { display: flex; gap: 8px; height: 236px; margin-top: 14px; }
+  /* One flex-grow per strip is the whole accordion: the active one grows to
+     4, the others stay at 1, and `transition: flex-grow` moves all four at
+     once — widening one is the same motion as narrowing the rest. */
+  .strip { flex: 1 1 0; min-width: 44px; border-radius: 14px; background: var(--c); color: #1a1200; position: relative; overflow: hidden; cursor: pointer; transition: flex-grow 500ms cubic-bezier(.22,.61,.36,1); }
+  .strip.on { flex-grow: 4.2; }
+  .strip .ic { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 20px; height: 20px; border-radius: 6px; background: #00000022; display: grid; place-items: center; font-size: 11px; transition: left 500ms cubic-bezier(.22,.61,.36,1), transform 500ms; }
+  .strip.on .ic { left: 22px; }
+  .strip .vt { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%) rotate(180deg); writing-mode: vertical-rl; font-size: 13px; font-weight: 700; letter-spacing: .02em; white-space: nowrap; transition: opacity 200ms; }
+  .strip .vt b { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 600; }
+  .strip.on .vt { opacity: 0; }
+  /* detail is always in the DOM at the expanded width; it just fades in late
+     so it never shows squeezed while the strip is still narrow */
+  .strip .detail { position: absolute; left: 14px; right: 14px; top: 40px; width: 180px; opacity: 0; transition: opacity 240ms; }
+  .strip.on .detail { opacity: 1; transition-delay: 220ms; }
+  .detail small { font-size: 8px; letter-spacing: .14em; text-transform: uppercase; opacity: .7; }
+  .detail .n { font-size: 30px; font-weight: 800; letter-spacing: -.03em; line-height: 1; margin-top: 2px; } .detail .n i { font-style: normal; font-size: 11px; font-weight: 600; margin-left: 3px; }
+  .detail ul { list-style: none; margin-top: 10px; display: grid; gap: 5px; font-size: 10.5px; font-weight: 600; } .detail li { display: flex; justify-content: space-between; } .detail li span { font-weight: 400; opacity: .7; font-size: 9px; }
+  .detail .chart { margin-top: 12px; padding: 8px 10px; border-radius: 10px; background: #00000030; display: flex; align-items: flex-end; gap: 3px; height: 44px; } .detail .chart i { flex: 1; background: #1a1200; opacity: .7; border-radius: 2px; height: var(--h); }
+  .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; }
+  .dots { display: flex; gap: 4px; } .dots i { width: 6px; height: 3px; border-radius: 2px; background: #ffffff30; transition: width 300ms, background-color 300ms; } .dots i.on { width: 14px; background: #f5f5f7; }
+  @media (prefers-reduced-motion: reduce) { .strip, .strip .ic, .strip .vt, .strip .detail { transition: none; } }
+</style>
+<div class="card">
+  <div class="eyebrow"><span>Boards</span><span class="pill" id="tag">4 boards</span></div>
+  <div class="strips" id="strips">
+    <div class="strip" style="--c:#f5b73a"><span class="ic">⚡</span><span class="vt"><b>3.5</b>Focus</span><div class="detail"><small>Focus</small><div class="n">3.5<i>hours</i></div><ul><li>Deep work<span>09:00</span></li><li>Design pass<span>11:30</span></li><li>Reading<span>16:00</span></li></ul><div class="chart"><i style="--h:40%"></i><i style="--h:70%"></i><i style="--h:55%"></i><i style="--h:90%"></i><i style="--h:60%"></i><i style="--h:80%"></i><i style="--h:35%"></i></div></div></div>
+    <div class="strip" style="--c:#e8573f"><span class="ic">✓</span><span class="vt"><b>12</b>Tasks</span><div class="detail"><small>Tasks · 3 due today</small><div class="n">12<i>tasks</i></div><ul><li>Write copy<span>13:00</span></li><li>Check icons<span>16:20</span></li><li>Ship it<span>17:00</span></li></ul><div class="chart"><i style="--h:30%"></i><i style="--h:50%"></i><i style="--h:80%"></i><i style="--h:45%"></i><i style="--h:100%"></i><i style="--h:65%"></i><i style="--h:40%"></i></div></div></div>
+    <div class="strip" style="--c:#8ec5ff"><span class="ic">▤</span><span class="vt"><b>28</b>Notes</span><div class="detail"><small>Notes</small><div class="n">28<i>notes</i></div><ul><li>Kickoff<span>Mon</span></li><li>Interview #4<span>Tue</span></li><li>Retro<span>Fri</span></li></ul><div class="chart"><i style="--h:60%"></i><i style="--h:40%"></i><i style="--h:75%"></i><i style="--h:50%"></i><i style="--h:30%"></i><i style="--h:85%"></i><i style="--h:55%"></i></div></div></div>
+    <div class="strip" style="--c:#a99cff"><span class="ic">▣</span><span class="vt"><b>46</b>Files</span><div class="detail"><small>Files · Shared</small><div class="n">46<i>files</i></div><ul><li>Brand assets<span>2.1 GB</span></li><li>Icon set<span>48 MB</span></li><li>UI draft v2<span>310 MB</span></li></ul><div class="chart"><i style="--h:50%"></i><i style="--h:65%"></i><i style="--h:40%"></i><i style="--h:90%"></i><i style="--h:70%"></i><i style="--h:35%"></i><i style="--h:80%"></i></div></div></div>
+  </div>
+  <div class="foot"><span>Tap a board</span><span class="dots" id="dots"><i class="on"></i><i></i><i></i><i></i></span></div>
+</div>
+<div class="hint">Tap a strip</div>
+<script>
+  const strips = [...document.querySelectorAll('.strip')], dots = [...document.querySelectorAll('#dots i')];
+  let cur = -1;
+  const pick = (i) => { cur = cur === i ? -1 : i; strips.forEach((s, k) => s.classList.toggle('on', k === cur)); dots.forEach((d, k) => d.classList.toggle('on', k === (cur < 0 ? 0 : cur))); };
+  strips.forEach((s, i) => s.addEventListener('click', () => pick(i)));
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { setTimeout(() => pick(1), 1000); setTimeout(() => pick(3), 3200); }
+</script>

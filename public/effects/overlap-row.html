@@ -1,0 +1,61 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overlap row</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f3f2ee; background-image: linear-gradient(#00000009 1px, transparent 1px), linear-gradient(90deg, #00000009 1px, transparent 1px); background-size: 28px 28px; color: #f5f5f7; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .card { width: 320px; border-radius: 28px; background: #0f0f11; padding: 20px 18px 18px; box-shadow: 0 30px 60px -30px #0008, 0 0 0 1px #00000014; position: relative; overflow: hidden; }
+  .eyebrow { display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; }
+  .pill { padding: 4px 8px; border-radius: 99px; background: #ffffff14; color: #f5f5f7; font-size: 9px; font-weight: 600; letter-spacing: .02em; text-transform: none; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+  .stat { background: #1a1a1d; border-radius: 12px; padding: 10px 11px; }
+  .stat small { display: block; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: #8e8e93; }
+  .stat b { display: block; margin-top: 4px; font-size: 18px; font-weight: 700; letter-spacing: -.02em; } .stat b i { font-style: normal; font-size: 10px; font-weight: 500; color: #8e8e93; margin-left: 2px; }
+  .stat em { display: block; font-style: normal; font-size: 8.5px; color: #8e8e93; margin-top: 2px; } .stat em::before { content: "• "; color: var(--c, #8e8e93); }
+  .hint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; white-space: nowrap; }
+  h2 { margin-top: 10px; font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
+  .sub { font-size: 10px; color: #8e8e93; margin-top: 3px; }
+  /* Avatars overlap by a third of their width; each one owns an index and a
+     "spread" custom property so the fan-out is one CSS transition. */
+  .row { display: flex; align-items: center; margin-top: 16px; height: 62px; }
+  .avs { position: relative; height: 34px; flex: 1; }
+  .av { position: absolute; top: 0; width: 34px; height: 34px; border-radius: 50%; border: 2px solid #0f0f11; display: grid; place-items: center; font-size: 11px; font-weight: 700; color: #111; background: var(--c);
+    left: calc(var(--i) * (34px - 12px)); transition: left 360ms cubic-bezier(.22,.61,.36,1); transition-delay: calc(var(--i) * 40ms); }
+  .avs.open .av { left: calc(var(--i) * 40px); }
+  .av span { position: absolute; top: 40px; left: 50%; transform: translate(-50%, 4px); font-size: 8px; color: #c7c7cc; white-space: nowrap; opacity: 0; transition: opacity 220ms, transform 220ms; transition-delay: calc(var(--i) * 40ms + 120ms); }
+  .avs.open .av span { opacity: 1; transform: translate(-50%, 0); }
+  .more { position: absolute; top: 3px; left: calc(5 * 22px + 4px); height: 28px; padding: 0 8px; border-radius: 99px; background: #ffffff14; font-size: 10px; font-weight: 600; display: grid; place-items: center; transition: left 360ms cubic-bezier(.22,.61,.36,1) 200ms; }
+  .avs.open .more { left: calc(5 * 40px + 4px); }
+  .join { height: 28px; padding: 0 12px; border-radius: 99px; background: #fff; color: #111; font: 600 10px/1 inherit; border: 0; cursor: pointer; margin-left: 8px; }
+  .people { margin-top: 10px; border-radius: 16px; background: #f5a623; color: #1a1200; padding: 12px 14px; display: grid; grid-template-columns: 1fr auto; align-items: end; }
+  .people small { font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: #6b4a00; } .people b { display: block; font-size: 30px; font-weight: 800; letter-spacing: -.03em; line-height: 1; margin-top: 4px; } .people b i { font-style: normal; font-size: 11px; font-weight: 600; margin-left: 4px; }
+  .people em { display: block; font-style: normal; font-size: 9px; color: #6b4a00; margin-top: 4px; }
+  .bars { display: flex; align-items: flex-end; gap: 3px; height: 28px; } .bars i { width: 4px; background: #1a1200; opacity: .8; border-radius: 2px; height: var(--h); }
+</style>
+<div class="card" id="card">
+  <div class="eyebrow"><span>Review · This week</span><span class="pill">● In progress</span></div>
+  <h2>Launch Review</h2>
+  <div class="sub">Wed 10:00 · Room 3</div>
+  <div class="row">
+    <div class="avs" id="avs">
+      <div class="av" style="--i:0;--c:#8ec5ff">M<span>Mara</span></div>
+      <div class="av" style="--i:1;--c:#6ee7c8">L<span>Luca</span></div>
+      <div class="av" style="--i:2;--c:#ffb3c7">A<span>Anna</span></div>
+      <div class="av" style="--i:3;--c:#e5e36b">G<span>Gio</span></div>
+      <div class="av" style="--i:4;--c:#b4a7ff">Z<span>Zoe</span></div>
+      <div class="more">+3</div>
+    </div>
+    <button class="join" type="button">Join</button>
+  </div>
+  <div class="people"><div><small>People</small><b>8<i>people</i></b><em>5 confirmed · 3 pending</em></div><div class="bars"><i style="--h:40%"></i><i style="--h:60%"></i><i style="--h:35%"></i><i style="--h:80%"></i><i style="--h:100%"></i><i style="--h:55%"></i><i style="--h:70%"></i></div></div>
+  <div class="stats"><div class="stat" style="--c:#f5a623"><small>Agenda</small><b>4</b><em>topics</em></div><div class="stat" style="--c:#8ec5ff"><small>Docs</small><b>12</b><em>files</em></div><div class="stat"><small>Time</small><b>45<i>min</i></b><em>planned</em></div></div>
+</div>
+<div class="hint">Tap the avatars</div>
+<script>
+  const avs = document.getElementById('avs');
+  avs.addEventListener('click', () => avs.classList.toggle('open'));
+  // show it once: open at 1.2s, close at 3.6s
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { setTimeout(() => avs.classList.add('open'), 1200); setTimeout(() => avs.classList.remove('open'), 3600); }
+</script>

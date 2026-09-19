@@ -1,0 +1,68 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Progress fill</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f3f2ee; background-image: linear-gradient(#00000009 1px, transparent 1px), linear-gradient(90deg, #00000009 1px, transparent 1px); background-size: 28px 28px; color: #f5f5f7; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .card { width: 320px; border-radius: 28px; background: #0f0f11; padding: 20px 18px 18px; box-shadow: 0 30px 60px -30px #0008, 0 0 0 1px #00000014; position: relative; overflow: hidden; }
+  .eyebrow { display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; }
+  .pill { padding: 4px 8px; border-radius: 99px; background: #ffffff14; color: #f5f5f7; font-size: 9px; font-weight: 600; letter-spacing: .02em; text-transform: none; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+  .stat { background: #1a1a1d; border-radius: 12px; padding: 10px 11px; }
+  .stat small { display: block; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: #8e8e93; }
+  .stat b { display: block; margin-top: 4px; font-size: 18px; font-weight: 700; letter-spacing: -.02em; } .stat b i { font-style: normal; font-size: 10px; font-weight: 500; color: #8e8e93; margin-left: 2px; }
+  .stat em { display: block; font-style: normal; font-size: 8.5px; color: #8e8e93; margin-top: 2px; } .stat em::before { content: "• "; color: var(--c, #8e8e93); }
+  .hint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; white-space: nowrap; }
+  .card { transition: transform 260ms cubic-bezier(.34,1.4,.64,1), box-shadow 400ms; }
+  .card.done { transform: scale(1.025); box-shadow: 0 30px 60px -30px #0008, 0 0 0 1px #00000014, 0 0 0 6px #1f7a5a33; }
+  /* The fill is a layer UNDER everything else: its width is the progress.
+     Text sits on top unchanged — no separate bar, no second colour system. */
+  .fill { position: absolute; inset: 0; width: var(--p); background: #1e5c4a; transition: width 600ms cubic-bezier(.22,.61,.36,1); }
+  .fill::after { content: ""; position: absolute; top: 0; bottom: 0; right: -1px; width: 1px; background: #6ee7c866; }
+  .in { position: relative; }
+  .big { margin-top: 10px; font-size: 44px; font-weight: 800; letter-spacing: -.04em; line-height: 1; font-variant-numeric: tabular-nums; } .big i { font-style: normal; font-size: 16px; font-weight: 600; margin-left: 2px; }
+  .sub { font-size: 10px; color: #b7b7bc; margin-top: 4px; }
+  ul { list-style: none; margin-top: 14px; display: grid; gap: 2px; }
+  li { display: grid; grid-template-columns: 18px 1fr auto; gap: 10px; align-items: center; padding: 7px 0; font-size: 12px; cursor: pointer; }
+  li i { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid #ffffff40; display: grid; place-items: center; font-size: 11px; color: #0f0f11; transition: background-color 200ms, border-color 200ms; }
+  li.on i { background: #6ee7c8; border-color: #6ee7c8; }
+  li.on span { color: #b7b7bc; text-decoration: line-through; text-decoration-color: #ffffff55; }
+  li time { font-size: 9px; color: #8e8e93; font-variant-numeric: tabular-nums; }
+</style>
+<div class="card" id="card">
+  <div class="fill" id="fill" style="--p:0%"></div>
+  <div class="in">
+    <div class="eyebrow"><span>Today</span><span class="pill" id="count">0 / 5 done</span></div>
+    <div class="big"><span id="pct">0</span><i>%</i></div>
+    <div class="sub">The PR review tasks for you are</div>
+    <ul id="list">
+      <li><i>✓</i><span>Wireframes</span><time>09:30</time></li>
+      <li><i>✓</i><span>Pick colors</span><time>10:40</time></li>
+      <li><i>✓</i><span>Write copy</span><time>13:00</time></li>
+      <li><i>✓</i><span>Check icons</span><time>15:20</time></li>
+      <li><i>✓</i><span>Ship it</span><time>17:30</time></li>
+    </ul>
+    <div class="stats"><div class="stat"><small>Streak</small><b>12<i>days</i></b><em>in a row</em></div><div class="stat"><small>Focus</small><b>3.5<i>h</i></b><em>deep work</em></div><div class="stat"><small>Left</small><b id="left">5</b><em>to go</em></div></div>
+  </div>
+</div>
+<div class="hint">Tick the items</div>
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const items = [...document.querySelectorAll('#list li')], fill = document.getElementById('fill'), pct = document.getElementById('pct'), count = document.getElementById('count'), left = document.getElementById('left'), card = document.getElementById('card');
+  let shown = 0, anim = 0;
+  function apply() {
+    const n = items.filter((l) => l.classList.contains('on')).length, target = Math.round(n / items.length * 100);
+    fill.style.setProperty('--p', target + '%');
+    count.textContent = n + ' / 5 done'; left.textContent = items.length - n;
+    // the number counts on the same 600ms as the fill, so they arrive together
+    cancelAnimationFrame(anim); const from = shown, t0 = performance.now();
+    const tick = (now) => { const t = Math.min(1, (now - t0) / 600), e = 1 - Math.pow(1 - t, 3); shown = Math.round(from + (target - from) * e); pct.textContent = shown; if (t < 1) anim = requestAnimationFrame(tick); };
+    if (reduce) { shown = target; pct.textContent = target; } else anim = requestAnimationFrame(tick);
+    card.classList.toggle('done', n === items.length);
+  }
+  items.forEach((l) => l.addEventListener('click', () => { l.classList.toggle('on'); apply(); }));
+  // demo run: tick the first four one by one, then the last
+  if (!reduce) [0, 1, 2, 3, 4].forEach((i, k) => setTimeout(() => { items[i].classList.add('on'); apply(); }, 900 + k * 800));
+</script>
