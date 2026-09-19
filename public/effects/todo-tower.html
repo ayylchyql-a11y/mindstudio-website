@@ -1,0 +1,178 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Todo tower</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f4f4f5; color: #111; overflow: hidden; -webkit-font-smoothing: antialiased; --ink: #111114; --ink-rgb: 17, 17, 20; --card: #fff; }
+  .wrap { display: grid; grid-template-columns: 1fr 224px; height: 100%; }
+  .stage { position: relative; display: grid; place-items: center; overflow: hidden; background: radial-gradient(60% 50% at 30% 70%, #fbe7ee66, transparent 70%), radial-gradient(50% 40% at 75% 30%, #e6ecfb80, transparent 70%); }
+  .stage[data-fill="dark"] { background: #0e0f11; --ink: #f4f4f5; --ink-rgb: 244, 244, 245; --card: #1b1c1f; color: #f4f4f5; }
+  /* ── the bench: one panel, two kinds of control ── */
+  .bench { border-left: 1px solid #00000010; background: #fff; padding: 16px 14px; display: flex; flex-direction: column; gap: 10px; overflow: auto; }
+  .bench h2 { font-size: 14px; font-weight: 600; letter-spacing: -.01em; } .bench h2 small { display: block; margin-top: 2px; font-size: 8.5px; letter-spacing: .16em; text-transform: uppercase; color: #8a8a90; font-weight: 500; }
+  .bench .grp { font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #a0a0a6; margin-top: 6px; }
+  .sw { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #444; }
+  .sw .seg { display: inline-flex; padding: 3px; border-radius: 99px; background: #f1f1f3; } .sw .seg button { border: 0; background: transparent; font: 500 11px/1 inherit; color: #8a8a90; padding: 6px 10px; border-radius: 99px; cursor: pointer; } .sw .seg button.on { background: #fff; color: #111; box-shadow: 0 1px 2px #0000001a; }
+  .lv { position: relative; height: 34px; border-radius: 9px; background: #f1f1f3; overflow: hidden; }
+  .lv i { position: absolute; inset: 0; width: var(--v); background: #dcdcdf; border-radius: 9px 0 0 9px; pointer-events: none; }
+  .lv span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #333; pointer-events: none; } .lv b { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 600; pointer-events: none; font-variant-numeric: tabular-nums; }
+  .lv input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; margin: 0; cursor: ew-resize; }
+  .credit { margin-top: auto; font-size: 8.5px; line-height: 1.4; color: #a0a0a6; } .credit a { color: inherit; }
+  .hint { position: absolute; left: 16px; bottom: 12px; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; } .stage[data-fill="dark"] .hint { color: #ffffff55; }
+  /* a 500px card in the library grid keeps the bench beside the stage, just narrower; only phones stack it */
+  @media (max-width: 600px) { .wrap { grid-template-columns: 1fr 172px; } .bench { padding: 12px 10px; gap: 8px; } .sw .seg button { padding: 5px 8px; } .lv { height: 30px; } }
+  @media (max-width: 420px) { .wrap { grid-template-columns: 1fr; grid-template-rows: 1fr auto; } .bench { border-left: 0; border-top: 1px solid #00000010; max-height: 46%; } }
+
+
+  /* ── Todo tower ── RIGID BODIES. A card is a box with a position, an angle
+     and the speed of each, in a room whose floor and walls are the grey card
+     itself. Nothing decides that a card tips: it turns because its centre of
+     mass is past the edge of what it stands on, and gravity does the rest. */
+  .room { position: relative; width: 300px; height: 320px; }
+  .twr-row { position: absolute; left: 50%; top: 100%; width: var(--w); height: 36px; margin: -18px 0 0 calc(var(--w) / -2); border-radius: 10px; background: var(--card); box-shadow: 0 1px 2px #0000000a, 0 8px 20px -14px #00000050; display: flex; align-items: center; gap: 9px; padding: 0 12px; font-size: 12px; white-space: nowrap; color: var(--ink); cursor: grab; user-select: none; touch-action: none; will-change: transform; border: 1px solid transparent; }
+  .stage[data-stroke="on"] .twr-row { border-color: rgba(var(--ink-rgb), .14); }
+  .twr-row i { width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid rgba(var(--ink-rgb), .3); flex: none; }
+  .twr-row.held { cursor: grabbing; box-shadow: 0 14px 30px -14px #00000070; }
+  .stage[data-fill="dark"] .twr-row { background: #1b1c1f; }
+
+</style>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <div class="room" id="room"></div>
+    <div class="hint">Drag a card · throw it</div>
+  </div>
+  <aside class="bench" id="bench"></aside>
+</div>
+<script>
+  /* ── the bench: a tiny control panel, one function ──
+     specs: { key, label, type: 'seg' | 'level', opts?, min?, max?, step?, unit?, value }
+     onChange(state) runs on every change with the whole state. */
+  function bench(root, title, kind, specs, onChange) {
+    const state = Object.fromEntries(specs.map((s) => [s.key, s.value]));
+    root.innerHTML = `<h2>${title}<small>${kind}</small></h2>`;
+    let lastType = '';
+    for (const s of specs) {
+      if (s.type !== lastType) { root.insertAdjacentHTML('beforeend', `<div class="grp">${s.type === 'seg' ? 'Switches' : 'Levels'}</div>`); lastType = s.type; }
+      if (s.type === 'seg') {
+        const el = document.createElement('div'); el.className = 'sw';
+        el.innerHTML = `<span>${s.label}</span><span class="seg">${s.opts.map((o) => `<button type="button" class="${o === s.value ? 'on' : ''}" data-o="${o}">${o}</button>`).join('')}</span>`;
+        el.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; el.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); state[s.key] = isNaN(+b.dataset.o) ? b.dataset.o : +b.dataset.o; onChange(state, s.key); });
+        root.appendChild(el);
+      } else {
+        const el = document.createElement('label'); el.className = 'lv';
+        const pct = (v) => ((v - s.min) / (s.max - s.min) * 100).toFixed(1) + '%';
+        el.innerHTML = `<i style="--v:${pct(s.value)}"></i><span>${s.label}</span><b>${s.value}${s.unit || ''}</b><input type="range" min="${s.min}" max="${s.max}" step="${s.step || 1}" value="${s.value}">`;
+        el.querySelector('input').addEventListener('input', (e) => { const v = +e.target.value; state[s.key] = v; el.querySelector('i').style.setProperty('--v', pct(v)); el.querySelector('b').textContent = v + (s.unit || ''); onChange(state, s.key); });
+        root.appendChild(el);
+      }
+    }
+    root.insertAdjacentHTML('beforeend', `<div class="credit">Rebuilt from <a href="https://bencho.dev" target="_blank" rel="noopener">Bencho</a> by Lorenzo Cabra · block logic MIT © 2026 Lorenzo Cabra</div>`);
+    onChange(state, null);
+    return state;
+  }
+
+
+  const room = document.getElementById('room'), stage = document.getElementById('stage');
+  const TODOS = ['Reply to Nadia', 'Renew the domain', 'Book the flights', 'Export the icons', 'Pay the invoice', 'Call the landlord', 'Water the plants', 'Fix the bike'];
+  let P = {}, bodies = [], contacts = new Map(), held = null, target = null, acc = 0, lastT = 0, raf = 0;
+  const W = 300, Hh = 320, DT = 1 / 240;           // ONE STEP at a fixed 240Hz whatever the screen does
+  /* y is UP in the solver; the page is y-down */
+  function build() {
+    room.innerHTML = ''; bodies = []; contacts.clear();
+    const slip = P.slip / 100, n = P.count, w = 164, h = 36;
+    for (let i = 0; i < n; i++) {
+      const el = document.createElement('div'); el.className = 'twr-row'; el.style.setProperty('--w', w + 'px'); el.innerHTML = `<i></i>${TODOS[i]}`; room.appendChild(el);
+      const b = { el, x: (i % 2 ? 1 : -1) * slip * 26 * ((i * 7) % 3 + 1) / 3 + slip * 8, y: h / 2 + i * h + 0.5, a: 0, vx: 0, vy: 0, w: 0, hw: w / 2, hh: h / 2, m: 1, I: (w * w + h * h) / 12, invM: 1, invI: 12 / (w * w + h * h), fr: 0.55, id: i };
+      bodies.push(b);
+      el.addEventListener('pointerdown', (e) => { held = b; b.el.classList.add('held'); el.setPointerCapture(e.pointerId); target = local(e); });
+      el.addEventListener('pointermove', (e) => { if (held === b) target = local(e); });
+      const up = () => { if (held === b) { b.el.classList.remove('held'); held = null; } };
+      el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+    }
+    wake();
+  }
+  const local = (e) => { const r = room.getBoundingClientRect(); return { x: e.clientX - r.left - W / 2, y: Hh - (e.clientY - r.top) }; };
+  // ── geometry: OBB corners, axes, SAT with reference-face clipping ──
+  const corners = (b) => { const c = Math.cos(b.a), s = Math.sin(b.a); return [[-b.hw, -b.hh], [b.hw, -b.hh], [b.hw, b.hh], [-b.hw, b.hh]].map(([x, y]) => [b.x + x * c - y * s, b.y + x * s + y * c]); };
+  const axes = (b) => { const c = Math.cos(b.a), s = Math.sin(b.a); return [[c, s], [-s, c]]; };
+  const proj = (pts, ax) => { let lo = 1e9, hi = -1e9; for (const [x, y] of pts) { const d = x * ax[0] + y * ax[1]; lo = Math.min(lo, d); hi = Math.max(hi, d); } return [lo, hi]; };
+  function collide(A, B) {
+    const pa = corners(A), pb = corners(B); let best = 1e9, nrm = null, refIsA = true;
+    for (const [i, ax] of [...axes(A).map((a) => [0, a]), ...axes(B).map((a) => [1, a])]) {
+      const [a0, a1] = proj(pa, ax), [b0, b1] = proj(pb, ax); const o = Math.min(a1 - b0, b1 - a0); if (o <= 0) return null;
+      if (o < best) { best = o; nrm = ax; refIsA = i === 0; }
+    }
+    // normal must point from A to B
+    if ((B.x - A.x) * nrm[0] + (B.y - A.y) * nrm[1] < 0) nrm = [-nrm[0], -nrm[1]];
+    // incident points: the two deepest corners of the other body along -normal
+    const inc = refIsA ? pb : pa, ref = refIsA ? pa : pb, sgn = refIsA ? 1 : -1;
+    const depth = (p) => refIsA ? (Math.max(...ref.map(([x, y]) => x * nrm[0] + y * nrm[1])) - (p[0] * nrm[0] + p[1] * nrm[1])) : ((p[0] * nrm[0] + p[1] * nrm[1]) - Math.min(...ref.map(([x, y]) => x * nrm[0] + y * nrm[1])));
+    const pts = inc.map((p) => ({ p, d: depth(p) })).filter((q) => q.d > 0).sort((u, v) => v.d - u.d).slice(0, 2);
+    if (!pts.length) return null;
+    return { n: nrm, pts: pts.map((q) => ({ x: q.p[0], y: q.p[1], d: q.d, pn: 0, pt: 0 })) };
+  }
+  // ── walls as static bodies ──
+  const walls = [{ x: 0, y: -50, a: 0, hw: 400, hh: 50, invM: 0, invI: 0, vx: 0, vy: 0, w: 0, fr: 0.6, id: 'f' }, { x: -W / 2 - 50, y: Hh / 2, a: 0, hw: 50, hh: 600, invM: 0, invI: 0, vx: 0, vy: 0, w: 0, fr: 0.3, id: 'l' }, { x: W / 2 + 50, y: Hh / 2, a: 0, hw: 50, hh: 600, invM: 0, invI: 0, vx: 0, vy: 0, w: 0, fr: 0.3, id: 'r' }];
+  function step() {
+    const g = 900 + 3300 * (P.gravity / 100);
+    for (const b of bodies) { if (b === held) continue; b.vy -= g * DT; b.vx *= 0.999; b.w *= 0.995; }
+    /* IN THE HAND a card is heavy and frictionless: its velocity is set toward
+       the pointer every step (capped), and it slides along what it meets */
+    if (held && target) { const dx = target.x - held.x, dy = target.y - held.y; const sp = Math.min(1800, Math.hypot(dx, dy) * 40); const l = Math.hypot(dx, dy) || 1; held.vx = dx / l * sp; held.vy = dy / l * sp; held.w *= 0.85; }
+    // contacts, REMEMBERED from one step to the next (warm start) — that memory is what holds a stack up
+    const all = [...bodies, ...walls], next = new Map();
+    for (let i = 0; i < bodies.length; i++) for (let j = i + 1; j < all.length; j++) {
+      const A = bodies[i], B = all[j]; if (A === B) continue; if (Math.abs(A.x - B.x) > A.hw + B.hw + 40 || Math.abs(A.y - B.y) > A.hh + B.hh + 40) continue;
+      const m = collide(A, B); if (!m) continue; const key = A.id + ':' + B.id; const old = contacts.get(key);
+      if (old) for (const p of m.pts) { const o = old.pts.find((q) => Math.hypot(q.x - p.x, q.y - p.y) < 2); if (o) { p.pn = o.pn; p.pt = o.pt; } }
+      next.set(key, { A, B, ...m });
+    }
+    contacts = next;
+    const heldInv = (b) => b === held ? 0.25 : b.invM, heldFr = (b) => b === held ? 0 : b.fr;
+    for (const c of contacts.values()) { const { A, B, n } = c, t = [-n[1], n[0]];
+      for (const p of c.pts) {
+        const rax = p.x - A.x, ray = p.y - A.y, rbx = p.x - B.x, rby = p.y - B.y;
+        const rnA = rax * n[1] - ray * n[0], rnB = rbx * n[1] - rby * n[0], rtA = rax * t[1] - ray * t[0], rtB = rbx * t[1] - rby * t[0];
+        p.mn = 1 / (heldInv(A) + heldInv(B) + rnA * rnA * A.invI + rnB * rnB * B.invI); p.mt = 1 / (heldInv(A) + heldInv(B) + rtA * rtA * A.invI + rtB * rtB * B.invI);
+        p.bias = 0.2 / DT * Math.max(0, p.d - 0.5);
+        // warm start
+        const px = p.pn * n[0] + p.pt * t[0], py = p.pn * n[1] + p.pt * t[1];
+        A.vx -= px * heldInv(A); A.vy -= py * heldInv(A); A.w -= A.invI * (rax * py - ray * px); B.vx += px * B.invM; B.vy += py * B.invM; B.w += B.invI * (rbx * py - rby * px);
+      } }
+    for (let it = 0; it < 12; it++) for (const c of contacts.values()) { const { A, B, n } = c, t = [-n[1], n[0]], fr = Math.min(heldFr(A), B.fr === undefined ? 0.5 : (held === A ? 0 : Math.sqrt(A.fr * B.fr)));
+      for (const p of c.pts) {
+        const rax = p.x - A.x, ray = p.y - A.y, rbx = p.x - B.x, rby = p.y - B.y;
+        const dvx = B.vx - B.w * rby - (A.vx - A.w * ray), dvy = B.vy + B.w * rbx - (A.vy + A.w * rax);
+        const vn = dvx * n[0] + dvy * n[1];
+        /* push apart along the normal, never pull together */
+        let dpn = p.mn * (-vn + p.bias); const pn0 = p.pn; p.pn = Math.max(0, pn0 + dpn); dpn = p.pn - pn0;
+        let px = dpn * n[0], py = dpn * n[1];
+        A.vx -= px * heldInv(A); A.vy -= py * heldInv(A); A.w -= A.invI * (rax * py - ray * px); B.vx += px * B.invM; B.vy += py * B.invM; B.w += B.invI * (rbx * py - rby * px);
+        /* and friction along the face, capped by how hard they press */
+        const dvx2 = B.vx - B.w * rby - (A.vx - A.w * ray), dvy2 = B.vy + B.w * rbx - (A.vy + A.w * rax); const vt = dvx2 * t[0] + dvy2 * t[1];
+        let dpt = p.mt * (-vt); const pt0 = p.pt; p.pt = Math.max(-fr * p.pn, Math.min(fr * p.pn, pt0 + dpt)); dpt = p.pt - pt0;
+        px = dpt * t[0]; py = dpt * t[1];
+        A.vx -= px * heldInv(A); A.vy -= py * heldInv(A); A.w -= A.invI * (rax * py - ray * px); B.vx += px * B.invM; B.vy += py * B.invM; B.w += B.invI * (rbx * py - rby * px);
+      } }
+    for (const b of bodies) { b.x += b.vx * DT; b.y += b.vy * DT; b.a += b.w * DT; }
+  }
+  function frame(now) {
+    let el = Math.min(0.05, (now - lastT) / 1000); lastT = now; acc += el;
+    while (acc >= DT) { step(); acc -= DT; }
+    let asleep = !held;
+    for (const b of bodies) { b.el.style.transform = `translate(${b.x.toFixed(2)}px, ${(-b.y).toFixed(2)}px) rotate(${(-b.a).toFixed(4)}rad)`; if (Math.hypot(b.vx, b.vy) > 2 || Math.abs(b.w) > 0.05) asleep = false; }
+    if (asleep) { raf = 0; return; } raf = requestAnimationFrame(frame);
+  }
+  const wake = () => { if (!raf) { lastT = performance.now(); acc = 0; raf = requestAnimationFrame(frame); } };
+  room.addEventListener('pointerdown', wake); room.addEventListener('pointermove', () => { if (held) wake(); });
+  bench(document.getElementById('bench'), 'Todo tower', 'Press', [
+    { key: 'fill', label: 'Fill', type: 'seg', opts: ['Light', 'Dark'], value: 'Light' },
+    { key: 'stroke', label: 'Stroke', type: 'seg', opts: ['Off', 'On'], value: 'Off' },
+    { key: 'gravity', label: 'Gravity', type: 'level', min: 0, max: 100, step: 5, value: 50 },
+    { key: 'slip', label: 'Slip', type: 'level', min: 0, max: 100, step: 5, value: 45 },
+    { key: 'count', label: 'Todos', type: 'level', min: 3, max: 8, value: 6 },
+  ], (state, key) => { P = state; stage.dataset.fill = state.fill.toLowerCase(); stage.dataset.stroke = state.stroke.toLowerCase(); if (key === 'count' || key === 'slip' || key === null) build(); else wake(); });
+
+</script>

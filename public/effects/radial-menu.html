@@ -1,0 +1,110 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radial menu</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f4f4f5; color: #111; overflow: hidden; -webkit-font-smoothing: antialiased; --ink: #111114; --ink-rgb: 17, 17, 20; --card: #fff; }
+  .wrap { display: grid; grid-template-columns: 1fr 224px; height: 100%; }
+  .stage { position: relative; display: grid; place-items: center; overflow: hidden; background: radial-gradient(60% 50% at 30% 70%, #fbe7ee66, transparent 70%), radial-gradient(50% 40% at 75% 30%, #e6ecfb80, transparent 70%); }
+  .stage[data-fill="dark"] { background: #0e0f11; --ink: #f4f4f5; --ink-rgb: 244, 244, 245; --card: #1b1c1f; color: #f4f4f5; }
+  /* ── the bench: one panel, two kinds of control ── */
+  .bench { border-left: 1px solid #00000010; background: #fff; padding: 16px 14px; display: flex; flex-direction: column; gap: 10px; overflow: auto; }
+  .bench h2 { font-size: 14px; font-weight: 600; letter-spacing: -.01em; } .bench h2 small { display: block; margin-top: 2px; font-size: 8.5px; letter-spacing: .16em; text-transform: uppercase; color: #8a8a90; font-weight: 500; }
+  .bench .grp { font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #a0a0a6; margin-top: 6px; }
+  .sw { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #444; }
+  .sw .seg { display: inline-flex; padding: 3px; border-radius: 99px; background: #f1f1f3; } .sw .seg button { border: 0; background: transparent; font: 500 11px/1 inherit; color: #8a8a90; padding: 6px 10px; border-radius: 99px; cursor: pointer; } .sw .seg button.on { background: #fff; color: #111; box-shadow: 0 1px 2px #0000001a; }
+  .lv { position: relative; height: 34px; border-radius: 9px; background: #f1f1f3; overflow: hidden; }
+  .lv i { position: absolute; inset: 0; width: var(--v); background: #dcdcdf; border-radius: 9px 0 0 9px; pointer-events: none; }
+  .lv span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #333; pointer-events: none; } .lv b { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 600; pointer-events: none; font-variant-numeric: tabular-nums; }
+  .lv input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; margin: 0; cursor: ew-resize; }
+  .credit { margin-top: auto; font-size: 8.5px; line-height: 1.4; color: #a0a0a6; } .credit a { color: inherit; }
+  .hint { position: absolute; left: 16px; bottom: 12px; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; } .stage[data-fill="dark"] .hint { color: #ffffff55; }
+  /* a 500px card in the library grid keeps the bench beside the stage, just narrower; only phones stack it */
+  @media (max-width: 600px) { .wrap { grid-template-columns: 1fr 172px; } .bench { padding: 12px 10px; gap: 8px; } .sw .seg button { padding: 5px 8px; } .lv { height: 30px; } }
+  @media (max-width: 420px) { .wrap { grid-template-columns: 1fr; grid-template-rows: 1fr auto; } .bench { border-left: 0; border-top: 1px solid #00000010; max-height: 46%; } }
+
+
+  /* ── Radial menu ── opening, choosing and committing are one gesture: press,
+     drag toward what you want, let go. The fan is polar: --i is the option's
+     index and CSS does the trigonometry. */
+  .fan { position: relative; width: 48px; height: 48px; user-select: none; touch-action: none; }
+  .fan-core { position: absolute; inset: 0; border-radius: 50%; background: var(--card); box-shadow: 0 1px 2px #0000000a, 0 8px 24px -16px #00000040; display: grid; place-items: center; font-size: 22px; color: var(--ink); cursor: pointer; border: 1px solid transparent; transition: transform 200ms cubic-bezier(.2,.7,.2,1); }
+  .stage[data-stroke="on"] .fan-core, .stage[data-stroke="on"] .fan-opt { border-color: rgba(var(--ink-rgb), .14); }
+  .fan[data-open] .fan-core { transform: rotate(45deg); }
+  .fan-opt { position: absolute; left: 50%; top: 50%; width: 48px; height: 48px; margin: -24px 0 0 -24px; border-radius: 50%; background: var(--card); box-shadow: 0 1px 2px #0000000a, 0 8px 24px -16px #00000040; display: grid; place-items: center; font-size: 17px; color: var(--ink); border: 1px solid transparent;
+    --a: calc(-90deg - var(--spread) / 2 + var(--spread) / (var(--n) - 1) * var(--i));
+    transform: translate(calc(cos(var(--a)) * var(--radius)), calc(sin(var(--a)) * var(--radius)));
+    transition: transform 380ms cubic-bezier(.2,.7,.2,1.1), scale 380ms cubic-bezier(.2,.7,.2,1.1), opacity 200ms, box-shadow 160ms; transition-delay: calc(var(--i) * var(--stagger)); }
+  .fan-opt.aim { box-shadow: 0 0 0 2px var(--ink), 0 8px 24px -16px #00000040; }
+  .fan-opt small { position: absolute; top: 100%; left: 50%; transform: translate(-50%, 4px); font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: rgba(var(--ink-rgb), .6); opacity: 0; transition: opacity 160ms; white-space: nowrap; }
+  .fan-opt.aim small { opacity: 1; }
+  /* shut, they all sit under the core */
+  .fan:not([data-open]) .fan-opt { transform: none; scale: 0.4; opacity: 0; transition-delay: 0ms; pointer-events: none; }
+  .fan-out { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); font-size: 11px; color: rgba(var(--ink-rgb), .6); white-space: nowrap; }
+  .stage[data-fill="dark"] .fan-core, .stage[data-fill="dark"] .fan-opt { background: #1b1c1f; }
+
+</style>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <div class="fan" id="fan"><div id="opts"></div><div class="fan-core" id="core">+</div><div class="fan-out" id="out"></div></div>
+    <div class="hint">Press, drag toward a tool, let go</div>
+  </div>
+  <aside class="bench" id="bench"></aside>
+</div>
+<script>
+  /* ── the bench: a tiny control panel, one function ──
+     specs: { key, label, type: 'seg' | 'level', opts?, min?, max?, step?, unit?, value }
+     onChange(state) runs on every change with the whole state. */
+  function bench(root, title, kind, specs, onChange) {
+    const state = Object.fromEntries(specs.map((s) => [s.key, s.value]));
+    root.innerHTML = `<h2>${title}<small>${kind}</small></h2>`;
+    let lastType = '';
+    for (const s of specs) {
+      if (s.type !== lastType) { root.insertAdjacentHTML('beforeend', `<div class="grp">${s.type === 'seg' ? 'Switches' : 'Levels'}</div>`); lastType = s.type; }
+      if (s.type === 'seg') {
+        const el = document.createElement('div'); el.className = 'sw';
+        el.innerHTML = `<span>${s.label}</span><span class="seg">${s.opts.map((o) => `<button type="button" class="${o === s.value ? 'on' : ''}" data-o="${o}">${o}</button>`).join('')}</span>`;
+        el.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; el.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); state[s.key] = isNaN(+b.dataset.o) ? b.dataset.o : +b.dataset.o; onChange(state, s.key); });
+        root.appendChild(el);
+      } else {
+        const el = document.createElement('label'); el.className = 'lv';
+        const pct = (v) => ((v - s.min) / (s.max - s.min) * 100).toFixed(1) + '%';
+        el.innerHTML = `<i style="--v:${pct(s.value)}"></i><span>${s.label}</span><b>${s.value}${s.unit || ''}</b><input type="range" min="${s.min}" max="${s.max}" step="${s.step || 1}" value="${s.value}">`;
+        el.querySelector('input').addEventListener('input', (e) => { const v = +e.target.value; state[s.key] = v; el.querySelector('i').style.setProperty('--v', pct(v)); el.querySelector('b').textContent = v + (s.unit || ''); onChange(state, s.key); });
+        root.appendChild(el);
+      }
+    }
+    root.insertAdjacentHTML('beforeend', `<div class="credit">Rebuilt from <a href="https://bencho.dev" target="_blank" rel="noopener">Bencho</a> by Lorenzo Cabra · block logic MIT © 2026 Lorenzo Cabra</div>`);
+    onChange(state, null);
+    return state;
+  }
+
+
+  const fan = document.getElementById('fan'), opts = document.getElementById('opts'), core = document.getElementById('core'), out = document.getElementById('out'), stage = document.getElementById('stage');
+  const TOOLS = [['T', 'Text'], ['▢', 'Shape'], ['✎', 'Pen'], ['#', 'Frame'], ['☆', 'Star'], ['○', 'Note']];
+  let P = {}, els = [], aim = -1, origin = null, moved = false, open = false;
+  function build() { opts.innerHTML = ''; els = TOOLS.slice(0, P.tools).map(([g, n], i) => { const el = document.createElement('div'); el.className = 'fan-opt'; el.style.setProperty('--i', i); el.innerHTML = `${g}<small>${n}</small>`; el.addEventListener('click', () => commit(i)); opts.appendChild(el); return el; }); fan.style.setProperty('--n', P.tools); }
+  const angleOf = (i) => (-90 - P.arc / 2 + P.arc / (P.tools - 1) * i) * Math.PI / 180;
+  function nearestByAngle(dx, dy) { const a = Math.atan2(dy, dx); let best = -1, bd = 1e9; els.forEach((_, i) => { let d = Math.abs(Math.atan2(Math.sin(a - angleOf(i)), Math.cos(a - angleOf(i)))); if (d < bd) { bd = d; best = i; } }); return bd < Math.PI / 3 ? best : -1; }
+  const setAim = (i) => { aim = i; els.forEach((el, k) => el.classList.toggle('aim', k === i)); };
+  const setOpen = (v) => { open = v; if (v) fan.dataset.open = ''; else delete fan.dataset.open; if (!v) setAim(-1); };
+  function commit(i) { out.textContent = TOOLS[i][1] + ' added'; setOpen(false); setTimeout(() => out.textContent = '', 1400); }
+  core.addEventListener('pointerdown', (e) => { origin = { x: e.clientX, y: e.clientY }; moved = false; setOpen(true); core.setPointerCapture(e.pointerId); });
+  core.addEventListener('pointermove', (e) => { if (!origin) return; const dx = e.clientX - origin.x, dy = e.clientY - origin.y; if (Math.hypot(dx, dy) < 14) return setAim(-1); moved = true; setAim(nearestByAngle(dx, dy)); });
+  const end = () => { if (!origin) return; if (moved && aim >= 0) commit(aim); else if (moved) setOpen(false); origin = null; };   // a plain tap leaves it open
+  core.addEventListener('pointerup', end); core.addEventListener('pointercancel', end);
+  core.addEventListener('click', (e) => { if (!moved && open && e.detail > 1) setOpen(false); });
+  stage.addEventListener('pointerdown', (e) => { if (!fan.contains(e.target) && open) setOpen(false); });
+  bench(document.getElementById('bench'), 'Radial menu', 'Press', [
+    { key: 'fill', label: 'Fill', type: 'seg', opts: ['Light', 'Dark'], value: 'Light' },
+    { key: 'stroke', label: 'Stroke', type: 'seg', opts: ['Off', 'On'], value: 'Off' },
+    { key: 'stagger', label: 'Stagger', type: 'level', min: 0, max: 70, value: 28, unit: 'ms' },
+    { key: 'tools', label: 'Tools', type: 'level', min: 2, max: 6, value: 5 },
+    { key: 'radius', label: 'Radius', type: 'level', min: 44, max: 104, value: 68, unit: 'px' },
+    { key: 'arc', label: 'Arc', type: 'level', min: 60, max: 300, step: 5, value: 180, unit: '°' },
+  ], (state, key) => { P = state; stage.dataset.fill = state.fill.toLowerCase(); stage.dataset.stroke = state.stroke.toLowerCase(); fan.style.setProperty('--spread', state.arc + 'deg'); fan.style.setProperty('--radius', state.radius + 'px'); fan.style.setProperty('--stagger', state.stagger + 'ms'); if (key === 'tools' || key === null) build(); });
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { setTimeout(() => setOpen(true), 900); setTimeout(() => setAim(1), 1500); setTimeout(() => commit(1), 2300); }
+
+</script>

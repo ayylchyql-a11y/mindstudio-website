@@ -1,0 +1,100 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Range dial</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f4f4f5; color: #111; overflow: hidden; -webkit-font-smoothing: antialiased; --ink: #111114; --ink-rgb: 17, 17, 20; --card: #fff; }
+  .wrap { display: grid; grid-template-columns: 1fr 224px; height: 100%; }
+  .stage { position: relative; display: grid; place-items: center; overflow: hidden; background: radial-gradient(60% 50% at 30% 70%, #fbe7ee66, transparent 70%), radial-gradient(50% 40% at 75% 30%, #e6ecfb80, transparent 70%); }
+  .stage[data-fill="dark"] { background: #0e0f11; --ink: #f4f4f5; --ink-rgb: 244, 244, 245; --card: #1b1c1f; color: #f4f4f5; }
+  /* ── the bench: one panel, two kinds of control ── */
+  .bench { border-left: 1px solid #00000010; background: #fff; padding: 16px 14px; display: flex; flex-direction: column; gap: 10px; overflow: auto; }
+  .bench h2 { font-size: 14px; font-weight: 600; letter-spacing: -.01em; } .bench h2 small { display: block; margin-top: 2px; font-size: 8.5px; letter-spacing: .16em; text-transform: uppercase; color: #8a8a90; font-weight: 500; }
+  .bench .grp { font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #a0a0a6; margin-top: 6px; }
+  .sw { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #444; }
+  .sw .seg { display: inline-flex; padding: 3px; border-radius: 99px; background: #f1f1f3; } .sw .seg button { border: 0; background: transparent; font: 500 11px/1 inherit; color: #8a8a90; padding: 6px 10px; border-radius: 99px; cursor: pointer; } .sw .seg button.on { background: #fff; color: #111; box-shadow: 0 1px 2px #0000001a; }
+  .lv { position: relative; height: 34px; border-radius: 9px; background: #f1f1f3; overflow: hidden; }
+  .lv i { position: absolute; inset: 0; width: var(--v); background: #dcdcdf; border-radius: 9px 0 0 9px; pointer-events: none; }
+  .lv span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #333; pointer-events: none; } .lv b { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 600; pointer-events: none; font-variant-numeric: tabular-nums; }
+  .lv input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; margin: 0; cursor: ew-resize; }
+  .credit { margin-top: auto; font-size: 8.5px; line-height: 1.4; color: #a0a0a6; } .credit a { color: inherit; }
+  .hint { position: absolute; left: 16px; bottom: 12px; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; } .stage[data-fill="dark"] .hint { color: #ffffff55; }
+  /* a 500px card in the library grid keeps the bench beside the stage, just narrower; only phones stack it */
+  @media (max-width: 600px) { .wrap { grid-template-columns: 1fr 172px; } .bench { padding: 12px 10px; gap: 8px; } .sw .seg button { padding: 5px 8px; } .lv { height: 30px; } }
+  @media (max-width: 420px) { .wrap { grid-template-columns: 1fr; grid-template-rows: 1fr auto; } .bench { border-left: 0; border-top: 1px solid #00000010; max-height: 46%; } }
+
+
+  /* ── Range dial ── a 24-hour ring of ticks with two handles; the span is
+     measured the short way round so both handles are free to cross midnight. */
+  .dial { position: relative; width: 240px; height: 240px; user-select: none; touch-action: none; }
+  .dial svg { width: 100%; height: 100%; overflow: visible; }
+  .tick { stroke: rgba(var(--ink-rgb), .22); stroke-width: 2; stroke-linecap: round; }
+  .tick.in { stroke: var(--ink); }
+  .hand { fill: var(--card); stroke: var(--ink); stroke-width: 2; cursor: grab; }
+  .hand.drag { fill: var(--ink); }
+  .mid { text-anchor: middle; fill: var(--ink); font-weight: 700; font-size: 34px; letter-spacing: -.03em; } .mid tspan.u { font-size: 14px; font-weight: 500; fill: rgba(var(--ink-rgb), .55); }
+  .sub { text-anchor: middle; font-size: 9px; letter-spacing: .14em; text-transform: uppercase; fill: rgba(var(--ink-rgb), .5); }
+
+</style>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <div class="dial" id="dial"><svg viewBox="0 0 240 240"><g id="ticks"></g><text class="mid" x="120" y="128" id="mid"></text><text class="sub" x="120" y="150" id="sub"></text><circle class="hand" id="h0" r="8"/><circle class="hand" id="h1" r="8"/></svg></div>
+    <div class="hint">Drag either handle</div>
+  </div>
+  <aside class="bench" id="bench"></aside>
+</div>
+<script>
+  /* ── the bench: a tiny control panel, one function ──
+     specs: { key, label, type: 'seg' | 'level', opts?, min?, max?, step?, unit?, value }
+     onChange(state) runs on every change with the whole state. */
+  function bench(root, title, kind, specs, onChange) {
+    const state = Object.fromEntries(specs.map((s) => [s.key, s.value]));
+    root.innerHTML = `<h2>${title}<small>${kind}</small></h2>`;
+    let lastType = '';
+    for (const s of specs) {
+      if (s.type !== lastType) { root.insertAdjacentHTML('beforeend', `<div class="grp">${s.type === 'seg' ? 'Switches' : 'Levels'}</div>`); lastType = s.type; }
+      if (s.type === 'seg') {
+        const el = document.createElement('div'); el.className = 'sw';
+        el.innerHTML = `<span>${s.label}</span><span class="seg">${s.opts.map((o) => `<button type="button" class="${o === s.value ? 'on' : ''}" data-o="${o}">${o}</button>`).join('')}</span>`;
+        el.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; el.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); state[s.key] = isNaN(+b.dataset.o) ? b.dataset.o : +b.dataset.o; onChange(state, s.key); });
+        root.appendChild(el);
+      } else {
+        const el = document.createElement('label'); el.className = 'lv';
+        const pct = (v) => ((v - s.min) / (s.max - s.min) * 100).toFixed(1) + '%';
+        el.innerHTML = `<i style="--v:${pct(s.value)}"></i><span>${s.label}</span><b>${s.value}${s.unit || ''}</b><input type="range" min="${s.min}" max="${s.max}" step="${s.step || 1}" value="${s.value}">`;
+        el.querySelector('input').addEventListener('input', (e) => { const v = +e.target.value; state[s.key] = v; el.querySelector('i').style.setProperty('--v', pct(v)); el.querySelector('b').textContent = v + (s.unit || ''); onChange(state, s.key); });
+        root.appendChild(el);
+      }
+    }
+    root.insertAdjacentHTML('beforeend', `<div class="credit">Rebuilt from <a href="https://bencho.dev" target="_blank" rel="noopener">Bencho</a> by Lorenzo Cabra · block logic MIT © 2026 Lorenzo Cabra</div>`);
+    onChange(state, null);
+    return state;
+  }
+
+
+  const dial = document.getElementById('dial'), ticks = document.getElementById('ticks'), mid = document.getElementById('mid'), sub = document.getElementById('sub'), H = [document.getElementById('h0'), document.getElementById('h1')];
+  const CX = 120, CY = 120, R = 100; let P = {}, start = 345, end = 97.5, drag = -1;    // degrees: 23:00 → 06:30
+  const toMin = (a) => Math.round(((a % 360) + 360) % 360 / 360 * 1440);
+  function build() { ticks.innerHTML = ''; for (let i = 0; i < P.density; i++) { const a = i / P.density * 2 * Math.PI - Math.PI / 2, major = i % (P.density / 24) === 0; const r1 = R - (major ? 14 : 8); const l = document.createElementNS('http://www.w3.org/2000/svg', 'line'); l.setAttribute('x1', CX + r1 * Math.cos(a)); l.setAttribute('y1', CY + r1 * Math.sin(a)); l.setAttribute('x2', CX + R * Math.cos(a)); l.setAttribute('y2', CY + R * Math.sin(a)); l.setAttribute('class', 'tick'); l.dataset.a = (i / P.density * 360).toFixed(2); ticks.appendChild(l); } paint(); }
+  /* handle position on the arc; angles wrap, so the span is measured the short way round */
+  const pos = (angle) => [CX + P.reach * Math.cos((angle - 90) * Math.PI / 180), CY + P.reach * Math.sin((angle - 90) * Math.PI / 180)];
+  function paint() {
+    const span = ((end - start) + 360) % 360;
+    for (const t of ticks.children) { const a = +t.dataset.a; t.classList.toggle('in', ((a - start) + 360) % 360 <= span); }
+    H.forEach((h, i) => { const [x, y] = pos(i ? end : start); h.setAttribute('cx', x); h.setAttribute('cy', y); });
+    const m = Math.round(span / 360 * 1440); mid.innerHTML = `${Math.floor(m / 60)}<tspan class="u">h</tspan> ${String(m % 60).padStart(2, '0')}<tspan class="u">m</tspan>`;
+    const f = (a) => { const mm = toMin(a); return String(Math.floor(mm / 60) % 24).padStart(2, '0') + ':' + String(mm % 60).padStart(2, '0'); };
+    sub.textContent = f(start) + ' – ' + f(end);
+  }
+  const angleAt = (e) => { const r = dial.getBoundingClientRect(); const x = e.clientX - r.left - r.width / 2, y = e.clientY - r.top - r.height / 2; let a = Math.atan2(y, x) * 180 / Math.PI + 90; a = ((a % 360) + 360) % 360; const step = P.snap / 1440 * 360; return Math.round(a / step) * step % 360; };
+  H.forEach((h, i) => { h.addEventListener('pointerdown', (e) => { drag = i; h.classList.add('drag'); h.setPointerCapture(e.pointerId); }); h.addEventListener('pointermove', (e) => { if (drag !== i) return; const a = angleAt(e); if (i) end = a; else start = a; paint(); }); const up = () => { drag = -1; h.classList.remove('drag'); }; h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up); });
+  bench(document.getElementById('bench'), 'Range dial', 'Drag', [
+    { key: 'snap', label: 'Snap', type: 'seg', opts: [5, 15, 30], value: 15 },
+    { key: 'density', label: 'Density', type: 'level', min: 24, max: 96, step: 8, value: 48 },
+    { key: 'reach', label: 'Reach', type: 'level', min: 44, max: 68, value: 56, unit: 'px' },
+  ], (state, key) => { P = { ...state, reach: R - (68 - state.reach) + 0 }; if (key === 'density' || key === null) build(); else paint(); });
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) setTimeout(() => { const t0 = performance.now(); const tick = (now) => { const t = Math.min(1, (now - t0) / 1200); end = 97.5 + 45 * Math.sin(t * Math.PI); paint(); if (t < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }, 1000);
+
+</script>
