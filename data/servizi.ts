@@ -62,14 +62,14 @@ export const tiers: Tier[] = [
   },
   {
     id: "app",
-    name: { it: "App e chiosco", en: "App and kiosk", zh: "App 与自助机" },
-    who: { it: "Per chi vuole stare sul telefono dei clienti e in sala.", en: "For living on customers’ phones and in the dining room.", zh: "给想让顾客手机里有自己的 App、店里有自助点单机的店。" },
+    name: { it: "App e chiosco", en: "App and kiosk", zh: "App 与自助点单" },
+    who: { it: "Per chi vuole stare sul telefono dei clienti e in sala.", en: "For living on customers’ phones and in the dining room.", zh: "给想让顾客手机里有自己的 App、店里有自助点单系统的店。" },
     monthly: 199,
     includes: [
       { it: "Tutto di Ordini online", en: "Everything in Online ordering", zh: "线上点单的全部" },
       { it: "App iOS e Android a tuo nome, pubblicate sugli store", en: "iOS and Android apps in your name, on both stores", zh: "以你的名义上架的 iOS / Android App" },
       { it: "Notifiche push: ordine pronto, promozioni", en: "Push notifications: order ready, promotions", zh: "推送：出餐通知、活动" },
-      { it: "Chiosco self-service per il tavolo o l’ingresso", en: "Self-service kiosk for tables or the entrance", zh: "桌边/门口自助点单机" },
+      { it: "Chiosco self-service per il tavolo o l’ingresso", en: "Self-service kiosk for tables or the entrance", zh: "桌边扫码 / 门口自助点单系统" },
       { it: "Aggiornamenti degli store e dei sistemi inclusi", en: "Store and OS updates included", zh: "商店与系统更新全包" },
     ],
     time: { it: "Online in 8 settimane", en: "Live in 8 weeks", zh: "8 周上线" },
@@ -82,7 +82,7 @@ export const tiers: Tier[] = [
     who: { it: "Per chi riceve ordini da Just Eat, Deliveroo o Glovo e vuole un solo schermo.", en: "For Just Eat, Deliveroo or Glovo orders on one screen.", zh: "给 Just Eat / Deliveroo / Glovo 都在接、只想盯一块屏的店。" },
     monthly: 239,
     includes: [
-      { it: "Tutto di App e chiosco", en: "Everything in App and kiosk", zh: "App 与自助机的全部" },
+      { it: "Tutto di App e chiosco", en: "Everything in App and kiosk", zh: "App 与自助点单的全部" },
       { it: "Just Eat, Deliveroo, Glovo nella stessa dashboard", en: "Just Eat, Deliveroo, Glovo in the same dashboard", zh: "三大平台的单进同一个后台" },
       { it: "Menù e orari sincronizzati su tutte le piattaforme", en: "Menu and hours synced across platforms", zh: "菜单与营业时间同步到各平台" },
       { it: "App per i rider con mappa in tempo reale", en: "Rider app with live map", zh: "骑手 App，实时地图" },
@@ -149,7 +149,7 @@ export const copy = {
   ],
   casesEyebrow: { it: "Fatto così", en: "Built like this", zh: "已经做出来的" },
   cases: [
-    { t: "Mumi Sushi · Vimercate", p: { it: "Sito con ordini, gestionale, app iOS e Android, app rider, chiosco, Just Eat integrato, assistente AI. Il livello 5, in produzione da mesi.", en: "Ordering site, back office, iOS and Android apps, rider app, kiosk, Just Eat integration, AI assistant. Level 5, in production for months.", zh: "点单网站、后台、双端 App、骑手端、自助机、Just Eat 对接、AI 助理。第五档，跑了几个月了。" }, href: "/work/mumi-sushi" },
+    { t: "Mumi Sushi · Vimercate", p: { it: "Sito con ordini, gestionale, app iOS e Android, app rider, chiosco, Just Eat integrato, assistente AI. Il livello 5, in produzione da mesi.", en: "Ordering site, back office, iOS and Android apps, rider app, kiosk, Just Eat integration, AI assistant. Level 5, in production for months.", zh: "点单网站、后台、双端 App、骑手端、自助点单系统、Just Eat 对接、AI 助理。第五档，跑了几个月了。" }, href: "/work/mumi-sushi" },
     { t: "M Desk", p: { it: "Il gestionale: ordini, menù, stampa, statistiche, piattaforme. Quello che vedi nei livelli 2–5.", en: "The back office: orders, menu, printing, stats, platforms. What you get in levels 2–5.", zh: "后台本身：订单、菜单、打印、统计、平台。第 2–5 档里的那个。" }, href: "/work/m-desk" },
   ],
   faqEyebrow: { it: "Domande", en: "Questions", zh: "常见问题" },
