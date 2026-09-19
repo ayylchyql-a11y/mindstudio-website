@@ -1,0 +1,110 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Palette</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f4f4f5; color: #111; overflow: hidden; -webkit-font-smoothing: antialiased; --ink: #111114; --ink-rgb: 17, 17, 20; --card: #fff; }
+  .wrap { display: grid; grid-template-columns: 1fr 224px; height: 100%; }
+  .stage { position: relative; display: grid; place-items: center; overflow: hidden; background: radial-gradient(60% 50% at 30% 70%, #fbe7ee66, transparent 70%), radial-gradient(50% 40% at 75% 30%, #e6ecfb80, transparent 70%); }
+  .stage[data-fill="dark"] { background: #0e0f11; --ink: #f4f4f5; --ink-rgb: 244, 244, 245; --card: #1b1c1f; color: #f4f4f5; }
+  /* ── the bench: one panel, two kinds of control ── */
+  .bench { border-left: 1px solid #00000010; background: #fff; padding: 16px 14px; display: flex; flex-direction: column; gap: 10px; overflow: auto; }
+  .bench h2 { font-size: 14px; font-weight: 600; letter-spacing: -.01em; } .bench h2 small { display: block; margin-top: 2px; font-size: 8.5px; letter-spacing: .16em; text-transform: uppercase; color: #8a8a90; font-weight: 500; }
+  .bench .grp { font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #a0a0a6; margin-top: 6px; }
+  .sw { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #444; }
+  .sw .seg { display: inline-flex; padding: 3px; border-radius: 99px; background: #f1f1f3; } .sw .seg button { border: 0; background: transparent; font: 500 11px/1 inherit; color: #8a8a90; padding: 6px 10px; border-radius: 99px; cursor: pointer; } .sw .seg button.on { background: #fff; color: #111; box-shadow: 0 1px 2px #0000001a; }
+  .lv { position: relative; height: 34px; border-radius: 9px; background: #f1f1f3; overflow: hidden; }
+  .lv i { position: absolute; inset: 0; width: var(--v); background: #dcdcdf; border-radius: 9px 0 0 9px; pointer-events: none; }
+  .lv span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #333; pointer-events: none; } .lv b { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 600; pointer-events: none; font-variant-numeric: tabular-nums; }
+  .lv input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; margin: 0; cursor: ew-resize; }
+  .credit { margin-top: auto; font-size: 8.5px; line-height: 1.4; color: #a0a0a6; } .credit a { color: inherit; }
+  .hint { position: absolute; left: 16px; bottom: 12px; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; } .stage[data-fill="dark"] .hint { color: #ffffff55; }
+  /* a 500px card in the library grid keeps the bench beside the stage, just narrower; only phones stack it */
+  @media (max-width: 600px) { .wrap { grid-template-columns: 1fr 172px; } .bench { padding: 12px 10px; gap: 8px; } .sw .seg button { padding: 5px 8px; } .lv { height: 30px; } }
+  @media (max-width: 420px) { .wrap { grid-template-columns: 1fr; grid-template-rows: 1fr auto; } .bench { border-left: 0; border-top: 1px solid #00000010; max-height: 46%; } }
+
+
+  /* ── Palette ── colours picked in OKLCH as a ramp (hold a hue family, ramp
+     the lightness, chroma peaking in the middle); one set in three gets an
+     accent. The swap is hidden: each swatch draws into a circle, the colour
+     changes at the top of that, then it spreads back — all at once. */
+  .pal { display: flex; align-items: center; gap: 8px; }
+  .swatches { display: flex; gap: 4px; padding: 6px; border-radius: calc(var(--r, 14px) + 6px); background: var(--card); box-shadow: 0 1px 2px #0000000a, 0 10px 26px -18px #00000050; border: 1px solid transparent; }
+  .stage[data-stroke="on"] .swatches, .stage[data-stroke="on"] .regen { border-color: rgba(var(--ink-rgb), .14); } .stage[data-fill="dark"] .swatches, .stage[data-fill="dark"] .regen { background: #1b1c1f; }
+  .goo { display: flex; gap: 4px; filter: url(#pal-goo); }
+  .sw { width: 44px; height: 44px; border-radius: var(--r, 14px); background: var(--c); transform: scale(var(--s, 1)); will-change: transform; cursor: pointer; }
+  .regen { width: 44px; height: 44px; border-radius: 14px; border: 1px solid transparent; background: var(--card); color: var(--ink); font-size: 16px; cursor: pointer; box-shadow: 0 1px 2px #0000000a, 0 10px 26px -18px #00000050; }
+  .hex { position: absolute; left: 50%; bottom: 40px; transform: translateX(-50%); font: 10px/1 ui-monospace, Menlo, monospace; letter-spacing: .06em; color: rgba(var(--ink-rgb), .5); white-space: nowrap; }
+
+</style>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <svg width="0" height="0" style="position:absolute"><filter id="pal-goo"><feGaussianBlur id="palBlur" stdDeviation="0" result="b"/><feColorMatrix in="b" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"/></filter></svg>
+    <div class="pal"><div class="swatches"><div class="goo" id="goo"></div></div><button class="regen" id="regen" type="button" aria-label="New palette">⟳</button></div><div class="hex" id="hex"></div>
+    <div class="hint">Press ⟳ for a new set</div>
+  </div>
+  <aside class="bench" id="bench"></aside>
+</div>
+<script>
+  /* ── the bench: a tiny control panel, one function ──
+     specs: { key, label, type: 'seg' | 'level', opts?, min?, max?, step?, unit?, value }
+     onChange(state) runs on every change with the whole state. */
+  function bench(root, title, kind, specs, onChange) {
+    const state = Object.fromEntries(specs.map((s) => [s.key, s.value]));
+    root.innerHTML = `<h2>${title}<small>${kind}</small></h2>`;
+    let lastType = '';
+    for (const s of specs) {
+      if (s.type !== lastType) { root.insertAdjacentHTML('beforeend', `<div class="grp">${s.type === 'seg' ? 'Switches' : 'Levels'}</div>`); lastType = s.type; }
+      if (s.type === 'seg') {
+        const el = document.createElement('div'); el.className = 'sw';
+        el.innerHTML = `<span>${s.label}</span><span class="seg">${s.opts.map((o) => `<button type="button" class="${o === s.value ? 'on' : ''}" data-o="${o}">${o}</button>`).join('')}</span>`;
+        el.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; el.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); state[s.key] = isNaN(+b.dataset.o) ? b.dataset.o : +b.dataset.o; onChange(state, s.key); });
+        root.appendChild(el);
+      } else {
+        const el = document.createElement('label'); el.className = 'lv';
+        const pct = (v) => ((v - s.min) / (s.max - s.min) * 100).toFixed(1) + '%';
+        el.innerHTML = `<i style="--v:${pct(s.value)}"></i><span>${s.label}</span><b>${s.value}${s.unit || ''}</b><input type="range" min="${s.min}" max="${s.max}" step="${s.step || 1}" value="${s.value}">`;
+        el.querySelector('input').addEventListener('input', (e) => { const v = +e.target.value; state[s.key] = v; el.querySelector('i').style.setProperty('--v', pct(v)); el.querySelector('b').textContent = v + (s.unit || ''); onChange(state, s.key); });
+        root.appendChild(el);
+      }
+    }
+    root.insertAdjacentHTML('beforeend', `<div class="credit">Rebuilt from <a href="https://bencho.dev" target="_blank" rel="noopener">Bencho</a> by Lorenzo Cabra · block logic MIT © 2026 Lorenzo Cabra</div>`);
+    onChange(state, null);
+    return state;
+  }
+
+
+  const goo = document.getElementById('goo'), hex = document.getElementById('hex'), blur = document.getElementById('palBlur'), stage = document.getElementById('stage');
+  let P = {}, now = [], next = [], t = 1, raf = 0, sw = [], seed = 3;
+  const rnd = () => (seed = (seed * 48271) % 2147483647) / 2147483647;
+  /* OKLCH → sRGB hex */
+  function oklchHex(L, C, H) { const a = C * Math.cos(H * Math.PI / 180), b = C * Math.sin(H * Math.PI / 180);
+    const l_ = L + .3963377774 * a + .2158037573 * b, m_ = L - .1055613458 * a - .0638541728 * b, s_ = L - .0894841775 * a - 1.291485548 * b;
+    const l = l_ ** 3, m = m_ ** 3, s = s_ ** 3;
+    const r = 4.0767416621 * l - 3.3077115913 * m + .2309699292 * s, g = -1.2684380046 * l + 2.6097574011 * m - .3413193965 * s, bb = -.0041960863 * l - .7034186147 * m + 1.707614701 * s;
+    const enc = (x) => { x = Math.max(0, Math.min(1, x)); return Math.round((x <= .0031308 ? 12.92 * x : 1.055 * x ** (1 / 2.4) - .055) * 255).toString(16).padStart(2, '0'); };
+    return '#' + enc(r) + enc(g) + enc(bb); }
+  function make(n) { const base = rnd() * 360, step = 16 + rnd() * 18, accent = rnd() < 1 / 3;
+    return Array.from({ length: n }, (_, i) => { const p = i / (n - 1); const L = 0.9 - p * 0.5, C = 0.05 + Math.sin(p * Math.PI) * 0.105; let H = base + i * step; if (accent && i === n - 1) H += 180; return oklchHex(L, C, H); }); }
+  function build() { goo.innerHTML = ''; now = make(P.count); sw = now.map((c) => { const d = document.createElement('div'); d.className = 'sw'; d.style.setProperty('--c', c); goo.appendChild(d); return d; }); hex.textContent = now.join('  '); }
+  function swap() { if (t < 1) return; next = make(P.count); t = 0; const t0 = performance.now(), dur = 900 - P.morph / 100 * 600;
+    const tick = (nowT) => { t = Math.min(1, (nowT - t0) / dur);
+      /* d: 0 at rest, 1 drawn in; the colour changes at the top; the blur rides the motion and is zero at rest */
+      const d = Math.sin(Math.PI * t), heat = d * 5;
+      blur.setAttribute('stdDeviation', heat.toFixed(2));
+      sw.forEach((el, i) => { const shown = t >= 0.4 ? next[i] : now[i]; el.style.setProperty('--c', shown); el.style.setProperty('--s', (1 - d * 0.55).toFixed(3)); el.style.borderRadius = `calc(var(--r, 14px) + ${(d * 22).toFixed(1)}px)`; });
+      if (t < 1) raf = requestAnimationFrame(tick); else { now = next; hex.textContent = now.join('  '); blur.setAttribute('stdDeviation', 0); } };
+    raf = requestAnimationFrame(tick); }
+  document.getElementById('regen').addEventListener('click', swap);
+  bench(document.getElementById('bench'), 'Palette', 'Press', [
+    { key: 'fill', label: 'Fill', type: 'seg', opts: ['Light', 'Dark'], value: 'Light' },
+    { key: 'stroke', label: 'Stroke', type: 'seg', opts: ['Off', 'On'], value: 'Off' },
+    { key: 'morph', label: 'Morph', type: 'level', min: 0, max: 100, step: 5, value: 50 },
+    { key: 'count', label: 'Colours', type: 'level', min: 3, max: 5, value: 4 },
+    { key: 'corner', label: 'Corner', type: 'level', min: 0, max: 29, value: 14, unit: 'px' },
+  ], (state, key) => { P = state; stage.dataset.fill = state.fill.toLowerCase(); stage.dataset.stroke = state.stroke.toLowerCase(); goo.style.setProperty('--r', state.corner + 'px'); if (key === 'count' || key === null) build(); });
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { setTimeout(swap, 1200); setTimeout(swap, 2600); }
+
+</script>

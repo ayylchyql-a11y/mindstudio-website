@@ -1,0 +1,112 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assignees</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f4f4f5; color: #111; overflow: hidden; -webkit-font-smoothing: antialiased; --ink: #111114; --ink-rgb: 17, 17, 20; --card: #fff; }
+  .wrap { display: grid; grid-template-columns: 1fr 224px; height: 100%; }
+  .stage { position: relative; display: grid; place-items: center; overflow: hidden; background: radial-gradient(60% 50% at 30% 70%, #fbe7ee66, transparent 70%), radial-gradient(50% 40% at 75% 30%, #e6ecfb80, transparent 70%); }
+  .stage[data-fill="dark"] { background: #0e0f11; --ink: #f4f4f5; --ink-rgb: 244, 244, 245; --card: #1b1c1f; color: #f4f4f5; }
+  /* ── the bench: one panel, two kinds of control ── */
+  .bench { border-left: 1px solid #00000010; background: #fff; padding: 16px 14px; display: flex; flex-direction: column; gap: 10px; overflow: auto; }
+  .bench h2 { font-size: 14px; font-weight: 600; letter-spacing: -.01em; } .bench h2 small { display: block; margin-top: 2px; font-size: 8.5px; letter-spacing: .16em; text-transform: uppercase; color: #8a8a90; font-weight: 500; }
+  .bench .grp { font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #a0a0a6; margin-top: 6px; }
+  .sw { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #444; }
+  .sw .seg { display: inline-flex; padding: 3px; border-radius: 99px; background: #f1f1f3; } .sw .seg button { border: 0; background: transparent; font: 500 11px/1 inherit; color: #8a8a90; padding: 6px 10px; border-radius: 99px; cursor: pointer; } .sw .seg button.on { background: #fff; color: #111; box-shadow: 0 1px 2px #0000001a; }
+  .lv { position: relative; height: 34px; border-radius: 9px; background: #f1f1f3; overflow: hidden; }
+  .lv i { position: absolute; inset: 0; width: var(--v); background: #dcdcdf; border-radius: 9px 0 0 9px; pointer-events: none; }
+  .lv span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #333; pointer-events: none; } .lv b { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 600; pointer-events: none; font-variant-numeric: tabular-nums; }
+  .lv input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; margin: 0; cursor: ew-resize; }
+  .credit { margin-top: auto; font-size: 8.5px; line-height: 1.4; color: #a0a0a6; } .credit a { color: inherit; }
+  .hint { position: absolute; left: 16px; bottom: 12px; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; } .stage[data-fill="dark"] .hint { color: #ffffff55; }
+  /* a 500px card in the library grid keeps the bench beside the stage, just narrower; only phones stack it */
+  @media (max-width: 600px) { .wrap { grid-template-columns: 1fr 172px; } .bench { padding: 12px 10px; gap: 8px; } .sw .seg button { padding: 5px 8px; } .lv { height: 30px; } }
+  @media (max-width: 420px) { .wrap { grid-template-columns: 1fr; grid-template-rows: 1fr auto; } .bench { border-left: 0; border-top: 1px solid #00000010; max-height: 46%; } }
+
+
+  /* ── Assignees ── the pill grows because ONE number changes: the width of
+     the rail the faces sit in. Faces are absolutely placed inside it, so nobody
+     moves when somebody arrives — there is simply more room. Worked out, not
+     measured. Grid packs the same four into the footprint of one. */
+  .pik { position: relative; width: 232px; }
+  .pik-pill { display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 6px 8px 6px 6px; border-radius: var(--r, 22px); background: var(--card); box-shadow: 0 1px 2px #0000000a, 0 10px 26px -18px #00000050; border: 1px solid transparent; cursor: pointer; }
+  .stage[data-stroke="on"] .pik-pill, .stage[data-stroke="on"] .pik-list { border-color: rgba(var(--ink-rgb), .14); } .stage[data-fill="dark"] .pik-pill, .stage[data-fill="dark"] .pik-list { background: #1b1c1f; }
+  .pik-rail { position: relative; height: 32px; width: var(--w, 0px); transition: width 300ms cubic-bezier(.33,.55,.2,1); }
+  .pik-face { position: absolute; left: 0; top: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--g); box-shadow: 0 0 0 2px var(--card); transform: translateX(var(--x, 0px)) scale(var(--s, 1)); transform-origin: 0 0; transition: transform 300ms cubic-bezier(.33,.55,.2,1), opacity 200ms; }
+  .pik-face.off { opacity: 0; transform: translateX(var(--x, 0px)) scale(.4); }
+  .pik-empty { font-size: 12px; color: rgba(var(--ink-rgb), .5); padding-left: 4px; }
+  .chev { font-size: 11px; color: rgba(var(--ink-rgb), .5); transition: transform 200ms; } .pik.open .chev { transform: rotate(180deg); }
+  .pik-list { position: absolute; left: 0; top: 52px; width: 232px; padding: 6px; border-radius: 18px; background: var(--card); box-shadow: 0 1px 2px #0000000a, 0 14px 30px -18px #00000060; border: 1px solid transparent; color: var(--ink); opacity: 0; transform: translateY(-6px); pointer-events: none; transition: opacity 180ms, transform 220ms cubic-bezier(.22,.9,.3,1.1); }
+  .pik.open .pik-list { opacity: 1; transform: none; pointer-events: auto; }
+  .pik-list .row { display: grid; grid-template-columns: 30px 1fr 20px; gap: 10px; align-items: center; padding: 6px 8px; border-radius: 12px; cursor: pointer; font-size: 12.5px; } .pik-list .row:hover { background: rgba(var(--ink-rgb), .05); }
+  .pik-list .row b { display: block; font-weight: 600; } .pik-list .row small { font-size: 10.5px; color: rgba(var(--ink-rgb), .5); }
+  .pik-list .av { width: 30px; height: 30px; border-radius: 50%; background: var(--g); }
+  .pik-list .bx { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid rgba(var(--ink-rgb), .3); display: grid; place-items: center; color: var(--card); font-size: 11px; } .pik-list .row.on .bx { background: var(--ink); border-color: var(--ink); }
+
+</style>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <div class="pik" id="pik"><div class="pik-pill" id="pill"><span class="pik-rail" id="rail"></span><span class="pik-empty" id="empty">Assignees</span><span class="chev">⌃</span></div><div class="pik-list" id="list"></div></div>
+    <div class="hint">Open the pill · pick people</div>
+  </div>
+  <aside class="bench" id="bench"></aside>
+</div>
+<script>
+  /* ── the bench: a tiny control panel, one function ──
+     specs: { key, label, type: 'seg' | 'level', opts?, min?, max?, step?, unit?, value }
+     onChange(state) runs on every change with the whole state. */
+  function bench(root, title, kind, specs, onChange) {
+    const state = Object.fromEntries(specs.map((s) => [s.key, s.value]));
+    root.innerHTML = `<h2>${title}<small>${kind}</small></h2>`;
+    let lastType = '';
+    for (const s of specs) {
+      if (s.type !== lastType) { root.insertAdjacentHTML('beforeend', `<div class="grp">${s.type === 'seg' ? 'Switches' : 'Levels'}</div>`); lastType = s.type; }
+      if (s.type === 'seg') {
+        const el = document.createElement('div'); el.className = 'sw';
+        el.innerHTML = `<span>${s.label}</span><span class="seg">${s.opts.map((o) => `<button type="button" class="${o === s.value ? 'on' : ''}" data-o="${o}">${o}</button>`).join('')}</span>`;
+        el.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; el.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); state[s.key] = isNaN(+b.dataset.o) ? b.dataset.o : +b.dataset.o; onChange(state, s.key); });
+        root.appendChild(el);
+      } else {
+        const el = document.createElement('label'); el.className = 'lv';
+        const pct = (v) => ((v - s.min) / (s.max - s.min) * 100).toFixed(1) + '%';
+        el.innerHTML = `<i style="--v:${pct(s.value)}"></i><span>${s.label}</span><b>${s.value}${s.unit || ''}</b><input type="range" min="${s.min}" max="${s.max}" step="${s.step || 1}" value="${s.value}">`;
+        el.querySelector('input').addEventListener('input', (e) => { const v = +e.target.value; state[s.key] = v; el.querySelector('i').style.setProperty('--v', pct(v)); el.querySelector('b').textContent = v + (s.unit || ''); onChange(state, s.key); });
+        root.appendChild(el);
+      }
+    }
+    root.insertAdjacentHTML('beforeend', `<div class="credit">Rebuilt from <a href="https://bencho.dev" target="_blank" rel="noopener">Bencho</a> by Lorenzo Cabra · block logic MIT © 2026 Lorenzo Cabra</div>`);
+    onChange(state, null);
+    return state;
+  }
+
+
+  const pik = document.getElementById('pik'), pill = document.getElementById('pill'), rail = document.getElementById('rail'), empty = document.getElementById('empty'), list = document.getElementById('list'), stage = document.getElementById('stage');
+  const PEOPLE = [['Adam Marsh', 'Design', 'linear-gradient(135deg,#ff5fb3,#ff9ac9)'], ['Priya Raman', 'Research', 'linear-gradient(135deg,#4f7dff,#8ad0ff)'], ['Nora Wilder', 'Engineering', 'linear-gradient(135deg,#3ddc84,#b8f26a)'], ['Marco Bellini', 'Product', 'linear-gradient(135deg,#ff5b4d,#ff9a3c)']];
+  const FACE = 32, GUTTER = 2; let P = {}, picked = [0, 1];
+  const faces = PEOPLE.map(([, , g]) => { const f = document.createElement('span'); f.className = 'pik-face'; f.style.setProperty('--g', g); rail.appendChild(f); return f; });
+  PEOPLE.forEach(([n, r, g], i) => { const row = document.createElement('div'); row.className = 'row'; row.innerHTML = `<span class="av" style="--g:${g}"></span><span><b>${n}</b><small>${r}</small></span><span class="bx">✓</span>`; row.addEventListener('click', () => { const k = picked.indexOf(i); k >= 0 ? picked.splice(k, 1) : picked.push(i); layout(); }); list.appendChild(row); });
+  function layout() {
+    const n = picked.length, grid = P.stack === 'Grid';
+    /* Row: rail = FACE + (n − 1)(FACE − overlap). Grid: four fixed quarter slots in one footprint, faces travel by transform, not by left/top */
+    rail.style.setProperty('--w', (n ? (grid ? FACE : FACE + (n - 1) * (FACE - P.overlap)) : 0) + 'px');
+    const cell = (FACE - GUTTER) / 2, s = cell / FACE;
+    faces.forEach((f, id) => { const k = picked.indexOf(id); f.classList.toggle('off', k < 0); if (k < 0) return;
+      if (grid && n > 1) { const col = k % 2, rowi = Math.floor(k / 2); f.style.setProperty('--x', (col * (cell + GUTTER)) + 'px'); f.style.top = (rowi * (cell + GUTTER)) + 'px'; f.style.setProperty('--s', s); }
+      else { f.style.setProperty('--x', (k * (FACE - P.overlap)) + 'px'); f.style.top = '0px'; f.style.setProperty('--s', 1); }
+      f.style.zIndex = 10 + k; });
+    empty.style.display = n ? 'none' : ''; list.querySelectorAll('.row').forEach((r, i) => r.classList.toggle('on', picked.includes(i)));
+  }
+  pill.addEventListener('click', () => pik.classList.toggle('open'));
+  stage.addEventListener('pointerdown', (e) => { if (!pik.contains(e.target)) pik.classList.remove('open'); });
+  bench(document.getElementById('bench'), 'Assignees', 'Select', [
+    { key: 'fill', label: 'Fill', type: 'seg', opts: ['Light', 'Dark'], value: 'Light' },
+    { key: 'stroke', label: 'Stroke', type: 'seg', opts: ['Off', 'On'], value: 'Off' },
+    { key: 'stack', label: 'Stack', type: 'seg', opts: ['Row', 'Grid'], value: 'Row' },
+    { key: 'corner', label: 'Corner', type: 'level', min: 0, max: 26, value: 22, unit: 'px' },
+    { key: 'overlap', label: 'Overlap', type: 'level', min: 0, max: 22, value: 10, unit: 'px' },
+  ], (state) => { P = state; stage.dataset.fill = state.fill.toLowerCase(); stage.dataset.stroke = state.stroke.toLowerCase(); pill.style.setProperty('--r', state.corner + 'px'); layout(); });
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { setTimeout(() => pik.classList.add('open'), 900); setTimeout(() => list.querySelectorAll('.row')[2].click(), 1600); setTimeout(() => list.querySelectorAll('.row')[3].click(), 2200); }
+
+</script>

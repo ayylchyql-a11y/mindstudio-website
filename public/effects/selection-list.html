@@ -1,0 +1,92 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Selection list</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f4f4f5; color: #111; overflow: hidden; -webkit-font-smoothing: antialiased; --ink: #111114; --ink-rgb: 17, 17, 20; --card: #fff; }
+  .wrap { display: grid; grid-template-columns: 1fr 224px; height: 100%; }
+  .stage { position: relative; display: grid; place-items: center; overflow: hidden; background: radial-gradient(60% 50% at 30% 70%, #fbe7ee66, transparent 70%), radial-gradient(50% 40% at 75% 30%, #e6ecfb80, transparent 70%); }
+  .stage[data-fill="dark"] { background: #0e0f11; --ink: #f4f4f5; --ink-rgb: 244, 244, 245; --card: #1b1c1f; color: #f4f4f5; }
+  /* ── the bench: one panel, two kinds of control ── */
+  .bench { border-left: 1px solid #00000010; background: #fff; padding: 16px 14px; display: flex; flex-direction: column; gap: 10px; overflow: auto; }
+  .bench h2 { font-size: 14px; font-weight: 600; letter-spacing: -.01em; } .bench h2 small { display: block; margin-top: 2px; font-size: 8.5px; letter-spacing: .16em; text-transform: uppercase; color: #8a8a90; font-weight: 500; }
+  .bench .grp { font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #a0a0a6; margin-top: 6px; }
+  .sw { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #444; }
+  .sw .seg { display: inline-flex; padding: 3px; border-radius: 99px; background: #f1f1f3; } .sw .seg button { border: 0; background: transparent; font: 500 11px/1 inherit; color: #8a8a90; padding: 6px 10px; border-radius: 99px; cursor: pointer; } .sw .seg button.on { background: #fff; color: #111; box-shadow: 0 1px 2px #0000001a; }
+  .lv { position: relative; height: 34px; border-radius: 9px; background: #f1f1f3; overflow: hidden; }
+  .lv i { position: absolute; inset: 0; width: var(--v); background: #dcdcdf; border-radius: 9px 0 0 9px; pointer-events: none; }
+  .lv span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #333; pointer-events: none; } .lv b { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 600; pointer-events: none; font-variant-numeric: tabular-nums; }
+  .lv input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; margin: 0; cursor: ew-resize; }
+  .credit { margin-top: auto; font-size: 8.5px; line-height: 1.4; color: #a0a0a6; } .credit a { color: inherit; }
+  .hint { position: absolute; left: 16px; bottom: 12px; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; } .stage[data-fill="dark"] .hint { color: #ffffff55; }
+  /* a 500px card in the library grid keeps the bench beside the stage, just narrower; only phones stack it */
+  @media (max-width: 600px) { .wrap { grid-template-columns: 1fr 172px; } .bench { padding: 12px 10px; gap: 8px; } .sw .seg button { padding: 5px 8px; } .lv { height: 30px; } }
+  @media (max-width: 420px) { .wrap { grid-template-columns: 1fr; grid-template-rows: 1fr auto; } .bench { border-left: 0; border-top: 1px solid #00000010; max-height: 46%; } }
+
+
+  /* ── Selection list ── selection lives in a Set, so the order of clicks never
+     leaks into the rendered order; the count below is derived from it. */
+  .ros { width: 232px; padding: 6px; border-radius: var(--r, 20px); background: var(--card); box-shadow: 0 1px 2px #0000000a, 0 10px 26px -18px #00000050; border: 1px solid transparent; color: var(--ink); }
+  .stage[data-fill="dark"] .ros { background: #1b1c1f; }
+  .ros .row { display: grid; grid-template-columns: 30px 1fr 22px; gap: 10px; align-items: center; padding: 7px 8px; border-radius: calc(var(--r, 20px) - 6px); cursor: pointer; user-select: none; transition: background-color 160ms; }
+  .ros .row:hover { background: rgba(var(--ink-rgb), .05); }
+  .av { width: 30px; height: 30px; border-radius: 50%; background: var(--g); }
+  .who b { display: block; font-size: 12.5px; font-weight: 600; } .who small { font-size: 10.5px; color: rgba(var(--ink-rgb), .5); }
+  .ck { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid rgba(var(--ink-rgb), .25); display: grid; place-items: center; transition: background-color 160ms, border-color 160ms; }
+  .ck svg { width: 12px; height: 12px; opacity: 0; transform: scale(.6); transition: opacity 160ms, transform 220ms cubic-bezier(.34,1.4,.64,1); }
+  .row.on .ck { background: var(--ink); border-color: var(--ink); } .row.on .ck svg { opacity: 1; transform: none; }
+  .send { display: block; width: calc(100% - 4px); margin: 6px 2px 2px; height: 36px; border: 0; border-radius: calc(var(--r, 20px) - 6px); background: var(--ink); color: var(--card); font: 600 12.5px/1 inherit; cursor: pointer; transition: opacity 160ms; }
+  .send:disabled { opacity: .35; }
+
+</style>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <div class="ros" id="ros"></div>
+    <div class="hint">Pick people</div>
+  </div>
+  <aside class="bench" id="bench"></aside>
+</div>
+<script>
+  /* ── the bench: a tiny control panel, one function ──
+     specs: { key, label, type: 'seg' | 'level', opts?, min?, max?, step?, unit?, value }
+     onChange(state) runs on every change with the whole state. */
+  function bench(root, title, kind, specs, onChange) {
+    const state = Object.fromEntries(specs.map((s) => [s.key, s.value]));
+    root.innerHTML = `<h2>${title}<small>${kind}</small></h2>`;
+    let lastType = '';
+    for (const s of specs) {
+      if (s.type !== lastType) { root.insertAdjacentHTML('beforeend', `<div class="grp">${s.type === 'seg' ? 'Switches' : 'Levels'}</div>`); lastType = s.type; }
+      if (s.type === 'seg') {
+        const el = document.createElement('div'); el.className = 'sw';
+        el.innerHTML = `<span>${s.label}</span><span class="seg">${s.opts.map((o) => `<button type="button" class="${o === s.value ? 'on' : ''}" data-o="${o}">${o}</button>`).join('')}</span>`;
+        el.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; el.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); state[s.key] = isNaN(+b.dataset.o) ? b.dataset.o : +b.dataset.o; onChange(state, s.key); });
+        root.appendChild(el);
+      } else {
+        const el = document.createElement('label'); el.className = 'lv';
+        const pct = (v) => ((v - s.min) / (s.max - s.min) * 100).toFixed(1) + '%';
+        el.innerHTML = `<i style="--v:${pct(s.value)}"></i><span>${s.label}</span><b>${s.value}${s.unit || ''}</b><input type="range" min="${s.min}" max="${s.max}" step="${s.step || 1}" value="${s.value}">`;
+        el.querySelector('input').addEventListener('input', (e) => { const v = +e.target.value; state[s.key] = v; el.querySelector('i').style.setProperty('--v', pct(v)); el.querySelector('b').textContent = v + (s.unit || ''); onChange(state, s.key); });
+        root.appendChild(el);
+      }
+    }
+    root.insertAdjacentHTML('beforeend', `<div class="credit">Rebuilt from <a href="https://bencho.dev" target="_blank" rel="noopener">Bencho</a> by Lorenzo Cabra · block logic MIT © 2026 Lorenzo Cabra</div>`);
+    onChange(state, null);
+    return state;
+  }
+
+
+  const ros = document.getElementById('ros'), stage = document.getElementById('stage');
+  const PEOPLE = [['Nadia Okonkwo', '@nadia', 'linear-gradient(135deg,#4f7dff,#8ad0ff)'], ['Tomas Cardoso', '@tomas', 'linear-gradient(135deg,#ff5b4d,#ff9a3c)'], ['Kai Brenner', '@kai', 'linear-gradient(135deg,#ff5fb3,#b46bff)'], ['Lukas Lindqvist', '@lukas', 'linear-gradient(135deg,#3ddc84,#b8f26a)']];
+  let P = {}, picked = new Set();
+  function build() { ros.innerHTML = ''; PEOPLE.slice(0, P.rows).forEach(([n, h, g], i) => { const r = document.createElement('div'); r.className = 'row' + (picked.has(i) ? ' on' : ''); r.innerHTML = `<span class="av" style="--g:${g}"></span><span class="who"><b>${n}</b><small>${h}</small></span><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="var(--card)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>`; r.addEventListener('click', () => { picked.has(i) ? picked.delete(i) : picked.add(i); r.classList.toggle('on', picked.has(i)); count(); }); ros.appendChild(r); }); const b = document.createElement('button'); b.className = 'send'; b.type = 'button'; ros.appendChild(b); count(); }
+  function count() { const n = [...picked].filter((i) => i < P.rows).length; const b = ros.querySelector('.send'); b.textContent = `Send ${n} request${n === 1 ? '' : 's'}`; b.disabled = n === 0; }
+  bench(document.getElementById('bench'), 'Selection list', 'Select', [
+    { key: 'fill', label: 'Fill', type: 'seg', opts: ['Light', 'Dark'], value: 'Light' },
+    { key: 'rows', label: 'Rows', type: 'seg', opts: [2, 3, 4], value: 4 },
+    { key: 'corner', label: 'Corner', type: 'level', min: 0, max: 40, step: 2, value: 20, unit: 'px' },
+  ], (state, key) => { P = state; stage.dataset.fill = state.fill.toLowerCase(); ros.style.setProperty('--r', state.corner + 'px'); if (key === 'rows' || key === null) build(); });
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { setTimeout(() => ros.querySelectorAll('.row')[0].click(), 1000); setTimeout(() => ros.querySelectorAll('.row')[2].click(), 1600); }
+
+</script>
