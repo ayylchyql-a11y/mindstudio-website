@@ -1,0 +1,102 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create menu</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f4f4f5; color: #111; overflow: hidden; -webkit-font-smoothing: antialiased; --ink: #111114; --ink-rgb: 17, 17, 20; --card: #fff; }
+  .wrap { display: grid; grid-template-columns: 1fr 224px; height: 100%; }
+  .stage { position: relative; display: grid; place-items: center; overflow: hidden; background: radial-gradient(60% 50% at 30% 70%, #fbe7ee66, transparent 70%), radial-gradient(50% 40% at 75% 30%, #e6ecfb80, transparent 70%); }
+  .stage[data-fill="dark"] { background: #0e0f11; --ink: #f4f4f5; --ink-rgb: 244, 244, 245; --card: #1b1c1f; color: #f4f4f5; }
+  /* ── the bench: one panel, two kinds of control ── */
+  .bench { border-left: 1px solid #00000010; background: #fff; padding: 16px 14px; display: flex; flex-direction: column; gap: 10px; overflow: auto; }
+  .bench h2 { font-size: 14px; font-weight: 600; letter-spacing: -.01em; } .bench h2 small { display: block; margin-top: 2px; font-size: 8.5px; letter-spacing: .16em; text-transform: uppercase; color: #8a8a90; font-weight: 500; }
+  .bench .grp { font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #a0a0a6; margin-top: 6px; }
+  .sw { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #444; }
+  .sw .seg { display: inline-flex; padding: 3px; border-radius: 99px; background: #f1f1f3; } .sw .seg button { border: 0; background: transparent; font: 500 11px/1 inherit; color: #8a8a90; padding: 6px 10px; border-radius: 99px; cursor: pointer; } .sw .seg button.on { background: #fff; color: #111; box-shadow: 0 1px 2px #0000001a; }
+  .lv { position: relative; height: 34px; border-radius: 9px; background: #f1f1f3; overflow: hidden; }
+  .lv i { position: absolute; inset: 0; width: var(--v); background: #dcdcdf; border-radius: 9px 0 0 9px; pointer-events: none; }
+  .lv span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #333; pointer-events: none; } .lv b { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 600; pointer-events: none; font-variant-numeric: tabular-nums; }
+  .lv input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; margin: 0; cursor: ew-resize; }
+  .credit { margin-top: auto; font-size: 8.5px; line-height: 1.4; color: #a0a0a6; } .credit a { color: inherit; }
+  .hint { position: absolute; left: 16px; bottom: 12px; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; } .stage[data-fill="dark"] .hint { color: #ffffff55; }
+  /* a 500px card in the library grid keeps the bench beside the stage, just narrower; only phones stack it */
+  @media (max-width: 600px) { .wrap { grid-template-columns: 1fr 172px; } .bench { padding: 12px 10px; gap: 8px; } .sw .seg button { padding: 5px 8px; } .lv { height: 30px; } }
+  @media (max-width: 420px) { .wrap { grid-template-columns: 1fr; grid-template-rows: 1fr auto; } .bench { border-left: 0; border-top: 1px solid #00000010; max-height: 46%; } }
+
+
+  /* ── Create menu ── one shape, not two: the pill IS the panel, seen small.
+     The press lands first (a plain uniform shrink, 110ms), then the spread —
+     width, height and corner on the same curve for the same time, and nothing
+     overshoots, because a spring past the target drags the corner with it. */
+  .crt-stage { position: relative; width: 240px; height: 210px; --w: 132px; --h: 46px; --r: 999px; }
+  .crt-stage[data-open] { --w: 212px; --h: 190px; --r: var(--rc, 26px); }
+  .crt-body { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: var(--w); height: var(--h); border-radius: var(--r); background: var(--ink); color: var(--card); overflow: hidden;
+    transition: width 480ms cubic-bezier(.22,1,.36,1), height 480ms cubic-bezier(.22,1,.36,1), border-radius 480ms cubic-bezier(.22,1,.36,1), scale 340ms cubic-bezier(.22,1,.36,1); cursor: pointer; }
+  .crt-stage[data-sink] .crt-body { scale: .94; transition: scale 110ms; }
+  .crt-pill { position: absolute; inset: 0; display: grid; place-items: center; font: 500 13px/1 inherit; white-space: nowrap; opacity: 1; transition: opacity 160ms; }
+  .crt-stage[data-open] .crt-pill { opacity: 0; }
+  .crt-panel { position: absolute; inset: 10px; display: grid; align-content: start; gap: 2px; }
+  .crt-item { height: 34px; display: flex; align-items: center; gap: 10px; padding: 0 12px; border-radius: 999px; font: 500 13px/1 inherit; white-space: nowrap; opacity: 0; transform: translateY(6px); transition: opacity 220ms, transform 260ms cubic-bezier(.22,1,.36,1); transition-delay: var(--out); cursor: pointer; position: relative; }
+  .crt-stage[data-open] .crt-item { opacity: 1; transform: none; transition-delay: var(--in); }
+  .crt-hl { position: absolute; left: 10px; width: calc(100% - 20px); height: 34px; border-radius: 999px; background: rgba(255,255,255,.14); top: var(--y, 10px); opacity: var(--o, 0); transition: top 380ms cubic-bezier(.22,1,.36,1), opacity 160ms, scale 300ms cubic-bezier(.3,.9,.4,1); }
+  .crt-hl[data-moving="true"] { scale: .96 1.16; transition: top 380ms cubic-bezier(.22,1,.36,1), scale 110ms cubic-bezier(.3,1,.4,1); }
+
+</style>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <div class="crt-stage" id="crt"><div class="crt-body" id="body"><div class="crt-pill">＋ Create</div><div class="crt-hl" id="hl"></div><div class="crt-panel" id="panel"></div></div></div>
+    <div class="hint">Press Create</div>
+  </div>
+  <aside class="bench" id="bench"></aside>
+</div>
+<script>
+  /* ── the bench: a tiny control panel, one function ──
+     specs: { key, label, type: 'seg' | 'level', opts?, min?, max?, step?, unit?, value }
+     onChange(state) runs on every change with the whole state. */
+  function bench(root, title, kind, specs, onChange) {
+    const state = Object.fromEntries(specs.map((s) => [s.key, s.value]));
+    root.innerHTML = `<h2>${title}<small>${kind}</small></h2>`;
+    let lastType = '';
+    for (const s of specs) {
+      if (s.type !== lastType) { root.insertAdjacentHTML('beforeend', `<div class="grp">${s.type === 'seg' ? 'Switches' : 'Levels'}</div>`); lastType = s.type; }
+      if (s.type === 'seg') {
+        const el = document.createElement('div'); el.className = 'sw';
+        el.innerHTML = `<span>${s.label}</span><span class="seg">${s.opts.map((o) => `<button type="button" class="${o === s.value ? 'on' : ''}" data-o="${o}">${o}</button>`).join('')}</span>`;
+        el.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; el.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); state[s.key] = isNaN(+b.dataset.o) ? b.dataset.o : +b.dataset.o; onChange(state, s.key); });
+        root.appendChild(el);
+      } else {
+        const el = document.createElement('label'); el.className = 'lv';
+        const pct = (v) => ((v - s.min) / (s.max - s.min) * 100).toFixed(1) + '%';
+        el.innerHTML = `<i style="--v:${pct(s.value)}"></i><span>${s.label}</span><b>${s.value}${s.unit || ''}</b><input type="range" min="${s.min}" max="${s.max}" step="${s.step || 1}" value="${s.value}">`;
+        el.querySelector('input').addEventListener('input', (e) => { const v = +e.target.value; state[s.key] = v; el.querySelector('i').style.setProperty('--v', pct(v)); el.querySelector('b').textContent = v + (s.unit || ''); onChange(state, s.key); });
+        root.appendChild(el);
+      }
+    }
+    root.insertAdjacentHTML('beforeend', `<div class="credit">Rebuilt from <a href="https://bencho.dev" target="_blank" rel="noopener">Bencho</a> by Lorenzo Cabra · block logic MIT © 2026 Lorenzo Cabra</div>`);
+    onChange(state, null);
+    return state;
+  }
+
+
+  const crt = document.getElementById('crt'), body = document.getElementById('body'), panel = document.getElementById('panel'), hl = document.getElementById('hl'), stage = document.getElementById('stage');
+  const ITEMS = [['▤', 'Document'], ['▦', 'Spreadsheet'], ['▣', 'Board'], ['▭', 'Folder']];
+  let open = false, over = null, moveT = 0;
+  ITEMS.forEach(([g, n], i) => { const el = document.createElement('div'); el.className = 'crt-item'; el.style.setProperty('--in', (70 + i * 38) + 'ms'); el.style.setProperty('--out', ((ITEMS.length - 1 - i) * 30) + 'ms'); el.innerHTML = `<span>${g}</span>${n}`;
+    el.addEventListener('pointerenter', () => { if (over !== null && over !== i) { hl.dataset.moving = 'true'; clearTimeout(moveT); moveT = setTimeout(() => hl.dataset.moving = 'false', 90); } over = i; hl.style.setProperty('--y', (10 + i * 36) + 'px'); hl.style.setProperty('--o', 1); });
+    el.addEventListener('click', (e) => { e.stopPropagation(); setOpen(false); }); panel.appendChild(el); });
+  panel.addEventListener('pointerleave', () => { over = null; hl.style.setProperty('--o', 0); });
+  function press() { if (open) return; crt.dataset.sink = ''; setTimeout(() => { delete crt.dataset.sink; setOpen(true); }, 95); }   // the shrink takes 110ms, the spread starts at 95
+  function setOpen(v) { open = v; if (v) crt.dataset.open = ''; else { delete crt.dataset.open; over = null; hl.style.setProperty('--o', 0); } }
+  body.addEventListener('click', () => { if (!open) press(); });
+  /* anywhere but the menu puts it away — and it asks the visible box, not the element */
+  stage.addEventListener('pointerdown', (e) => { if (!open) return; const b = body.getBoundingClientRect(); const on = e.clientX >= b.left && e.clientX <= b.right && e.clientY >= b.top && e.clientY <= b.bottom; if (!on) setOpen(false); });
+  bench(document.getElementById('bench'), 'Create menu', 'Press', [
+    { key: 'fill', label: 'Fill', type: 'seg', opts: ['Light', 'Dark'], value: 'Light' },
+    { key: 'stroke', label: 'Stroke', type: 'seg', opts: ['Off', 'On'], value: 'Off' },
+    { key: 'corner', label: 'Corner', type: 'level', min: 0, max: 40, step: 2, value: 28, unit: 'px' },
+  ], (state) => { stage.dataset.fill = state.fill.toLowerCase(); stage.dataset.stroke = state.stroke.toLowerCase(); crt.style.setProperty('--rc', state.corner + 'px'); });
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { setTimeout(press, 1000); setTimeout(() => setOpen(false), 3200); }
+
+</script>
