@@ -1604,6 +1604,131 @@ export const effects: Effect[] = [
       "Build a bubble chart in vanilla HTML/CSS/JS on a dark card. Items [name, minutes, colour, cx%, cy%]: Yoga 64 #a8a06e (50,50), Walk 180 #9a9be0 (22,50), Run 38 #b5c4b0 (78,30), Swim 20 #f0efe9 (40,16), Bike 26 #8a8a90 (36,84), Gym 15 #f0efe9 (82,78) in a 210px-tall field. Each bubble is an absolutely positioned circle with diameter √minutes×7px, left/top at its centre, and transform: translate(-50%,-50%) translate(var(--dx,0), var(--dy,0)) scale(var(--s,1)) with a 520ms cubic-bezier(.22,.61,.36,1) transition; name in bold, minutes line hidden (max-height 0, opacity 0). Entry: animate from translate(-50%,-50%) scale(0) over 600ms cubic-bezier(.34,1.4,.64,1) with a 60ms stagger. On click set the picked bubble's --s to 1.35 and reveal its minutes; for every other bubble compute the centre-to-centre vector in pixels, push = max(0, pickedRadius×1.35 + otherRadius + 10 − distance), and set --dx/--dy to that push along the vector (0 if no overlap); set filter brightness(.7) on the others. Clicking the picked bubble again resets everything; recompute on resize. Pick Yoga automatically 900ms after load.",
     source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 10 气泡图", at: "1:05" },
   },
+  /* ── 2026-09-19，抖音 @风间 AI 产品设计师「别再让 AI 做“高级网站”了，先学会拆解高级动效」──
+     录屏只有 15 秒且一半是 3 倍速，时长曲线量不出来，这四条的数值是按录屏节奏定的、不是量的。
+     视频里五个命名效果，「覆盖式轮播」并进了 logo-bloom-transition（同一次转场的前半段）。 */
+  {
+    slug: "flip-stack-carousel",
+    category: "web-effects",
+    date: "2026-09-19",
+    plays: "self",
+    title: { en: "Flip-stack card carousel", zh: "3D 卡片轮播", "zh-tw": "3D 卡片輪播" },
+    gist: {
+      en: "A short stack of cards in perspective, in front of a marquee line. Every couple of seconds the front card swings open like a door on its left edge, and once past 90° it is sent to the back while the rest step forward one slot.",
+      zh: "透视里的一小摞卡片，摆在一行跑马灯文字前面。每隔两秒多，最前面那张以左边为轴像门一样翻开，过了 90° 就被送到最后，其余的往前挪一格。",
+      "zh-tw": "透視裡的一小疊卡片，擺在一行跑馬燈文字前面。每隔兩秒多，最前面那張以左邊為軸像門一樣翻開，過了 90° 就被送到最後，其餘的往前挪一格。",
+    },
+    height: 400,
+    accent: "#5b34d8",
+    anatomy: [
+      "The stack is one <code>perspective: 1100px</code> box; each card's place is a single index <code>--i</code> turned into <code>translateZ(−40px·i) translateX(26px·i) rotateY(−12°·i)</code>. Re-ordering the array and rewriting <code>--i</code> is the whole layout — the 900ms transform transition does the stepping forward.",
+      "<code>transform-origin: 0% 50%</code> makes the flip a door, not a coin: the front card rotates to −108° about its own left edge. With <code>backface-visibility: hidden</code> it disappears exactly when it passes 90°.",
+      "At 620ms — past the 90° point — the card gets a <code>.reset</code> class (transition: none), is moved to the last index, and two frames later the class is removed. Nobody sees the jump because the face was already hidden, and the card fades back in at the rear.",
+      "The marquee behind it is one duplicated line moved by <code>translateX(−50%)</code> over 16s; a second copy in the same span is what makes the loop seamless. It is <code>pointer-events: none</code> so clicks reach the stack.",
+      "The cadence (2.4s) is set by feel — the source recording is scrubbed at 3× and the real timing cannot be read from it. Click the stack to flip on demand.",
+    ],
+    tokens: [
+      { label: "Card slot", value: "translateZ(−40px·i) translateX(26px·i) rotateY(−12°·i)" },
+      { label: "Flip", value: "rotateY(−108°) · 900ms cubic-bezier(.6,.02,.2,1)" },
+      { label: "Re-stack moment", value: "620ms (past 90°)" },
+      { label: "Marquee", value: "translateX(−50%) · 16s linear" },
+    ],
+    prompt:
+      "Build a flip-stack card carousel in vanilla HTML/CSS/JS. White page, a 34px marquee line behind everything (one span containing the phrase list twice, animated translateX(0 → -50%) over 16s linear, pointer-events none). Centre a 168×262 stack with perspective 1100px and transform-style preserve-3d; four absolutely positioned cards (14px radius, gradient faces, backface-visibility hidden, transform-origin 0% 50%) each with a custom property --i = its index, positioned by transform: translateZ(calc(var(--i) * -40px)) translateX(calc(var(--i) * 26px)) rotateY(calc(var(--i) * -12deg)) with transition transform 900ms cubic-bezier(.6,.02,.2,1). Every 2400ms (and on click) add .open to the front card = transform rotateY(-108deg) translateZ(20px); after 620ms add a .reset class that disables the transition, remove .open, move the card to the end of the order array, rewrite every card's --i, set its opacity to 0, and on the second animation frame remove .reset and restore opacity so it fades in at the back while the others slide forward one slot. Under prefers-reduced-motion disable the interval and the marquee.",
+    source: { label: "@风间 AI 产品设计师 (Douyin) · 「别再让 AI 做“高级网站”了」· 3D 卡片轮播" },
+  },
+  {
+    slug: "particle-sphere-dissolve",
+    category: "web-effects",
+    date: "2026-09-19",
+    plays: "click",
+    title: { en: "Particle sphere dissolve", zh: "粒子过渡转场", "zh-tw": "粒子過渡轉場" },
+    gist: {
+      en: "A sphere of 2,600 points turns slowly and tilts with the pointer. Click, and every point lets go along its own normal — the sphere thins into a field of dust while the headline fades in underneath. Click again and it gathers back.",
+      zh: "2600 个点组成的球慢慢自转、跟着指针倾斜。点一下，每个点沿自己的法线松开——球稀释成一片尘埃，标题从底下浮出来；再点一下又聚回去。",
+      "zh-tw": "2600 個點組成的球慢慢自轉、跟著指標傾斜。點一下，每個點沿自己的法線鬆開——球稀釋成一片塵埃，標題從底下浮出來；再點一下又聚回去。",
+    },
+    height: 400,
+    accent: "#a06dff",
+    anatomy: [
+      "Points come from a Fibonacci sphere (<code>y = 1 − 2i/N</code>, <code>θ = i·2.39996</code>) plus ±0.03 jitter — even spacing without the polar clustering of latitude/longitude, and the jitter stops the lattice from reading as a grid.",
+      "Each frame every point is rotated about Y (slow spin + pointer x) then about X (pointer y), projected orthographically, and drawn as a <code>fillRect</code> whose size and alpha follow depth <code>(z+1)/2</code>. No sorting: 2,600 rects per frame is cheap and the alpha ramp does the depth cue.",
+      "The dissolve is one scalar, <code>d</code>, eased toward 0 or 1 with a frame-rate-independent lerp (<code>1 − 0.001^(dt/1800)</code> ≈ 1.8s to settle). At <code>d</code> each point sits at <code>normal × (1 + d·(1.9 + 0.8·size))</code> plus its own jitter vector — bigger points fly further, so the cloud gets texture instead of just growing.",
+      "Alpha is multiplied by <code>1 − 0.78·d</code>: the cloud thins as it spreads, which is what lets the HTML headline read through it. The headline and paragraph are ordinary elements toggled by a class when <code>d</code> crosses 0.5, with a 300ms delay so they arrive after the sphere has let go.",
+      "The sample runs the cycle once on its own (dissolve at 2.6s, re-form at 6.4s) and then waits for clicks. The star in the centre is a CSS <code>clip-path</code> polygon, not part of the canvas.",
+    ],
+    tokens: [
+      { label: "Points", value: "2600 · Fibonacci sphere · jitter ±0.03" },
+      { label: "Spin", value: "0.00018 rad/ms · pointer tilt ±0.35 rad" },
+      { label: "Dissolve settle", value: "≈1.8s · lerp 1 − 0.001^(dt/1800)" },
+      { label: "Spread / fade", value: "×(1 + d·(1.9 + 0.8·size)) · alpha ×(1 − 0.78·d)" },
+    ],
+    prompt:
+      "Build a particle-sphere dissolve in vanilla HTML/JS on a #040406 page with a full-size canvas. Generate 2600 points on a Fibonacci sphere (y = 1 − 2i/(N−1), r = sqrt(1−y²), θ = i×2.399963) with ±0.03 random jitter, each with a size 0.6–2.0, a random 2D jitter vector, and a hue 270–310. Every frame rotate each point about Y by a slow spin (0.00018 rad/ms) plus pointer x, then about X by pointer y × 0.35, project orthographically with radius = 33% of the shorter side, and draw a fillRect whose size = (0.6 + depth×1.3)×size and colour hsla(hue,70%,55+depth×30%,alpha) where depth = (z+1)/2 and alpha = 0.18 + depth×0.7. Keep a scalar d (0 = sphere, 1 = dissolved) that lerps toward a target with factor 1 − 0.001^(dt/1800); at d, place each point at normal × (1 + d×(1.9 + 0.8×size)) + jitter × d × 2, grow its rect by (1 + 0.6d) and multiply alpha by (1 − 0.78d). Toggle the target on click. When d > 0.5 add a class that fades in an HTML headline ('Beyond' top-left, 'all limits' bottom-right, 54px) and a paragraph with 300ms delay. Run one dissolve/re-form cycle automatically at 2.6s and 6.4s.",
+    caveats: ["Orthographic projection with no depth sort means a dense sphere looks flat-ish when it stops spinning; the alpha-by-depth ramp is what carries the volume, so keep the spin or the pointer tilt alive.", "Rendering in CSS pixels × devicePixelRatio (capped at 2): on a 3× phone this is 2600 rects at 2× — fine, but do not cap higher."],
+    source: { label: "@风间 AI 产品设计师 (Douyin) · 「别再让 AI 做“高级网站”了」· 粒子过渡转场" },
+  },
+  {
+    slug: "floating-parallax-field",
+    category: "web-effects",
+    date: "2026-09-19",
+    plays: "hover",
+    title: { en: "Floating parallax field", zh: "漂浮视差", "zh-tw": "漂浮視差" },
+    gist: {
+      en: "Eight images scattered in the dark at different depths. Each one drifts on its own slow sine, and when the pointer moves the near ones travel further than the far ones — depth also sets their size and brightness, so the space reads before anything moves.",
+      zh: "八张图散在暗处，各在不同深度。每张按自己的慢正弦漂着；指针一动，近的走得远、远的走得少——深度还决定大小和亮度，所以还没动之前空间感就已经在了。",
+      "zh-tw": "八張圖散在暗處，各在不同深度。每張按自己的慢正弦漂著；指標一動，近的走得遠、遠的走得少——深度還決定大小和亮度，所以還沒動之前空間感就已經在了。",
+    },
+    height: 400,
+    accent: "#7a4de8",
+    anatomy: [
+      "One number per card, <code>--z</code> in 0–1, does three jobs in CSS: width <code>44px + z·92px</code>, <code>filter: brightness(.45 + .7z)</code>, and the parallax multiplier. A card at z = 0.2 is small, dark and nearly still; one at z = 0.95 is big, bright and moves 28px per unit of pointer travel.",
+      "The pointer is written as two custom properties on the field (<code>--px</code>, <code>--py</code> in −1…1). Every card's transform reads them and multiplies by its own <code>--z</code>, so one pointermove handler updates eight cards with zero per-card JS.",
+      "The transform is transitioned at 900ms with a strong ease-out, which is what makes the field feel weighty rather than glued to the cursor; leaving the field resets to 0,0 and the cards settle back.",
+      "Idle drift is a requestAnimationFrame writing <code>--dx/--dy</code> from two sines with a different phase per card and an amplitude scaled by depth. It is added inside the same transform so drift and parallax compose.",
+      "A single blurred radial glow low-right is the only light source. Because far cards are dimmed by the brightness filter, they read as receding into the dark without any per-card shading.",
+    ],
+    tokens: [
+      { label: "Depth → size", value: "44px + z·92px" },
+      { label: "Depth → light", value: "brightness(.45 + .7z)" },
+      { label: "Parallax", value: "px·z·−28px, py·z·−18px · 900ms cubic-bezier(.16,.84,.3,1)" },
+      { label: "Drift", value: "sin(.35t + 1.7i)·6·(.4+z), cos(.28t + 2.1i)·8·(.4+z)" },
+    ],
+    prompt:
+      "Build a floating parallax field in vanilla HTML/CSS/JS on a #050507 page. A full-size .field with perspective 900px, a blurred purple radial glow (60% wide, blur 30px) at the lower right, a small nav top-left. Eight absolutely positioned cards each with custom properties --x/--y (percent), --z (depth 0–1) and --ar; width calc(44px + var(--z) * 92px), aspect-ratio var(--ar), 6px radius, gradient artwork, a tiny caption; filter brightness(calc(.45 + var(--z) * .7)); transform translate(calc(var(--px) * var(--z) * -28px + var(--dx)), calc(var(--py) * var(--z) * -18px + var(--dy))) with transition transform 900ms cubic-bezier(.16,.84,.3,1). On pointermove set --px/--py on the field to the pointer position mapped to −1…1; on pointerleave set 0,0. In requestAnimationFrame set each card's --dx = sin(t×.35 + i×1.7)×6×(.4+z) px and --dy = cos(t×.28 + i×2.1)×8×(.4+z) px. Depths from .18 to .95, spread across the frame. Under prefers-reduced-motion skip the drift and the transition.",
+    source: { label: "@风间 AI 产品设计师 (Douyin) · 「别再让 AI 做“高级网站”了」· 漂浮视差" },
+  },
+  {
+    slug: "logo-bloom-transition",
+    category: "web-effects",
+    date: "2026-09-19",
+    plays: "click",
+    title: { en: "Logo-mask bloom transition", zh: "Logo 光晕转场", "zh-tw": "Logo 光暈轉場" },
+    gist: {
+      en: "Page to page through the brand mark: on click a star-shaped patch of purple light grows out of the button, blurs into a full-screen bloom at the moment the pages swap underneath, and fades out over the new page. Covers both 'cover carousel' and 'page bridge' from the source.",
+      zh: "用品牌标志做页面之间的过渡：点击后一块星形的紫色光从按钮里长出来，长到盖满整屏的同时糊成一团光晕，底下两页交换，然后光晕在新页上散掉。源视频里的「覆盖式轮播」和「前后页面衔接」都是这一段。",
+      "zh-tw": "用品牌標誌做頁面之間的過渡：點擊後一塊星形的紫色光從按鈕裡長出來，長到蓋滿整屏的同時糊成一團光暈，底下兩頁交換，然後光暈在新頁上散掉。源影片裡的「覆蓋式輪播」和「前後頁面銜接」都是這一段。",
+    },
+    height: 400,
+    accent: "#a06dff",
+    anatomy: [
+      "The transition is a single element: a 220px square filled with a purple radial gradient and cut to a four-point star by <code>clip-path: polygon(…)</code>. Everything else — both pages, the metallic star, the screenshot — is ordinary layout underneath it.",
+      "It starts at <code>scale(.04)</code> positioned at the clicked button (origin written from <code>getBoundingClientRect</code>), so the bloom grows out of the thing you pressed, not from the centre of the screen.",
+      "One 1400ms keyframe does shape → light: <code>scale .04 → 1.6 → 4.5 → 6</code> while <code>filter: blur()</code> goes <code>0 → 10 → 34 → 48px</code>. At small scale it is recognisably the logo; by 60% it has blurred into pure glow. Opacity only drops in the last 40%, so the cover is complete when the swap happens.",
+      "The pages swap at 640ms — inside the fully-covered window — by fading one out (500ms, scale .98) and the other in (scale 1.04 → 1, 700ms). Because the mask hides the moment of the swap, the two pages never need to relate to each other.",
+      "The 'cover carousel' in the source is the same mechanism run on the last card of a carousel: the star grows off the card face to cover the viewport, then the next scene is underneath. Same element, same keyframe, different trigger.",
+    ],
+    tokens: [
+      { label: "Mask", value: "clip-path star · radial gradient #f1e9ff → #b78cff → #6a3ddb → transparent" },
+      { label: "Bloom", value: "1400ms cubic-bezier(.5,0,.15,1) · scale .04→6 · blur 0→48px" },
+      { label: "Page swap", value: "at 640ms · out 500ms / in 700ms" },
+      { label: "Origin", value: "the clicked button's centre" },
+    ],
+    prompt:
+      "Build a logo-mask bloom page transition in vanilla HTML/CSS/JS. Two absolutely positioned full-size pages (A: 'Build beyond all limits' with a CSS metallic four-point star made of a conic gradient in a clip-path; B: 'Prompts that think ahead' with a purple gradient card), each with a white button; page B starts at opacity 0 and scale(1.04). A .mask overlay (inset 0, pointer-events none, opacity 0) contains one 220×220 element positioned at --ox/--oy with a radial gradient (#f1e9ff, #b78cff 30%, #6a3ddb 55%, #3a1f7a 78%, transparent) cut by clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%), initial transform scale(.04) rotate(-20deg). On button click set --ox/--oy to the button's centre, add .run to the mask (opacity 1) which plays a 1400ms cubic-bezier(.5,0,.15,1) keyframe: 0% scale(.04) rotate(-20deg) blur 0; 35% scale(1.6) rotate(6deg) blur 10px; 60% scale(4.5) rotate(20deg) blur 34px opacity 1; 100% scale(6) rotate(28deg) blur 48px opacity 0 (fill forwards). At 640ms fade the current page out (opacity 0, scale .98, 500ms) and the other in (opacity 1, scale 1, 700ms); at 1450ms remove .run. Trigger it once automatically 1.8s after load. Under prefers-reduced-motion swap instantly.",
+    caveats: ["Blurring an element scaled 6× is a large GPU surface for ~0.5s; on a page that is already compositing video or heavy shadows expect a dropped frame at the 60% mark. Capping the final scale at what actually covers the viewport (measure it) is the fix."],
+    source: { label: "@风间 AI 产品设计师 (Douyin) · 「别再让 AI 做“高级网站”了」· 覆盖式轮播 + 前后页面衔接" },
+  },
 ];
 
 export function effectsIn(category: CategoryId): Effect[] {

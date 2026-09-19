@@ -1,0 +1,65 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flip-stack card carousel</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; background: #fff; color: #111; overflow: hidden; -webkit-font-smoothing: antialiased; }
+  .stage { position: relative; height: 100%; display: grid; place-items: center; }
+  /* The marquee sits BEHIND the stack. One long line, duplicated once, moved
+     by a single translateX keyframe — the stack is the only thing in front. */
+  .marquee { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); overflow: hidden; white-space: nowrap; font-size: 34px; font-weight: 500; letter-spacing: -.03em; color: #111; pointer-events: none; }
+  .marquee span { display: inline-block; padding-right: .6em; animation: slide 16s linear infinite; }
+  .marquee i { font-style: normal; color: #999; padding: 0 .35em; }
+  @keyframes slide { to { transform: translateX(-50%); } }
+  .stack { position: relative; width: 168px; height: 262px; perspective: 1100px; transform-style: preserve-3d; }
+  /* Each card is a hinged door: transform-origin on its left edge. The front
+     card swings open to -105° and, once past 90°, is sent to the back of the
+     stack; the cards behind step forward by one slot. */
+  .card { position: absolute; inset: 0; border-radius: 14px; overflow: hidden; transform-origin: 0% 50%; box-shadow: 0 30px 60px -30px #0008, 0 0 0 1px #0002 inset; backface-visibility: hidden;
+    transform: translateZ(calc(var(--i) * -40px)) translateX(calc(var(--i) * 26px)) rotateY(calc(var(--i) * -12deg));
+    transition: transform 900ms cubic-bezier(.6,.02,.2,1), opacity 300ms; }
+  .card.open { transform: rotateY(-108deg) translateZ(20px); }
+  .card.reset { transition: none; }
+  .card .face { position: absolute; inset: 0; padding: 18px 16px; display: flex; flex-direction: column; color: #fff; }
+  .card .tag { align-self: flex-start; padding: 4px 8px; border-radius: 99px; background: #ffffff2e; font-size: 8.5px; font-weight: 600; letter-spacing: .04em; }
+  .card h3 { margin-top: auto; font-size: 15px; line-height: 1.15; font-weight: 600; letter-spacing: -.02em; }
+  .card p { margin-top: 6px; font-size: 8.5px; line-height: 1.4; opacity: .8; }
+  .card .star { position: absolute; left: 50%; top: 44%; width: 34px; height: 34px; transform: translate(-50%, -50%); background: #fff; clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); filter: drop-shadow(0 0 14px #fff8); }
+  .lime { position: absolute; right: -6px; top: 14%; width: 10px; height: 46%; background: #c8ff2a; border-radius: 4px; }
+  .hint { position: absolute; left: 20px; bottom: 14px; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #999; }
+  @media (prefers-reduced-motion: reduce) { .marquee span { animation: none; } .card { transition: none; } }
+</style>
+<div class="stage">
+  <div class="marquee"><span>Design that sells <i>◦</i> Speed without compromise <i>◦</i> Intelligence, beyond limits <i>◦</i> Design that sells <i>◦</i> Speed without compromise <i>◦</i> Intelligence, beyond limits <i>◦</i></span></div>
+  <div class="stack" id="stack"></div>
+  <div class="hint">Flip-stack carousel · auto</div>
+</div>
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const CARDS = [
+    { bg: 'linear-gradient(160deg,#1a1626,#0a0a0f)', tag: 'Templates', h: 'Browse our templates', p: 'Fifty layouts, one system.', star: false, lime: true },
+    { bg: 'linear-gradient(160deg,#4b2bd6,#1c1436 70%)', tag: 'Fintech', h: 'The ultimate engine for business lending', p: 'Apply for a loan in under a minute.', star: false },
+    { bg: 'linear-gradient(160deg,#111,#2a1d4a)', tag: 'Analyser', h: 'Use AI-based system analysis — all through one platform.', p: 'Analyse the impact of lending.', star: false, lime: true },
+    { bg: 'radial-gradient(90% 60% at 50% 40%,#9b7cff,#5b34d8 55%,#2a1a5a)', tag: 'Neural Core', h: 'Intelligence, beyond limits', p: 'Superconscious · the model that thinks ahead.', star: true },
+  ];
+  const stack = document.getElementById('stack');
+  let order = CARDS.map((c, i) => { const el = document.createElement('div'); el.className = 'card'; el.innerHTML = `<div class="face" style="background:${c.bg}"><span class="tag">${c.tag}</span>${c.star ? '<span class="star"></span>' : ''}<h3>${c.h}</h3><p>${c.p}</p></div>${c.lime ? '<span class="lime"></span>' : ''}`; stack.appendChild(el); return el; });
+  const layout = () => order.forEach((el, i) => { el.style.setProperty('--i', i); el.style.zIndex = 10 - i; });
+  layout();
+  function flip() {
+    const front = order[0];
+    front.classList.add('open');
+    // once the door is past 90° nobody can see its face: move it to the back
+    // without a transition, then let the others slide forward one slot
+    setTimeout(() => {
+      front.classList.add('reset'); front.classList.remove('open');
+      order = order.slice(1).concat(front); layout();
+      front.style.opacity = 0;
+      requestAnimationFrame(() => requestAnimationFrame(() => { front.classList.remove('reset'); front.style.opacity = 1; }));
+    }, 620);
+  }
+  if (!reduce) setInterval(flip, 2400);
+  stack.addEventListener('click', flip);
+</script>

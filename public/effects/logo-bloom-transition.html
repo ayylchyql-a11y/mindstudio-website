@@ -1,0 +1,59 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logo-mask bloom transition</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; color: #fff; overflow: hidden; -webkit-font-smoothing: antialiased; background: #0b0713; }
+  .page { position: absolute; inset: 0; padding: 34px 36px; display: flex; flex-direction: column; justify-content: center; gap: 10px; transition: opacity 500ms, transform 700ms cubic-bezier(.22,.61,.36,1); }
+  .page h1 { font-size: 40px; font-weight: 500; letter-spacing: -.03em; line-height: 1; max-width: 360px; } .page h1 span { color: #ffffff80; }
+  .page p { font-size: 9.5px; line-height: 1.5; color: #ffffffa0; max-width: 240px; }
+  .page .btn { align-self: flex-start; margin-top: 8px; padding: 9px 14px; border-radius: 8px; background: #fff; color: #111; font-size: 9.5px; font-weight: 600; cursor: pointer; border: 0; }
+  #a { background: radial-gradient(80% 90% at 70% 80%, #6d3fd6, #2a1650 55%, #0b0713); }
+  #b { background: linear-gradient(160deg, #3a2a86, #1a1236 60%, #0b0713); opacity: 0; transform: scale(1.04); }
+  /* the metallic star of page A is a CSS gradient in a clip-path; it is only
+     decoration here — the mask below is a separate element */
+  .gem { position: absolute; right: 8%; top: 50%; width: 180px; height: 180px; transform: translateY(-50%) rotate(12deg); background: conic-gradient(from 200deg, #f6f6fb, #9a9ab0 20%, #ffffff 40%, #6a6a85 60%, #ffffff 80%, #f6f6fb); clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%); filter: drop-shadow(0 30px 40px #0008); transition: transform 900ms cubic-bezier(.22,.61,.36,1); }
+  .shot { position: absolute; right: 8%; top: 50%; width: 150px; height: 190px; transform: translateY(-50%); border-radius: 10px; background: radial-gradient(60% 80% at 50% 50%, #b98bff, #5a2fbf 60%, #1a1236); box-shadow: 0 30px 60px -30px #000; }
+  /* THE transition: one element, star-shaped by clip-path, filled with the
+     purple bloom. It scales from the button (transform-origin set in JS) to
+     3× the viewport, blurs as it grows, then the whole thing fades out. */
+  .mask { position: absolute; inset: 0; pointer-events: none; opacity: 0; }
+  .mask i { position: absolute; left: var(--ox); top: var(--oy); width: 220px; height: 220px; margin: -110px 0 0 -110px; display: block; background: radial-gradient(closest-side, #f1e9ff, #b78cff 30%, #6a3ddb 55%, #3a1f7a 78%, transparent); clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); transform: scale(.04) rotate(-20deg); filter: blur(0px); }
+  .mask.run { opacity: 1; }
+  .mask.run i { animation: bloom 1400ms cubic-bezier(.5,0,.15,1) forwards; }
+  @keyframes bloom {
+    0%   { transform: scale(.04) rotate(-20deg); filter: blur(0); }
+    35%  { transform: scale(1.6) rotate(6deg);   filter: blur(10px); }
+    60%  { transform: scale(4.5) rotate(20deg);  filter: blur(34px); opacity: 1; }
+    100% { transform: scale(6) rotate(28deg);    filter: blur(48px); opacity: 0; }
+  }
+  .hint { position: absolute; left: 36px; bottom: 14px; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #ffffff55; }
+  @media (prefers-reduced-motion: reduce) { .mask.run i { animation: none; } .page { transition: none; } }
+</style>
+<section class="page" id="a"><h1>Build beyond <span>all limits</span></h1><p>Templates, prompts, and tools that think ahead — start shipping faster today.</p><button class="btn" id="go">Get started</button><div class="gem"></div></section>
+<section class="page" id="b"><h1>Prompts that <span>think ahead</span></h1><p>Turn engagement into conversions. Create ads, copy and campaigns from one brief.</p><button class="btn" id="back">Start journey</button><div class="shot"></div></section>
+<div class="mask" id="mask"><i></i></div>
+<div class="hint">Click the button</div>
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const a = document.getElementById('a'), b = document.getElementById('b'), mask = document.getElementById('mask');
+  let onB = false, busy = false;
+  function go(btn) {
+    if (busy) return; busy = true;
+    // the bloom starts where the click happened, not from the centre
+    const r = btn.getBoundingClientRect();
+    mask.style.setProperty('--ox', (r.left + r.width / 2) + 'px'); mask.style.setProperty('--oy', (r.top + r.height / 2) + 'px');
+    const from = onB ? b : a, to = onB ? a : b;
+    if (reduce) { swap(from, to); busy = false; return; }
+    mask.classList.remove('run'); void mask.offsetWidth; mask.classList.add('run');
+    // the pages swap while the mask is at full cover (≈45–70 % of the bloom)
+    setTimeout(() => swap(from, to), 640);
+    setTimeout(() => { mask.classList.remove('run'); busy = false; }, 1450);
+  }
+  function swap(from, to) { from.style.opacity = 0; from.style.transform = 'scale(.98)'; to.style.opacity = 1; to.style.transform = 'none'; onB = !onB; }
+  document.getElementById('go').addEventListener('click', (e) => go(e.currentTarget));
+  document.getElementById('back').addEventListener('click', (e) => go(e.currentTarget));
+  if (!reduce) setTimeout(() => go(document.getElementById('go')), 1800);
+</script>

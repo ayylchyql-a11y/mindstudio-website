@@ -1,0 +1,57 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Floating parallax field</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; background: #050507; color: #fff; overflow: hidden; -webkit-font-smoothing: antialiased; }
+  .field { position: relative; height: 100%; perspective: 900px; }
+  /* the glow is the only light source; it sits low-right so the far cards
+     read darker than the near ones without any per-card shading */
+  .glow { position: absolute; right: -10%; bottom: -40%; width: 60%; height: 90%; background: radial-gradient(closest-side, #7a4de8cc, #4c2bb340 55%, transparent 75%); filter: blur(30px); pointer-events: none; }
+  /* Every card carries a depth 0..1 (0 = far). Depth decides three things at
+     once: size, brightness and how far it moves per pixel of pointer travel. */
+  .card { position: absolute; left: var(--x); top: var(--y); width: calc(44px + var(--z) * 92px); aspect-ratio: var(--ar, .78); border-radius: 6px; overflow: hidden;
+    transform: translate(calc(var(--px) * var(--z) * -28px + var(--dx)), calc(var(--py) * var(--z) * -18px + var(--dy)));
+    filter: brightness(calc(.45 + var(--z) * .7));
+    transition: transform 900ms cubic-bezier(.16,.84,.3,1); box-shadow: 0 30px 50px -30px #000; }
+  .card .img { position: absolute; inset: 0; background: var(--bg); }
+  .card .cap { position: absolute; left: 8px; bottom: 6px; font-size: 7px; letter-spacing: .06em; opacity: .75; }
+  .nav { position: absolute; left: 24px; top: 18px; display: flex; gap: 14px; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: #ffffff99; }
+  .nav b { color: #fff; }
+  .hint { position: absolute; left: 24px; bottom: 14px; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #ffffff66; }
+  @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+</style>
+<div class="field" id="field">
+  <div class="glow"></div>
+  <div class="nav"><b>✦ Nova</b><span>Work</span><span>Studio</span><span>Journal</span></div>
+  <div class="hint">Move the pointer</div>
+</div>
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const field = document.getElementById('field');
+  // x/y in %, z = depth 0..1, ar = aspect, bg = stand-in artwork
+  const CARDS = [
+    { x: 12, y: 8, z: .25, ar: .8, bg: 'linear-gradient(160deg,#3b2a6a,#0d0b16)', cap: 'Archin' },
+    { x: 30, y: 26, z: .55, ar: .75, bg: 'linear-gradient(180deg,#151223,#2a2340)', cap: 'Portrait' },
+    { x: 50, y: 4, z: .95, ar: .82, bg: 'radial-gradient(70% 90% at 60% 40%,#8fd0ff,#1b3a6a 55%,#050814)', cap: 'Zumar' },
+    { x: 70, y: 20, z: .35, ar: .78, bg: 'linear-gradient(160deg,#20182e,#0b0910)', cap: 'Neural' },
+    { x: 8, y: 58, z: .7, ar: .82, bg: 'linear-gradient(160deg,#7a2020,#2a0c0c)', cap: 'Editorial' },
+    { x: 38, y: 60, z: .18, ar: .8, bg: 'linear-gradient(160deg,#1a2436,#090c12)', cap: 'Studio' },
+    { x: 60, y: 52, z: .8, ar: .8, bg: 'linear-gradient(160deg,#e9e3d6,#8b8378)', cap: 'Nova' },
+    { x: 84, y: 66, z: .5, ar: .78, bg: 'linear-gradient(160deg,#2b2540,#100d1c)', cap: 'Type' },
+  ];
+  const els = CARDS.map((c, i) => { const el = document.createElement('div'); el.className = 'card'; el.style.cssText = `--x:${c.x}%;--y:${c.y}%;--z:${c.z};--ar:${c.ar}`; el.innerHTML = `<div class="img" style="--bg:${c.bg}"></div><span class="cap">${c.cap}</span>`; field.appendChild(el); return el; });
+  // pointer: one pair of numbers on the field, -1..1; each card multiplies by its own depth in CSS
+  const set = (px, py) => { field.style.setProperty('--px', px); field.style.setProperty('--py', py); };
+  set(0, 0);
+  field.addEventListener('pointermove', (e) => { const r = field.getBoundingClientRect(); set(((e.clientX - r.left) / r.width * 2 - 1).toFixed(3), ((e.clientY - r.top) / r.height * 2 - 1).toFixed(3)); });
+  field.addEventListener('pointerleave', () => set(0, 0));
+  // idle drift: each card on its own slow sine so the field never sits still
+  if (!reduce) {
+    const t0 = performance.now();
+    const tick = (now) => { const t = (now - t0) / 1000; els.forEach((el, i) => { const z = CARDS[i].z; el.style.setProperty('--dx', (Math.sin(t * .35 + i * 1.7) * 6 * (0.4 + z)).toFixed(2) + 'px'); el.style.setProperty('--dy', (Math.cos(t * .28 + i * 2.1) * 8 * (0.4 + z)).toFixed(2) + 'px'); }); requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  }
+</script>
