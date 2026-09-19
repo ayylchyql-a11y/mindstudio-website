@@ -38,8 +38,10 @@
   const CH = [['Sito', '#2f6fff'], ['App', '#5b46d9'], ['Chiosco', '#16a37a'], ['Cassa', '#8a6d3b'], ['Deliveroo', '#00ccbc'], ['Just Eat', '#ff8000']];
   const TYPES = ['Consegna', 'Ritiro', 'Al tavolo'];
   const STATUS = ['In attesa', 'Confermato', 'In preparazione', 'Pronto', 'In consegna', 'Completato'];
+  // channel mix in the same proportion as the real last 30 days (Deliveroo > kiosk > Just Eat > web)
+  const MIX = ['Deliveroo', 'Chiosco', 'Just Eat', 'Deliveroo', 'Chiosco', 'Sito', 'Deliveroo', 'Just Eat', 'Chiosco'];
   const orders = Array.from({ length: 9 }, (_, i) => {
-    const ch = CH[i % CH.length], n = 1 + Math.floor(rnd() * 4);
+    const ch = CH.find((c) => c[0] === MIX[i]), n = 1 + Math.floor(rnd() * 4);
     const items = Array.from({ length: n }, () => ({ q: 1 + Math.floor(rnd() * 2), p: pick(D.menu) }));
     const total = items.reduce((s, x) => s + x.q * x.p.price, 0);
     const h = 19 + Math.floor(i / 3), m = String(Math.floor(rnd() * 60)).padStart(2, '0');
@@ -61,7 +63,7 @@
         <div class="card"><h3>Incassi <span class="seg" id="rangeSeg"><button class="on" data-r="30">30 giorni</button><button data-r="7">7 giorni</button></span></h3>
           <svg class="line-chart" viewBox="0 0 600 180" preserveAspectRatio="none" id="line"><defs><linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".35"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs><line class="gridl" x1="0" x2="600" y1="45" y2="45"/><line class="gridl" x1="0" x2="600" y1="90" y2="90"/><line class="gridl" x1="0" x2="600" y1="135" y2="135"/><path class="area" id="area"/><path class="ln" id="ln"/></svg>
           <div class="axis" id="axis"></div></div>
-        <div class="card"><h3>Canali</h3><div class="donut-wrap"><svg class="donut" viewBox="0 0 130 130" id="donut"><g id="slices"></g><text x="65" y="63" id="dc1">${s.days.reduce((a, x) => a + x.n, 0)}</text><text class="sub" x="65" y="78" id="dc2">ORDINI · 30 GG</text></svg><div class="legend" id="legend"></div></div></div>
+        <div class="card"><h3>Canali</h3><div class="donut-wrap"><svg class="donut" viewBox="0 0 130 130" id="donut"><g id="slices"></g><text x="65" y="63" id="dc1">${s.days.reduce((a, x) => a + x.n, 0)}</text><text class="sub" x="65" y="78" id="dc2">30 GIORNI</text></svg><div class="legend" id="legend"></div></div></div>
       </div>
       <div class="r3">
         <div class="card"><h3>Ordini per ora</h3><div class="hours">${s.hours.map(([h, n]) => `<i style="--h:${n / peak * 100}%" data-h="${h}" class="${n === peak ? 'peak' : ''}"></i>`).join('')}</div><div class="hours-pad"></div></div>
@@ -71,10 +73,8 @@
       <p class="note">Dati dimostrativi: piatti, prezzi e foto sono quelli veri del menù; gli incassi sono ridimensionati.</p>`;
   }
   function topDishes() {
-    let s2 = 21; const r2 = () => (s2 = (s2 * 48271) % 2147483647) / 2147483647;
-    const top = D.menu.filter((p) => !/Componi|Gift/.test(p.name)).slice(0, 12).map((p) => ({ p, q: 40 + Math.floor(r2() * 120) })).sort((a, b) => b.q - a.q).slice(0, 5);
-    const max = top[0].q;
-    return top.map(({ p, q }) => `<div class="dish"><img src="${BASE}${p.img}" alt="" loading="lazy"><div>${p.name}<span>${p.cat}</span></div><b>${q}</b><div class="bar"><i style="--w:${q / max * 100}%"></i></div></div>`).join('');
+    const top = D.top.map(([name, cat, img, q]) => ({ name, cat, img, q })), max = top[0].q;
+    return top.map(({ name, cat, img, q }) => `<div class="dish"><img src="${BASE}${img}" alt="" loading="lazy"><div>${name}<span>${cat}</span></div><b>${q}</b><div class="bar"><i style="--w:${q / max * 100}%"></i></div></div>`).join('');
   }
   function wireOverview(root) {
     // line chart: 30 days vs last 7, morphed on the same 24 points
@@ -113,7 +113,7 @@
       el.addEventListener('pointerenter', on); el.addEventListener('pointerleave', off); l.addEventListener('pointerenter', on); l.addEventListener('pointerleave', off);
       return { el, l, name, pct };
     });
-    const sel = (i) => { slices.forEach((s, k) => { s.el.classList.toggle('out', k === i); s.l.classList.toggle('on', k === i); }); donut.classList.toggle('pick', i >= 0); legend.classList.toggle('pick', i >= 0); c1.textContent = i < 0 ? total : Math.round(slices[i].pct) + '%'; c2.textContent = i < 0 ? 'ORDINI · 30 GG' : slices[i].name.toUpperCase(); };
+    const sel = (i) => { slices.forEach((s, k) => { s.el.classList.toggle('out', k === i); s.l.classList.toggle('on', k === i); }); donut.classList.toggle('pick', i >= 0); legend.classList.toggle('pick', i >= 0); c1.textContent = i < 0 ? total : Math.round(slices[i].pct) + '%'; c2.textContent = i < 0 ? '30 GIORNI' : slices[i].name.toUpperCase(); };
   }
 
   function board() {

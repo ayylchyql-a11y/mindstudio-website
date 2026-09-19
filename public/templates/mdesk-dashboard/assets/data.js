@@ -1,6 +1,6 @@
 /* M Desk demo data.
    MENU: real dishes, prices and photos from Mumi Sushi Vimercate's live menu (public API, Sept 2026).
-   STATS: shaped like the restaurant's real last-30-days aggregates, with every figure scaled and
+   STATS: the restaurant's real last-30-days aggregates with every figure scaled and
    rounded — the curve, the channel mix and the hour profile are real, the euros are not. */
 window.MDESK = {
   menu: [
@@ -237,24 +237,8 @@ window.MDESK = {
   "allergens": []
  },
 ],
-  // ── placeholder stats (to be replaced by the anonymised aggregate) ──
-  stats: (function () {
-    let s = 5; const r = () => (s = (s * 48271) % 2147483647) / 2147483647;
-    const days = [];
-    const start = new Date(2026, 7, 20);
-    for (let i = 0; i < 30; i++) {
-      const d = new Date(start); d.setDate(start.getDate() + i);
-      const wd = d.getDay(); const w = wd === 5 || wd === 6 ? 1.45 : wd === 0 ? 1.2 : wd === 1 ? 0.7 : 1;
-      const n = Math.round((34 + r() * 14) * w);
-      days.push({ d: d.toISOString().slice(0, 10), n, rev: Math.round(n * (21 + r() * 6) * 10) / 10 });
-    }
-    return {
-      days,
-      channels: [["Sito", 31], ["App", 14], ["Chiosco", 19], ["Cassa", 12], ["Deliveroo", 13], ["Just Eat", 11]],
-      types: [["Consegna", 38], ["Ritiro", 41], ["Al tavolo", 21]],
-      hours: [[11, 6], [12, 22], [13, 26], [14, 9], [18, 14], [19, 31], [20, 38], [21, 27], [22, 8]],
-      pay: [["Carta", 46], ["Contanti", 22], ["Alla cassa", 19], ["Piattaforma", 13]],
-      prepMin: 17,
-    };
-  })(),
+  // top sellers, last 30 days (real ranking; quantities scaled like everything else)
+  top: [["Componi Poke Regular", "Poke", "componi-poke-regular.webp", 415], ["Componi Poke Large", "Poke", "componi-poke-large.webp", 197], ["Componi Poke Small", "Poke", "componi-poke-small.webp", 40], ["Ravioli artigianali di carne 3 pz", "Ravioli / Bao", "ravioli-di-carne-3-pz.webp", 28], ["Pad Thai", "Ravioli / Bao", "pad-thai.webp", 19]],
+  // ── last 30 days, shape real, figures scaled (see header) ──
+  stats: {"days": [{"d": "2026-08-20","n": 15,"rev": 319.8},{"d": "2026-08-21","n": 6,"rev": 215.5},{"d": "2026-08-22","n": 19,"rev": 465.3},{"d": "2026-08-23","n": 14,"rev": 481.5},{"d": "2026-08-24","n": 13,"rev": 253.2},{"d": "2026-08-25","n": 14,"rev": 390.4},{"d": "2026-08-26","n": 15,"rev": 337.5},{"d": "2026-08-27","n": 12,"rev": 234.3},{"d": "2026-08-28","n": 16,"rev": 337.0},{"d": "2026-08-29","n": 14,"rev": 456.1},{"d": "2026-08-30","n": 19,"rev": 612.8},{"d": "2026-08-31","n": 19,"rev": 625.3},{"d": "2026-09-01","n": 17,"rev": 492.8},{"d": "2026-09-02","n": 21,"rev": 660.8},{"d": "2026-09-03","n": 22,"rev": 640.3},{"d": "2026-09-04","n": 24,"rev": 605.9},{"d": "2026-09-05","n": 27,"rev": 728.6},{"d": "2026-09-06","n": 22,"rev": 669.3},{"d": "2026-09-07","n": 14,"rev": 330.0},{"d": "2026-09-08","n": 21,"rev": 595.3},{"d": "2026-09-09","n": 11,"rev": 350.6},{"d": "2026-09-10","n": 15,"rev": 392.3},{"d": "2026-09-11","n": 21,"rev": 667.8},{"d": "2026-09-12","n": 20,"rev": 579.6},{"d": "2026-09-13","n": 21,"rev": 524.2},{"d": "2026-09-14","n": 17,"rev": 492.7},{"d": "2026-09-15","n": 19,"rev": 596.4},{"d": "2026-09-16","n": 17,"rev": 497.6},{"d": "2026-09-17","n": 14,"rev": 331.1},{"d": "2026-09-18","n": 28,"rev": 732.9}],"channels": [["Deliveroo",43],["Chiosco",34],["Just Eat",18],["Sito",3],["App",1],["Cassa",1]],"types": [["Consegna",61],["Ritiro",30],["Al tavolo",8]],"hours": [[9,1],[10,2],[11,13],[12,25],[13,20],[14,4],[17,2],[18,22],[19,40],[20,40],[21,18],[22,3]],"pay": [["Piattaforma",60],["Alla cassa",35],["Contanti",4],["Carta",1],["Pos",1]],"prepMin": 17},
 };
