@@ -2972,6 +2972,44 @@ export const effects: Effect[] = [
     prompt: "Build an icon bar in vanilla HTML/CSS/JS: a white pill (padding = hug, gap = hug, radius = corner, flex-direction from Axis) with five 40px icon buttons and one absolutely positioned indicator (40×40, radius corner − hug, 8% ink) translated by --x/--y. go(i): set data-phase='stretch' (transitions 190ms·speedFactor cubic-bezier(.32,.72,.24,1)), move the origin to min(cur, i)×(40 + hug) and set the length (width for Row, height for Column) to 40 + |i − cur|×(40 + hug)×dilate/100; after the stretch duration set data-phase='settle' (420ms·speedFactor, transform cubic-bezier(.28, 1 + .56·bounce/100, .36, 1), size cubic-bezier(.24, 1.06 + .56·bounce/100, .38, 1)), move the origin to i×(40 + hug) and the length back to 40. speedFactor = 1.5 − speed/100. Parameters: fill, stroke, axis Row/Column, dilate 0–100, bounce 0–100, speed 0–100, corner 0–26, hug 3–10. Add a bench panel on the right (224px, white, hairline left border) with SWITCHES (segmented pills) and LEVELS (filled bars with a hidden range input) that re-apply the parameters live. Credit: rebuilt from Bencho by Lorenzo Cabra, block logic MIT.",
     source: { label: "Lorenzo Cabra · Bencho (icon-bar) · block logic MIT", url: "https://bencho.dev/?c=icon-bar" },
   },
+  /* ── 液态玻璃 AI 球：M Translate 语音球的网页版，上游 LerSent001/orb（MIT），esbuild 打包进 public/effects/liquid-orb/ ── */
+  {
+    slug: "liquid-orb",
+    category: "creative",
+    date: "2026-09-19",
+    plays: "click",
+    bundleDir: true,
+    poster: "/effects/liquid-orb/poster.jpg",
+    title: { en: "Liquid glass AI orb", zh: "液态玻璃 AI 球", "zh-tw": "液態玻璃 AI 球" },
+    gist: {
+      en: "The AI voice orb — a ray-marched liquid glass sphere in WebGPU with thirteen presets, an idle ↔ thinking state that transitions on tap, and audio response that breathes to a synthetic pulse or to your microphone. Every level and colour is on the bench. The same orb runs in M Translate's voice mode.",
+      zh: "AI 语音球——WebGPU 里光线步进出来的液态玻璃球，十三种预设，点一下在 idle ↔ thinking 之间过渡，音频响应可以跟合成脉冲或你的麦克风呼吸。每个数值和颜色都在面板上。M Translate 的语音模式跑的就是它。",
+      "zh-tw": "AI 語音球——WebGPU 裡光線步進出來的液態玻璃球，十三種預設，點一下在 idle ↔ thinking 之間過渡，音訊回應可以跟合成脈衝或你的麥克風呼吸。每個數值和顏色都在面板上。M Translate 的語音模式跑的就是它。",
+    },
+    height: 460,
+    accent: "#c257ff",
+    anatomy: [
+      "The renderer is WebGPU: a full-screen triangle whose fragment shader (1,236 lines of WGSL) ray-marches a liquid glass sphere — contour deformation, ridges, chromatic shift, a shell with inner/mid/edge alphas, sheen and gloss, an outer glow — from a 136-float uniform block. Thirteen presets are thirteen parameter sets on the same shader, not thirteen shaders.",
+      "Two states, one transition controller: every preset is split into shared params and per-state profiles (idle is derived from thinking by scaling speed, warp, exposure, glow… and dimming the colours). Switching state interpolates the profiles — 220ms to activate, 650ms to settle — colours mixed in linear light so nothing goes grey halfway.",
+      "Audio response is a mapping, not a solver: four smoothed bands (low / mid / high / all, attack 70ms, release 240ms) push five uniforms after the state transition — overall energy scales speed, mids add contour, lows add glow, highs add highlight — and only for the styles that support it. It never writes back into the preset.",
+      "Here the bench replaces the upstream editor's React UI with ~120 lines of vanilla: preset pills, state / glass / audio switches, fourteen levels and five colours for the active state, and a sensitivity bar. 'Pulse' synthesises bands so the orb is alive without a microphone; 'Mic' analyses locally and uploads nothing.",
+      "This is the same orb that runs in M Translate's voice mode (ported to Metal there: <code>OrbEffect.metal</code>, audio level from the mic at ×6.5 gain). The Web and Metal exports share the parameter snapshot byte for byte, which is why a preset tuned here can be pasted into the app.",
+      "Licensing: shader, presets, states and audio mapping are MIT © 2026 LerSent001 (github.com/LerSent001/orb, archived from commit fbf6eb8); the bundle ships LICENSE.txt and the credit line.",
+    ],
+    tokens: [
+      { label: "Renderer", value: "WebGPU · WGSL 1,236 lines · 136 uniform floats" },
+      { label: "States", value: "idle ↔ thinking · activate 220ms · settle 650ms" },
+      { label: "Audio", value: "bands low/mid/high/all · attack 70ms · release 240ms" },
+      { label: "Presets", value: "13 · Siri · Voice · Ribbon · Blue drop · Violet · Refract · Chrome · Aurora · Frost · Metal · Opal · Spectrum · Plasma" },
+      { label: "Radius", value: "0.30–0.95 of the canvas" },
+    ],
+    prompt: "Build a liquid glass AI orb page with a bench. Take the MIT WebGPU orb by LerSent001 (github.com/LerSent001/orb: effect.wgsl, orb-renderer.ts, presets.ts, orb-states.ts, orb-uniforms.ts, orb-audio.ts, shader-source.ts, particle-ribbon.ts), import the .wgsl as text and bundle with esbuild (--format=esm --loader:.wgsl=text). Mount createOrbRenderer on a full-size canvas on a #06070a stage with getTarget() returning { state, params: resolveOrbStateParams(config, state), activationDuration, transitionDuration } and getAudioBands(dt) returning either OrbAudioInput.read(dt) (microphone) or a synthetic pulse ({ all: a, low: .8a, mid: a, high: .5a } with a = max(0, sin(1.7t)·.5 + .3 + .2·sin(5.3t))·.55). Bench on the right (224px, white): a wrapped row of 13 preset pills that rebuild the configuration with createPresetOrbStateConfiguration(style); segmented switches State Idle/Thinking, Glass Off/On, Audio Pulse/Mic/Off; a Sensitivity bar writing audio.gain; fourteen level bars (speed 0–3, radius .3–.95, contourDeform 0–1, zoom .05–1, warp 0–6, ridgeAmt 0–1, sharp .5–6, shade 0–1.5, exposure .2–3, sheen 0–2, gloss 0–2, glassOpacity 0–1, edgeSoftness .005–.15, edgeGlow 0–1) and five colour inputs (colorA–D, glowColor) that call updateOrbStateParam(config, state, key, value); tapping the canvas toggles the state. Show a fallback note when navigator.gpu is missing. Keep the MIT licence file and credit line.",
+    caveats: [
+      "WebGPU only: Chrome 113+, Edge, Safari 26, Firefox 141+. Elsewhere the page shows a note instead of the orb — there is no WebGL fallback because the shader is written in WGSL.",
+      "The microphone is analysed in the page and never uploaded, but the browser still asks for permission; in the library's sandboxed iframe that prompt may be blocked — open the sample in its own tab (整页打开) to use the mic.",
+    ],
+    source: { label: "LerSent001 · Liquid Orb Editor (WebGPU) · MIT", url: "https://github.com/LerSent001/orb" },
+  },
 ];
 
 export function effectsIn(category: CategoryId): Effect[] {
