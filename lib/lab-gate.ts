@@ -23,7 +23,12 @@ export async function labToken(password: string): Promise<string> {
   return Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-/** 哪些路径在门后面：各语言的 /lab 及其子页，和样板文件本身 /effects/*。 */
+/**
+ * 哪些路径在门后面：各语言的 /lab 及其子页，和样板页面本身 /effects/*.html。
+ * 🩸 只拦 .html，不拦 js/css/图片：样板 iframe 是 sandbox 的（opaque origin），
+ *    它发出的子资源请求是跨站的、SameSite=Lax 的 cookie 不会带上 —— 拦了子资源
+ *    就等于把 holo-card / dashboard 这类目录型样板整个打空（页面能进、脚本 401）。
+ */
 export function isLabPath(pathname: string): boolean {
-  return /^\/[a-z-]+\/lab(\/|$)/.test(pathname) || pathname.startsWith("/effects/");
+  return /^\/[a-z-]+\/lab(\/|$)/.test(pathname) || (pathname.startsWith("/effects/") && /\.html?$/.test(pathname));
 }

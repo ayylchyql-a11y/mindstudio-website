@@ -65,10 +65,10 @@ export async function proxy(req: NextRequest) {
         headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" },
       });
     }
-    // 样板文件本来不经过 proxy（matcher 排除带点号的路径），只为这道门才进来的：
-    // 过了门就放行，别被下面的语言重定向带去 /en/effects/…
-    if (pathname.startsWith("/effects/")) return NextResponse.next();
   }
+  // 样板文件本来不经过 proxy（matcher 排除带点号的路径），只为这道门才进来的：
+  // 过了门（或不归门管的 js/css/图片）一律放行，别被下面的语言重定向带去 /en/effects/…
+  if (pathname.startsWith("/effects/")) return NextResponse.next();
 
   const hasLocale = locales.some(
     (loc) => pathname === `/${loc}` || pathname.startsWith(`/${loc}/`)

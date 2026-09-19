@@ -33,7 +33,6 @@ const FOLDERS = {
   "Fiorista模版": "florist", // 09-18 自己写的（Petalo），花束/种子都是 CSS + canvas
   "Enoteca模版": "enoteca", // 09-18 自己写的（Vinaia），酒杯/酒瓶/会员卡全 CSS
   "Sushi模版": "sushi", // 09-18 自己写的（Mumi Sushi），照片是 Mumi 线上 API 的真菜品图
-  "Dashboard模版": "mdesk-dashboard", // 09-19 自己写的（M Desk 后台），菜品/价格/照片来自线上菜单 API
 };
 const STYLES = {
   "风格A-编辑杂志": "editorial",
@@ -44,12 +43,6 @@ const STYLES = {
   "风格E-市集": "mercato",
   "风格D-回转": "kaiten",
   "风格E-桌边": "tavolo",
-  // Dashboard 的五种侧边栏（原版 = 悬浮岛）
-  "风格B-深色重底": "dark-rail",
-  "风格C-磨砂玻璃": "glass-rail",
-  "风格D-双层图标轨": "rail-panel",
-  "风格E-折叠展开": "hover-expand",
-  "风格F-分组收口": "grouped-nav",
 };
 /**
  * 09-18 用户拍板：生成器出的同款变体不再一律上站 ——「夜间玻璃」只留 Vinaia（enoteca），
@@ -121,7 +114,7 @@ for (const [folder, slug] of Object.entries(FOLDERS)) {
     let text = "";
     const scan = (dir) => { for (const f of readdirSync(dir, { withFileTypes: true })) { const fp = join(dir, f.name); if (f.isDirectory()) { if (f.name !== "assets") scan(fp); continue; } if (/\.(html|css|js)$/.test(f.name)) text += readFileSync(fp, "utf8") + "\n"; } };
     scan(from);
-    // dashboard 把菜单数据放在 assets/data.js 里，图片文件名只出现在那里：assets 里的 js/css 也要算进引用文本
+    // 有的模版把数据放在 assets/*.js 里、图片文件名只出现在那里：assets 里的 js/css 也要算进引用文本
     for (const f of readdirSync(assetsDir)) if (/\.(css|js)$/.test(f)) text += readFileSync(join(assetsDir, f), "utf8") + "\n";
     const used = readdirSync(assetsDir).filter((f) => !f.endsWith(".png") && text.includes(f.replace(/\.[a-z]+$/i, "")));
     if (used.length === 0) throw new Error(`${slug}: assets dir present but nothing referenced`);
