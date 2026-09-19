@@ -33,7 +33,7 @@
     <label class="pill select" aria-label="Lingua">IT<select disabled><option>IT</option></select></label>
     <a class="pill" href="tel:+393513328109"><span aria-hidden="true">📞</span><span class="pill-text">351 332 8109</span></a>
     <button class="pill" type="button" data-login><span aria-hidden="true">👤</span><span class="pill-text">Accedi</span></button>
-    <button class="pill cart-pill" type="button" data-open-cart aria-label="Apri il carrello"><span aria-hidden="true">🛒</span><span class="pill-text">Carrello</span><b class="cart-badge" data-cart-count hidden>0</b></button>
+    <button class="pill cart-pill" id="cart-icon" type="button" data-open-cart aria-label="Apri il carrello"><span aria-hidden="true">🛒</span><span class="pill-text">Carrello</span><b class="cart-badge" data-cart-count hidden>0</b></button>
   </header>
 
   <main id="top" class="shell">
@@ -108,18 +108,8 @@
   <button class="cart-bar" type="button" data-open-cart data-cart-bar hidden><span>🛒 <b data-cart-count-2>0</b></span><span>Carrello</span><b data-cart-total-2>€ 0,00</b></button>
   <div class="scrim" data-scrim></div>
 
-  <!-- Poke builder -->
-  <dialog class="sheet" data-builder aria-labelledby="builder-title">
-    <div class="sheet-head"><div><p class="eyebrow">Componi</p><h2 id="builder-title" data-builder-title>Poke Media</h2></div><button class="pill icon" type="button" aria-label="Chiudi" data-close-builder>✕</button></div>
-    <div class="sheet-body">
-      <div class="sheet-sizes" role="radiogroup" aria-label="Formato" data-sizes></div>
-      <div data-steps></div>
-    </div>
-    <div class="sheet-foot">
-      <div><small data-summary></small><b data-builder-price>€ 10,90</b></div>
-      <button class="btn primary" type="button" data-add-custom>Aggiungi</button>
-    </div>
-  </dialog>
+  <!-- Foglio opzioni / dettaglio / nota: un solo <dialog>, il contenuto lo scrive app.js -->
+  <dialog class="sheet" data-dialog aria-label="Opzioni"></dialog>
 
   <div class="toast" data-toast role="status" aria-live="polite">Aggiunto al carrello</div>
 </body>
