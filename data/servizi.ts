@@ -30,7 +30,7 @@ export const tiers: Tier[] = [
   {
     id: "vetrina",
     name: { it: "Sito vetrina", en: "Showcase site", zh: "展示型网站" },
-    who: { it: "Per chi vuole essere trovato e chiamato.", en: "For being found and called.", zh: "给想被找到、被打电话的店。" },
+    who: { it: "Per chi vuole essere trovato e chiamato.", en: "For being found and called.", zh: "给只想让顾客找得到、打得通电话的店。" },
     monthly: 49,
     includes: [
       { it: "Sito da 5 a 8 pagine, disegnato per la tua attività", en: "5–8 page site designed for your business", zh: "5–8 页、按你的店设计" },
@@ -46,7 +46,7 @@ export const tiers: Tier[] = [
   {
     id: "ordini",
     name: { it: "Ordini online", en: "Online ordering", zh: "线上点单" },
-    who: { it: "Per chi vuole gli ordini senza pagare le commissioni delle piattaforme.", en: "For taking orders without platform commissions.", zh: "给想自己收单、不交平台抽成的餐厅。" },
+    who: { it: "Per chi vuole gli ordini senza pagare le commissioni delle piattaforme.", en: "For taking orders without platform commissions.", zh: "给想自己收单、不再给平台交抽成的店。" },
     monthly: 129,
     includes: [
       { it: "Tutto di Sito vetrina", en: "Everything in Showcase", zh: "展示型网站的全部" },
@@ -63,7 +63,7 @@ export const tiers: Tier[] = [
   {
     id: "app",
     name: { it: "App e chiosco", en: "App and kiosk", zh: "App 与自助机" },
-    who: { it: "Per chi vuole stare sul telefono dei clienti e in sala.", en: "For living on customers’ phones and in the dining room.", zh: "给想进顾客手机、进店堂的店。" },
+    who: { it: "Per chi vuole stare sul telefono dei clienti e in sala.", en: "For living on customers’ phones and in the dining room.", zh: "给想让顾客手机里有自己的 App、店里有自助点单机的店。" },
     monthly: 199,
     includes: [
       { it: "Tutto di Ordini online", en: "Everything in Online ordering", zh: "线上点单的全部" },
@@ -79,7 +79,7 @@ export const tiers: Tier[] = [
   {
     id: "piattaforme",
     name: { it: "Piattaforme e rider", en: "Platforms and riders", zh: "平台对接与骑手" },
-    who: { it: "Per chi riceve ordini da Just Eat, Deliveroo o Glovo e vuole un solo schermo.", en: "For Just Eat, Deliveroo or Glovo orders on one screen.", zh: "给同时接 Just Eat / Deliveroo / Glovo 单、只想看一块屏的店。" },
+    who: { it: "Per chi riceve ordini da Just Eat, Deliveroo o Glovo e vuole un solo schermo.", en: "For Just Eat, Deliveroo or Glovo orders on one screen.", zh: "给 Just Eat / Deliveroo / Glovo 都在接、只想盯一块屏的店。" },
     monthly: 239,
     includes: [
       { it: "Tutto di App e chiosco", en: "Everything in App and kiosk", zh: "App 与自助机的全部" },
@@ -95,7 +95,7 @@ export const tiers: Tier[] = [
   {
     id: "ai",
     name: { it: "Assistente AI", en: "AI assistant", zh: "AI 助理" },
-    who: { it: "Per chi vuole che il sito risponda e il gestionale pensi.", en: "For a site that answers and a back office that thinks.", zh: "给想让网站会答、后台会想的店。" },
+    who: { it: "Per chi vuole che il sito risponda e il gestionale pensi.", en: "For a site that answers and a back office that thinks.", zh: "给想让网站会回答顾客、后台会替你想事的店。" },
     monthly: 269,
     includes: [
       { it: "Tutto di Piattaforme e rider", en: "Everything in Platforms and riders", zh: "平台对接与骑手的全部" },
