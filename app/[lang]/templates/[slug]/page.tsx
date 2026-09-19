@@ -57,8 +57,8 @@ export default async function TemplatePage({
   const designs = styles.filter((s) => has.includes(s.id)).map((s) => ({
     id: s.id,
     brand: brandOf(tp, s.id),
-    style: pick(s.title, lang),
-    gist: pick(s.gist, lang),
+    style: pick(s.id === "original" && tp.original ? tp.original.title : s.title, lang),
+    gist: pick(s.id === "original" && tp.original ? tp.original.gist : s.gist, lang),
     src: pagePath(tp, s.id),
     poster: posterPath(tp, s.id),
   }));

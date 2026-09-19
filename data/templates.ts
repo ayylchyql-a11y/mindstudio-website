@@ -13,8 +13,8 @@ import type { Locale, Localized } from "@/lib/i18n";
  * 网站，所以框要高（720）、要能在框里滚，并且给「整页打开」。
  */
 
-export type GroupId = "food" | "retail" | "supply" | "services";
-export type StyleId = "original" | "editorial" | "night-glass" | "pop" | "claude" | "abisso" | "mercato" | "kaiten" | "tavolo";
+export type GroupId = "food" | "retail" | "supply" | "services" | "dashboard";
+export type StyleId = "original" | "editorial" | "night-glass" | "pop" | "claude" | "abisso" | "mercato" | "kaiten" | "tavolo" | "dark-rail" | "glass-rail" | "rail-panel" | "hover-expand" | "grouped-nav";
 
 export interface TemplateGroup {
   id: GroupId;
@@ -71,6 +71,17 @@ export const groups: TemplateGroup[] = [
       it: "Nail studio, riparazioni smartphone, fiorista: servizi con prezzi, come funziona, garanzia e moduli di prenotazione o ordine.",
     },
     accent: "#782f43",
+  },
+  {
+    id: "dashboard",
+    title: { en: "Dashboard", zh: "Dashboard", "zh-tw": "Dashboard", it: "Dashboard", ja: "ダッシュボード", ko: "대시보드" },
+    intro: {
+      en: "A restaurant back office with real content — the dishes, prices and photos from M Desk’s live menu, the order board and the day’s figures (scaled) — in six sidebar systems, each built by hand from the same video study.",
+      zh: "一套餐厅后台，内容是真的：M Desk 线上菜单里的菜、价格和照片，订单看板，当日数据（按比例缩放）；六种侧边栏方案，每种按同一支视频的拆解单独手作。",
+      "zh-tw": "一套餐廳後台，內容是真的：M Desk 線上菜單裡的菜、價格和照片，訂單看板，當日數據（按比例縮放）；六種側邊欄方案，每種按同一支影片的拆解單獨手作。",
+      it: "Il back office di un ristorante con contenuti veri — piatti, prezzi e foto dal menù reale di M Desk, la bacheca ordini e i numeri della giornata (ridimensionati) — in sei sistemi di barra laterale, ciascuno costruito a mano.",
+    },
+    accent: "#e07a2f",
   },
 ];
 
@@ -176,6 +187,57 @@ export const styles: { id: StyleId; title: Localized; gist: Localized }[] = [
       it: "Ordine dal tavolo: lo scroll ti spinge in un tunnel di nubi fino al menù, il cui colore segue la categoria che tocchi; i titoli salgono una lettera alla volta.",
     },
   },
+  /* —— Dashboard 的五种侧边栏（09-19，@西瓜同学「6 个高级 Dashboard 侧边栏设计」；原版 = 悬浮岛）—— */
+  {
+    id: "dark-rail",
+    title: { en: "Dark rail", zh: "深色重底", "zh-tw": "深色重底", it: "Barra scura", ja: "ダークレール", ko: "다크 레일" },
+    gist: {
+      en: "The sidebar is the only dark thing on the page, so it carries the weight; inactive items are low-contrast grey and only the current one is lit.",
+      zh: "整页只有侧栏是深色的，重量全被这一条收住；非当前项是低对比浅灰，只有当前项亮着。",
+      "zh-tw": "整頁只有側欄是深色的，重量全被這一條收住；非當前項是低對比淺灰，只有當前項亮著。",
+      it: "La barra è l’unica cosa scura della pagina e ne porta tutto il peso; le voci inattive sono grigie a basso contrasto, solo quella corrente è accesa.",
+    },
+  },
+  {
+    id: "glass-rail",
+    title: { en: "Glass rail", zh: "磨砂玻璃", "zh-tw": "磨砂玻璃", it: "Vetro smerigliato", ja: "すりガラス", ko: "글래스 레일" },
+    gist: {
+      en: "A blurred photo of the food under everything; the sidebar is frosted glass with a 24px backdrop blur and a 1px bright edge that gives the layers real depth.",
+      zh: "底下垫一张虚化的菜品照片；侧栏是磨砂玻璃，背景模糊 24px，边缘一道 1px 亮线补出真实的前后层次。",
+      "zh-tw": "底下墊一張虛化的菜品照片；側欄是磨砂玻璃，背景模糊 24px，邊緣一道 1px 亮線補出真實的前後層次。",
+      it: "Una foto del cibo sfocata sotto tutto; la barra è vetro smerigliato con blur di 24 px e un bordo di luce da 1 px che separa i piani.",
+    },
+  },
+  {
+    id: "rail-panel",
+    title: { en: "Rail + panel", zh: "双层图标轨", "zh-tw": "雙層圖示軌", it: "Binario + pannello", ja: "レール＋パネル", ko: "레일 + 패널" },
+    gist: {
+      en: "A 72px rail of module icons and a 240px panel of that module’s sections: switching a module swaps the panel, picking a section filters the screen.",
+      zh: "72px 的模块图标轨 + 240px 的二级面板：切模块换面板里的列表，点二级项筛选当前屏（订单按状态、菜单按分类）。",
+      "zh-tw": "72px 的模組圖示軌 + 240px 的二級面板：切模組換面板裡的列表，點二級項篩選當前屏（訂單按狀態、菜單按分類）。",
+      it: "Un binario di icone da 72 px e un pannello da 240 px con le sezioni del modulo: cambiando modulo cambia il pannello, scegliendo una sezione si filtra la schermata.",
+    },
+  },
+  {
+    id: "hover-expand",
+    title: { en: "Hover expand", zh: "折叠展开", "zh-tw": "摺疊展開", it: "Espansione al passaggio", ja: "ホバー展開", ko: "호버 확장" },
+    gist: {
+      en: "Dark throughout. The rail rests at 72px and opens to 240 on hover with an ease-out; labels fade in 80ms later so text never overlaps the icons.",
+      zh: "整体深色。侧栏平时 72px，悬停时用 ease-out 展开到 240；文字延迟 80ms 淡入，不会压在图标上。",
+      "zh-tw": "整體深色。側欄平時 72px，懸停時用 ease-out 展開到 240；文字延遲 80ms 淡入，不會壓在圖示上。",
+      it: "Tutto scuro. La barra vive a 72 px e si apre a 240 al passaggio con un ease-out; le etichette arrivano 80 ms dopo, così il testo non si sovrappone alle icone.",
+    },
+  },
+  {
+    id: "grouped-nav",
+    title: { en: "Grouped nav", zh: "分组收口", "zh-tw": "分組收口", it: "Navigazione a gruppi", ja: "グループ化", ko: "그룹 내비" },
+    gist: {
+      en: "Items grouped by area under tiny grey labels with 32px between groups; the list scrolls on its own while the brand and the user area stay pinned.",
+      zh: "按业务分组，组名是很小的灰字，组距 32px；中间列表单独滚动，顶部品牌和底部用户区固定不动。",
+      "zh-tw": "按業務分組，組名是很小的灰字，組距 32px；中間列表單獨捲動，頂部品牌和底部用戶區固定不動。",
+      it: "Voci raggruppate per area sotto etichette piccole e grigie, 32 px tra i gruppi; la lista scorre da sola mentre il marchio e l’area utente restano fissi.",
+    },
+  },
 ];
 
 export interface SiteTemplate {
@@ -198,6 +260,8 @@ export interface SiteTemplate {
   accent: string;
   /** 模版本身的语言。绝大多数是意大利语，绿达康那套是中文 */
   lang: "it" | "zh";
+  /** 「原版」在这套里叫什么、是什么——默认文案说的是「照片首屏」，后台模版的原版是一种侧边栏 */
+  original?: { title: Localized; gist: Localized };
 }
 
 export const templates: SiteTemplate[] = [
@@ -466,6 +530,39 @@ export const templates: SiteTemplate[] = [
     variants: { editorial: "Officina Mobile", claude: "FixPoint Riparazioni" },
     accent: "#1d4ed8",
     lang: "it",
+  },
+  {
+    slug: "mdesk-dashboard",
+    group: "dashboard",
+    date: "2026-09-19",
+    name: "M Desk",
+    industry: { en: "Restaurant back office", zh: "餐厅后台", "zh-tw": "餐廳後台", it: "Back office ristorante", ja: "レストラン管理画面", ko: "레스토랑 백오피스" },
+    city: "Vimercate",
+    gist: {
+      en: "The back office behind Mumi Sushi, as a template: overview with today’s figures, a 30-day revenue line that morphs to 7 days, channel share and hour profile; an order board you can advance card by card; the menu with the restaurant’s real dishes, prices and photos and a working sold-out toggle. Six sidebars, one content system.",
+      zh: "Mumi Sushi 背后的后台做成模版：概览页有当日数据、30 天营业额曲线可变形到 7 天、渠道占比与时段分布；订单看板每张卡都能往下一状态推；菜单用店里真实的菜、价格和照片，「沽清」按钮真的能点。六种侧边栏，同一套内容。",
+      "zh-tw": "Mumi Sushi 背後的後台做成模版：概覽頁有當日數據、30 天營業額曲線可變形到 7 天、通路佔比與時段分布；訂單看板每張卡都能往下一狀態推；菜單用店裡真實的菜、價格和照片，「售罄」按鈕真的能點。六種側邊欄，同一套內容。",
+      it: "Il back office dietro Mumi Sushi, come template: panoramica con i numeri di oggi, la linea degli incassi a 30 giorni che si trasforma in 7, quote per canale e profilo orario; una bacheca ordini che avanza scheda per scheda; il menù con i piatti, i prezzi e le foto veri del ristorante e un «Esaurito» che funziona. Sei barre laterali, un solo sistema di contenuti.",
+    },
+    features: [
+      "Overview: KPI cards, 30↔7-day revenue line that morphs on the same points, channel donut with push-out, orders-per-hour bars, top dishes, latest orders",
+      "Order board: channel badge with the platform’s own code, status filters, one-tap advance to the next status, reprint",
+      "Menu: category chips, search, real dishes/prices/photos from the live menu, sold-out toggle",
+      "Six sidebar systems: floating panel, dark rail, glass rail, rail + panel (second level filters the screen), hover expand, grouped nav with pinned user area",
+      "Mobile: sidebar becomes a drawer; rail + panel collapses in two steps",
+    ],
+    variants: { "dark-rail": "M Desk", "glass-rail": "M Desk", "rail-panel": "M Desk", "hover-expand": "M Desk", "grouped-nav": "M Desk" },
+    accent: "#e07a2f",
+    lang: "it",
+    original: {
+      title: { en: "Floating panel", zh: "悬浮岛", "zh-tw": "懸浮島", it: "Pannello flottante", ja: "フローティング", ko: "플로팅 패널" },
+      gist: {
+        en: "The sidebar does not touch the screen: 16px of ground on every side, a 20px radius and one soft shadow underneath, so the back office stops feeling like a form.",
+        zh: "侧栏不贴屏幕边缘：四周留 16px、圆角 20、底下一层很淡的阴影，后台那种呆板感一下就散了。",
+        "zh-tw": "側欄不貼螢幕邊緣：四周留 16px、圓角 20、底下一層很淡的陰影，後台那種呆板感一下就散了。",
+        it: "La barra non tocca lo schermo: 16 px di sfondo su ogni lato, raggio 20 e un’ombra morbida sotto, e il gestionale smette di sembrare un modulo.",
+      },
+    },
   },
 ];
 
