@@ -1,0 +1,109 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Escape button</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f4f4f5; color: #111; overflow: hidden; -webkit-font-smoothing: antialiased; --ink: #111114; --ink-rgb: 17, 17, 20; --card: #fff; }
+  .wrap { display: grid; grid-template-columns: 1fr 224px; height: 100%; }
+  .stage { position: relative; display: grid; place-items: center; overflow: hidden; background: radial-gradient(60% 50% at 30% 70%, #fbe7ee66, transparent 70%), radial-gradient(50% 40% at 75% 30%, #e6ecfb80, transparent 70%); }
+  .stage[data-fill="dark"] { background: #0e0f11; --ink: #f4f4f5; --ink-rgb: 244, 244, 245; --card: #1b1c1f; color: #f4f4f5; }
+  /* ── the bench: one panel, two kinds of control ── */
+  .bench { border-left: 1px solid #00000010; background: #fff; padding: 16px 14px; display: flex; flex-direction: column; gap: 10px; overflow: auto; }
+  .bench h2 { font-size: 14px; font-weight: 600; letter-spacing: -.01em; } .bench h2 small { display: block; margin-top: 2px; font-size: 8.5px; letter-spacing: .16em; text-transform: uppercase; color: #8a8a90; font-weight: 500; }
+  .bench .grp { font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #a0a0a6; margin-top: 6px; }
+  .sw { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #444; }
+  .sw .seg { display: inline-flex; padding: 3px; border-radius: 99px; background: #f1f1f3; } .sw .seg button { border: 0; background: transparent; font: 500 11px/1 inherit; color: #8a8a90; padding: 6px 10px; border-radius: 99px; cursor: pointer; } .sw .seg button.on { background: #fff; color: #111; box-shadow: 0 1px 2px #0000001a; }
+  .lv { position: relative; height: 34px; border-radius: 9px; background: #f1f1f3; overflow: hidden; }
+  .lv i { position: absolute; inset: 0; width: var(--v); background: #dcdcdf; border-radius: 9px 0 0 9px; pointer-events: none; }
+  .lv span { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; color: #333; pointer-events: none; } .lv b { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 600; pointer-events: none; font-variant-numeric: tabular-nums; }
+  .lv input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; margin: 0; cursor: ew-resize; }
+  .credit { margin-top: auto; font-size: 8.5px; line-height: 1.4; color: #a0a0a6; } .credit a { color: inherit; }
+  .hint { position: absolute; left: 16px; bottom: 12px; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; } .stage[data-fill="dark"] .hint { color: #ffffff55; }
+  /* a 500px card in the library grid keeps the bench beside the stage, just narrower; only phones stack it */
+  @media (max-width: 600px) { .wrap { grid-template-columns: 1fr 172px; } .bench { padding: 12px 10px; gap: 8px; } .sw .seg button { padding: 5px 8px; } .lv { height: 30px; } }
+  @media (max-width: 420px) { .wrap { grid-template-columns: 1fr; grid-template-rows: 1fr auto; } .bench { border-left: 0; border-top: 1px solid #00000010; max-height: 46%; } }
+
+
+  /* ── Escape button ── a button that slides away from the cursor, then stops.
+     What keeps it on the right side of a dark pattern: it gives in after a
+     fixed number of dodges, within seconds, and a keyboard never sees it move. */
+  .field { position: relative; width: 360px; height: 240px; display: grid; place-items: center; }
+  .esc { position: relative; height: 48px; padding: 0 28px; border-radius: var(--r, 28px); background: var(--card); color: var(--ink); font-size: 15px; font-weight: 500; border: 1px solid transparent; box-shadow: 0 1px 2px #0000000a, 0 10px 26px -18px #00000050; cursor: pointer; transition: transform 620ms cubic-bezier(.22,1.12,.36,1); }
+  .esc[data-fled] { transition: transform 130ms cubic-bezier(.3,.8,.4,1); }
+  .esc.caught { background: var(--ink); color: var(--card); }
+  .stage[data-stroke="on"] .esc { border-color: rgba(var(--ink-rgb), .14); }
+  .stage[data-fill="dark"] .esc { background: #1b1c1f; }
+  .count { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: rgba(var(--ink-rgb), .45); }
+
+</style>
+<div class="wrap">
+  <div class="stage" id="stage">
+    <div class="field" id="field"><button class="esc" id="esc" type="button">Touch me</button><div class="count" id="count"></div></div>
+    <div class="hint">Try to reach the button</div>
+  </div>
+  <aside class="bench" id="bench"></aside>
+</div>
+<script>
+  /* ── the bench: a tiny control panel, one function ──
+     specs: { key, label, type: 'seg' | 'level', opts?, min?, max?, step?, unit?, value }
+     onChange(state) runs on every change with the whole state. */
+  function bench(root, title, kind, specs, onChange) {
+    const state = Object.fromEntries(specs.map((s) => [s.key, s.value]));
+    root.innerHTML = `<h2>${title}<small>${kind}</small></h2>`;
+    let lastType = '';
+    for (const s of specs) {
+      if (s.type !== lastType) { root.insertAdjacentHTML('beforeend', `<div class="grp">${s.type === 'seg' ? 'Switches' : 'Levels'}</div>`); lastType = s.type; }
+      if (s.type === 'seg') {
+        const el = document.createElement('div'); el.className = 'sw';
+        el.innerHTML = `<span>${s.label}</span><span class="seg">${s.opts.map((o) => `<button type="button" class="${o === s.value ? 'on' : ''}" data-o="${o}">${o}</button>`).join('')}</span>`;
+        el.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; el.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); state[s.key] = isNaN(+b.dataset.o) ? b.dataset.o : +b.dataset.o; onChange(state, s.key); });
+        root.appendChild(el);
+      } else {
+        const el = document.createElement('label'); el.className = 'lv';
+        const pct = (v) => ((v - s.min) / (s.max - s.min) * 100).toFixed(1) + '%';
+        el.innerHTML = `<i style="--v:${pct(s.value)}"></i><span>${s.label}</span><b>${s.value}${s.unit || ''}</b><input type="range" min="${s.min}" max="${s.max}" step="${s.step || 1}" value="${s.value}">`;
+        el.querySelector('input').addEventListener('input', (e) => { const v = +e.target.value; state[s.key] = v; el.querySelector('i').style.setProperty('--v', pct(v)); el.querySelector('b').textContent = v + (s.unit || ''); onChange(state, s.key); });
+        root.appendChild(el);
+      }
+    }
+    root.insertAdjacentHTML('beforeend', `<div class="credit">Rebuilt from <a href="https://bencho.dev" target="_blank" rel="noopener">Bencho</a> by Lorenzo Cabra · block logic MIT © 2026 Lorenzo Cabra</div>`);
+    onChange(state, null);
+    return state;
+  }
+
+
+  const field = document.getElementById('field'), esc = document.getElementById('esc'), stage = document.getElementById('stage'), count = document.getElementById('count');
+  let P = {}, dodges = 0, armed = true, dir = { x: 0, y: 0 }, gaveIn = false;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function onMove(e) {
+    if (gaveIn) return;
+    /* the vector from the button's HOME to the cursor — home, never its current
+       rect: measuring off a box the displacement just moved is a feedback loop
+       that converges by RINGING */
+    const box = field.getBoundingClientRect(), dx = e.clientX - (box.left + box.width / 2), dy = e.clientY - (box.top + box.height / 2), distance = Math.hypot(dx, dy);
+    /* SQUARED, not linear: inert at the edge of its field, bolting over the last third */
+    const flee = distance < P.radius ? (1 - distance / P.radius) ** 2 : 0, reach = 14 + (P.skittishness / 100) * 106;
+    if (distance > 6) dir = { x: -dx / distance, y: -dy / distance };
+    const room = { x: box.width / 2 - esc.offsetWidth / 2, y: box.height / 2 - esc.offsetHeight / 2 };
+    const x = Math.max(-room.x, Math.min(room.x, dir.x * flee * reach)), y = Math.max(-room.y, Math.min(room.y, dir.y * flee * reach));
+    /* ONE DODGE PER APPROACH: the flag re-arms only on the way out of the full field */
+    if (distance < P.radius * 0.55 && armed) { armed = false; dodges++; count.textContent = `${dodges} / ${P.patience} dodges`; if (dodges >= P.patience) { gaveIn = true; esc.removeAttribute('data-fled'); esc.style.transform = ''; count.textContent = 'It gave in — click it'; return; } }
+    if (distance > P.radius) armed = true;
+    if (flee > 0) esc.setAttribute('data-fled', ''); else esc.removeAttribute('data-fled');
+    esc.style.transform = reduce ? '' : `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+  }
+  field.addEventListener('pointermove', onMove);
+  field.addEventListener('pointerleave', () => { if (!gaveIn) { esc.removeAttribute('data-fled'); esc.style.transform = ''; } });
+  esc.addEventListener('click', () => { esc.classList.add('caught'); esc.textContent = 'Caught'; setTimeout(() => { esc.classList.remove('caught'); esc.textContent = 'Touch me'; dodges = 0; gaveIn = false; armed = true; count.textContent = ''; }, 1600); });
+  bench(document.getElementById('bench'), 'Escape button', 'Hover', [
+    { key: 'fill', label: 'Fill', type: 'seg', opts: ['Light', 'Dark'], value: 'Light' },
+    { key: 'stroke', label: 'Stroke', type: 'seg', opts: ['Off', 'On'], value: 'Off' },
+    { key: 'skittishness', label: 'Skittishness', type: 'level', min: 0, max: 100, value: 55 },
+    { key: 'patience', label: 'Patience', type: 'level', min: 1, max: 8, value: 4 },
+    { key: 'corner', label: 'Corner', type: 'level', min: 0, max: 28, step: 2, value: 28, unit: 'px' },
+    { key: 'radius', label: 'Radius', type: 'level', min: 60, max: 200, step: 5, value: 120, unit: 'px' },
+  ], (state) => { P = state; stage.dataset.fill = state.fill.toLowerCase(); stage.dataset.stroke = state.stroke.toLowerCase(); esc.style.setProperty('--r', state.corner + 'px'); });
+
+</script>
