@@ -5,6 +5,7 @@ import { work } from "@/data/work";
 import { notes } from "@/data/notes";
 import { activeCategories, effectsIn } from "@/data/effects";
 import { TEMPLATES_LANGS, templates } from "@/data/templates";
+import { CLIENTS_LANGS, clients } from "@/data/clients";
 import { SERVIZI_LANGS } from "@/data/servizi";
 import { LAB_LOCKED } from "@/lib/lab-gate";
 import { locales, type Locale } from "@/lib/i18n";
@@ -82,6 +83,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: 0.6,
       });
     }
+  }
+
+  // —— 客户样板：文案 en / zh / zh-tw / it（data/clients.ts）——
+  add(CLIENTS_LANGS, (l) => `/${l}/clients`, { changeFrequency: "monthly", priority: 0.7 });
+  for (const c of clients) {
+    add(CLIENTS_LANGS, (l) => `/${l}/clients/${c.slug}`, {
+      lastModified: new Date(`${c.date}T00:00:00Z`),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    });
   }
 
   // —— 网页设计模版：文案有 en / zh / zh-tw / it 四种原文（data/templates.ts）——

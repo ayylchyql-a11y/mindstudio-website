@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#f8f6ee" />
+  <meta name="description" content="Ming·E Poke & Sushi — poke bowl composte al momento, sushi preparato davanti a te e i nostri tacos di alga nori. Via del Prione 291, La Spezia. Aperto tutti i giorni 11:30–23:00." />
+  <title>Ming·E Poke & Sushi — La Spezia</title>
+  <link rel="preload" as="image" href="./assets/taco-spicy-salmone.webp" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2750%27 fill=%27%237f9b4f%27/%3E%3Ctext x=%2750%27 y=%2762%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-size=%2734%27 font-weight=%27700%27 fill=%27white%27%3EM%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+  <div class="promo">Aperto tutti i giorni 11:30 – 23:00 <span class="promo-more"><span>·</span> Via del Prione 291, La Spezia <span>·</span> Mangia qui · Asporto · Consegna</span></div>
+
+  <header data-header>
+    <a class="logo press" href="#poke" aria-label="Ming·E Poke & Sushi, torna all'inizio">
+      <svg class="logo-mark" viewBox="0 0 100 100" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M50 6 C74 6 94 26 94 50 C94 74 74 94 50 94" />
+          <path d="M46 92 C24 90 8 72 8 50 C8 28 24 10 44 8" />
+          <path d="M36 32 C42 24 56 24 62 32 C56 40 42 40 36 32 Z" />
+          <path d="M62 32 L70 26 L70 38 Z" />
+          <path d="M40 78 L44 64 M60 78 L56 64" />
+          <path d="M36 66 Q50 74 64 66" />
+        </g>
+        <circle cx="44" cy="31" r="1.6" fill="currentColor" />
+        <text x="50" y="57" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="16" font-weight="700" letter-spacing="1.5" fill="currentColor">MING·E</text>
+      </svg>
+      <span class="logo-type"><b>MING·E</b><small>Poke &amp; Sushi · La Spezia</small></span>
+    </a>
+    <nav>
+      <a href="#poke">Poke</a>
+      <a href="#sushi">Sushi</a>
+      <a href="#tacos">Tacos</a>
+      <a href="#come">Come funziona</a>
+      <a href="#dove">Dove siamo</a>
+    </nav>
+    <div class="actions">
+      <button class="mode-mini press" type="button" data-mode-label>Asporto</button>
+      <button class="cart-button press" type="button" aria-label="Apri il tuo ordine, 0 articoli" data-open-cart><span>Ordine</span><b data-cart-count>0</b></button>
+      <button class="menu-button press" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-button><i></i><i></i></button>
+    </div>
+  </header>
+  <div class="mobile-nav" data-mobile-nav aria-hidden="true">
+    <a href="#poke" data-nav-link>Componi la poke</a>
+    <a href="#sushi" data-nav-link>Il menu sushi</a>
+    <a href="#tacos" data-nav-link>I tacos</a>
+    <a href="#come" data-nav-link>Come funziona</a>
+    <a href="#dove" data-nav-link>Dove siamo</a>
+    <button type="button" data-open-cart>Apri il tuo ordine</button>
+  </div>
+
+  <main id="main">
+    <!-- First screen = the poke builder. The section's hue follows the protein
+         you hover or pick; the headline rises one glyph at a time. -->
+    <section class="builder hero" id="poke">
+      <div class="hero-head">
+        <div class="hero-copy">
+          <p class="tag reveal">La Spezia · Via del Prione 291 · tutti i giorni 11:30–23</p>
+          <h1 data-split>La tua poke, come la vuoi.</h1>
+          <p class="lead reveal">Scegli la bowl, poi riempila: base, ingredienti, proteine, salse e topping. La montiamo quando arriva l'ordine, mai prima.</p>
+          <p class="hero-proof reveal"><b>4,6 ★</b> su Google · 96 recensioni <span>·</span> <a href="#sushi">Il menu sushi</a> <span>·</span> <a href="#tacos">I tacos di nori</a></p>
+        </div>
+        <div class="delivery-card reveal">
+          <p>Come vuoi il tuo ordine?</p>
+          <div class="mode-switch" role="group" aria-label="Modalità ordine">
+            <button class="active" type="button" data-mode="Asporto" aria-pressed="true">▣ Asporto</button>
+            <button type="button" data-mode="Consegna" aria-pressed="false">⌁ Consegna</button>
+          </div>
+          <span data-mode-note>Pronto in 15 min al banco</span>
+        </div>
+      </div>
+
+      <div class="builder-grid">
+        <div class="steps">
+          <fieldset class="step" data-step="size">
+            <legend><span>01</span> Scegli la tua bowl</legend>
+            <div class="sizes" role="radiogroup" aria-label="Formato" data-sizes></div>
+          </fieldset>
+
+          <fieldset class="step" data-step="base">
+            <legend><span>02</span> Base <small data-limit="base"></small></legend>
+            <div class="chips" role="radiogroup" aria-label="Base" data-group="base"></div>
+          </fieldset>
+
+          <fieldset class="step" data-step="ingredienti">
+            <legend><span>03</span> Ingredienti <small data-limit="ingredienti"></small></legend>
+            <div class="chips" role="group" aria-label="Ingredienti" data-group="ingredienti"></div>
+          </fieldset>
+
+          <fieldset class="step" data-step="proteine">
+            <legend><span>04</span> Proteine <small data-limit="proteine"></small></legend>
+            <ul class="protein-list" role="group" aria-label="Proteine" data-group="proteine"></ul>
+          </fieldset>
+
+          <fieldset class="step" data-step="salse">
+            <legend><span>05</span> Salse <small data-limit="salse"></small></legend>
+            <div class="chips" role="group" aria-label="Salse" data-group="salse"></div>
+          </fieldset>
+
+          <fieldset class="step" data-step="topping">
+            <legend><span>06</span> Topping <small data-limit="topping"></small></legend>
+            <div class="chips" role="group" aria-label="Topping" data-group="topping"></div>
+          </fieldset>
+          <p class="builder-note">Il prezzo della bowl include il numero di scelte indicato sul formato. Oltre, ogni aggiunta costa € 1,00.</p>
+        </div>
+
+        <aside class="preview">
+          <svg viewBox="0 0 320 320" data-bowl="builder" aria-hidden="true"></svg>
+          <div class="summary">
+            <p class="summary-title">La tua bowl</p>
+            <p class="summary-list" data-summary></p>
+            <div class="summary-price"><span>Totale</span><b data-builder-price>€ 10,90</b></div>
+            <button class="btn dark wide" type="button" data-add-custom>Aggiungi all'ordine <span>＋</span></button>
+            <small>Allergeni: pesce, soia, sesamo, glutine in alcune salse. Chiedi al banco per la lista completa.</small>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Poke photos: the real bowls, from the counter. -->
+    <section class="bowls">
+      <figure class="reveal"><img src="./assets/bowl-salmone.webp" alt="Poke bowl con salmone, cetriolo, surimi e cipolla croccante" loading="lazy" width="1000" height="750" /><figcaption>Salmone, cetriolo, surimi, cipolla croccante</figcaption></figure>
+      <figure class="reveal"><img src="./assets/bowl-due.webp" alt="Due poke bowl sul vassoio: salmone con edamame e gamberi con semi" loading="lazy" width="1000" height="750" /><figcaption>Ogni bowl si monta quando arriva l'ordine</figcaption></figure>
+      <figure class="reveal"><img src="./assets/tavolo-sushi.webp" alt="Uramaki e gunkan al mango sul tavolo di Ming·E" loading="lazy" width="1000" height="1000" /><figcaption>Uramaki e gunkan, preparati davanti a te</figcaption></figure>
+    </section>
+
+    <!-- Tacos: one big taco at a time; the list on the right drives which one is
+         showing (hover / tap), it also cycles by itself, and each row adds to the order. -->
+    <section class="tacos" id="tacos">
+      <div class="section-head reveal">
+        <p class="eyebrow">I tacos di nori</p>
+        <h2>La sfoglia di alga croccante.<br /><em>Sei ripieni.</em></h2>
+        <p>Riso sushi, insalata e il ripieno che scegli, chiusi in una sfoglia di nori croccante. Da mangiare con le mani.</p>
+      </div>
+      <div class="taco-stage">
+        <div class="taco-stack" data-taco-stack aria-live="polite"></div>
+        <ul class="taco-names" data-taco-names aria-label="I nostri tacos"></ul>
+      </div>
+    </section>
+
+    <!-- Sushi menu: tabs per category, rows tint on hover, every price is a button. -->
+    <section class="sushi" id="sushi">
+        <div class="section-head reveal">
+          <p class="eyebrow">Il menu sushi</p>
+          <h2>Preparato davanti a te,<br /><em>pezzo per pezzo.</em></h2>
+          <p>Nigiri, uramaki, temaki e tartare: tocca un prezzo per aggiungerlo all'ordine.</p>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Categorie del menu" data-tabs></div>
+        <div class="menu-panels" data-panels></div>
+        <p class="allergen-note">Alcuni prodotti possono essere surgelati all'origine secondo normativa. Per allergeni e intolleranze chiedi al personale.</p>
+    </section>
+
+    <section class="how" id="come">
+      <div class="section-head reveal">
+        <p class="eyebrow">Come funziona</p>
+        <h2 data-split>Scegli, ordina, mangia.</h2>
+      </div>
+      <div class="how-grid">
+        <div class="reveal"><b>01</b><h3>Mangia qui</h3><p>Pochi tavoli, cucina a vista: componi la bowl al banco e la mangi appena pronta.</p></div>
+        <div class="reveal"><b>02</b><h3>Asporto</h3><p>Componi l'ordine qui, invialo su WhatsApp e ritira in Via del Prione. Pronto in circa 15 minuti.</p></div>
+        <div class="reveal"><b>03</b><h3>Consegna a domicilio</h3><p>Consegniamo a La Spezia. Scrivici su WhatsApp con l'indirizzo e ti confermiamo tempi e costo.</p></div>
+      </div>
+    </section>
+
+    <!-- Manifesto: the paragraph brightens word by word as the reader scrolls past it. -->
+    <section class="fresh">
+      <div class="fresh-track">
+        <div class="fresh-stage">
+          <div class="fresh-rule"></div>
+          <p class="eyebrow light">Al momento</p>
+          <p class="fresh-copy" data-brighten>Il salmone e il tonno si tagliano al mattino. La bowl si monta quando arriva l'ordine, il sushi si prepara davanti a te, il taco si chiude nella sfoglia un attimo prima di servirlo. È un locale piccolo, e proprio per questo niente aspetta in vetrina.</p>
+          <p class="fresh-sign">— Ming·E, La Spezia</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="store" id="dove">
+      <div class="store-copy reveal">
+        <p class="eyebrow">Dove siamo</p>
+        <h2>Via del Prione 291<br />19121 La Spezia</h2>
+        <p>Tutti i giorni · 11:30 – 23:00<br /><a href="tel:+393513328109">351 332 8109</a></p>
+        <div class="store-actions">
+          <a class="btn dark magnet" href="https://wa.me/393513328109" data-magnet>Ordina su WhatsApp</a>
+          <a class="btn light" href="https://www.google.com/maps/search/?api=1&query=Ming%C2%B7E+Poke%26Sushi+Via+del+Prione+291+La+Spezia" target="_blank" rel="noopener">Indicazioni</a>
+        </div>
+      </div>
+      <div class="store-map">
+        <iframe title="Mappa: Ming·E Poke & Sushi, Via del Prione 291, La Spezia" src="https://www.google.com/maps?q=Ming%C2%B7E%20Poke%26Sushi%2C%20Via%20del%20Prione%20291%2C%2019121%20La%20Spezia&z=17&hl=it&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-logo">MING·E <i>poke &amp; sushi</i></div>
+    <div><a href="#poke">Poke</a><a href="#sushi">Sushi</a><a href="#tacos">Tacos</a><a href="#dove">Dove siamo</a><a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a></div>
+    <p>© 2026 Ming·E Poke &amp; Sushi · Via del Prione 291, La Spezia · <a href="#" data-privacy>Privacy</a></p>
+  </footer>
+
+  <div class="scrim" data-scrim></div>
+  <aside class="cart" data-cart aria-hidden="true" aria-label="Il tuo ordine">
+    <div class="cart-head"><div><p class="eyebrow">Il tuo ordine</p><h2>Riepilogo</h2></div><button class="press" type="button" aria-label="Chiudi" data-close-cart>×</button></div>
+    <div class="cart-mode"><span>Modalità</span><b data-cart-mode>Asporto</b><button type="button" data-change-mode>Cambia</button></div>
+    <div class="cart-items" data-cart-items></div>
+    <div class="cart-foot">
+      <div class="cart-total"><span>Totale</span><b data-cart-total>€ 0,00</b></div>
+      <a class="btn dark wide" href="#" data-checkout aria-disabled="true">Invia l'ordine su WhatsApp <span>→</span></a>
+      <small>Si apre WhatsApp con il riepilogo già scritto. Paghi al ritiro o alla consegna.</small>
+    </div>
+  </aside>
+  <div class="toast" data-toast role="status" aria-live="polite">Aggiunto all'ordine</div>
+</body>
+</html>

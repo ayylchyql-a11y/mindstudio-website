@@ -50,7 +50,7 @@
   .nav-inner {
     /* 09-17 从 980 加宽到 1040：加了「网页模版」这一项后 12 语里有 10 种
        把品牌名挤成两行（.nav-logo 高 35 而不是 26）。断点在下面跟着改。 */
-    max-width: 1040px; margin: 0 auto; height: 100%;
+    max-width: 1140px; margin: 0 auto; height: 100%;
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 22px;
     font-size: 13px; letter-spacing: 0.01em;
@@ -75,6 +75,8 @@
      1040；09-18 栏目改名「设计资源库」后 gap 再收到 24，12 语实测（Playwright 量
      .nav-links 与 .nav-lang 的间距）09-18 栏目再改名「设计库」「网页设计」后最紧的是法语 12px、英 16px（葡/俄导航格用短名 Sites/Сайты）；品牌名 .nav-logo 高度
      全部 26（单行）。日语导航格用短名「デザイン集」，全名会把品牌名挤成两行。
+     09-19 又加了「客户样板」一项：1040 下 9 种语言品牌名断成两行（logo 高 35），
+     容器加宽到 1140 后 12 语 logo 全部 26；最紧的是德语 8px、法语 11px、英 18px。
      加/删导航项或改栏目名之后，这三个数都要重新量。
      nowrap 保证品牌名不会被断在中间。 */
   .nav-links { display: flex; gap: 24px; }
@@ -124,10 +126,10 @@
      所以 640~900 这一段**在加实验室之前就已经在压扁换行了**，
      只是两行文字挤在 48px 高的栏里，不细看发现不了。
      与其让它悄悄变形，不如按这个站原本的做法：窄屏只留 logo 和语言菜单。
-     断点取 1040 是因为它正好等于 `.nav-inner` 的 max-width：过了这个宽度容器
+     断点取 1140（原 1040）是因为它正好等于 `.nav-inner` 的 max-width：过了这个宽度容器
      就不再变化、余量恒定 34px，940 这类数字会留下一条 20px 宽的临界带
      （实测 941px 时余量 −5px）。 */
-  @media (max-width: 1040px) { .nav-links { display: none; } }
+  @media (max-width: 1140px) { .nav-links { display: none; } }
 
   /* ── Hero ───────────────────────────── */
   .hero {

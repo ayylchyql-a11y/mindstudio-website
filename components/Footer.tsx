@@ -1,5 +1,6 @@
 import { labCopy } from "@/data/effects";
 import { templatesCopy } from "@/data/templates";
+import { clientsCopy } from "@/data/clients";
 import { copy as serviziCopy } from "@/data/servizi";
 import type { Locale } from "@/lib/i18n";
 import { getDictionary, pick } from "@/lib/i18n";
@@ -23,6 +24,7 @@ export default function Footer({ lang }: { lang: Locale }) {
             <a href={`/${lang}/notes`}>{t.notesLabel}</a>
             <a href={`/${lang}/lab`}>{pick(labCopy.navLabel, lang)}</a>
             <a href={`/${lang}/templates`}>{pick(templatesCopy.navLabel, lang)}</a>
+            <a href={`/${lang}/clients`}>{pick(clientsCopy.navLabel, lang)}</a>
             <a href={`/${lang}/servizi`}>{pick(serviziCopy.navLabel, lang)}</a>
             <a href={`/${lang}/privacy`}>{t.footerPrivacy}</a>
             <a href={`/${lang}/support`}>{t.footerSupport}</a>
