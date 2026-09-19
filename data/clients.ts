@@ -32,6 +32,8 @@ export interface ClientSite {
   lang: "it" | "zh" | "en";
   /** 站上线后的真实域名；还没上线就不填 */
   liveUrl?: string;
+  /** 同一个客户的其它设计（取景框里当第 2、3 个 tab）。dir = public/clients/<slug>/<dir>/ */
+  alt?: { id: string; dir: string; title: Localized; gist: Localized }[];
 }
 
 export const clients: ClientSite[] = [
@@ -71,6 +73,19 @@ export const clients: ClientSite[] = [
     ],
     accent: "#7f9b4f",
     lang: "it",
+    alt: [
+      {
+        id: "ordina",
+        dir: "ordina",
+        title: { en: "Ordering site", zh: "点单站", "zh-tw": "點單站", it: "Sito d'ordinazione" },
+        gist: {
+          en: "The same menu in the visual language of the Mumi Sushi ordering site: cool two-tone ground, a floating glass top bar, a sticky category column with thumbnails, a two-column dish grid, the cart pinned on the right. The client saw that site and asked for its look — so here it is with their own name, hours, menu and WhatsApp number, in the brand's olive green.",
+          zh: "同一份菜单，换成 Mumi Sushi 点单站的视觉语言：冷色双色底、悬浮玻璃顶栏、带缩略图的钉住分类栏、双列菜品卡、右侧固定购物车。客户看了那个站想要那种样子——这里换上他们自己的店名、营业时间、菜单和 WhatsApp 号，点题色用品牌的橄榄绿。",
+          "zh-tw": "同一份菜單，換成 Mumi Sushi 點單站的視覺語言：冷色雙色底、懸浮玻璃頂欄、帶縮圖的釘住分類欄、雙列菜品卡、右側固定購物車。客戶看了那個站想要那種樣子——這裡換上他們自己的店名、營業時間、菜單和 WhatsApp 號，點題色用品牌的橄欖綠。",
+          it: "Lo stesso menu nella lingua visiva del sito d'ordinazione Mumi Sushi: fondo freddo a due toni, barra superiore in vetro, colonna categorie fissa con miniature, griglia piatti a due colonne, carrello ancorato a destra. Il cliente ha visto quel sito e ne ha chiesto il look: eccolo con nome, orari, menu e numero WhatsApp suoi, nel verde oliva del marchio.",
+        },
+      },
+    ],
   },
 ];
 
@@ -83,8 +98,11 @@ export function clientBySlug(slug: string): ClientSite | undefined {
 export function pagePath(c: ClientSite): string {
   return `/clients/${c.slug}/index.html`;
 }
-export function posterPath(c: ClientSite): string {
-  return `/clients/_posters/${c.slug}.jpg`;
+export function posterPath(c: ClientSite, alt?: string): string {
+  return alt ? `/clients/_posters/${c.slug}--${alt}.jpg` : `/clients/_posters/${c.slug}.jpg`;
+}
+export function altPagePath(c: ClientSite, dir: string): string {
+  return `/clients/${c.slug}/${dir}/index.html`;
 }
 
 export const clientsCopy = {
@@ -97,6 +115,7 @@ export const clientsCopy = {
     "zh-tw": "給真實商家做的網站，按交付時的樣子放在這裡。跟「網頁設計」那些虛構店名的模版不同，這裡的店名、菜單、價格和聯絡方式都是店家自己的。可以捲、可以點、也可以整頁打開。",
     it: "Siti costruiti per attività reali, mostrati come sono stati consegnati. A differenza della sezione Web design, qui nome, menu, prezzi e contatti sono quelli del locale. Scorri, clicca, oppure apri a schermo intero.",
   },
+  delivered: { en: "Delivered site", zh: "交付版", "zh-tw": "交付版", it: "Sito consegnato", ja: "納品版", ko: "납품 버전" },
   openFull: { en: "Open full screen", zh: "整页打开", "zh-tw": "整頁打開", it: "Apri a schermo intero", ja: "全画面で開く", ko: "전체 화면으로 열기" },
   storyTitle: { en: "The brief", zh: "来龙去脉", "zh-tw": "來龍去脈", it: "Il brief", ja: "背景", ko: "배경" },
   featuresTitle: { en: "What is in it", zh: "里面有什么", "zh-tw": "裡面有什麼", it: "Cosa contiene", ja: "内容", ko: "구성" },

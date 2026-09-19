@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#e9edf5" />
+  <meta name="description" content="Ming·E Poke & Sushi — ordina online: poke da comporre, sushi e tacos di nori. Via del Prione 291, La Spezia. Asporto e consegna, tutti i giorni 11:30–23:00." />
+  <title>Ming·E Poke & Sushi — Ordina online (asporto & consegna)</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2750%27 fill=%27%237f9b4f%27/%3E%3Ctext x=%2750%27 y=%2762%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-size=%2734%27 font-weight=%27700%27 fill=%27white%27%3EM%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="../data.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#menu">Vai al menu</a>
+
+  <!-- Floating glass island, like the ordering site it is modelled on -->
+  <header class="site-head" data-head>
+    <a class="brand" href="#top" aria-label="Ming·E Poke & Sushi">
+      <svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M50 6 C74 6 94 26 94 50 C94 74 74 94 50 94" /><path d="M46 92 C24 90 8 72 8 50 C8 28 24 10 44 8" />
+          <path d="M36 32 C42 24 56 24 62 32 C56 40 42 40 36 32 Z" /><path d="M62 32 L70 26 L70 38 Z" />
+          <path d="M40 78 L44 64 M60 78 L56 64" /><path d="M36 66 Q50 74 64 66" />
+        </g>
+        <circle cx="44" cy="31" r="1.6" fill="currentColor" />
+        <text x="50" y="57" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="700" letter-spacing="1.5" fill="currentColor">MING·E</text>
+      </svg>
+    </a>
+    <a class="pill" href="#menu">Menu</a>
+    <span class="grow"></span>
+    <button class="pill icon" type="button" aria-label="Tema chiaro / scuro" data-theme-toggle>☀️</button>
+    <label class="pill select" aria-label="Lingua">IT<select disabled><option>IT</option></select></label>
+    <a class="pill" href="tel:+393513328109"><span aria-hidden="true">📞</span><span class="pill-text">351 332 8109</span></a>
+    <button class="pill" type="button" data-login><span aria-hidden="true">👤</span><span class="pill-text">Accedi</span></button>
+    <button class="pill cart-pill" type="button" data-open-cart aria-label="Apri il carrello"><span aria-hidden="true">🛒</span><span class="pill-text">Carrello</span><b class="cart-badge" data-cart-count hidden>0</b></button>
+  </header>
+
+  <main id="top" class="shell">
+    <!-- Left: categories -->
+    <aside class="cats" aria-label="Categorie">
+      <p class="cats-label">Categorie</p>
+      <nav class="cats-list" data-cats></nav>
+    </aside>
+
+    <!-- Centre: promo, status, search, menu -->
+    <section class="menu" id="menu">
+      <h1 class="sr-only">Menu</h1>
+
+      <div class="promo" data-promo>
+        <article class="promo-slide on" data-slide="0">
+          <img src="../assets/taco-spicy-salmone.webp" alt="" class="promo-taco" width="1400" height="1050" />
+          <div class="promo-copy">
+            <span class="tag">Novità</span>
+            <h2>Tacos di alga nori</h2>
+            <p>Sfoglia di nori croccante, riso sushi e sei ripieni. Da € 4,00.</p>
+            <a class="btn light" href="#cat-tacos">Guarda i tacos</a>
+          </div>
+        </article>
+        <article class="promo-slide poke" data-slide="1">
+          <img src="../assets/bowl-salmone.webp" alt="" class="promo-photo" width="1000" height="750" />
+          <div class="promo-copy">
+            <span class="tag">Componi</span>
+            <h2>La tua poke, come la vuoi</h2>
+            <p>Tre formati, base, ingredienti, proteine, salse e topping. Da € 8,90.</p>
+            <a class="btn light" href="#cat-poke">Componi la bowl</a>
+          </div>
+        </article>
+        <div class="promo-dots" role="tablist" aria-label="Promozioni"><button type="button" class="on" data-dot="0" aria-label="Promo 1"></button><button type="button" data-dot="1" aria-label="Promo 2"></button></div>
+      </div>
+
+      <div class="status" data-status><span class="dot" aria-hidden="true"></span><span data-status-text>Aperto · chiude alle 23:00</span></div>
+
+      <div class="search-card">
+        <label class="search"><span aria-hidden="true">🔍</span><input type="search" placeholder="Cerca un piatto…" data-search autocomplete="off" /></label>
+        <nav class="cats-row" aria-label="Categorie" data-cats-row></nav>
+      </div>
+
+      <div class="sections" data-sections></div>
+      <p class="empty-search" data-empty hidden>Nessun piatto trovato.</p>
+
+      <footer class="foot">
+        <div><b>Ming·E Poke &amp; Sushi</b><br />Via del Prione 291, 19121 La Spezia</div>
+        <div>Tutti i giorni 11:30 – 23:00<br /><a href="tel:+393513328109">351 332 8109</a></div>
+        <div><a href="https://www.google.com/maps/search/?api=1&query=Ming%C2%B7E+Poke%26Sushi+Via+del+Prione+291+La+Spezia" target="_blank" rel="noopener">Indicazioni ↗</a><br /><a href="https://wa.me/393513328109" target="_blank" rel="noopener">WhatsApp ↗</a></div>
+      </footer>
+    </section>
+
+    <!-- Right: cart -->
+    <aside class="cart-col">
+      <div class="cart card" data-cart>
+        <h2>Carrello</h2>
+        <div class="mode-switch" role="group" aria-label="Modalità ordine">
+          <button class="on" type="button" data-mode="Asporto" aria-pressed="true">Asporto</button>
+          <button type="button" data-mode="Consegna" aria-pressed="false">Consegna</button>
+        </div>
+        <div class="cart-items" data-cart-items><p class="cart-empty">Il carrello è vuoto</p></div>
+        <div class="cart-foot" data-cart-foot hidden>
+          <div class="row"><span>Totale</span><b data-cart-total>€ 0,00</b></div>
+          <a class="btn primary wide" href="#" data-checkout>Ordina su WhatsApp</a>
+          <small>Si apre WhatsApp con il riepilogo già scritto. Paghi al ritiro o alla consegna.</small>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Mobile: floating cart bar -->
+  <button class="cart-bar" type="button" data-open-cart data-cart-bar hidden><span>🛒 <b data-cart-count-2>0</b></span><span>Carrello</span><b data-cart-total-2>€ 0,00</b></button>
+  <div class="scrim" data-scrim></div>
+
+  <!-- Poke builder -->
+  <dialog class="sheet" data-builder aria-labelledby="builder-title">
+    <div class="sheet-head"><div><p class="eyebrow">Componi</p><h2 id="builder-title" data-builder-title>Poke Media</h2></div><button class="pill icon" type="button" aria-label="Chiudi" data-close-builder>✕</button></div>
+    <div class="sheet-body">
+      <div class="sheet-sizes" role="radiogroup" aria-label="Formato" data-sizes></div>
+      <div data-steps></div>
+    </div>
+    <div class="sheet-foot">
+      <div><small data-summary></small><b data-builder-price>€ 10,90</b></div>
+      <button class="btn primary" type="button" data-add-custom>Aggiungi</button>
+    </div>
+  </dialog>
+
+  <div class="toast" data-toast role="status" aria-live="polite">Aggiunto al carrello</div>
+</body>
+</html>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import TemplateViewer from "@/components/TemplateViewer";
-import { CLIENTS_LANGS, clientBySlug, clients, clientsCopy, pagePath, posterPath } from "@/data/clients";
+import { CLIENTS_LANGS, altPagePath, clientBySlug, clients, clientsCopy, pagePath, posterPath } from "@/data/clients";
 import { altsFor, defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 export function generateStaticParams() {
@@ -51,14 +51,8 @@ export default async function ClientPage({
   const siblings = clients.filter((x) => x.slug !== c.slug);
 
   const designs = [
-    {
-      id: "delivered",
-      brand: c.name,
-      style: pick(c.industry, lang),
-      gist: pick(c.gist, lang),
-      src: pagePath(c),
-      poster: posterPath(c),
-    },
+    { id: "delivered", brand: c.name, style: pick(clientsCopy.delivered, lang), gist: pick(c.gist, lang), src: pagePath(c), poster: posterPath(c) },
+    ...(c.alt ?? []).map((a) => ({ id: a.id, brand: c.name, style: pick(a.title, lang), gist: pick(a.gist, lang), src: altPagePath(c, a.dir), poster: posterPath(c, a.id) })),
   ];
 
   return (
