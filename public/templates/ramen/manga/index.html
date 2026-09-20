@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#fffdf5" />
+  <meta name="description" content="Kumo Ramen Manga — il ramen bar di Milano raccontato a vignette: brodo di 18 ore, gyoza croccanti, ZURU ZURU." />
+  <title>Kumo Ramen — Manga · Milano</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:ital,wght@0,500;0,700;0,900;1,700&family=Kosugi+Maru&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+  <header data-header>
+    <a class="logo press" href="#top" aria-label="Kumo Ramen, torna all'inizio"><span class="shout">KUMO</span><small>ラーメン · Milano</small></a>
+    <div class="nav" role="navigation" aria-label="Navigazione principale"><a href="#capitolo1">Cap. 1</a><a href="#menu">Il menù</a><a href="#come">Come si mangia</a><a href="#dove">Dove</a></div>
+    <div class="actions"><button class="btn btn-red press" type="button" data-open-booking>Prenota!</button><button class="menu-button press" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-button><i></i><i></i></button></div>
+  </header>
+  <div class="mobile-nav" data-mobile-nav aria-hidden="true"><a href="#capitolo1" data-nav-link>Capitolo 1</a><a href="#menu" data-nav-link>Il menù</a><a href="#come" data-nav-link>Come si mangia</a><a href="#dove" data-nav-link>Dove</a><button class="btn btn-red" type="button" data-open-booking>Prenota un tavolo</button></div>
+
+  <main id="main">
+    <!-- Hero: page one of the manga. Three panels, speed lines, halftone, a speech bubble that pops. -->
+    <section class="page hero" id="top">
+      <div class="strip">
+        <article class="panel p1 reveal"><div class="speed"></div><img src="../assets/ramen-di-carne.webp" alt="Ramen di carne con uovo marinato" width="800" height="600" /><div class="halftone"></div><div class="bubble b1"><b>18 ORE</b> di brodo. Non uno di meno.</div><span class="sfx sfx-a">GURU GURU</span></article>
+        <article class="panel p2 reveal"><div class="speed dark"></div><p class="kicker">Capitolo 1 · Via Vigevano 18</p><h1>Il ramen<br />che fa<br /><span class="shout red">ZURU<br />ZURU!</span></h1><p class="lead">Si mangia rumorosamente. È il modo giusto: aria + brodo + noodles. Non chiedere scusa.</p></article>
+        <article class="panel p3 reveal"><div class="bowl-ill" aria-hidden="true"><i class="bowl"></i><i class="noodle n1"></i><i class="noodle n2"></i><i class="egg"></i><i class="chop c1"></i><i class="chop c2"></i><i class="steam s1"></i><i class="steam s2"></i></div><div class="bubble b2 think">Stasera… <b>tonkotsu.</b></div><div class="cta"><button class="btn btn-red press" type="button" data-open-booking>Prenota un tavolo</button><a class="btn btn-ink press" href="#menu">Sfoglia il menù</a></div></article>
+      </div>
+      <p class="pagenum">— 01 —</p>
+    </section>
+
+    <!-- The menu as manga pages: each dish a panel with a price sticker and a sound word -->
+    <section class="page" id="menu">
+      <div class="section-head reveal"><p class="kicker">Capitolo 2</p><h2>Il menù,<br /><span class="shout">vignetta per vignetta.</span></h2><p class="sub">Foto vere. Le onomatopee sono quelle che fai tu.</p></div>
+      <div class="filters" role="group" aria-label="Filtra"><button class="chip on" type="button" data-filter="tutti" aria-pressed="true">Tutti</button><button class="chip" type="button" data-filter="ramen">Ramen</button><button class="chip" type="button" data-filter="noodles">Noodles</button><button class="chip" type="button" data-filter="piccoli">Piccoli</button><button class="chip" type="button" data-filter="dolci">Dolci</button></div>
+      <div class="grid" data-grid aria-live="polite"></div>
+      <p class="pagenum">— 02 —</p>
+    </section>
+
+    <!-- How to eat: four panels, drawn in CSS, numbered -->
+    <section class="page how" id="come">
+      <div class="section-head reveal"><p class="kicker">Capitolo 3</p><h2>Come si mangia<br /><span class="shout">un ramen.</span></h2></div>
+      <div class="steps">
+        <article class="panel step reveal"><span class="num">1</span><div class="ill"><i class="bowl"></i><i class="steam s1"></i><i class="steam s2"></i></div><h3>Prima il brodo</h3><p>Un cucchiaio, senza noodles. È lì che sono le 18 ore.</p><span class="sfx">SLURP</span></article>
+        <article class="panel step reveal"><span class="num">2</span><div class="ill"><i class="bowl"></i><i class="chop c1"></i><i class="chop c2"></i><i class="noodle n1"></i></div><h3>Poi i noodles</h3><p>Pochi alla volta, tirandoli su con aria. Rumorosamente.</p><span class="sfx">ZURU ZURU</span></article>
+        <article class="panel step reveal"><span class="num">3</span><div class="ill"><i class="bowl"></i><i class="egg"></i><i class="chashu"></i></div><h3>Chashu e uovo</h3><p>Il chashu a metà, l’uovo alla fine: il tuorlo si scioglie nel brodo.</p><span class="sfx">MOGU MOGU</span></article>
+        <article class="panel step reveal"><span class="num">4</span><div class="ill"><i class="bowl tilt"></i></div><h3>Fino in fondo</h3><p>Si alza la ciotola con due mani. Se la posi vuota, hai fatto tutto bene.</p><span class="sfx">GOKU GOKU</span></article>
+      </div>
+      <p class="pagenum">— 03 —</p>
+    </section>
+
+    <!-- Chapter one: the story as a two-page spread -->
+    <section class="page story" id="capitolo1">
+      <div class="spread">
+        <article class="panel wide reveal"><img src="../assets/chicken-gyoza-3pz.webp" alt="Gyoza alla piastra" width="800" height="600" loading="lazy" /><div class="halftone"></div><div class="caption">Milano, 2019. Un fornello, una pentola da 40 litri, un cuoco che non dorme.</div></article>
+        <article class="panel text reveal"><p class="kicker">Capitolo 1 · L’inizio</p><h2>Prima il brodo.<br /><span class="shout">Poi tutto il resto.</span></h2><p>Kumo è nato in una cucina di sei metri quadri sui Navigli. Il primo anno abbiamo servito solo shoyu, perché il tonkotsu non era ancora abbastanza bianco. Adesso lo è: diciotto ore, ossa di maiale lombardo, schiumato a mano.</p><p>I noodles li tiriamo ogni mattina. I gyoza li chiudiamo a mano, uno per uno. Le vignette sono un gioco; il resto no.</p><div class="bubble b3">Ancora una ciotola? <b>Sempre.</b></div></article>
+        <article class="panel tall reveal"><img src="../assets/bao-charsiu.webp" alt="Bao charsiu" width="800" height="534" loading="lazy" /><div class="halftone"></div><span class="sfx sfx-b">FUWA FUWA</span></article>
+      </div>
+      <p class="pagenum">— 04 —</p>
+    </section>
+
+    <section class="page dove" id="dove">
+      <div class="dove-grid">
+        <article class="panel reveal"><p class="kicker">Ultimo capitolo · Dove</p><h2>Via Vigevano 18<br /><span class="shout">Milano.</span></h2><dl><dt>Mar–Dom</dt><dd>12:00 – 23:00</dd><dt>Telefono</dt><dd><a href="tel:+390255501842">+39 02 5550 1842</a></dd><dt>Metro</dt><dd>M2 Porta Genova · 4 min</dd></dl><button class="btn btn-red press" type="button" data-open-booking>Prenota un tavolo</button></article>
+        <article class="panel map reveal" aria-hidden="true"><svg viewBox="0 0 400 300"><rect width="400" height="300" fill="#fffdf5"/><path d="M0 150 H400 M200 0 V300 M0 80 Q200 60 400 90 M60 0 Q90 150 40 300" stroke="#111" stroke-width="4" fill="none"/><g transform="translate(200 150)"><path d="M0 -34 C-18 -34 -30 -20 -30 -4 C-30 14 0 40 0 40 C0 40 30 14 30 -4 C30 -20 18 -34 0 -34Z" fill="#e63946" stroke="#111" stroke-width="4"/><circle r="9" cy="-6" fill="#fffdf5" stroke="#111" stroke-width="3"/></g><text x="222" y="200" font-family="Bangers" font-size="24">KUMO</text><path d="M120 250 l10 -18 l10 18z" fill="#111"/><path d="M300 60 l14 0 l-7 -14z" fill="#ffd60a" stroke="#111" stroke-width="3"/></svg><span class="sfx sfx-c">QUI!</span></article>
+      </div>
+      <p class="pagenum">— fine —</p>
+    </section>
+  </main>
+
+  <footer><div><span class="shout">KUMO</span> ラーメン · Milano</div><div class="foot-links"><a href="#menu">Menù</a><a href="#come">Come si mangia</a><a href="#dove">Dove</a><a href="/templates/ramen" target="_top">Altri design</a></div><p>Foto vere dei piatti; le vignette e le ciotole disegnate sono CSS.</p></footer>
+
+  <dialog class="booking" data-booking aria-labelledby="booking-title">
+    <button class="dialog-close press" type="button" aria-label="Chiudi" data-close-booking>×</button>
+    <form data-booking-form>
+      <p class="kicker">Prossimo capitolo</p>
+      <h2 id="booking-title">Prenota <span class="shout red">un tavolo!</span></h2>
+      <div class="two"><label>Giorno<input type="date" name="day" required /></label><label>Ora<select name="time"><option>12:30</option><option>13:30</option><option selected>19:30</option><option>21:00</option></select></label></div>
+      <div class="two"><label>Persone<input type="number" name="people" min="1" max="10" value="2" required /></label><label>Telefono<input type="tel" name="phone" placeholder="+39" required /></label></div>
+      <label>Nome<input type="text" name="name" required /></label>
+      <button class="btn btn-red press" type="submit">Conferma</button>
+    </form>
+  </dialog>
+  <div class="toast" role="status" aria-live="polite" data-toast><span class="shout">YATTA!</span><div><strong>Tavolo richiesto</strong><p>Confermiamo via SMS.</p></div></div>
+</body>
+</html>

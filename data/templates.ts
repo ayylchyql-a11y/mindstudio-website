@@ -14,7 +14,7 @@ import type { Locale, Localized } from "@/lib/i18n";
  */
 
 export type GroupId = "food" | "retail" | "supply" | "services";
-export type StyleId = "original" | "editorial" | "night-glass" | "pop" | "claude" | "abisso" | "mercato" | "kaiten" | "tavolo";
+export type StyleId = "original" | "editorial" | "night-glass" | "pop" | "claude" | "abisso" | "mercato" | "kaiten" | "tavolo" | "ukiyo" | "yoru" | "shizuka" | "yatai" | "manga" | "loop" | "showa" | "app" | "kraft";
 
 export interface TemplateGroup {
   id: GroupId;
@@ -176,6 +176,97 @@ export const styles: { id: StyleId; title: Localized; gist: Localized }[] = [
       it: "Ordine dal tavolo: lo scroll ti spinge in un tunnel di nubi fino al menù, il cui colore segue la categoria che tocchi; i titoli salgono una lettera alla volta.",
     },
   },
+  // 09-20 九套手作，每套一种完整的视觉语言（用户：不局限于设计库、结合各种风格）
+  {
+    id: "ukiyo",
+    title: { en: "Ukiyo-e", zh: "浮世绘", "zh-tw": "浮世繪", it: "Ukiyo-e", ja: "浮世絵", ko: "우키요에" },
+    gist: {
+      en: "A woodblock print: washi cream, indigo waves that drift on three periods, a vermilion seal that stamps itself, four seasons as colour blocks, omakase tiers as torn tickets.",
+      zh: "一张木版画：和纸米色、三层错周期漂移的靛蓝浪、自己盖上去的朱印、四季色块、撕下来的 Omakase 票根。",
+      "zh-tw": "一張木版畫：和紙米色、三層錯週期漂移的靛藍浪、自己蓋上去的朱印、四季色塊、撕下來的 Omakase 票根。",
+      it: "Una stampa su legno: carta washi, onde indaco che vanno su tre periodi diversi, un sigillo vermiglio che si timbra da solo, quattro stagioni a blocchi di colore, l’omakase come biglietti strappati.",
+    },
+  },
+  {
+    id: "yoru",
+    title: { en: "Neon night", zh: "霓虹深夜", "zh-tw": "霓虹深夜", it: "Notte al neon", ja: "ネオンの夜", ko: "네온 나이트" },
+    gist: {
+      en: "A Tokyo alley at 1 a.m.: rain on a canvas, signs at five depths that drift with the pointer, one tube that flickers, a glitch title that settles, and a vending machine whose buttons light up and print a ticket.",
+      zh: "凌晨一点的东京巷子：画布下雨、五层景深随指针漂移的招牌、一根会闪的灯管、抖一下才稳的标题、按下会亮灯并打出食券的自动贩卖机。",
+      "zh-tw": "凌晨一點的東京巷子：畫布下雨、五層景深隨指標漂移的招牌、一根會閃的燈管、抖一下才穩的標題、按下會亮燈並印出食券的自動販賣機。",
+      it: "Un vicolo di Tokyo all’una di notte: pioggia su canvas, insegne su cinque profondità che seguono il puntatore, un tubo che sfarfalla, un titolo glitch che si assesta, e un distributore i cui tasti si accendono e stampano il biglietto.",
+    },
+  },
+  {
+    id: "shizuka",
+    title: { en: "Wabi-sabi", zh: "侘寂", "zh-tw": "侘寂", it: "Wabi-sabi", ja: "侘び寂び", ko: "와비사비" },
+    gist: {
+      en: "Almost nothing: an enso that draws itself, one course at a time on a 1.4s crossfade, a carta whose lines bring their photo along under the pointer, a form with no box around it.",
+      zh: "几乎什么都没有：自己画出来的圆相、一次只给一道菜的 1.4 秒淡入淡出、悬停哪行菜哪张照片就跟着指针走、没有框的预约表。",
+      "zh-tw": "幾乎什麼都沒有：自己畫出來的圓相、一次只給一道菜的 1.4 秒淡入淡出、懸停哪行菜哪張照片就跟著指標走、沒有框的預約表。",
+      it: "Quasi niente: un enso che si disegna da solo, una portata alla volta con dissolvenza di 1,4 s, una carta le cui righe portano la loro foto sotto il puntatore, un modulo senza cornice.",
+    },
+  },
+  {
+    id: "yatai",
+    title: { en: "Night stall", zh: "深夜屋台", "zh-tw": "深夜屋台", it: "Yatai", ja: "屋台", ko: "야타이" },
+    gist: {
+      en: "Dark wood, one lamp, real steam: a canvas of soft particles rising off the bowl, a broth clock counting hours since 06:00, a chalkboard menu, and a bowl builder whose drawing updates as you pick broth, noodles and toppings.",
+      zh: "深色木台、一盏灯、真的蒸汽：画布粒子从碗沿升起，从早上六点算起的熬汤计时，粉笔黑板菜单，选汤底/面/配料时碗的画会跟着变的配碗器。",
+      "zh-tw": "深色木檯、一盞燈、真的蒸汽：畫布粒子從碗緣升起，從早上六點算起的熬湯計時，粉筆黑板菜單，選湯底/麵/配料時碗的畫會跟著變的配碗器。",
+      it: "Legno scuro, una lampada, vapore vero: particelle morbide che salgono dalla ciotola, un orologio del brodo che conta dalle sei, una lavagna col gesso, e una ciotola da comporre il cui disegno cambia mentre scegli brodo, noodles e topping.",
+    },
+  },
+  {
+    id: "manga",
+    title: { en: "Manga", zh: "漫画", "zh-tw": "漫畫", it: "Manga", ja: "マンガ", ko: "만화" },
+    gist: {
+      en: "A comic: 4px ink panels with hard shadows, halftone and speed lines, speech bubbles that pop in, sound words in Bangers on every dish, a four-panel how-to-eat, and the story as a two-page spread.",
+      zh: "一本漫画：4px 墨线分镜格与硬阴影、网点与速度线、弹出来的对话气泡、每道菜配一个拟声词、四格「怎么吃拉面」、跨页讲店史。",
+      "zh-tw": "一本漫畫：4px 墨線分鏡格與硬陰影、網點與速度線、彈出來的對話氣泡、每道菜配一個擬聲詞、四格「怎麼吃拉麵」、跨頁講店史。",
+      it: "Un fumetto: vignette con bordi da 4 px e ombre nette, retino e linee cinetiche, nuvolette che spuntano, un’onomatopea su ogni piatto, il «come si mangia» in quattro vignette, la storia come doppia pagina.",
+    },
+  },
+  {
+    id: "loop",
+    title: { en: "Infinite loop", zh: "无限循环", "zh-tw": "無限迴圈", it: "Loop", ja: "ループ", ko: "루프" },
+    gist: {
+      en: "Kinetic type: three outlined words sliding opposite ways behind the hero, an ∞ that draws then flows, counters that count up, a price card that flips lunch↔dinner in 3D, and three belts of real plates you tap into your round.",
+      zh: "动态字体：首屏后面三行反向滑动的描边大字、先画后流动的 ∞、自增计数、午晚市 3D 翻转的价格卡、三排真菜品传送带点一下进本轮点单。",
+      "zh-tw": "動態字體：首屏後面三行反向滑動的描邊大字、先畫後流動的 ∞、自增計數、午晚市 3D 翻轉的價格卡、三排真菜品輸送帶點一下進本輪點單。",
+      it: "Tipografia cinetica: tre parole in contorno che scorrono in direzioni opposte dietro l’hero, un ∞ che si disegna e poi scorre, contatori che salgono, una card prezzo che si gira in 3D pranzo↔cena, e tre nastri di piatti veri da toccare per il tuo giro.",
+    },
+  },
+  {
+    id: "showa",
+    title: { en: "Shōwa diner", zh: "昭和食堂", "zh-tw": "昭和食堂", it: "Shōwa", ja: "昭和食堂", ko: "쇼와 식당" },
+    gist: {
+      en: "A 1970s Japanese diner: film grain, double rules, a checkered band, a plastic-sample showcase behind glass with a glare, flip-digit prices that flip lunch↔dinner, a waving lucky cat and a stamp card you tap round by round.",
+      zh: "七十年代日本食堂：胶片颗粒、双线框、格纹带、带反光玻璃的食品样品橱窗、午晚市翻页数字价格、招手的招财猫、一轮一个章的集章卡。",
+      "zh-tw": "七十年代日本食堂：膠片顆粒、雙線框、格紋帶、帶反光玻璃的食品樣品櫥窗、午晚市翻頁數字價格、招手的招財貓、一輪一個章的集章卡。",
+      it: "Una tavola calda giapponese anni ’70: grana, doppi filetti, una fascia a scacchi, la vetrina dei campioni dietro un vetro con riflesso, prezzi a cifre che si girano pranzo↔cena, un maneki-neko che saluta e una tessera a timbri, un giro un timbro.",
+    },
+  },
+  {
+    id: "app",
+    title: { en: "Delivery app", zh: "外卖应用", "zh-tw": "外送應用", it: "App", ja: "アプリ", ko: "앱" },
+    gist: {
+      en: "A delivery app as a website: search, a sticky category rail that follows the scroll, product sheets that slide up with options and quantity, pickup time slots, a cart drawer with a free-delivery progress bar, a bottom tab bar on phones.",
+      zh: "把外卖 app 做成网站：搜索、跟着滚动走的粘顶分类条、带选项和数量的上滑商品页、取餐时段、带「免运费进度条」的购物车抽屉、手机端底部标签栏。",
+      "zh-tw": "把外送 app 做成網站：搜尋、跟著捲動走的黏頂分類列、帶選項和數量的上滑商品頁、取餐時段、帶「免運費進度條」的購物車抽屜、手機端底部標籤列。",
+      it: "Un’app di delivery come sito: ricerca, una barra di categorie che segue lo scroll, schede prodotto che salgono con opzioni e quantità, fasce orarie di ritiro, un carrello con la barra della consegna gratuita, una tab bar in basso sul telefono.",
+    },
+  },
+  {
+    id: "kraft",
+    title: { en: "Kraft paper", zh: "牛皮纸", "zh-tw": "牛皮紙", it: "Kraft", ja: "クラフト紙", ko: "크라프트지" },
+    gist: {
+      en: "Packaging as the brand: kraft brown, a CSS box with a lid and a barcode label, rubber stamps that hit the page, die-cut windows on the box cards, and an order slip in typewriter type where you tick rows and the stamp lands on submit.",
+      zh: "包装即品牌：牛皮纸棕、带盖子和条码标签的 CSS 纸盒、砸到页面上的橡皮章、模切开窗的盒子卡片、打字机字体的点单单——勾行加总、提交时盖章。",
+      "zh-tw": "包裝即品牌：牛皮紙棕、帶蓋子和條碼標籤的 CSS 紙盒、砸到頁面上的橡皮章、模切開窗的盒子卡片、打字機字體的點單單——勾行加總、提交時蓋章。",
+      it: "L’imballo come marchio: kraft, una scatola CSS con coperchio ed etichetta con codice a barre, timbri di gomma che battono sulla pagina, finestre fustellate sulle card delle scatole, e un foglio d’ordine a macchina da scrivere: spunti le righe, il timbro arriva all’invio.",
+    },
+  },
 ];
 
 export interface SiteTemplate {
@@ -214,8 +305,8 @@ export const templates: SiteTemplate[] = [
       "zh-tw": "運河區的拉麵店：按心情選碗、先講湯底、再講店面，最後一個訂位彈窗。",
       it: "Un ramen bar sui Navigli: una ciotola per ogni umore, prima il brodo, un angolo quieto, e la prenotazione del tavolo.",
     },
-    features: ["Menu with category filter", "Table booking dialog + toast", "Sticky header, mobile menu", "Reduced-motion aware"],
-    variants: { editorial: "Kado Ramen", claude: "Kuroba Ramen" },
+    features: ["Menu with category filter", "Table booking dialog + toast", "Sticky header, mobile menu", "Yatai: steam canvas, broth clock, chalkboard, bowl builder with a live drawing, takeaway tray", "Manga: ink panels, halftone, speech bubbles, sound words, four-panel how-to, booking", "Real dish photos from a live menu API"],
+    variants: { editorial: "Kado Ramen", claude: "Kuroba Ramen", yatai: "Kumo Ramen", manga: "Kumo Ramen" },
     accent: "#c8442a",
     lang: "it",
   },
@@ -232,8 +323,8 @@ export const templates: SiteTemplate[] = [
       "zh-tw": "點單式吃到飽：套餐規則、午晚市價格、上百道菜的篩選、過敏原登記。",
       it: "All you can eat à la carte: la formula e le regole, prezzi per servizio, cento piatti con filtri, registro allergeni.",
     },
-    features: ["Formula + rules section", "Price table by service", "Menu filter", "Booking dialog", "Allergen register"],
-    variants: { editorial: "Senza Fine", claude: "Momiji Sushi & Grill" },
+    features: ["Formula + rules section", "Price table by service", "Menu filter", "Booking dialog", "Allergen register", "Loop: kinetic marquees, counters, 3D price flip, three belts of real plates, round drawer", "Shōwa: film grain, sample showcase with a card, flip-digit prices, stamp card, lucky cat", "Real dish photos from a live menu API"],
+    variants: { editorial: "Senza Fine", claude: "Momiji Sushi & Grill", loop: "Mizu Infinity", showa: "Mizu" },
     accent: "#1f6f8b",
     lang: "it",
   },
@@ -250,8 +341,8 @@ export const templates: SiteTemplate[] = [
       "zh-tw": "外帶與外送：選套盒、加進能算總價的購物車、看包裝怎麼做、店在哪。",
       it: "Asporto e consegna: scegli i box, aggiungili a un carrello che fa il totale, la confezione, dove siamo.",
     },
-    features: ["Box picker with filter", "Cart drawer with totals", "Group ordering section", "Packaging explainer"],
-    variants: { editorial: "Maki 12", claude: "SakéBox Takeaway" },
+    features: ["Box picker with filter", "Cart drawer with totals", "Group ordering section", "Packaging explainer", "App: search, sticky categories, product sheets with options, pickup slots, free-delivery progress, tab bar", "Kraft: CSS box with lid and barcode label, rubber stamps, order slip with ticks and a live total", "Real dish photos from a live menu API"],
+    variants: { editorial: "Maki 12", claude: "SakéBox Takeaway", app: "Nori Express", kraft: "Nori Express" },
     accent: "#e76649",
     lang: "it",
   },
@@ -348,9 +439,12 @@ export const templates: SiteTemplate[] = [
       "Omakase: scroll-scrubbed frame sequence (real photos), helix flythrough with three stations, counter booking dialog",
       "Kaiten: looping belt, hover-tinted price tiers, plate pile cart, magnetic CTA",
       "Tavolo: vortex transit hero, hue-follows-focus menu, staggered character titles, procedural QR",
+      "Ukiyo: drifting woodblock waves, self-stamping seal, four seasons, ticket tiers, counter with real plates",
+      "Yoru: rain canvas, parallax neon signs, glitch title, vending-machine menu that prints a ticket, hours strip",
+      "Shizuka: self-drawing enso, one course at a time, ghost photo on the carta, quiet form",
       "Real dish photos from the restaurant’s own menu",
     ],
-    variants: { editorial: "Banco & Riso", kaiten: "Mumi Sushi", tavolo: "Mumi Sushi" },
+    variants: { editorial: "Banco & Riso", kaiten: "Mumi Sushi", tavolo: "Mumi Sushi", ukiyo: "Mumi Sushi", yoru: "Mumi Sushi", shizuka: "Mumi Sushi" },
     accent: "#d4a24c",
     lang: "it",
   },

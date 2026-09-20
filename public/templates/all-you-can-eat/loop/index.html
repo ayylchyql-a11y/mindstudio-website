@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#1d3ff5" />
+  <meta name="description" content="Mizu Infinity Loop — all you can eat à la carte a Torino. Tutto. Ancora. Senza fine: 120 piatti, due ore, un prezzo." />
+  <title>Mizu Infinity — Loop · Torino</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+  <header data-header>
+    <a class="logo press" href="#top" aria-label="Mizu Infinity, torna all'inizio">MIZU<span class="loop" aria-hidden="true">∞</span></a>
+    <div class="nav" role="navigation" aria-label="Navigazione principale"><a href="#prezzo">Il prezzo</a><a href="#nastro">I piatti</a><a href="#regole">Le regole</a><a href="#dove">Dove</a></div>
+    <div class="actions"><button class="round-btn press" type="button" data-open-round><span>Il tuo giro</span><b data-round-count>0</b></button><button class="btn btn-coral press" type="button" data-open-booking>Prenota</button><button class="menu-button press" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-button><i></i><i></i></button></div>
+  </header>
+  <div class="mobile-nav" data-mobile-nav aria-hidden="true"><a href="#prezzo" data-nav-link>Il prezzo</a><a href="#nastro" data-nav-link>I piatti</a><a href="#regole" data-nav-link>Le regole</a><a href="#dove" data-nav-link>Dove</a><button class="btn btn-coral" type="button" data-open-booking>Prenota un tavolo</button></div>
+
+  <main id="main">
+    <!-- Hero: kinetic type. Three words on three lines, each a marquee in a different direction; the ∞ spins slowly;
+         three counters count up when they enter. -->
+    <section class="hero" id="top">
+      <div class="lines" aria-hidden="true">
+        <div class="line l1"><div class="track" data-marquee="TUTTO."></div></div>
+        <div class="line l2"><div class="track" data-marquee="ANCORA."></div></div>
+        <div class="line l3"><div class="track" data-marquee="SENZA FINE."></div></div>
+      </div>
+      <div class="hero-inner">
+        <svg class="inf" viewBox="0 0 200 100" aria-hidden="true"><path d="M50 50 C50 22 88 22 100 50 C112 78 150 78 150 50 C150 22 112 22 100 50 C88 78 50 78 50 50Z"/></svg>
+        <div class="hero-copy">
+          <p class="kicker reveal">All you can eat · à la carte · Torino</p>
+          <h1 class="reveal">Ordini dal tavolo.<br />Arriva fresco.<br /><em>Ripeti.</em></h1>
+          <p class="lead reveal">Nessun buffet: ogni piatto viene preparato quando lo chiedi. Per due ore, tutte le volte che vuoi.</p>
+          <div class="hero-actions reveal"><button class="btn btn-coral big press" type="button" data-open-booking>Prenota un tavolo</button><a class="btn btn-white big press" href="#nastro">Guarda i piatti</a></div>
+        </div>
+        <div class="counters reveal"><div><b data-count="120">0</b><span>piatti in carta</span></div><div><b data-count="2">0</b><span>ore al tavolo</span></div><div><b data-count="0">0</b><span>limiti</span></div><div><b data-count="18" data-suffix=",90">0</b><span>€ a pranzo</span></div></div>
+      </div>
+    </section>
+
+    <!-- Price: two giant cards that flip; the switch is a physical toggle -->
+    <section class="price" id="prezzo">
+      <div class="section-head reveal"><p class="kicker">Il prezzo</p><h2>Un numero.<br /><em>Poi non ci pensi più.</em></h2></div>
+      <div class="switch reveal" role="group" aria-label="Pranzo o cena"><button class="on" type="button" data-period="pranzo" aria-pressed="true">Pranzo</button><button type="button" data-period="cena" aria-pressed="false">Cena</button><i data-thumb></i></div>
+      <div class="cards" data-price-cards>
+        <article class="pcard flip reveal" data-flip><div class="face front"><small>Lun–Ven · pranzo · 12:00–15:00</small><b>18<sup>,90</sup></b><span>a persona · 2 ore · tutto il menù</span><ul><li>120 piatti à la carte</li><li>Sushi, sashimi, cucina calda</li><li>Acqua e caffè inclusi</li></ul></div><div class="face back"><small>Tutti i giorni · cena · 19:00–23:30</small><b>27<sup>,90</sup></b><span>a persona · 2 ore · tutto il menù</span><ul><li>120 piatti à la carte</li><li>Più le portate della sera</li><li>Sabato e festivi anche a pranzo</li></ul></div></article>
+        <article class="pcard kids reveal"><small>Bambini 4–8 anni</small><b>10<sup>,90</sup></b><span>pranzo e cena</span><p>Fino a 3 anni non pagano. Chiediamo solo di non lasciare piatti pieni: quelli si pagano a parte.</p></article>
+        <article class="pcard drinks reveal"><small>Da bere</small><b>—</b><span>a parte, alla carta</span><p>Birra Asahi e Sapporo, sake, tè freddo. Il vino lo scegliamo insieme.</p></article>
+      </div>
+    </section>
+
+    <!-- The belt: three rows of real plates scrolling opposite ways, pause on hover, click adds to your round -->
+    <section class="belt" id="nastro">
+      <div class="section-head reveal"><p class="kicker">I piatti</p><h2>Centoventi modi<br /><em>per dire ancora.</em></h2><p class="sub">Foto vere. Tocca un piatto per metterlo nel tuo giro: al tavolo funziona così.</p></div>
+      <div class="rows" data-rows></div>
+    </section>
+
+    <section class="rules" id="regole">
+      <div class="rules-grid">
+        <div class="section-head reveal"><p class="kicker">Le regole</p><h2>Poche,<br /><em>e tutte per il pesce.</em></h2></div>
+        <div class="acc reveal" data-acc>
+          <article><button type="button" aria-expanded="true"><span>Quanto tempo ho?</span><i>−</i></button><div class="ans"><p>Due ore dal primo ordine. Se il tavolo è libero dopo, nessuno ti caccia.</p></div></article>
+          <article><button type="button" aria-expanded="false"><span>Quanti piatti per giro?</span><i>+</i></button><div class="ans" hidden><p>Massimo cinque a persona per giro, così arrivano tutti freschi. I giri sono infiniti.</p></div></article>
+          <article><button type="button" aria-expanded="false"><span>E se avanzo qualcosa?</span><i>+</i></button><div class="ans" hidden><p>I piatti lasciati pieni vengono conteggiati alla carta. È l’unica regola seria: il pesce non si spreca.</p></div></article>
+          <article><button type="button" aria-expanded="false"><span>Tutto il tavolo deve fare la formula?</span><i>+</i></button><div class="ans" hidden><p>Sì. Chi non vuole la formula ordina alla carta a un altro tavolo, senza rancore.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="dove" id="dove">
+      <div class="dove-card reveal"><p class="kicker">Dove</p><h2>Corso Vittorio<br />Emanuele II 72, <em>Torino.</em></h2><dl><dt>Tutti i giorni</dt><dd>12:00–15:00 · 19:00–23:30</dd><dt>Telefono</dt><dd><a href="tel:+390118802600">+39 011 880 2600</a></dd><dt>Metro</dt><dd>Porta Nuova · 3 min</dd></dl><button class="btn btn-coral press" type="button" data-open-booking>Prenota un tavolo</button></div>
+      <div class="dove-loop" aria-hidden="true"><div class="track" data-marquee="TORINO · PORTA NUOVA · "></div></div>
+    </section>
+  </main>
+
+  <footer><div>MIZU <span class="loop">∞</span> · Torino</div><div class="foot-links"><a href="#prezzo">Prezzo</a><a href="#nastro">Piatti</a><a href="#regole">Regole</a><a href="/templates/all-you-can-eat" target="_top">Altri design</a></div><p>Foto vere dei piatti. Il nastro è una fila che si ripete.</p></footer>
+
+  <aside class="round" data-round aria-hidden="true" aria-labelledby="round-title">
+    <div class="round-head"><div><small>Giro <b data-round-n>1</b> · max 5 a persona</small><h2 id="round-title">Il tuo giro</h2></div><button class="press" type="button" aria-label="Chiudi" data-close-round>×</button></div>
+    <ul data-round-list></ul><p class="empty" data-round-empty>Tocca i piatti sul nastro.</p>
+    <div class="round-foot"><span data-round-tot>0 piatti</span><button class="btn btn-coral press" type="button" data-send-round>Manda in cucina</button></div>
+  </aside>
+  <div class="scrim" data-scrim></div>
+
+  <dialog class="booking" data-booking aria-labelledby="booking-title">
+    <button class="dialog-close press" type="button" aria-label="Chiudi" data-close-booking>×</button>
+    <form data-booking-form><p class="kicker">Prenota</p><h2 id="booking-title">Un tavolo, <em>due ore.</em></h2>
+      <div class="two"><label>Giorno<input type="date" name="day" required /></label><label>Servizio<select name="service"><option>Pranzo · 12:30</option><option>Pranzo · 13:30</option><option selected>Cena · 19:30</option><option>Cena · 21:00</option></select></label></div>
+      <div class="two"><label>Persone<input type="number" name="people" min="1" max="12" value="2" required /></label><label>Telefono<input type="tel" name="phone" placeholder="+39" required /></label></div>
+      <label>Nome<input type="text" name="name" required /></label>
+      <button class="btn btn-coral press" type="submit">Conferma</button></form>
+  </dialog>
+  <div class="toast" role="status" aria-live="polite" data-toast><span class="loop">∞</span><div><strong data-toast-title>Tavolo richiesto</strong><p data-toast-body>Confermiamo via email.</p></div></div>
+</body>
+</html>

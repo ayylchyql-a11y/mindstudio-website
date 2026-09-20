@@ -43,6 +43,16 @@ const STYLES = {
   "风格E-市集": "mercato",
   "风格D-回转": "kaiten",
   "风格E-桌边": "tavolo",
+  // 09-20 九套手作（用户要「不局限于设计库、结合各种风格」）：sushi ×3、ramen ×2、all-you-can-eat ×2、sushi-takeaway ×2
+  "风格F-浮世绘": "ukiyo",
+  "风格G-霓虹": "yoru",
+  "风格H-侘寂": "shizuka",
+  "风格D-蒸汽": "yatai",
+  "风格E-漫画": "manga",
+  "风格D-无限": "loop",
+  "风格E-昭和": "showa",
+  "风格D-应用": "app",
+  "风格E-牛皮纸": "kraft",
 };
 /**
  * 09-18 用户拍板：生成器出的同款变体不再一律上站 ——「夜间玻璃」只留 Vinaia（enoteca），
@@ -139,7 +149,8 @@ for (const [slug, dc] of Object.entries(DC)) {
   const to = join(DST, slug, "claude");
   mkdirSync(to, { recursive: true });
   let html = readFileSync(join(from, dc.file), "utf8");
-  const heroFile = readdirSync(join(DST, slug, "assets"))[0];
+  // 🩸 09-20 起 assets 里多了几十张 webp 菜品图：拿「目录第一个」会抓到 banmian-piccante.webp；hero 只认 *-hero.jpg
+  const heroFile = readdirSync(join(DST, slug, "assets")).find((f) => /-hero\.jpg$/.test(f)) ?? readdirSync(join(DST, slug, "assets"))[0];
   for (const id of dc.hero) {
     const re = new RegExp(`<image-slot id="${id}"`);
     if (!re.test(html)) throw new Error(`${slug}/claude: slot ${id} not found`);

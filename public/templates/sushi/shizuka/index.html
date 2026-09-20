@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#f6f3ee" />
+  <meta name="description" content="Mumi Sushi Shizuka — un banco silenzioso a Vimercate. Una portata alla volta, niente di più di quello che serve." />
+  <title>Mumi Sushi — Shizuka · Vimercate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Zen+Old+Mincho:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+  <div class="progress" data-progress aria-hidden="true"></div>
+
+  <header data-header>
+    <a class="logo" href="#top" aria-label="Mumi Sushi, torna all'inizio">Mumi <span>静</span></a>
+    <div class="nav" role="navigation" aria-label="Navigazione principale"><a href="#portate">Le portate</a><a href="#carta">La carta</a><a href="#silenzio">Il silenzio</a><a href="#prenota">Prenotare</a></div>
+    <button class="menu-button" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-button><i></i><i></i></button>
+  </header>
+  <div class="mobile-nav" data-mobile-nav aria-hidden="true"><a href="#portate" data-nav-link>Le portate</a><a href="#carta" data-nav-link>La carta</a><a href="#silenzio" data-nav-link>Il silenzio</a><a href="#prenota" data-nav-link>Prenotare</a></div>
+
+  <main id="main">
+    <!-- Hero: one enso that draws itself, one line of type, one photo far below the fold line -->
+    <section class="hero" id="top">
+      <svg class="enso" viewBox="0 0 200 200" aria-hidden="true"><path data-enso d="M112 22 C58 18 18 62 24 112 C30 160 84 188 132 172 C172 158 190 108 168 70 C152 42 122 30 104 34"/></svg>
+      <p class="small reveal">Vimercate · un banco di otto posti</p>
+      <h1 class="reveal">Una portata<br /><em>alla volta.</em></h1>
+      <p class="lead reveal">Niente musica, niente menù sul tavolo. Il pesce del giorno, il riso caldo, il tempo di guardarlo prima di mangiarlo.</p>
+      <a class="down reveal" href="#portate" aria-label="Scendi">↓</a>
+    </section>
+
+    <!-- The courses: one photo at a time, a slow crossfade every 5s, a hairline that fills in between -->
+    <section class="courses" id="portate" data-courses>
+      <div class="course-frame"><img data-course-img src="../assets/hd-nigiri-salmone-2-s.jpg" alt="" width="900" height="600" /><img data-course-img-next src="" alt="" width="900" height="600" aria-hidden="true" /></div>
+      <div class="course-meta">
+        <p class="small">Le portate di oggi</p>
+        <div class="course-n"><span data-course-num>01</span><i data-course-line></i><span data-course-tot>12</span></div>
+        <h2 data-course-name>Nigiri di salmone</h2>
+        <p data-course-desc>Salmone norvegese, riso a temperatura del corpo, un filo di soia stagionata.</p>
+        <div class="course-dots" data-course-dots role="tablist" aria-label="Portate"></div>
+      </div>
+    </section>
+
+    <!-- The carta: a list, nothing else; hovering a line brings its photo along under the pointer -->
+    <section class="carta" id="carta">
+      <div class="carta-head"><div><p class="small">La carta</p><h2>Quello che c’è<br /><em>oggi.</em></h2></div><p class="note">Alla carta, oltre al percorso. Passa sopra a una voce per vederla.</p></div>
+      <div class="carta-cols" data-carta></div>
+      <div class="ghost" data-ghost aria-hidden="true"><img src="" alt="" width="600" height="600" /></div>
+    </section>
+
+    <section class="silenzio" id="silenzio">
+      <div class="ink" aria-hidden="true"></div>
+      <div class="silenzio-copy">
+        <p class="small reveal">Il silenzio</p>
+        <h2 class="reveal">Meno cose,<br /><em>fatte con più attenzione.</em></h2>
+        <p class="reveal">Il banco è di rovere non trattato. Le ceramiche sono di un laboratorio di Faenza, nessuna uguale all’altra. Il riso viene cotto ogni quaranta minuti e buttato se avanza. Sono le uniche regole.</p>
+        <div class="facts reveal"><div><b>8</b><span>posti</span></div><div><b>12</b><span>portate</span></div><div><b>40′</b><span>il riso</span></div><div><b>0</b><span>musica</span></div></div>
+        <div class="pair reveal"><img src="../assets/hd-sashimi-box-s.jpg" alt="Sashimi nella scatola di legno" width="900" height="600" loading="lazy" /><img src="../assets/hd-gunkan-ikura-s.jpg" alt="Gunkan con uova di salmone" width="900" height="601" loading="lazy" /></div>
+      </div>
+    </section>
+
+    <!-- Booking: not a dialog, a quiet form on the page -->
+    <section class="prenota" id="prenota">
+      <div class="prenota-copy reveal"><p class="small">Prenotare</p><h2>Otto posti,<br /><em>due turni.</em></h2><p class="note">19:00 e 21:15. Rispondiamo su WhatsApp entro un’ora. Piazzale Marconi 12, Vimercate · <a href="tel:+393924166908">+39 392 416 6908</a></p></div>
+      <form class="quiet" data-form>
+        <label><span>Nome</span><input type="text" name="name" required /></label>
+        <label><span>Telefono</span><input type="tel" name="phone" required /></label>
+        <label><span>Giorno</span><input type="date" name="day" required /></label>
+        <label><span>Turno</span><select name="turn"><option>19:00</option><option>21:15</option></select></label>
+        <label><span>Persone</span><select name="people"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></label>
+        <label><span>Percorso</span><select name="tier"><option>Dodici portate · € 68</option><option>Otto portate · € 45</option><option>Alla carta</option></select></label>
+        <button type="submit">Invia la richiesta <i>→</i></button>
+        <p class="sent" data-sent>Ricevuta. Ti scriviamo su WhatsApp.</p>
+      </form>
+    </section>
+  </main>
+
+  <footer><span>Mumi Sushi · Piazzale Marconi 12 · Vimercate</span><span><a href="#carta">La carta</a> · <a href="#prenota">Prenotare</a> · <a href="/templates/sushi" target="_top">Altri design</a></span><span class="small">Shizuka · «quiete». Foto vere del banco.</span></footer>
+</body>
+</html>

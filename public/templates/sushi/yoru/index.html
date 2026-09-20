@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#07070c" />
+  <meta name="description" content="Mumi Sushi Yoru — sushi fino a tardi a Vimercate. Un vicolo di insegne al neon, un distributore di biglietti, il pesce che arriva al banco quando gli altri chiudono." />
+  <title>Mumi Sushi — Yoru · Vimercate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+  <canvas class="rain" data-rain aria-hidden="true"></canvas>
+
+  <header data-header>
+    <a class="logo press" href="#top" aria-label="Mumi Sushi, torna all'inizio"><span class="neon pink">MUMI</span><span class="neon cyan small">夜</span></a>
+    <div class="nav" role="navigation" aria-label="Navigazione principale"><a href="#macchina">Distributore</a><a href="#orari">Fino a tardi</a><a href="#vicolo">Il vicolo</a><a href="#dove">Dove</a></div>
+    <div class="actions">
+      <button class="ticket-btn press" type="button" data-open-cart aria-label="Apri il biglietto"><span>Biglietto</span><b data-cart-count>0</b></button>
+      <button class="menu-button press" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-button><i></i><i></i></button>
+    </div>
+  </header>
+  <div class="mobile-nav" data-mobile-nav aria-hidden="true"><a href="#macchina" data-nav-link>Distributore</a><a href="#orari" data-nav-link>Fino a tardi</a><a href="#vicolo" data-nav-link>Il vicolo</a><a href="#dove" data-nav-link>Dove</a></div>
+
+  <main id="main">
+    <!-- Hero: a night alley. Signs hang at different depths and drift with the pointer; one tube flickers;
+         the title is a glitch that settles; the plate is a duotone photo behind a wet-glass window. -->
+    <section class="hero" id="top" data-alley>
+      <div class="signs" aria-hidden="true">
+        <span class="sign s1 neon pink" data-depth="2">寿司</span>
+        <span class="sign s2 neon cyan flicker" data-depth="4">OPEN<small>till 02:00</small></span>
+        <span class="sign s3 neon yellow" data-depth="1">酒</span>
+        <span class="sign s4 neon pink" data-depth="3">生ビール</span>
+        <span class="sign s5 neon cyan" data-depth="2">→ 2F</span>
+        <span class="lantern l1" data-depth="3"></span><span class="lantern l2" data-depth="2"></span><span class="lantern l3" data-depth="4"></span>
+      </div>
+      <div class="hero-copy">
+        <p class="kicker reveal">Vimercate · Piazzale Marconi 12 · <span class="mono">12:00 → 02:00</span></p>
+        <h1 class="glitch reveal" data-text="SUSHI FINO A TARDI">SUSHI FINO A TARDI</h1>
+        <p class="lead reveal">Quando gli altri chiudono, il nostro banco accende le insegne. Prendi un biglietto al distributore, siediti, il pesce arriva.</p>
+        <div class="hero-actions reveal"><a class="btn btn-pink press" href="#macchina">Prendi un biglietto</a><a class="btn btn-line press" href="#orari">Orari di notte</a></div>
+      </div>
+      <figure class="window reveal">
+        <img src="../assets/hd-sashimi-piatto-s.jpg" alt="Sashimi sul banco, luce di notte" width="900" height="600" />
+        <span class="drip"></span>
+        <figcaption><b class="mono">02:00</b> l’ultimo giro di sashimi</figcaption>
+      </figure>
+      <div class="ticker" aria-hidden="true"><div class="track" data-ticker></div></div>
+    </section>
+
+    <!-- The vending machine: press a button, it lights, the ticket prints -->
+    <section class="machine" id="macchina">
+      <div class="section-head reveal"><p class="eyebrow neon cyan">券売機 · Il distributore</p><h2>Premi. <em>Si accende.</em><br />Poi arriva.</h2><p class="sub">Come nei ramen bar di Tokyo: si compra il biglietto alla macchina e si consegna al banco. Foto vere dei nostri piatti.</p></div>
+      <div class="filters" role="group" aria-label="Filtra i piatti"><button class="chip on" type="button" data-filter="tutti" aria-pressed="true">Tutto</button><button class="chip" type="button" data-filter="nigiri">Nigiri</button><button class="chip" type="button" data-filter="maki">Maki</button><button class="chip" type="button" data-filter="crudo">Crudo</button><button class="chip" type="button" data-filter="caldo">Caldo</button><button class="chip" type="button" data-filter="bere">Da bere</button></div>
+      <div class="vending" data-vending aria-live="polite"></div>
+    </section>
+
+    <!-- Late hours as a strip of hours: the lit part is where we are open; a live dot shows now -->
+    <section class="hours" id="orari">
+      <div class="section-head reveal"><p class="eyebrow neon pink">深夜 · Fino a tardi</p><h2>Aperti quando<br /><em>hai davvero fame.</em></h2></div>
+      <div class="strip reveal" data-strip></div>
+      <div class="hours-notes reveal"><div><b class="neon cyan">12:00 – 15:00</b><p>Pranzo veloce: sushi mix e box da portare via.</p></div><div><b class="neon pink">18:00 – 02:00</b><p>Il banco pieno. Dopo mezzanotte solo nigiri, sashimi e ramen.</p></div><div><b class="neon yellow">Lunedì</b><p>Chiusi. Il pesce riposa, anche noi.</p></div></div>
+    </section>
+
+    <section class="alley" id="vicolo">
+      <div class="alley-copy reveal"><p class="eyebrow neon yellow">路地 · Il vicolo</p><h2>Otto sgabelli,<br /><em>un neon sopra la porta.</em></h2><p>Non c’è insegna sulla piazza: c’è una freccia al neon che dice 2F. Su per le scale, un banco di legno scuro, il tonno che viene tagliato sotto una lampada sola. Fino alle due.</p><p class="mono">SUSHI · SAKE · BIRRA ALLA SPINA · RAMEN DOPO MEZZANOTTE</p></div>
+      <div class="alley-photos reveal"><img src="../assets/hd-tartare-coppe-s.jpg" alt="Tartare nelle coppe, luce calda" width="900" height="600" loading="lazy" /><img src="../assets/hd-uramaki-s.jpg" alt="Uramaki di notte" width="900" height="600" loading="lazy" /><img src="../assets/hd-tempura-s.jpg" alt="Tempura" width="900" height="600" loading="lazy" /></div>
+    </section>
+
+    <section class="dove" id="dove">
+      <div class="dove-card reveal"><p class="eyebrow neon cyan">場所 · Dove</p><h2>Piazzale Marconi 12<br /><em>Vimercate · 2F</em></h2><dl><dt>Mar–Dom</dt><dd class="mono">12:00–15:00 · 18:00–02:00</dd><dt>Telefono</dt><dd class="mono"><a href="tel:+393924166908">+39 392 416 6908</a></dd><dt>WhatsApp</dt><dd><a href="https://wa.me/393924166908" target="_blank" rel="noopener">Ordina e ritira</a></dd></dl><a class="btn btn-pink press" href="#macchina">Prendi un biglietto</a></div>
+      <div class="dove-sign neon pink reveal" aria-hidden="true">2F<small>↑</small></div>
+    </section>
+  </main>
+
+  <footer><div><span class="neon pink">MUMI</span> <span class="neon cyan small">夜</span> · Vimercate</div><div class="foot-links"><a href="#macchina">Distributore</a><a href="#orari">Orari</a><a href="#dove">Dove</a><a href="/templates/sushi" target="_top">Altri design</a></div><p class="mono">Yoru · «notte». Foto vere del menù. Le insegne sono CSS.</p></footer>
+
+  <aside class="cart" data-cart aria-hidden="true" aria-labelledby="cart-title">
+    <div class="cart-head"><div><small class="mono">券 · biglietto</small><h2 id="cart-title">Il tuo biglietto</h2></div><button class="press" type="button" aria-label="Chiudi" data-close-cart>×</button></div>
+    <div class="paper"><ul data-cart-list></ul><p class="empty" data-cart-empty>Nessun piatto. Premi un tasto sul distributore.</p><div class="tot"><span>Totale</span><b class="mono" data-cart-total>€ 0,00</b></div><div class="perf"></div></div>
+    <button class="btn btn-pink press wide" type="button" data-checkout>Stampa il biglietto</button>
+    <small class="mono">Ritiro al banco entro 20 minuti · pagamento alla cassa</small>
+  </aside>
+  <div class="scrim" data-scrim></div>
+  <div class="toast mono" role="status" aria-live="polite" data-toast>▮ BIGLIETTO STAMPATO · CONSEGNALO AL BANCO</div>
+</body>
+</html>

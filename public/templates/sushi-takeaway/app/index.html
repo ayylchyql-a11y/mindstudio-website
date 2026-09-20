@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0f7b6c" />
+  <meta name="description" content="Nori Express App — sushi da asporto a Bologna come un’app: cerca, aggiungi, scegli l’orario di ritiro, paga. Pronto in 20 minuti." />
+  <title>Nori Express — App · Bologna</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+  <div class="app" id="top">
+    <!-- top bar: logo, pickup time pill, search -->
+    <header data-header>
+      <a class="logo press" href="#top" aria-label="Nori Express, torna all'inizio"><span class="mark">N</span><span><b>Nori Express</b><small>Via del Pratello 41 · Bologna</small></span></a>
+      <button class="when press" type="button" data-open-when aria-label="Cambia orario di ritiro"><i></i><span>Ritiro</span><b data-when-label>il prima possibile · ~20 min</b><em>▾</em></button>
+      <label class="search"><span aria-hidden="true">⌕</span><input type="search" placeholder="Cerca un roll, un box, una salsa…" data-search /></label>
+      <button class="cart-btn press" type="button" data-open-cart aria-label="Apri il carrello"><span>Carrello</span><b data-cart-count>0</b></button>
+    </header>
+
+    <main id="main">
+      <!-- status banner: open now, prep time, free delivery threshold -->
+      <section class="status reveal">
+        <div class="pill live"><i></i>Aperto ora · chiude alle 22:30</div>
+        <div class="pill">⏱ Preparazione <b data-prep>20 min</b></div>
+        <div class="pill">🚲 Consegna gratis sopra € 35 <b data-free-left>· mancano € 35,00</b></div>
+      </section>
+
+      <!-- hero card: today's deal -->
+      <section class="promo reveal">
+        <div class="promo-copy"><p class="eyebrow">Offerta di oggi</p><h1>Il box del giorno,<br /><b>−15% fino alle 15.</b></h1><p>Triple Maki Box: 24 pezzi, tre roll, una salsa a scelta. Pronto in venti minuti, ritiro in negozio.</p><button class="btn btn-primary press" type="button" data-add-promo>Aggiungi il box · <s>€ 26</s> € 22,10</button></div>
+        <img src="../assets/triple-maki-box.webp" alt="Triple Maki Box" width="800" height="600" />
+      </section>
+
+      <!-- category rail (sticky) + product list -->
+      <nav class="cats" data-cats role="navigation" aria-label="Categorie"></nav>
+      <div class="catalog" data-catalog></div>
+      <p class="empty-search" data-empty hidden>Niente con questo nome. Prova «salmone» o «box».</p>
+
+      <section class="how reveal">
+        <div><span>1</span><h3>Scegli</h3><p>Box, roll, contorni. Le foto sono quelle vere.</p></div>
+        <div><span>2</span><h3>Orario</h3><p>Il prima possibile, o a un’ora precisa entro stasera.</p></div>
+        <div><span>3</span><h3>Ritira</h3><p>Via del Pratello 41. Il tuo nome sul sacchetto.</p></div>
+      </section>
+    </main>
+
+    <footer><span>Nori Express · Via del Pratello 41 · Bologna · <a href="tel:+39051302818">+39 051 302 818</a> · Lun–Dom 11:30–22:30</span><span><a href="/templates/sushi-takeaway" target="_top">Altri design</a></span></footer>
+  </div>
+
+  <!-- bottom tab bar (phone only) -->
+  <nav class="tabbar" aria-label="Sezioni"><a href="#top" class="on">Menu</a><button type="button" data-open-when>Orario</button><button type="button" data-open-cart>Carrello <b data-cart-count>0</b></button></nav>
+
+  <!-- product sheet -->
+  <div class="sheet" data-sheet aria-hidden="true" role="dialog" aria-labelledby="sheet-title">
+    <div class="sheet-panel">
+      <button class="sheet-close press" type="button" aria-label="Chiudi" data-close-sheet>×</button>
+      <img data-sheet-img src="" alt="" width="800" height="600" />
+      <div class="sheet-body">
+        <p class="eyebrow" data-sheet-cat></p><h2 id="sheet-title" data-sheet-name></h2><p class="desc" data-sheet-desc></p>
+        <div class="opts" data-sheet-opts></div>
+        <div class="qty"><button type="button" data-q="-1" aria-label="Meno">−</button><b data-sheet-q>1</b><button type="button" data-q="1" aria-label="Più">+</button><button class="btn btn-primary press grow" type="button" data-sheet-add>Aggiungi · <span data-sheet-price></span></button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- pickup time -->
+  <div class="sheet" data-when aria-hidden="true" role="dialog" aria-labelledby="when-title">
+    <div class="sheet-panel small">
+      <button class="sheet-close press" type="button" aria-label="Chiudi" data-close-when>×</button>
+      <div class="sheet-body"><p class="eyebrow">Ritiro</p><h2 id="when-title">Quando passi?</h2>
+        <div class="slots" data-slots></div>
+        <button class="btn btn-primary press" type="button" data-when-ok>Conferma</button></div>
+    </div>
+  </div>
+
+  <!-- cart -->
+  <aside class="cart" data-cart aria-hidden="true" aria-labelledby="cart-title">
+    <div class="cart-head"><h2 id="cart-title">Il tuo ordine</h2><button class="press" type="button" aria-label="Chiudi" data-close-cart>×</button></div>
+    <ul data-cart-list></ul><p class="empty" data-cart-empty>Il carrello è vuoto.</p>
+    <div class="cart-sum"><div><span>Subtotale</span><b data-sub>€ 0,00</b></div><div><span>Sacchetto e bacchette</span><b>€ 0,50</b></div><div class="tot"><span>Totale</span><b data-total>€ 0,50</b></div></div>
+    <div class="progress"><i data-progress></i><span data-progress-label>Ancora € 35,00 per la consegna gratuita</span></div>
+    <button class="btn btn-primary press wide" type="button" data-checkout>Paga e ritira <span data-checkout-when>·  ~20 min</span></button>
+  </aside>
+  <div class="scrim" data-scrim></div>
+  <div class="toast" role="status" aria-live="polite" data-toast><b>✓</b><span data-toast-text>Aggiunto</span></div>
+</body>
+</html>

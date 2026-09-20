@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#c9a273" />
+  <meta name="description" content="Nori Express Kraft — sushi da asporto a Bologna, in scatole di carta. Compila il foglio d’ordine, timbriamo, ritiri." />
+  <title>Nori Express — Kraft · Bologna</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=Special+Elite&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+  <div class="tape top" aria-hidden="true">FRAGILE · SUSHI FRESCO · CONSUMARE ENTRO 2 ORE · NORI EXPRESS · BOLOGNA · </div>
+  <header data-header>
+    <a class="logo press" href="#top" aria-label="Nori Express, torna all'inizio"><span class="stamp-mark">NORI<br />EXPRESS</span><small>sushi to go · Bologna</small></a>
+    <div class="nav" role="navigation" aria-label="Navigazione principale"><a href="#scatole">Le scatole</a><a href="#foglio">Foglio d’ordine</a><a href="#carta">La carta</a><a href="#dove">Dove</a></div>
+    <button class="btn btn-ink press" type="button" data-scroll="#foglio">Ordina <b data-cart-count>0</b></button>
+    <button class="menu-button press" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-button><i></i><i></i></button>
+  </header>
+  <div class="mobile-nav" data-mobile-nav aria-hidden="true"><a href="#scatole" data-nav-link>Le scatole</a><a href="#foglio" data-nav-link>Foglio d’ordine</a><a href="#carta" data-nav-link>La carta</a><a href="#dove" data-nav-link>Dove</a></div>
+
+  <main id="main">
+    <!-- Hero: a kraft box, a label stuck on it, a tear-strip. Rubber stamps hit the page as it loads. -->
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <p class="kicker reveal">Via del Pratello 41 · ritiro e consegna</p>
+        <h1 class="reveal">Sushi in scatola<br />di carta. <em>Pronto</em><br />in venti minuti.</h1>
+        <p class="lead reveal">Niente plastica: la scatola è di cartone kraft, la bacchetta di bambù, il sacchetto si ricicla con la carta. Il pesce è quello di stamattina.</p>
+        <div class="hero-actions reveal"><a class="btn btn-ink press" href="#scatole">Scegli una scatola</a><a class="btn btn-line press" href="#foglio">Compila il foglio</a></div>
+        <div class="stamps" aria-hidden="true"><span class="stamp red" data-stamp>FRESCO<small>oggi</small></span><span class="stamp blue" data-stamp>20 MIN</span><span class="stamp red" data-stamp>0 PLASTICA</span></div>
+      </div>
+      <figure class="box reveal">
+        <div class="lid"><span class="tear"></span></div>
+        <div class="label"><b>NORI EXPRESS</b><span>Triple Maki Box · 24 pz</span><span class="mono">#0417 · 12:40 · ritiro</span><i class="barcode"></i></div>
+        <img src="../assets/triple-maki-box.webp" alt="Triple Maki Box" width="800" height="600" />
+      </figure>
+    </section>
+
+    <!-- The boxes: kraft cards with a die-cut window (the photo), a price tag on a string -->
+    <section class="boxes" id="scatole">
+      <div class="section-head reveal"><p class="kicker">Le scatole</p><h2>Quattro misure,<br /><em>una sola carta.</em></h2><p class="sub">Ogni scatola è già composta. Sotto trovi anche i pezzi singoli.</p></div>
+      <div class="box-grid" data-boxes></div>
+    </section>
+
+    <!-- The order slip: a typewriter form on a paper sheet; ticks fill the slip; the stamp hits on submit -->
+    <section class="slip-section" id="foglio">
+      <div class="section-head reveal"><p class="kicker">Foglio d’ordine</p><h2>Spunta, firma,<br /><em>ritira.</em></h2><p class="sub">Come al banco: una crocetta per riga. Il totale lo fa il foglio.</p></div>
+      <div class="slip-wrap">
+        <form class="slip reveal" data-slip>
+          <div class="slip-head"><b>NORI EXPRESS · FOGLIO D’ORDINE</b><span class="mono" data-slip-n>N. 0418</span></div>
+          <table class="slip-table" data-slip-table></table>
+          <div class="slip-extra"><label><span>Bacchette</span><select name="sticks" data-slip-sticks><option>1 paio</option><option selected>2 paia</option><option>4 paia</option><option>6 paia</option></select></label><label><span>Salsa</span><select name="sauce"><option>Soia</option><option>Teriyaki</option><option>Spicy mayo</option><option>Nessuna</option></select></label><label><span>Ritiro</span><select name="when" data-slip-when><option>il prima possibile</option><option>13:00</option><option>13:30</option><option>19:30</option><option>20:00</option><option>20:30</option></select></label></div>
+          <div class="slip-tot"><span>Totale</span><b class="mono" data-slip-total>€ 0,00</b></div>
+          <div class="slip-sign"><label><span>Nome</span><input type="text" name="name" placeholder="il tuo nome" required /></label><label><span>Telefono</span><input type="tel" name="phone" placeholder="+39" required /></label><button class="btn btn-red press" type="submit">Timbra e invia</button></div>
+          <span class="stamp big green" data-slip-stamp>RICEVUTO<small data-stamp-time>12:41</small></span>
+        </form>
+        <aside class="slip-notes reveal"><h3>Come funziona</h3><ol><li>Spunta le righe che vuoi. Le scatole hanno già tutto dentro.</li><li>Scegli bacchette, salsa e quando passi.</li><li>Timbra. Ti chiamiamo solo se manca qualcosa.</li><li>Ritiri in Via del Pratello 41: il sacchetto ha il tuo nome scritto a mano.</li></ol><p class="mono small">Consegna in bici sopra € 35 in centro. Sotto, € 3.</p></aside>
+      </div>
+    </section>
+
+    <!-- The carta: kraft columns of single pieces -->
+    <section class="carta" id="carta">
+      <div class="section-head reveal"><p class="kicker">La carta</p><h2>I pezzi <em>singoli.</em></h2></div>
+      <div class="carta-cols" data-carta></div>
+    </section>
+
+    <section class="dove" id="dove">
+      <div class="dove-tag reveal"><p class="kicker">Dove</p><h2>Via del Pratello 41,<br /><em>Bologna.</em></h2><dl><dt>Lun–Dom</dt><dd>11:30 – 22:30</dd><dt>Telefono</dt><dd><a href="tel:+39051302818">+39 051 302 818</a></dd><dt>Bici</dt><dd>centro storico, entro 30 min</dd></dl><a class="btn btn-ink press" href="#foglio">Compila il foglio</a><span class="stamp blue small-stamp">PRATELLO 41</span></div>
+    </section>
+  </main>
+  <div class="tape bottom" aria-hidden="true">RICICLABILE CON LA CARTA · BACCHETTE DI BAMBÙ · NORI EXPRESS · BOLOGNA · </div>
+  <footer><span>Nori Express · Via del Pratello 41 · Bologna</span><span><a href="#scatole">Scatole</a> · <a href="#foglio">Foglio</a> · <a href="/templates/sushi-takeaway" target="_top">Altri design</a></span><span class="mono small">Kraft · le foto dei piatti sono vere, la scatola è CSS.</span></footer>
+  <div class="toast" role="status" aria-live="polite" data-toast><span class="stamp green tiny">OK</span><div><strong>Foglio ricevuto</strong><p data-toast-p>Pronto tra 20 minuti.</p></div></div>
+</body>
+</html>

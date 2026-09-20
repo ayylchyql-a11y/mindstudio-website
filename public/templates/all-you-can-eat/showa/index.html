@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#f4e9d3" />
+  <meta name="description" content="Mizu Shōwa — all you can eat à la carte a Torino con l’aria di una tavola calda giapponese anni ’70: vetrina dei campioni, cartellino dei prezzi, tessera a timbri." />
+  <title>Mizu Infinity — Shōwa · Torino</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Rubik:wght@400;500;700;900&family=Dela+Gothic+One&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="topband" aria-hidden="true"></div>
+  <header data-header>
+    <a class="logo press" href="#top" aria-label="Mizu, torna all'inizio"><span class="jp">水</span><span><b>MIZU</b><small>食べ放題 · dal 1978*</small></span></a>
+    <div class="nav" role="navigation" aria-label="Navigazione principale"><a href="#vetrina">La vetrina</a><a href="#prezzi">Cartellino</a><a href="#tessera">Tessera</a><a href="#dove">Dove</a></div>
+    <div class="actions"><button class="btn btn-red press" type="button" data-open-booking>Prenota</button><button class="menu-button press" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-button><i></i><i></i></button></div>
+  </header>
+  <div class="mobile-nav" data-mobile-nav aria-hidden="true"><a href="#vetrina" data-nav-link>La vetrina</a><a href="#prezzi" data-nav-link>Cartellino</a><a href="#tessera" data-nav-link>Tessera</a><a href="#dove" data-nav-link>Dove</a><button class="btn btn-red" type="button" data-open-booking>Prenota un tavolo</button></div>
+
+  <main id="main">
+    <!-- Hero: a retro shop front. Badge, double-ruled panel, a plate photo in an oval frame, a flip-digit price. -->
+    <section class="hero" id="top">
+      <div class="hero-panel reveal">
+        <span class="badge" aria-hidden="true"><i>NEW</i>all you<br />can eat</span>
+        <p class="kicker">Tavola calda giapponese · Torino</p>
+        <h1>Mangi quanto vuoi.<br /><em>Paghi una volta sola.</em></h1>
+        <p class="lead">Centoventi piatti preparati al momento, due ore al tavolo, un cartellino solo. Come nelle tavole calde di una volta: il prezzo è scritto grande, il resto lo porta la cameriera.</p>
+        <div class="hero-actions"><button class="btn btn-red press" type="button" data-open-booking>Prenota un tavolo</button><a class="btn btn-teal press" href="#vetrina">Guarda la vetrina</a></div>
+        <div class="flip" aria-label="Prezzo pranzo"><span class="flip-label">pranzo · a persona</span><div class="digits" data-digits="18.90"></div><span class="flip-label">euro</span></div>
+      </div>
+      <figure class="oval reveal"><img src="../assets/big-sushimix.webp" alt="Il grande sushi mix" width="900" height="600" /><figcaption>Il grande mix · 40 pezzi · “il piatto della casa”</figcaption><span class="sticker">おすすめ<br /><b>consigliato</b></span></figure>
+    </section>
+
+    <div class="check" aria-hidden="true"></div>
+
+    <!-- The showcase: plastic food samples behind glass -->
+    <section class="showcase" id="vetrina">
+      <div class="section-head reveal"><p class="kicker">食品サンプル · La vetrina</p><h2>I campioni <em>in vetrina.</em></h2><p class="sub">Da noi sono foto vere, non plastica. Tocca un piatto per leggere la scheda.</p></div>
+      <div class="filters" role="group" aria-label="Filtra la vetrina"><button class="tab on" type="button" data-filter="tutti" aria-pressed="true">Tutti</button><button class="tab" type="button" data-filter="nigiri">Nigiri</button><button class="tab" type="button" data-filter="roll">Roll</button><button class="tab" type="button" data-filter="crudo">Crudo</button><button class="tab" type="button" data-filter="caldo">Caldo</button><button class="tab" type="button" data-filter="dolci">Dolci</button></div>
+      <div class="glass"><div class="shelf" data-shelf></div><div class="glare"></div></div>
+      <div class="scheda" data-scheda hidden><img src="" alt="" width="300" height="300" /><div><small class="kicker" data-s-cat></small><h3 data-s-name></h3><p data-s-desc></p><span class="tagline">Incluso nella formula · <b data-s-round>giri illimitati</b></span></div><button class="press" type="button" aria-label="Chiudi" data-s-close>×</button></div>
+    </section>
+
+    <!-- The price board: a menu board with flip digits and a lunch/dinner lever -->
+    <section class="board" id="prezzi">
+      <div class="board-panel reveal">
+        <div class="board-head"><p class="kicker">お品書き · Cartellino</p><h2>Il cartellino<br /><em>dei prezzi.</em></h2></div>
+        <div class="lever" role="group" aria-label="Pranzo o cena"><button class="on" type="button" data-period="pranzo" aria-pressed="true">Pranzo</button><button type="button" data-period="cena" aria-pressed="false">Cena</button></div>
+        <table class="prices"><tbody>
+          <tr><th>Adulti</th><td><div class="digits sm" data-digits="18.90" data-pranzo="18.90" data-cena="27.90"></div></td><td class="note" data-note>Lun–Ven · 12:00–15:00</td></tr>
+          <tr><th>Bambini 4–8</th><td><div class="digits sm" data-digits="10.90" data-pranzo="10.90" data-cena="12.90"></div></td><td class="note">fino a 3 anni non pagano</td></tr>
+          <tr><th>Sabato e festivi</th><td><div class="digits sm" data-digits="24.90" data-pranzo="24.90" data-cena="27.90"></div></td><td class="note">anche a pranzo</td></tr>
+          <tr><th>Da bere</th><td class="serif">alla carta</td><td class="note">Asahi, Sapporo, sake, tè</td></tr>
+        </tbody></table>
+        <ul class="incl"><li>120 piatti à la carte</li><li>Due ore al tavolo</li><li>Acqua e caffè inclusi</li><li>Max 5 piatti a persona per giro</li></ul>
+      </div>
+      <div class="board-art reveal" aria-hidden="true"><div class="neko"><i class="head"></i><i class="paw"></i><span>いらっしゃい</span></div><img src="../assets/nighiri-salmone-2-pz.webp" alt="" width="600" height="450" loading="lazy" class="tilted" /></div>
+    </section>
+
+    <!-- Stamp card: how the rounds work, stamped as you scroll / tap -->
+    <section class="stamps" id="tessera">
+      <div class="section-head reveal"><p class="kicker">スタンプ · La tessera</p><h2>Ogni giro <em>un timbro.</em></h2><p class="sub">Tocca la tessera: è così che va la serata.</p></div>
+      <div class="card-wrap reveal">
+        <div class="stampcard" data-stampcard>
+          <div class="sc-head"><b>MIZU</b><span>tessera del tavolo · 2 ore</span></div>
+          <div class="sc-grid" data-sc-grid></div>
+          <p class="sc-foot" data-sc-foot>Giro 1: ordina fino a 5 piatti a persona. Arrivano freschi, poi si ricomincia.</p>
+        </div>
+        <ol class="rules"><li><b>1.</b> Si ordina dal tavolo, cinque piatti a testa per giro.</li><li><b>2.</b> Quando arriva l’ultimo, si può già chiedere il giro dopo.</li><li><b>3.</b> Due ore. Se il tavolo è libero, nessuno guarda l’orologio.</li><li><b>4.</b> I piatti lasciati pieni si pagano alla carta: il pesce non si butta.</li></ol>
+      </div>
+    </section>
+
+    <section class="dove" id="dove">
+      <div class="dove-panel reveal"><p class="kicker">Dove</p><h2>Corso Vittorio Emanuele II 72,<br /><em>Torino.</em></h2><dl><dt>Tutti i giorni</dt><dd>12:00–15:00 · 19:00–23:30</dd><dt>Telefono</dt><dd><a href="tel:+390118802600">+39 011 880 2600</a></dd><dt>Metro</dt><dd>Porta Nuova · 3 minuti a piedi</dd></dl><button class="btn btn-red press" type="button" data-open-booking>Prenota un tavolo</button><p class="small">* Il 1978 è l’anno in cui è nato lo stile. Noi siamo del 2016.</p></div>
+    </section>
+  </main>
+
+  <footer><div><span class="jp">水</span> MIZU · Torino</div><div class="foot-links"><a href="#vetrina">Vetrina</a><a href="#prezzi">Cartellino</a><a href="#tessera">Tessera</a><a href="/templates/all-you-can-eat" target="_top">Altri design</a></div><p>Shōwa · lo stile delle tavole calde giapponesi degli anni ’70. Foto vere dei piatti.</p></footer>
+
+  <dialog class="booking" data-booking aria-labelledby="booking-title">
+    <button class="dialog-close press" type="button" aria-label="Chiudi" data-close-booking>×</button>
+    <form data-booking-form><p class="kicker">Biglietto</p><h2 id="booking-title">Un tavolo <em>da Mizu.</em></h2>
+      <div class="two"><label>Giorno<input type="date" name="day" required /></label><label>Servizio<select name="service"><option>Pranzo · 12:30</option><option>Pranzo · 13:30</option><option selected>Cena · 19:30</option><option>Cena · 21:00</option></select></label></div>
+      <div class="two"><label>Persone<input type="number" name="people" min="1" max="12" value="2" required /></label><label>Telefono<input type="tel" name="phone" placeholder="+39" required /></label></div>
+      <label>Nome<input type="text" name="name" required /></label>
+      <button class="btn btn-red press" type="submit">Stampa il biglietto</button></form>
+  </dialog>
+  <div class="toast" role="status" aria-live="polite" data-toast><span class="jp">済</span><div><strong>Biglietto emesso</strong><p>Confermiamo via email.</p></div></div>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#1a1310" />
+  <meta name="description" content="Kumo Ramen Yatai — il ramen bar di notte a Milano: brodo di 18 ore, vapore vero, la ciotola la componi tu." />
+  <title>Kumo Ramen — Yatai · Milano</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Kaisei+Tokumin:wght@500;800&family=Caveat:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+
+  <!-- the noren: two cloth panels above the door, swaying -->
+  <header data-header>
+    <a class="logo press" href="#top" aria-label="Kumo Ramen, torna all'inizio"><b>KUMO</b><small>yatai · milano</small></a>
+    <div class="nav" role="navigation" aria-label="Navigazione principale"><a href="#ciotole">Le ciotole</a><a href="#componi">Componi</a><a href="#brodo">18 ore</a><a href="#dove">Dove</a></div>
+    <div class="actions"><button class="tray-btn press" type="button" data-open-cart><span>Vassoio</span><b data-cart-count>0</b></button><button class="menu-button press" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-button><i></i><i></i></button></div>
+  </header>
+  <div class="mobile-nav" data-mobile-nav aria-hidden="true"><a href="#ciotole" data-nav-link>Le ciotole</a><a href="#componi" data-nav-link>Componi</a><a href="#brodo" data-nav-link>18 ore</a><a href="#dove" data-nav-link>Dove</a></div>
+
+  <main id="main">
+    <!-- Hero: a lamp, a bowl, steam. The steam is a canvas of soft particles rising from the bowl's rim;
+         the lamp is a radial gradient that flickers very slightly; the counter is the broth's 18 hours. -->
+    <section class="hero" id="top">
+      <div class="noren" aria-hidden="true"><span>雲</span><span>拉麺</span></div>
+      <div class="lamp" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <p class="kicker reveal">Via Vigevano 18 · Navigli · fino all’una</p>
+        <h1 class="reveal">Un banco di legno,<br />una lampada,<br /><em>il brodo che fuma.</em></h1>
+        <p class="lead reveal">Il nostro tonkotsu cuoce diciotto ore. Il vapore che vedi non è un effetto: alle 23 il bancone è così.</p>
+        <div class="hero-actions reveal"><a class="btn btn-red press" href="#componi">Componi la ciotola</a><a class="btn btn-ghost press" href="#ciotole">Le ciotole di stasera</a></div>
+        <div class="clock reveal"><span class="chalk">brodo in pentola da</span><b data-hours>00</b><span>ore</span><b data-mins>00</b><span>min</span></div>
+      </div>
+      <div class="bowl-stage reveal">
+        <canvas class="steam" data-steam aria-hidden="true"></canvas>
+        <div class="bowl"><img src="../assets/ramen-di-gamberi.webp" alt="Ramen di gamberi, la ciotola di stasera" width="800" height="600" /></div>
+        <div class="coaster">Ramen di gamberi · € 13</div>
+      </div>
+    </section>
+
+    <!-- The bowls: a chalkboard. Chips are chalk, the cards are photos on the dark counter -->
+    <section class="board" id="ciotole">
+      <div class="section-head reveal"><p class="eyebrow chalk">Le ciotole di stasera</p><h2>Scritto col gesso,<br /><em>cambia ogni sera.</em></h2></div>
+      <div class="filters" role="group" aria-label="Filtra"><button class="chip on" type="button" data-filter="tutti" aria-pressed="true">tutto</button><button class="chip" type="button" data-filter="ramen">ramen</button><button class="chip" type="button" data-filter="noodles">noodles</button><button class="chip" type="button" data-filter="piccoli">piccoli</button><button class="chip" type="button" data-filter="dolci">dolci</button></div>
+      <div class="cards" data-cards aria-live="polite"></div>
+    </section>
+
+    <!-- Build a bowl: broth → noodles → toppings, price live, a bowl drawing that updates -->
+    <section class="build" id="componi">
+      <div class="section-head reveal"><p class="eyebrow chalk">Componi</p><h2>La tua ciotola,<br /><em>in tre gesti.</em></h2></div>
+      <div class="build-grid">
+        <form class="steps reveal" data-build>
+          <fieldset><legend><i>1</i> Il brodo</legend><div class="opts" data-group="broth"><label><input type="radio" name="broth" value="Shoyu" data-price="12" data-color="#8a4a1c" checked /><span>Shoyu<small>pollo e dashi, 12 h</small><b>€ 12</b></span></label><label><input type="radio" name="broth" value="Tonkotsu" data-price="13" data-color="#d9b98a" /><span>Tonkotsu<small>maiale, 18 h</small><b>€ 13</b></span></label><label><input type="radio" name="broth" value="Miso" data-price="12.5" data-color="#b8712a" /><span>Miso<small>miso rosso, sesamo</small><b>€ 12,50</b></span></label><label><input type="radio" name="broth" value="Vegetale" data-price="11.5" data-color="#6f8a3a" /><span>Vegetale<small>funghi, kombu</small><b>€ 11,50</b></span></label></div></fieldset>
+          <fieldset><legend><i>2</i> I noodles</legend><div class="opts three" data-group="noodles"><label><input type="radio" name="noodles" value="Morbidi" data-price="0" /><span>Morbidi</span></label><label><input type="radio" name="noodles" value="Normali" data-price="0" checked /><span>Normali</span></label><label><input type="radio" name="noodles" value="Al dente" data-price="0" /><span>Al dente</span></label></div></fieldset>
+          <fieldset><legend><i>3</i> Sopra</legend><div class="opts two" data-group="tops"><label><input type="checkbox" name="tops" value="Chashu" data-price="2.5" checked /><span>Chashu <b>+ € 2,50</b></span></label><label><input type="checkbox" name="tops" value="Ajitama" data-price="1.5" checked /><span>Uovo marinato <b>+ € 1,50</b></span></label><label><input type="checkbox" name="tops" value="Mais" data-price="1" /><span>Mais <b>+ € 1</b></span></label><label><input type="checkbox" name="tops" value="Nori" data-price="1" /><span>Nori <b>+ € 1</b></span></label><label><input type="checkbox" name="tops" value="Kikurage" data-price="1.5" /><span>Kikurage <b>+ € 1,50</b></span></label><label><input type="checkbox" name="tops" value="Burro" data-price="1" /><span>Burro e pepe <b>+ € 1</b></span></label></div></fieldset>
+          <div class="build-foot"><div><small class="chalk">la tua ciotola</small><b data-build-price>€ 16,00</b></div><button class="btn btn-red press" type="submit">Metti sul vassoio</button></div>
+        </form>
+        <div class="bowl-draw reveal" aria-hidden="true">
+          <svg viewBox="0 0 300 260"><defs><radialGradient id="broth" cx="50%" cy="40%"><stop offset="0" stop-color="#e9c48d"/><stop offset="1" stop-color="var(--broth, #8a4a1c)" data-broth-stop/></radialGradient></defs>
+            <ellipse cx="150" cy="150" rx="128" ry="52" fill="#2a1f19"/><ellipse cx="150" cy="140" rx="118" ry="44" fill="url(#broth)" data-broth/>
+            <g data-noodles stroke="#f2dfb3" stroke-width="5" fill="none" stroke-linecap="round"><path d="M60 140 c30 -20 60 20 90 0 s60 -20 90 0"/><path d="M70 152 c30 -18 60 18 90 0 s50 -18 80 0"/><path d="M85 128 c20 -12 40 12 60 0 s40 -12 60 0"/></g>
+            <g data-top="Chashu"><ellipse cx="105" cy="128" rx="30" ry="16" fill="#b56d45"/><ellipse cx="105" cy="128" rx="18" ry="8" fill="#d99a72"/></g>
+            <g data-top="Ajitama"><ellipse cx="200" cy="130" rx="20" ry="14" fill="#f4e6c8"/><circle cx="200" cy="130" r="8" fill="#e8a83a"/></g>
+            <g data-top="Mais"><circle cx="160" cy="160" r="4" fill="#f6c94a"/><circle cx="170" cy="164" r="4" fill="#f6c94a"/><circle cx="152" cy="166" r="4" fill="#f6c94a"/><circle cx="164" cy="170" r="4" fill="#f6c94a"/></g>
+            <g data-top="Nori"><rect x="228" y="96" width="26" height="40" fill="#1f2a1e" transform="rotate(12 241 116)"/></g>
+            <g data-top="Kikurage"><path d="M70 150 c6 -10 18 -8 22 0 c-8 4 -14 6 -22 0z" fill="#3b2a24"/><path d="M96 158 c6 -8 16 -6 20 0 c-6 4 -12 5 -20 0z" fill="#3b2a24"/></g>
+            <g data-top="Burro"><rect x="140" y="112" width="22" height="14" rx="2" fill="#f6e39a" transform="rotate(-10 151 119)"/></g>
+            <g class="scallion"><circle cx="130" cy="118" r="3" fill="#7fbf4a"/><circle cx="178" cy="150" r="3" fill="#7fbf4a"/><circle cx="215" cy="152" r="3" fill="#7fbf4a"/><circle cx="120" cy="158" r="3" fill="#7fbf4a"/></g>
+            <path class="rim" d="M22 150 a128 52 0 0 0 256 0" fill="none" stroke="#3b2c24" stroke-width="10"/><path d="M40 160 q110 80 220 0 q-40 90 -110 90 q-70 0 -110 -90z" fill="#2a1f19"/>
+            <g class="steam-lines" stroke="#ffffff55" stroke-width="3" fill="none" stroke-linecap="round"><path d="M120 90 c-10 -20 10 -30 0 -50"/><path d="M150 84 c-10 -20 10 -30 0 -52"/><path d="M182 90 c-10 -20 10 -30 0 -50"/></g>
+          </svg>
+          <p class="chalk" data-build-summary>Shoyu · normali · chashu, uovo</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 18 hours: the broth timeline, a bar that fills as you scroll past it -->
+    <section class="broth" id="brodo">
+      <div class="section-head reveal"><p class="eyebrow chalk">Diciotto ore</p><h2>Alle sei del mattino<br /><em>la pentola è già accesa.</em></h2></div>
+      <div class="timeline reveal" data-timeline>
+        <div class="tl-bar"><i></i></div>
+        <div class="tl-steps"><div><b>06:00</b><span>Ossa di maiale lavate, acqua fredda, fuoco alto.</span></div><div><b>09:00</b><span>Schiumatura. Ogni mezz’ora, a mano.</span></div><div><b>13:00</b><span>Entrano zenzero, aglio e cipollotto interi.</span></div><div><b>17:00</b><span>Il brodo diventa bianco: emulsione, non panna.</span></div><div><b>20:00</b><span>Tare di soia stagionata. Primo assaggio.</span></div><div><b>00:00</b><span>Ultima ciotola. Si spegne e si ricomincia.</span></div></div>
+      </div>
+      <div class="broth-photos reveal"><img src="../assets/ramen-di-carne.webp" alt="Ramen di carne" width="800" height="600" loading="lazy" /><img src="../assets/chicken-gyoza-3pz.webp" alt="Gyoza" width="800" height="600" loading="lazy" /><img src="../assets/bao-charsiu.webp" alt="Bao charsiu" width="800" height="534" loading="lazy" /></div>
+    </section>
+
+    <section class="dove" id="dove">
+      <div class="dove-copy reveal"><p class="eyebrow chalk">Dove</p><h2>Via Vigevano 18,<br /><em>Navigli.</em></h2><dl><dt>Mar–Dom</dt><dd>18:00 – 01:00</dd><dt>Domenica</dt><dd>anche a pranzo, 12:00 – 15:00</dd><dt>Telefono</dt><dd><a href="tel:+390255501842">+39 02 5550 1842</a></dd></dl><p class="note">Dieci sgabelli al banco, niente prenotazione: si aspetta fuori, sotto la lampada, con una birra.</p><a class="btn btn-red press" href="#componi">Ordina da asporto</a></div>
+      <div class="dove-art reveal" aria-hidden="true"><div class="door"><span>雲</span></div><p class="chalk">la lampada è accesa = siamo aperti</p></div>
+    </section>
+  </main>
+
+  <footer><div class="foot-logo"><b>KUMO</b> yatai · Milano</div><div class="foot-links"><a href="#ciotole">Le ciotole</a><a href="#componi">Componi</a><a href="#dove">Dove</a><a href="/templates/ramen" target="_top">Altri design</a></div><p>Yatai · «bancarella». Foto vere dei piatti; il vapore è un canvas.</p></footer>
+
+  <aside class="cart" data-cart aria-hidden="true" aria-labelledby="cart-title">
+    <div class="cart-head"><div><small class="chalk">da asporto · ritiro al banco</small><h2 id="cart-title">Il vassoio</h2></div><button class="press" type="button" aria-label="Chiudi" data-close-cart>×</button></div>
+    <ul data-cart-list></ul><p class="empty" data-cart-empty>Vuoto. Componi una ciotola o prendi qualcosa dalla lavagna.</p>
+    <div class="tot"><span>Totale</span><b data-cart-total>€ 0,00</b></div>
+    <button class="btn btn-red press wide" type="button" data-checkout>Ordina · ritiro in 15 min</button>
+  </aside>
+  <div class="scrim" data-scrim></div>
+  <div class="toast" role="status" aria-live="polite" data-toast><span>雲</span><div><strong>Ordine ricevuto</strong><p>Pronto tra 15 minuti sotto la lampada.</p></div></div>
+</body>
+</html>

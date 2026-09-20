@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#f3e9d2" />
+  <meta name="description" content="Mumi Sushi Ukiyo — il banco di Vimercate raccontato come una stampa giapponese: onde, sigilli rossi, dodici portate di stagione." />
+  <title>Mumi Sushi — Ukiyo · Vimercate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+  <div class="washi" aria-hidden="true"></div>
+
+  <header data-header>
+    <a class="logo press" href="#top" aria-label="Mumi Sushi, torna all'inizio"><span class="hanko">鮨</span><span class="logo-word">Mumi<small>浮世 · Vimercate</small></span></a>
+    <div class="nav" role="navigation" aria-label="Navigazione principale">
+      <a href="#stagioni">Le stagioni</a><a href="#banco">Il banco</a><a href="#omakase">Omakase</a><a href="#storia">Storia</a><a href="#dove">Dove</a>
+    </div>
+    <div class="actions">
+      <button class="btn btn-ink press" type="button" data-open-booking>Prenota <span class="jp">予約</span></button>
+      <button class="menu-button press" type="button" aria-label="Apri il menu" aria-expanded="false" data-menu-button><i></i><i></i></button>
+    </div>
+  </header>
+  <div class="mobile-nav" data-mobile-nav aria-hidden="true">
+    <a href="#stagioni" data-nav-link>Le stagioni</a><a href="#banco" data-nav-link>Il banco</a><a href="#omakase" data-nav-link>Omakase</a><a href="#storia" data-nav-link>Storia</a><a href="#dove" data-nav-link>Dove</a>
+    <button class="btn btn-red" type="button" data-open-booking>Prenota un posto al banco</button>
+  </div>
+
+  <main id="main">
+    <!-- Hero: a woodblock wave drawn in three SVG bands that drift on different periods; the
+         plate photo sits in a torn-paper frame; the red seal stamps itself 900ms after load. -->
+    <section class="hero" id="top">
+      <div class="waves" aria-hidden="true">
+        <svg class="wave w1" viewBox="0 0 1440 320" preserveAspectRatio="none"><path d="M0 200 C120 140 200 260 320 200 S520 120 640 200 S840 280 960 200 S1160 120 1280 200 S1400 240 1440 220 V320 H0Z"/></svg>
+        <svg class="wave w2" viewBox="0 0 1440 320" preserveAspectRatio="none"><path d="M0 240 C160 180 240 300 400 240 S620 180 760 240 S980 300 1120 240 S1340 190 1440 230 V320 H0Z"/></svg>
+        <svg class="wave w3" viewBox="0 0 1440 320" preserveAspectRatio="none"><path d="M0 270 C200 230 280 310 460 270 S700 230 880 270 S1120 310 1300 270 S1400 250 1440 262 V320 H0Z"/></svg>
+        <div class="foam"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <p class="tate" aria-hidden="true">浮世の鮨 · ヴィメルカーテ</p>
+      <div class="hero-copy">
+        <p class="kicker reveal">Vimercate · Piazzale Marconi 12</p>
+        <h1 class="reveal">Il pesce, il riso,<br /><em>il gesto.</em></h1>
+        <p class="lead reveal">Dodici portate che seguono il mare e le stagioni, servite una alla volta al banco di otto posti. Come in una stampa: pochi tratti, tutti necessari.</p>
+        <div class="hero-actions reveal"><button class="btn btn-red press" type="button" data-open-booking>Prenota il banco</button><a class="btn btn-ghost press" href="#banco">Guarda il banco</a></div>
+      </div>
+      <figure class="hero-plate reveal">
+        <div class="torn"><img src="../assets/hd-nigiri-salmone-s.jpg" alt="Nigiri di salmone sul banco, luce calda" width="900" height="600" /></div>
+        <figcaption><span>春</span> Nigiri di salmone, stagione di primavera</figcaption>
+        <div class="seal" data-seal><b>Mumi</b><small>寿司</small></div>
+      </figure>
+    </section>
+
+    <!-- Four seasons: woodblock colour blocks, each with a season kanji, hover lifts the paper -->
+    <section class="seasons" id="stagioni">
+      <div class="section-head reveal"><p class="eyebrow">一 · Le stagioni</p><h2>Il banco cambia<br /><em>quattro volte l’anno.</em></h2></div>
+      <div class="season-grid">
+        <article class="season s-spring reveal"><span class="kanji">春</span><h3>Primavera</h3><p>Sgombro marinato, gambero rosso di Mazara, fiori di sakura sull’aceto di riso.</p><small>Marzo – Maggio</small></article>
+        <article class="season s-summer reveal"><span class="kanji">夏</span><h3>Estate</h3><p>Branzino, ricciola, anguilla laccata; il riso appena più freddo, lo zenzero più giovane.</p><small>Giugno – Agosto</small></article>
+        <article class="season s-autumn reveal"><span class="kanji">秋</span><h3>Autunno</h3><p>Tonno grasso, ikura, il tartufo sul nigiri di salmone, funghi nel brodo.</p><small>Settembre – Novembre</small></article>
+        <article class="season s-winter reveal"><span class="kanji">冬</span><h3>Inverno</h3><p>Capesante, gambero cotto al vapore, tempura di verdure, tè tostato.</p><small>Dicembre – Febbraio</small></article>
+      </div>
+    </section>
+
+    <!-- The counter: real plates on cream, filter chips that look like price tags -->
+    <section class="banco" id="banco">
+      <div class="section-head reveal"><p class="eyebrow">二 · Il banco</p><h2>Quello che passa<br /><em>oggi.</em></h2><p class="sub">Foto vere del nostro menù. I prezzi sono per porzione; al banco si ordina un pezzo alla volta.</p></div>
+      <div class="filters" role="group" aria-label="Filtra il banco">
+        <button class="chip on" type="button" data-filter="tutti" aria-pressed="true">Tutto</button>
+        <button class="chip" type="button" data-filter="nigiri" aria-pressed="false">Nigiri</button>
+        <button class="chip" type="button" data-filter="uramaki" aria-pressed="false">Uramaki</button>
+        <button class="chip" type="button" data-filter="sashimi" aria-pressed="false">Sashimi &amp; tartare</button>
+        <button class="chip" type="button" data-filter="caldo" aria-pressed="false">Caldo</button>
+      </div>
+      <div class="plates" data-plates aria-live="polite"></div>
+    </section>
+
+    <!-- Omakase: three tiers as tickets torn from a book; choose one and the booking dialog remembers it -->
+    <section class="omakase" id="omakase">
+      <div class="section-head reveal"><p class="eyebrow">三 · Omakase</p><h2>Lascia fare<br /><em>allo chef.</em></h2></div>
+      <div class="tickets">
+        <article class="ticket reveal" data-tier="Otto portate"><div class="stub"><b>8</b><small>portate</small></div><div class="body"><h3>Otto portate</h3><p>Il percorso breve: sei nigiri, una tartare, un dolce. Perfetto a pranzo.</p><strong>€ 45</strong><button class="btn btn-ink press" type="button" data-open-booking>Scegli <span class="jp">八</span></button></div></article>
+        <article class="ticket reveal featured" data-tier="Dodici portate"><div class="stub"><b>12</b><small>portate</small></div><div class="body"><h3>Dodici portate</h3><p>Il banco intero: crudo, caldo, un brodo, due tartare e il nigiri al tartufo.</p><strong>€ 68</strong><button class="btn btn-red press" type="button" data-open-booking>Scegli <span class="jp">十二</span></button></div></article>
+        <article class="ticket reveal" data-tier="Sedici portate"><div class="stub"><b>16</b><small>portate</small></div><div class="body"><h3>Sedici portate</h3><p>Con abbinamento di sake e tè: la sera lunga, solo venerdì e sabato.</p><strong>€ 95</strong><button class="btn btn-ink press" type="button" data-open-booking>Scegli <span class="jp">十六</span></button></div></article>
+      </div>
+    </section>
+
+    <!-- Story: one big kanji that is a woodblock print, photo pair -->
+    <section class="story" id="storia">
+      <div class="story-print reveal" aria-hidden="true"><span class="big-kanji">職人</span><small>SHOKUNIN · L’ARTIGIANO</small></div>
+      <div class="story-copy reveal">
+        <p class="eyebrow">四 · Storia</p>
+        <h2>Un banco di otto posti,<br /><em>un coltello solo.</em></h2>
+        <p>Il riso viene cotto a metà servizio, mai prima. Il pesce arriva la mattina da Milano e da Mazara e viene tagliato davanti a chi lo mangia. Non c’è musica: c’è il rumore del coltello sul tagliere e il tè che si versa.</p>
+        <p>Sedersi al banco vuol dire accettare il ritmo dello chef. In cambio, ogni pezzo arriva alla temperatura giusta e nell’ordine giusto.</p>
+        <div class="story-photos"><img src="../assets/hd-sashimi-vetro-s.jpg" alt="Sashimi servito sul vetro" width="900" height="601" loading="lazy" /><img src="../assets/hd-tartare-ardesia-s.jpg" alt="Tartare sull’ardesia" width="900" height="601" loading="lazy" /></div>
+      </div>
+    </section>
+
+    <section class="dove" id="dove">
+      <div class="map" aria-hidden="true"><svg viewBox="0 0 400 260"><path class="road" d="M0 130 H400"/><path class="road" d="M200 0 V260"/><path class="road thin" d="M60 0 C90 80 90 180 60 260"/><path class="road thin" d="M0 60 C120 80 280 40 400 70"/><circle class="pin" cx="200" cy="130" r="9"/><text x="214" y="122">Piazzale Marconi 12</text></svg></div>
+      <div class="dove-copy reveal">
+        <p class="eyebrow">五 · Dove</p>
+        <h2>Vimercate,<br /><em>Piazzale Marconi 12.</em></h2>
+        <dl><dt>Pranzo</dt><dd>Mar–Dom · 12:00–14:30</dd><dt>Cena</dt><dd>Mar–Dom · 19:00–22:30</dd><dt>Telefono</dt><dd><a href="tel:+393924166908">+39 392 416 6908</a></dd><dt>WhatsApp</dt><dd><a href="https://wa.me/393924166908" target="_blank" rel="noopener">Scrivici</a></dd></dl>
+        <button class="btn btn-red press" type="button" data-open-booking>Prenota il banco</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot-logo"><span class="hanko">鮨</span> Mumi Sushi · Vimercate</div>
+    <div class="foot-links"><a href="#banco">Il banco</a><a href="#omakase">Omakase</a><a href="#dove">Dove</a><a href="/templates/sushi" target="_top">Altri design</a></div>
+    <p>Ukiyo-e · «immagini del mondo fluttuante». Le foto dei piatti sono quelle vere del menù.</p>
+  </footer>
+
+  <dialog class="booking" data-booking aria-labelledby="booking-title">
+    <button class="dialog-close press" type="button" aria-label="Chiudi" data-close-booking>×</button>
+    <form data-booking-form>
+      <p class="eyebrow">予約 · Prenotazione</p>
+      <h2 id="booking-title">Un posto al banco</h2>
+      <label>Percorso<select name="tier" data-tier-select><option>Otto portate</option><option selected>Dodici portate</option><option>Sedici portate</option><option>Alla carta</option></select></label>
+      <div class="two"><label>Giorno<input type="date" name="day" required /></label><label>Ora<select name="time"><option>12:30</option><option>13:30</option><option selected>19:30</option><option>21:00</option></select></label></div>
+      <div class="two"><label>Persone<input type="number" name="people" min="1" max="8" value="2" required /></label><label>Telefono<input type="tel" name="phone" placeholder="+39" required /></label></div>
+      <label>Nome<input type="text" name="name" required /></label>
+      <button class="btn btn-red press" type="submit">Conferma la richiesta</button>
+      <small>Il banco ha otto posti: confermiamo via WhatsApp entro un’ora.</small>
+    </form>
+  </dialog>
+  <div class="toast" role="status" aria-live="polite" data-toast><span class="hanko">済</span><div><strong>Richiesta ricevuta</strong><p>Ti scriviamo su WhatsApp per confermare.</p></div></div>
+</body>
+</html>
