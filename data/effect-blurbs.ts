@@ -122,6 +122,14 @@ const blurbs: Record<string, string> = {
   // ── dashboard ──
   "dashboard-floating-panel":
     "A restaurant back office with a sidebar that does not touch the screen edges: a floating island with rounded corners and one soft shadow. The plainest of the six sidebar systems, and the one that makes an admin panel stop looking like a form. All six run on real content — a live menu, an order board, thirty days of figures — so the comparison is between sidebars, not between mock-ups. Suited to any SaaS or admin product.",
+  "dashboard-command-center":
+    "A restaurant back office for the evening shift, on a dark ground with a single moving light behind sheets of glass. Navigation is an icon rail and a command bar you summon with a keystroke; the month is a heatmap you can touch, channels a ring that reacts to the pointer, the order board a kanban whose buttons lean toward the cursor. The look of trading desks and control rooms, applied to a working admin panel with live data, for products that are used at night and at speed.",
+  "dashboard-editorial":
+    "An admin panel typeset like a newspaper: warm paper, a serif for every number that matters, hairlines instead of cards, and no sidebar at all. The day’s takings lead the page as a headline, the latest orders read as a column, and hovering one tints the whole section in its colour. A style for owners who read reports rather than watch gauges, and for any dashboard that wants to feel considered instead of busy. Built on the same live restaurant data as the rest.",
+  "dashboard-bento":
+    "A back office made of tiles in three sizes, each a small instrument you can operate: rings for today’s targets, a service score gauge, a revenue goal line you drag, the best-selling dishes as bubbles that make room for each other, a liquid toggle for auto-confirmation, a stepper for the quoted waiting time. Every tile dips gently under the pointer. Colourful without being loud, the tone of modern productivity and finance apps, on real restaurant data.",
+  "dashboard-ambient-ai":
+    "The interface as a sky: one colour gradient that belongs to the section you are in and drifts toward whatever you point at, with white glass cards floating over it. At the bottom sits a prompt bar with a breathing orb, and the assistant behind it never acts on its own: ask it to pause orders or mark a dish sold out and it hands you a card to confirm. The design language of AI-first products, applied to a restaurant back office that really responds.",
   "dashboard-dark-rail":
     "The sidebar is the only dark thing on the page, so it carries all the weight: inactive items in quiet grey, the current one lit with an accent bar. The most common pattern in SaaS admin tools, here applied to a working restaurant back office with live data. A good default when the content area is dense and the navigation needs to stay out of the way.",
   "dashboard-glass-rail":

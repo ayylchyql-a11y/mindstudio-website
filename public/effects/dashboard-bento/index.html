@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M Desk · Bento</title>
+<meta name="description" content="Back office di un ristorante, design 09: una griglia di mattonelle di misure diverse, ognuna un piccolo strumento che si tocca.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="goo"><feGaussianBlur stdDeviation="6" result="s"/><feColorMatrix in="s" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"/></filter></svg>
+<header class="top">
+  <a class="brand" href="#panoramica"><span class="logo">M</span>M Desk <small>Mumi Sushi · Vimercate</small></a>
+  <nav class="tabs" id="tabs" aria-label="Navigazione"></nav>
+  <details class="more" id="more"><summary>Altri moduli</summary><div class="menu" id="moreMenu"></div></details>
+  <div class="status"><span class="pill ok"><i></i>Normale</span><span class="pill" id="pauseChip">Pausa ordini</span><span class="avatar" title="Admin">A</span></div>
+  <a class="back" href="/lab/dashboard" target="_top">← Altri design</a>
+</header>
+<main class="view" id="view"></main>
+<p class="note">Dati dimostrativi: piatti, prezzi e foto sono quelli veri del menù; incassi e quantità sono ridimensionati.</p>
+<script src="../_mdesk/data.js"></script>
+<script src="../_mdesk/base.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

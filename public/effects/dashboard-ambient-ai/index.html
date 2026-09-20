@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M Desk · Cielo</title>
+<meta name="description" content="Back office di un ristorante, design 10: l'interfaccia è un cielo che cambia colore con il modulo; l'assistente propone, tu confermi.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><b>M Desk</b><span>Mumi Sushi · Vimercate</span></div>
+  <nav class="mods" id="mods" aria-label="Navigazione"></nav>
+  <div class="status"><span class="st ok"><i></i>Normale</span><span class="st" id="pauseChip"><i></i>Pausa ordini</span><a class="back" href="/lab/dashboard" target="_top">Altri design →</a></div>
+</header>
+<main class="wrap">
+  <div class="ai" id="ai"></div>
+  <div class="view" id="view"></div>
+</main>
+<footer class="dock">
+  <div class="sugg" id="sugg"></div>
+  <form class="prompt" id="prompt" autocomplete="off">
+    <div class="orb" id="orb" aria-hidden="true"><i></i><i></i><i></i></div>
+    <input id="q" placeholder="Chiedi qualcosa al locale… «metti in pausa 20 minuti», «segna esaurito l’edamame», «come va oggi?»" spellcheck="false">
+    <button class="send" id="send" type="submit" aria-label="Invia">↑</button>
+  </form>
+</footer>
+<div class="toast" id="toast"></div>
+<script src="../_mdesk/data.js"></script>
+<script src="../_mdesk/base.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -11,8 +11,11 @@ const STYLES = { ".": "floating-panel", "风格B-深色重底": "dark-rail", "�
 
 // shared assets
 const shared = join(DST, "_mdesk");
+// base.js is NOT from the desktop: it belongs to the whole-page designs (command-center …) and must survive a re-import
+const baseJs = join(shared, "base.js"), keepBase = existsSync(baseJs) ? readFileSync(baseJs) : null;
 rmSync(shared, { recursive: true, force: true }); mkdirSync(shared, { recursive: true });
 for (const f of readdirSync(join(SRC, "assets"))) cpSync(join(SRC, "assets", f), join(shared, f));
+if (keepBase) writeFileSync(baseJs, keepBase);
 
 for (const [dir, style] of Object.entries(STYLES)) {
   const from = join(SRC, dir), to = join(DST, `dashboard-${style}`);

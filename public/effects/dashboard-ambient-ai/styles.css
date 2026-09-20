@@ -1,0 +1,161 @@
+/* Design 10 · Cielo.
+   The whole ambience is one vertical gradient whose hue is a single number:
+   deep and saturated at the top, paper-white by 84%. The hue belongs to the
+   module (Panoramica 228 · Ordini 22 · Menu 152) and drifts toward whatever
+   you hover. Cards are white at different opacities, nothing else is coloured.
+   The prompt bar at the bottom is the primary input: the assistant never acts,
+   it proposes a card and you confirm it. Library parts: ambient-hue-follows-focus ·
+   glass cards from mind-space-ai-os · liquid-orb (CSS stand-in) · inline-confirm. */
+@property --h { syntax: "<number>"; inherits: true; initial-value: 228; }
+:root { --ink: #17151f; --muted: #17151f99; --white: #fff; --mono: ui-monospace, "SF Mono", Menlo, monospace; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+@media (min-width: 481px) and (max-width: 720px) { html { zoom: .78; } }
+html { min-height: 100%; }
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ink); font-size: 13.5px; line-height: 1.45; -webkit-font-smoothing: antialiased;
+  --h: 228; transition: --h 900ms cubic-bezier(.22,.61,.36,1);
+  background: linear-gradient(180deg, hsl(var(--h) 55% 16%) 0%, hsl(var(--h) 62% 44%) 30%, hsl(var(--h) 50% 80%) 62%, #f5f4f9 84%) fixed;
+  min-height: 100vh; padding-bottom: 150px;
+}
+button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; }
+a { color: inherit; text-decoration: none; }
+img { display: block; }
+
+/* ── top ── */
+.top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 18px 28px 6px; color: #fff; }
+.brand b { font-size: 15px; font-weight: 700; letter-spacing: -.01em; } .brand span { margin-left: 8px; font-size: 12px; color: #ffffffb0; }
+.mods { display: flex; gap: 6px; flex-wrap: wrap; margin-left: 10px; }
+.mods a { padding: 6px 12px; border-radius: 99px; font-size: 12.5px; font-weight: 500; color: #fff; background: #ffffff22; border: 1px solid #ffffff33; transition: background-color 300ms, color 300ms; }
+.mods a:hover { background: #ffffff40; }
+.mods a.on { background: #fff; color: var(--ink); border-color: #fff; }
+.mods a.dim { display: none; }
+.status { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.st { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 99px; background: #ffffff22; border: 1px solid #ffffff33; font-size: 12px; font-weight: 500; cursor: default; }
+.st i { width: 6px; height: 6px; border-radius: 50%; background: #5cf0a6; }
+.st#pauseChip i { background: #ffd166; } .st.live { background: #ffd16655; border-color: #ffd166; }
+.back { font-size: 12px; color: #ffffffb0; margin-left: 6px; }
+
+/* ── content ── */
+.wrap { max-width: 1120px; margin: 0 auto; padding: 14px 28px 0; }
+.view { display: grid; gap: 14px; } .view > * { min-width: 0; }
+.card { position: relative; padding: 16px 18px; border-radius: 22px; background: #ffffff59; border: 1px solid #ffffff80; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); color: var(--ink); transition: background-color 500ms, transform 500ms cubic-bezier(.22,.61,.36,1), box-shadow 500ms; }
+.card:hover { background: #ffffffe0; transform: translateY(-4px); box-shadow: 0 24px 40px -24px #1a123a80; }
+.card h3 { font-size: 10.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+.card h3 .r { margin-left: auto; font-weight: 500; letter-spacing: 0; text-transform: none; font-size: 11.5px; }
+.hero { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: 14px; }
+.hero .card b.big { display: block; margin-top: 10px; font-size: 30px; font-weight: 700; letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+.hero .card small { display: block; margin-top: 6px; font-size: 11.5px; color: var(--muted); }
+.hero .card.first { background: #ffffff; } .hero .card.first b.big { font-size: 44px; }
+.hero .card.first p { margin-top: 10px; font-size: 13px; line-height: 1.5; max-width: 300px; }
+.r2 { display: grid; grid-template-columns: 1.5fr 1fr; gap: 14px; }
+.r3 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 900px) { .hero { grid-template-columns: 1fr 1fr; } .r2, .r3 { grid-template-columns: 1fr; } }
+.line { width: 100%; height: 160px; margin-top: 10px; overflow: visible; display: block; }
+.line .ln { fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.line .ar { fill: url(#sky); }
+.line .dot { fill: var(--ink); }
+.axis { display: flex; justify-content: space-between; margin-top: 4px; font-family: var(--mono); font-size: 10px; color: var(--muted); }
+/* channel rows: hover writes the channel's hue into --h on <body> */
+.chs { display: grid; gap: 8px; margin-top: 12px; }
+.ch { display: grid; grid-template-columns: 90px 1fr 40px; gap: 10px; align-items: center; font-size: 12.5px; cursor: pointer; padding: 4px 6px; border-radius: 10px; transition: background-color 200ms; }
+.ch:hover { background: #ffffff80; }
+.ch .bar { height: 8px; border-radius: 4px; background: #17151f14; overflow: hidden; } .ch .bar i { display: block; height: 100%; width: var(--w); border-radius: 4px; background: hsl(var(--c) 62% 44%); transform-origin: left; animation: grow 700ms cubic-bezier(.22,.61,.36,1) both; animation-delay: var(--d); }
+.ch b { text-align: right; font-variant-numeric: tabular-nums; }
+@keyframes grow { from { transform: scaleX(0); } }
+/* white inset widgets: the "third-party" convention from the mobile design — anything foreign sits in a solid white box */
+.inset { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 12px; }
+.w { background: #fff; border-radius: 16px; padding: 10px; box-shadow: 0 1px 2px #0000000a, 0 10px 20px -16px #0004; }
+.w img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; }
+.w b { display: block; margin-top: 8px; font-size: 12px; line-height: 1.25; } .w small { display: block; font-size: 11px; color: var(--muted); margin-top: 2px; }
+.w .n { margin-top: 6px; font-size: 16px; font-weight: 700; letter-spacing: -.02em; }
+.feed { list-style: none; margin-top: 10px; display: grid; gap: 6px; }
+.feed li { display: grid; grid-template-columns: 40px 76px 1fr auto; gap: 8px; align-items: center; font-size: 12.5px; padding: 6px 8px; border-radius: 10px; cursor: default; transition: background-color 200ms; }
+.feed li:hover { background: #ffffff80; }
+.feed .t { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.feed .tag { font-size: 10.5px; font-weight: 600; padding: 2px 7px; border-radius: 99px; background: hsl(var(--c) 62% 44% / .16); color: hsl(var(--c) 62% 30%); text-align: center; }
+.feed .e { font-variant-numeric: tabular-nums; font-weight: 600; }
+.hours { display: flex; align-items: flex-end; gap: 4px; height: 90px; margin-top: 14px; border-bottom: 1px solid #17151f22; }
+.hours i { flex: 1; height: var(--h); background: #17151f2a; border-radius: 3px 3px 0 0; position: relative; }
+.hours i.peak { background: var(--ink); }
+.hours i::after { content: attr(data-h); position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 4px; font-family: var(--mono); font-size: 9px; color: var(--muted); font-style: normal; }
+.hours-pad { height: 16px; }
+.note { font-size: 11.5px; color: #17151f80; }
+
+/* ── the assistant: proposal cards. Nothing is applied until you press Conferma. ── */
+.ai { display: grid; gap: 10px; margin-bottom: 14px; }
+.ai:empty { display: none; }
+.prop { position: relative; padding: 14px 16px 14px 18px; border-radius: 18px; background: #ffffffe6; border: 1px solid #fff; box-shadow: 0 20px 40px -24px #1a123a80; display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; align-items: center; animation: rise 420ms cubic-bezier(.22,.61,.36,1) both; }
+.prop::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 3px; border-radius: 2px; background: hsl(var(--h) 62% 44%); }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+.prop .k { font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); grid-column: 1 / 3; }
+.prop .k b { color: hsl(var(--h) 62% 36%); font-weight: 600; letter-spacing: .14em; }
+.prop .body { font-size: 13.5px; line-height: 1.5; }
+.prop .body b { font-weight: 600; }
+.prop .msg { margin-top: 6px; padding: 10px 12px; border-radius: 12px; background: #17151f0a; font-size: 13px; white-space: pre-wrap; }
+.prop .acts { display: flex; gap: 6px; }
+.prop .acts button { height: 32px; padding: 0 13px; border-radius: 99px; font-size: 12.5px; font-weight: 600; background: #17151f10; transition: background-color 160ms, transform 160ms; }
+.prop .acts button:active { transform: scale(.96); }
+.prop .acts button.go { background: var(--ink); color: #fff; }
+.prop.done { opacity: .7; } .prop.done .acts { display: none; }
+.prop .done-note { font-size: 12px; color: #2f7a4d; font-weight: 600; }
+.prop .burn { position: absolute; left: 18px; right: 18px; bottom: 0; height: 2px; background: hsl(var(--h) 62% 44%); transform-origin: left; }
+.prop.done .burn { animation: burn 3.2s linear forwards; }
+@keyframes burn { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+
+/* ── dock: suggestions + the prompt bar + the orb ── */
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; padding: 10px 28px 18px; display: grid; justify-items: center; gap: 8px; pointer-events: none; background: linear-gradient(transparent, #f5f4f9 70%); }
+.sugg { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; pointer-events: auto; }
+.sugg button { padding: 6px 11px; border-radius: 99px; background: #ffffffc0; border: 1px solid #17151f14; font-size: 12px; color: var(--ink); box-shadow: 0 2px 6px -4px #0004; transition: background-color 160ms, transform 160ms; }
+.sugg button:hover { background: #fff; transform: translateY(-1px); }
+.prompt { pointer-events: auto; width: min(760px, 100%); height: 56px; display: grid; grid-template-columns: 44px 1fr 40px; align-items: center; gap: 8px; padding: 6px 8px 6px 8px; border-radius: 28px; background: #fff; box-shadow: 0 1px 2px #0000000a, 0 24px 50px -24px #1a123a99, 0 0 0 1px #17151f0f; }
+.prompt input { height: 100%; border: 0; outline: 0; background: transparent; font: inherit; font-size: 14px; color: var(--ink); min-width: 0; }
+.prompt input::placeholder { color: #17151f66; }
+.send { width: 40px; height: 40px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 16px; display: grid; place-items: center; transition: transform 200ms cubic-bezier(.22,.61,.36,1), opacity 200ms; opacity: .4; }
+.prompt.has .send { opacity: 1; } .send:active { transform: scale(.92); }
+/* the orb: three layers — a sky-lit sphere, a rotating conic highlight, a glass rim — breathing on 4s;
+   thinking = faster spin, brighter core. A CSS stand-in for the WebGPU liquid-orb in the library. */
+.orb { position: relative; width: 44px; height: 44px; border-radius: 50%; overflow: hidden; background: radial-gradient(circle at 35% 30%, hsl(var(--h) 80% 85%), hsl(var(--h) 70% 55%) 45%, hsl(var(--h) 60% 22%) 100%); box-shadow: inset 0 0 0 1px #ffffff80, inset -6px -8px 14px #0000004d, 0 8px 18px -8px hsl(var(--h) 70% 40%); animation: breathe 4s ease-in-out infinite; }
+.orb i { position: absolute; inset: -30%; border-radius: 50%; }
+.orb i:nth-child(1) { background: conic-gradient(from 0deg, transparent 0 40%, #ffffffb0 50%, transparent 60% 100%); animation: spin 6s linear infinite; mix-blend-mode: screen; }
+.orb i:nth-child(2) { inset: 30% 20% 10% 35%; background: radial-gradient(circle, #ffffffcc, transparent 70%); filter: blur(4px); animation: wobble 3.4s ease-in-out infinite alternate; }
+.orb i:nth-child(3) { inset: 0; border-radius: 50%; box-shadow: inset 0 0 14px hsl(var(--h) 90% 80% / .8); }
+.orb.think { animation-duration: 1.2s; } .orb.think i:nth-child(1) { animation-duration: 1.1s; } .orb.think i:nth-child(2) { filter: blur(2px) brightness(1.4); }
+@keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes wobble { to { transform: translate(-30%, 25%) scale(1.3); } }
+.toast { position: fixed; left: 50%; bottom: 96px; transform: translate(-50%, 10px); z-index: 30; padding: 8px 14px; border-radius: 99px; background: var(--ink); color: #fff; font-size: 12.5px; opacity: 0; pointer-events: none; transition: opacity 200ms, transform 300ms cubic-bezier(.22,.61,.36,1); }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ── orders ── */
+.cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-items: start; }
+@media (max-width: 900px) { .cols { grid-template-columns: 1fr; } }
+.col h3 { color: #ffffffd0; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; padding: 0 6px 8px; display: flex; } .col h3 b { margin-left: auto; font-family: var(--mono); font-weight: 500; }
+.col.low h3 { color: var(--muted); }
+.col .card + .card { margin-top: 10px; }
+.order { cursor: default; }
+.order .head { display: flex; align-items: center; gap: 8px; font-size: 12.5px; } .order .head b { font-size: 14px; } .order .head .t { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.order .who { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.order ul { list-style: none; margin: 8px 0; font-size: 12.5px; display: grid; gap: 2px; } .order li span { display: inline-block; width: 22px; font-family: var(--mono); color: var(--muted); }
+.order .foot { display: flex; align-items: center; gap: 8px; } .order .foot b { margin-right: auto; font-size: 14px; font-variant-numeric: tabular-nums; }
+.btn { height: 30px; padding: 0 12px; border-radius: 99px; background: var(--ink); color: #fff; font-size: 12px; font-weight: 600; transition: transform 160ms; } .btn:active { transform: scale(.96); }
+.late { color: #b45a12; font-weight: 600; }
+
+/* ── menu ── */
+.cats { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+.cats span { padding: 6px 12px; border-radius: 99px; background: #ffffff33; border: 1px solid #ffffff55; color: #fff; font-size: 12px; font-weight: 500; cursor: pointer; }
+.cats span.on { background: #fff; color: var(--ink); }
+.mgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.prod { padding: 10px; }
+.prod img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 14px; transition: filter 300ms, opacity 300ms; }
+.prod.out img { filter: grayscale(1); opacity: .45; }
+.prod h4 { font-size: 13px; font-weight: 600; margin: 8px 0 2px; line-height: 1.3; min-height: 2.6em; }
+.prod small { font-size: 11px; color: var(--muted); }
+.prod .pf { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
+.prod .pf b { font-variant-numeric: tabular-nums; }
+.prod .pf button { font-size: 11px; padding: 4px 9px; border-radius: 99px; background: #17151f10; }
+.prod.out .pf button { background: #d64545; color: #fff; }
+.stub { min-height: 200px; display: grid; place-items: center; text-align: center; color: var(--muted); }
+.stub b { display: block; color: var(--ink); font-size: 16px; margin-bottom: 6px; }
+
+@media (max-width: 480px) { .top, .wrap, .dock { padding-left: 14px; padding-right: 14px; } .hero { grid-template-columns: 1fr; } .inset { grid-template-columns: repeat(2, 1fr); } .status { margin-left: 0; } .mods a.dim { display: none; } .prompt input { font-size: 13px; } }
+@media (prefers-reduced-motion: reduce) { body, .card, .mods a { transition: none; } .orb, .orb i, .ch .bar i, .prop { animation: none; } }

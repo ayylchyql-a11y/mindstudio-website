@@ -31,7 +31,9 @@ const PORT = 8765;
 const WIDTH = 960;
 const SECONDS = 8;
 /** 个别样板的 plays 标的是「怎么看」不是「怎么驱动」：bin-eats-label 标 hover，真要点一下才吃标签。 */
-const DRIVE_OVERRIDE = { "bin-eats-label": "click", "command-bar": "type" };
+const DRIVE_OVERRIDE = { "bin-eats-label": "click", "command-bar": "type", "dashboard-ambient-ai": "ask" };
+/** 「ask」类：往提示词栏里打两句话、各回车一次（天空 AI 那条是意大利语后台，打英文会穿帮）。 */
+const ASK_TEXT = { "dashboard-ambient-ai": ["Come va oggi?", "Metti in pausa gli ordini 20 minuti"] };
 /** 一直在自己转的那几条：正放接倒放拼成 16 秒，循环点就没有跳一下的接缝。
  *  有指针/交互的不能这么干 —— 倒放的鼠标动作看着像坏了。 */
 const PALINDROME = new Set(["cyclone-369", "aurora-drift", "holo-card", "shimmer-headline"]);
@@ -136,7 +138,10 @@ async function smoothScroll(page, ms, toFrac) {
 async function drive(page, e) {
   const W = WIDTH, H = e.height;
   // 后台样板要点的是侧边栏（nav/aside），别的样板是舞台区（.stage 等）
-  const scope = e.category === "dashboard" ? "nav, aside, .sidebar, .rail" : ".stage, .win, .room, main, body";
+  // 样板自己标了 [data-showcase] 的（整页后台设计：热力图/目标线那块）优先；老的侧栏后台点侧栏；其它点舞台区
+  const showcase = await page.$("[data-showcase]");
+  if (showcase) { await showcase.scrollIntoViewIfNeeded(); await sleep(400); }   // 编辑风的订单列表在首屏之下：不滚过去，8 秒里鼠标扫的全是标题
+  const scope = showcase ? "[data-showcase]" : e.category === "dashboard" ? "nav, aside, .sidebar, .rail" : ".stage, .win, .room, main, body";
   const t = (await findTarget(page, W, H, scope)) || { x: W / 2, y: H / 2, w: 0, h: 0 };
   const cx = t.x, cy = t.y;
   switch (DRIVE_OVERRIDE[e.slug] ?? e.plays) {
@@ -156,6 +161,20 @@ async function drive(page, e) {
       await sleep(500);
       await smoothScroll(page, 1600, 0.35);
       await sleep(500);
+      return;
+    }
+    case "ask": {
+      const lines = ASK_TEXT[e.slug] || ["Come va oggi?"];
+      await page.mouse.move(W / 2, H / 2);
+      await sleep(900);
+      for (const line of lines) {
+        const input = await page.$("#q, input[type=text], input:not([type])");
+        if (input) await input.click();
+        await page.keyboard.type(line, { delay: 42 });
+        await sleep(250);
+        await page.keyboard.press("Enter");
+        await sleep(1700);
+      }
       return;
     }
     case "type": {

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M Desk · Sala di comando</title>
+<meta name="description" content="Back office di un ristorante, design 07: sfondo scuro, una sola luce ambientale, pannelli di vetro, barra comandi ⌘K.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="sky" aria-hidden="true"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="goo"><feGaussianBlur stdDeviation="3" result="b"/><feColorMatrix in="b" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9"/></filter></svg>
+<div class="shell">
+  <aside class="rail" id="rail" aria-label="Navigazione">
+    <a class="brand" href="#panoramica" title="M Desk">M</a>
+    <nav></nav>
+    <div class="who" title="Admin · turno serale">A</div>
+    <a class="back" href="/lab/dashboard" target="_top" title="Altri design">←</a>
+  </aside>
+  <main class="main">
+    <header class="top">
+      <button class="burger" id="burger" type="button" aria-label="Apri il menu">☰</button>
+      <div class="cmd" id="cmd">
+        <div class="liq"><div class="bar"></div><div class="btn"></div></div>
+        <div class="ui">
+          <span class="k">⌘K</span>
+          <input id="q" placeholder="Cerca un modulo o un piatto…" autocomplete="off" spellcheck="false">
+          <button class="send" id="send" type="button" aria-label="Vai">↵</button>
+        </div>
+        <div class="res" id="res" hidden></div>
+      </div>
+      <span class="chip ok"><i></i>Normale</span>
+      <span class="chip on">⚡ Auto-conferma</span>
+      <span class="chip warn" id="pause"><i></i>Pausa ordini</span>
+      <span class="clock" id="clock">--:--</span>
+    </header>
+    <h1 id="title">Panoramica</h1>
+    <div class="view" id="view"></div>
+  </main>
+</div>
+<div class="scrim" id="scrim"></div>
+<script src="../_mdesk/data.js"></script>
+<script src="../_mdesk/base.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
