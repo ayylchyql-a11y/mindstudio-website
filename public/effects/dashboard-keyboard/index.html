@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M Desk · Tastiera</title>
+<meta name="description" content="Back office di un ristorante, design 11: denso, neutro, da tastiera — J/K per muoversi, Invio per aprire, ⌘K per tutto il resto.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="goo"><feGaussianBlur stdDeviation="6" result="b"/><feColorMatrix in="b" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8"/></filter></svg>
+<div class="shell">
+  <aside class="side" id="side">
+    <div class="ws"><span class="dot">M</span><b>Mumi Sushi</b><small>Vimercate</small></div>
+    <button class="find" id="findBtn" type="button"><span>Cerca o esegui…</span><kbd>⌘K</kbd></button>
+    <nav id="nav"></nav>
+    <div class="side-foot"><button type="button" id="helpBtn">Scorciatoie <kbd>?</kbd></button><a href="/lab/dashboard" target="_top">← Altri design</a></div>
+  </aside>
+  <main class="main">
+    <header class="bar"><span class="crumb" id="crumb"></span><span class="sp"></span><span class="chip"><i></i>Normale</span><span class="chip on">Auto-conferma</span><span class="chip" id="pause">Pausa ordini</span><span class="who">A</span></header>
+    <div class="view" id="view"></div>
+  </main>
+  <aside class="peek" id="peek" hidden></aside>
+</div>
+<div class="pal" id="pal" hidden><div class="pal-box"><input id="palq" placeholder="Digita un comando o un piatto…" autocomplete="off"><div class="pal-list" id="palList"></div><div class="pal-foot"><span><kbd>↑↓</kbd> scegli</span><span><kbd>↵</kbd> esegui</span><span><kbd>esc</kbd> chiudi</span></div></div></div>
+<div class="help" id="help" hidden><div class="help-box"><h3>Scorciatoie</h3><dl><dt><kbd>J</kbd> <kbd>K</kbd></dt><dd>riga giù / su</dd><dt><kbd>↵</kbd></dt><dd>apri il dettaglio</dd><dt><kbd>C</kbd></dt><dd>conferma / avanza l’ordine</dd><dt><kbd>E</kbd></dt><dd>esaurito (menu)</dd><dt><kbd>G</kbd> poi <kbd>P</kbd> <kbd>O</kbd> <kbd>M</kbd></dt><dd>vai a Panoramica / Ordini / Menu</dd><dt><kbd>⌘K</kbd></dt><dd>comandi</dd><dt><kbd>esc</kbd></dt><dd>chiudi</dd></dl><small>premi <kbd>?</kbd> o <kbd>esc</kbd> per chiudere</small></div></div>
+<div class="toast" id="toast"></div>
+<script src="../_mdesk/data.js"></script>
+<script src="../_mdesk/base.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

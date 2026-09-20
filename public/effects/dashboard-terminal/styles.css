@@ -1,0 +1,83 @@
+/* Design 12 · Terminale.
+   One colour, one typeface, one input. Phosphor green on near-black, every
+   chart drawn with block glyphs from the real numbers, a log that streams at
+   the bottom of the screen and a command line that actually runs the back
+   office (ordini, conferma, esaurito, pausa…). Scanlines and a soft glow do
+   the rest. Library parts: progress-ticks (waveform readout) · notify-me (bell button). */
+:root { --bg: #070b08; --ph: #3dff7a; --ph-dim: #1f8f45; --ph-faint: #0f3d20; --amber: #ffb000; --red: #ff5c5c; --mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+@media (min-width: 481px) and (max-width: 720px) { html { zoom: .78; } }
+html, body { height: 100%; }
+body { font-family: var(--mono); background: var(--bg); color: var(--ph); font-size: 13px; line-height: 1.5; -webkit-font-smoothing: antialiased; text-shadow: 0 0 6px #3dff7a55; }
+button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; text-shadow: inherit; }
+a { color: inherit; text-decoration: none; }
+b { font-weight: 700; }
+.crt { min-height: 100vh; display: grid; grid-template-rows: auto auto 1fr auto auto; padding: 10px 16px 12px; max-width: 1180px; margin: 0 auto; }
+/* scanlines + vignette over everything, pointer-events none; the flicker is a 2% opacity wobble on 0.15s */
+.scan { position: fixed; inset: 0; pointer-events: none; z-index: 10; background: repeating-linear-gradient(0deg, #00000000 0 2px, #00000033 2px 3px), radial-gradient(ellipse at center, transparent 60%, #000000aa 100%); mix-blend-mode: multiply; animation: flicker .15s infinite; }
+@keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: .98; } }
+
+.hd { display: flex; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--ph-faint); font-size: 12px; color: var(--ph-dim); white-space: nowrap; overflow: hidden; }
+.hd .sep { color: var(--ph-faint); } .hd .sp { flex: 1; } .hd b { color: var(--ph); font-weight: 400; } .hd b.ok { color: var(--ph); } .hd b.on { color: var(--amber); } .hd b.live { color: var(--red); }
+.tabs { display: flex; gap: 2px; flex-wrap: wrap; padding: 8px 0 6px; font-size: 12px; }
+.tabs a { padding: 2px 8px; color: var(--ph-dim); border: 1px solid transparent; }
+.tabs a::before { content: "["; } .tabs a::after { content: "]"; }
+.tabs a:hover { color: var(--ph); }
+.tabs a.on { color: var(--bg); background: var(--ph); text-shadow: none; }
+.tabs a kbd { font: inherit; color: var(--amber); margin-right: 4px; } .tabs a.on kbd { color: var(--bg); }
+
+/* ── panes ── */
+.screen { display: grid; gap: 12px; align-content: start; padding: 4px 0 8px; }
+.screen > * { min-width: 0; }
+.row2 { display: grid; grid-template-columns: 1.3fr 1fr; gap: 12px; } .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+@media (max-width: 900px) { .row2, .row3 { grid-template-columns: 1fr; } }
+.pane { position: relative; border: 1px solid var(--ph-faint); padding: 14px 12px 10px; }
+.pane > h3 { position: absolute; top: -8px; left: 8px; padding: 0 6px; background: var(--bg); font-size: 11px; font-weight: 400; color: var(--ph-dim); letter-spacing: .08em; text-transform: uppercase; }
+.pane > h3::before { content: "[ "; } .pane > h3::after { content: " ]"; }
+pre { font: inherit; white-space: pre; overflow: auto; }
+.dim { color: var(--ph-dim); } .amber { color: var(--amber); } .red { color: var(--red); } .inv { background: var(--ph); color: var(--bg); text-shadow: none; padding: 0 4px; }
+.big { font-size: 28px; line-height: 1.1; letter-spacing: -.02em; }
+.kv { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.kv .pane { padding-top: 16px; }
+.kv small { display: block; font-size: 11px; color: var(--ph-dim); margin-top: 2px; }
+.bar { display: inline-block; height: 12px; background: var(--ph); vertical-align: middle; box-shadow: 0 0 8px #3dff7a55; }
+.bar.amber { background: var(--amber); box-shadow: 0 0 8px #ffb00055; }
+.ln { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 2px 0; }
+.ln .bar-wrap { position: relative; height: 12px; background: var(--ph-faint); } .ln .bar-wrap i { position: absolute; left: 0; top: 0; bottom: 0; width: var(--w); background: var(--ph); box-shadow: 0 0 8px #3dff7a55; transform-origin: left; animation: grow 500ms steps(12) both; animation-delay: var(--d, 0ms); }
+.ln .bar-wrap i.amber { background: var(--amber); }
+@keyframes grow { from { transform: scaleX(0); } }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-weight: 400; color: var(--ph-dim); border-bottom: 1px solid var(--ph-faint); padding: 2px 6px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+td { padding: 3px 6px; border-bottom: 1px dotted var(--ph-faint); white-space: nowrap; vertical-align: top; } td.r, th.r { text-align: right; }
+tr.sel td { background: #3dff7a14; }
+tr.done td { color: var(--ph-dim); }
+td.items { white-space: normal; color: var(--ph-dim); }
+.tag { color: var(--amber); }
+/* progress ticks in phosphor: the lit bars carry a travelling wave up to the reading */
+.ticks { display: flex; align-items: flex-end; gap: 2px; height: 42px; margin-top: 6px; cursor: ew-resize; touch-action: none; } .ticks i { flex: 1; background: var(--ph-faint); height: 40%; } .ticks i.lit { background: var(--ph); box-shadow: 0 0 6px #3dff7a55; }
+/* notify-me: the button is the confirmation — press, the bell swings, the label grows into the answer */
+.bell-btn { display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 10px; border: 1px solid var(--ph-dim); color: var(--ph); }
+.bell-btn[data-on="true"] { background: var(--ph); color: var(--bg); text-shadow: none; border-color: var(--ph); }
+.bell { width: 14px; height: 14px; transform-origin: 50% 16%; }
+.bell-say { position: relative; height: 16px; width: var(--w, 90px); transition: width 460ms cubic-bezier(.24,1.34,.38,1); overflow: hidden; white-space: nowrap; }
+.bell-say span { position: absolute; left: 0; top: 0; line-height: 16px; opacity: 0; transition: opacity 160ms; } .bell-say span[data-show="true"] { opacity: 1; transition-delay: 120ms; }
+.menu-grid { columns: 3; column-gap: 20px; } .menu-grid .cat { break-inside: avoid; margin-bottom: 10px; } .menu-grid h4 { font-weight: 400; color: var(--amber); font-size: 12px; margin-bottom: 2px; }
+.menu-grid .it { display: grid; grid-template-columns: 44px 1fr auto; gap: 6px; font-size: 12px; cursor: pointer; padding: 1px 4px; } .menu-grid .it:hover { background: #3dff7a14; }
+.menu-grid .it.out { color: var(--ph-dim); text-decoration: line-through; } .menu-grid .it.out .p::after { content: " X"; color: var(--red); text-decoration: none; }
+@media (max-width: 900px) { .menu-grid { columns: 1; } .kv { grid-template-columns: 1fr 1fr; } }
+
+/* ── the log + the command line ── */
+.out { max-height: 190px; overflow: auto; border-top: 1px solid var(--ph-faint); padding: 6px 0 2px; font-size: 12.5px; scrollbar-width: thin; scrollbar-color: var(--ph-faint) transparent; }
+.out div { white-space: pre-wrap; word-break: break-word; }
+.out .cmdline { color: var(--ph-dim); } .out .cmdline b { color: var(--ph); font-weight: 400; }
+.out .err { color: var(--red); } .out .warn { color: var(--amber); }
+.out .log { color: var(--ph-dim); } .out .log b { color: var(--ph); font-weight: 400; } .out .log.new { animation: fadein 300ms steps(4) both; }
+@keyframes fadein { from { opacity: 0; } }
+.cli { display: flex; align-items: center; gap: 8px; padding-top: 6px; }
+.cli .ps { color: var(--amber); white-space: nowrap; }
+.cli input { flex: 1; background: transparent; border: 0; outline: 0; color: var(--ph); font: inherit; text-shadow: inherit; caret-color: transparent; min-width: 0; }
+.cli .cur { position: absolute; width: 8px; height: 15px; background: var(--ph); animation: blink 1s steps(2) infinite; pointer-events: none; box-shadow: 0 0 8px #3dff7a88; }
+@keyframes blink { 50% { opacity: 0; } }
+.cli .hint { font-size: 11px; color: var(--ph-faint); white-space: nowrap; }
+@media (max-width: 480px) { .crt { padding: 8px 10px; } .hd #flags { display: none; } .cli .hint { display: none; } }
+@media (prefers-reduced-motion: reduce) { .scan, .cli .cur, .ln .bar-wrap i, .out .log.new { animation: none; } .bell-say { transition: none; } }

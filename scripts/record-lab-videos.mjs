@@ -31,9 +31,11 @@ const PORT = 8765;
 const WIDTH = 960;
 const SECONDS = 8;
 /** 个别样板的 plays 标的是「怎么看」不是「怎么驱动」：bin-eats-label 标 hover，真要点一下才吃标签。 */
-const DRIVE_OVERRIDE = { "bin-eats-label": "click", "command-bar": "type", "dashboard-ambient-ai": "ask" };
+const DRIVE_OVERRIDE = { "bin-eats-label": "click", "command-bar": "type", "dashboard-ambient-ai": "ask", "dashboard-terminal": "ask", "dashboard-keyboard": "keys" };
 /** 「ask」类：往提示词栏里打两句话、各回车一次（天空 AI 那条是意大利语后台，打英文会穿帮）。 */
-const ASK_TEXT = { "dashboard-ambient-ai": ["Come va oggi?", "Metti in pausa gli ordini 20 minuti"] };
+const ASK_TEXT = { "dashboard-ambient-ai": ["Come va oggi?", "Metti in pausa gli ordini 20 minuti"], "dashboard-terminal": ["ordini attesa", "conferma tutti"] };
+/** 「keys」类：按键序列（字符串 = 按键，数字 = 等待 ms）。键盘优先那条：J/K 走行、Enter 开详情、C 推进。 */
+const KEY_SEQ = { "dashboard-keyboard": ["j", "j", 500, "Enter", 1500, "j", 400, "j", 400, "Enter", 1200, "Escape", 500, "c", 900] };
 /** 一直在自己转的那几条：正放接倒放拼成 16 秒，循环点就没有跳一下的接缝。
  *  有指针/交互的不能这么干 —— 倒放的鼠标动作看着像坏了。 */
 const PALINDROME = new Set(["cyclone-369", "aurora-drift", "holo-card", "shimmer-headline"]);
@@ -161,6 +163,12 @@ async function drive(page, e) {
       await sleep(500);
       await smoothScroll(page, 1600, 0.35);
       await sleep(500);
+      return;
+    }
+    case "keys": {
+      await page.mouse.move(W / 2, H / 2);
+      await sleep(800);
+      for (const k of KEY_SEQ[e.slug] || ["j", "Enter"]) { if (typeof k === "number") await sleep(k); else { await page.keyboard.press(k); await sleep(120); } }
       return;
     }
     case "ask": {

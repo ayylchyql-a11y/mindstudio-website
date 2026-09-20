@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M Desk · Terminale</title>
+<meta name="description" content="Back office di un ristorante, design 12: un terminale a fosfori verdi — grafici a blocchi, un log che scorre, una riga di comando che funziona davvero.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="crt">
+  <header class="hd"><span>M DESK <b>v2.4</b></span><span class="sep">│</span><span>mumi-vimercate</span><span class="sep">│</span><span id="mod">panoramica</span><span class="sp"></span><span id="flags"><b class="ok">● online</b> <b class="on">auto-conferma</b> <b id="pauseFlag">pausa: off</b></span><span class="sep">│</span><span id="clock">--:--:--</span></header>
+  <nav class="tabs" id="tabs"></nav>
+  <main class="screen" id="screen"></main>
+  <section class="out" id="out" aria-live="polite"></section>
+  <form class="cli" id="cli" autocomplete="off"><span class="ps">mumi@desk:~$</span><input id="cmd" spellcheck="false" autocapitalize="off"><span class="cur" id="cur"></span><span class="hint" id="hint">help · tab completa · ↑ storia</span></form>
+</div>
+<div class="scan" aria-hidden="true"></div>
+<script src="../_mdesk/data.js"></script>
+<script src="../_mdesk/base.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

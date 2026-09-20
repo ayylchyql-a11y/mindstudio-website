@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M Desk · Brutale</title>
+<meta name="description" content="Back office di un ristorante, design 13: bordi neri da 3px, ombre dure, colori piatti, adesivi storti — e controlli che si sentono sotto le dita.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#panoramica">M DESK</a>
+  <div class="ticker" aria-hidden="true"><div class="track" id="ticker"></div></div>
+  <span class="sticker y" id="autoChip">AUTO-CONFERMA ON</span>
+  <button class="sticker p" id="pauseChip" type="button">PAUSA ORDINI</button>
+  <a class="back" href="/lab/dashboard" target="_top">← ALTRI DESIGN</a>
+</header>
+<nav class="tabs" id="tabs"></nav>
+<main class="view" id="view"></main>
+<p class="note">DATI DIMOSTRATIVI: PIATTI, PREZZI E FOTO SONO VERI; INCASSI E QUANTITÀ RIDIMENSIONATI.</p>
+<div class="toast" id="toast"></div>
+<script src="../_mdesk/data.js"></script>
+<script src="../_mdesk/base.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
