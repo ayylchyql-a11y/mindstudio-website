@@ -1,0 +1,47 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stretch header</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f3f2ee; background-image: linear-gradient(#00000009 1px, transparent 1px), linear-gradient(90deg, #00000009 1px, transparent 1px); background-size: 28px 28px; color: #f5f5f7; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .card { width: 320px; border-radius: 28px; background: #0f0f11; padding: 16px 14px 14px; box-shadow: 0 30px 60px -30px #0008, 0 0 0 1px #00000014; position: relative; overflow: hidden; }
+  .eyebrow { display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; }
+  .eyebrow b { color: #f5f5f7; font-weight: 600; letter-spacing: .16em; } .eyebrow i { font-style: normal; color: var(--acc, #8e8e93); margin-right: 4px; }
+  .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; } .foot b { color: #f5f5f7; font-variant-numeric: tabular-nums; }
+  .hint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; white-space: nowrap; }
+  :root { --acc: #6ee7c8; }
+  .card { padding: 0; }
+  .scroll { height: 380px; overflow: auto; scrollbar-width: none; } .scroll::-webkit-scrollbar { display: none; }
+  /* the header is a fixed-height window; the image inside scales from its top-centre by the overpull */
+  .hdr { position: relative; height: 200px; overflow: hidden; touch-action: none; cursor: grab; }
+  .hdr img { width: 100%; height: 100%; object-fit: cover; display: block; -webkit-user-drag: none; user-select: none; pointer-events: none; transform-origin: 50% 0; transform: scale(var(--s, 1)); }
+  .hdr.settle img, .hdr.settle .title { transition: transform 380ms cubic-bezier(.22,1.1,.36,1), opacity 380ms; }
+  .title { position: absolute; left: 16px; bottom: 14px; opacity: var(--o, 1); } .title small { display: block; font-size: 8px; letter-spacing: .18em; text-transform: uppercase; color: #ffffffb0; margin-bottom: 4px; } .title b { font-size: 20px; font-weight: 700; letter-spacing: -.02em; text-shadow: 0 2px 10px #0008; }
+  .hdr::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 55%, #0f0f11 100%); pointer-events: none; }
+  .pull { position: absolute; left: 50%; top: 10px; transform: translate(-50%, -6px); padding: 2px 8px; border-radius: 99px; background: #f5f5f7; color: #0f0f11; font-size: 9px; font-weight: 700; opacity: 0; transition: opacity 150ms; z-index: 2; } .pull.show { opacity: 1; transform: translate(-50%, 0); }
+  .list { padding: 8px 14px 14px; display: grid; gap: 8px; }
+  .row { display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 12px; background: #1a1a1d; } .row img { width: 34px; height: 34px; border-radius: 8px; object-fit: cover; } .row i { display: block; height: 4px; border-radius: 2px; background: #2f2f33; width: var(--w); margin: 3px 0; } .row em { width: 6px; height: 6px; border-radius: 50%; background: var(--acc); }
+</style>
+<div class="card">
+  <div class="scroll" id="scroll">
+    <div class="hdr" id="hdr"><span class="pull" id="pull">+0</span><img src="_plates/f.jpg" alt="Concrete Hall"><div class="title"><small>Brutalist · 1967</small><b>Concrete Hall</b></div></div>
+    <div class="list" id="list"></div>
+  </div>
+</div>
+<div class="hint">Drag the header down · release</div>
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const sc = document.getElementById('scroll'), hdr = document.getElementById('hdr'), pull = document.getElementById('pull');
+  document.getElementById('list').innerHTML = Array.from({ length: 8 }, (_, i) => `<div class="row"><img src="_plates/${'abcdeghij'[i % 9]}.jpg" alt=""><span><i style="--w:${50 + (i * 37) % 40}%"></i><i style="--w:${30 + (i * 53) % 40}%"></i></span><em></em></div>`).join('');
+  /* the browser will not scroll above 0, so the overpull is read off the pointer: only while scrollTop is 0,
+     the distance dragged down is d; scale = 1 + d/600, the title fades over the first 150px, the badge shows +d */
+  let y0 = null, d = 0;
+  const set = (v) => { d = Math.max(0, v); const r = 700; const drawn = (r * d) / (r + d); hdr.style.setProperty('--s', 1 + drawn / 600); hdr.style.setProperty('--o', Math.max(0, 1 - drawn / 150)); pull.textContent = '+' + Math.round(drawn); pull.classList.toggle('show', drawn > 4); };
+  hdr.addEventListener('pointerdown', (e) => { if (sc.scrollTop > 0) return; y0 = e.clientY; hdr.classList.remove('settle'); hdr.setPointerCapture(e.pointerId); });
+  hdr.addEventListener('pointermove', (e) => { if (y0 === null) return; set(e.clientY - y0); });
+  const release = () => { if (y0 === null) return; y0 = null; hdr.classList.add('settle'); set(0); };
+  hdr.addEventListener('pointerup', release); hdr.addEventListener('pointercancel', release);
+  if (!reduce) setTimeout(() => { hdr.classList.remove('settle'); const t0 = performance.now(); const tick = (now) => { const t = Math.min(1, (now - t0) / 900); set(Math.sin(t * Math.PI) * 190); if (t < 1) requestAnimationFrame(tick); else { hdr.classList.add('settle'); set(0); } }; requestAnimationFrame(tick); }, 1100);
+</script>

@@ -1,0 +1,55 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arc reflow</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f3f2ee; background-image: linear-gradient(#00000009 1px, transparent 1px), linear-gradient(90deg, #00000009 1px, transparent 1px); background-size: 28px 28px; color: #f5f5f7; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .card { width: 320px; border-radius: 28px; background: #0f0f11; padding: 16px 14px 14px; box-shadow: 0 30px 60px -30px #0008, 0 0 0 1px #00000014; position: relative; overflow: hidden; }
+  .eyebrow { display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; }
+  .eyebrow b { color: #f5f5f7; font-weight: 600; letter-spacing: .16em; } .eyebrow i { font-style: normal; color: var(--acc, #8e8e93); margin-right: 4px; }
+  .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; } .foot b { color: #f5f5f7; font-variant-numeric: tabular-nums; }
+  .hint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; white-space: nowrap; }
+  :root { --acc: #c9e04a; }
+  .stage { position: relative; height: 330px; margin-top: 12px; }
+  .it { position: absolute; left: 0; top: 0; width: var(--w); height: var(--h); border-radius: 12px; background: #1a1a1d; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; will-change: transform; }
+  .it .ic { width: 26px; height: 26px; border-radius: 8px; background: #c9e04a22; color: var(--acc); display: grid; place-items: center; font-size: 13px; }
+  .it span { font-size: 10px; font-weight: 600; } .it i { display: block; height: 2px; width: 24px; border-radius: 1px; background: #2f2f33; margin-top: 4px; }
+  /* the arc: each item moves along its own quadratic path — start → end with the control point lifted 40px
+     above the chord — via offset-path, so the browser does the curve; the delay staggers neighbours */
+  .it.fly { offset-path: path(var(--path)); offset-rotate: 0deg; offset-distance: 0%; animation: fly 520ms cubic-bezier(.22,.9,.3,1) forwards; animation-delay: var(--d); }
+  @keyframes fly { to { offset-distance: 100%; } }
+  .cols { display: flex; gap: 14px; } .cols span { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; } .cols span::before { content: ""; width: 10px; height: 3px; border-radius: 2px; background: #3a3a40; transition: background 200ms; } .cols span.on { color: #f5f5f7; } .cols span.on::before { background: var(--acc); }
+</style>
+<div class="card">
+  <div class="eyebrow"><span><i>●</i><b>Tools</b></span><span id="cnt">2 cols</span></div>
+  <div class="stage" id="stage"></div>
+  <div class="foot"><div class="cols" id="cols"><span data-c="2" class="on">2 cols</span><span data-c="3">3 cols</span></div><span>Arc path</span></div>
+</div>
+<div class="hint">Switch the column count</div>
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ITEMS = [['⊞', 'Plans'], ['▦', 'Schedule'], ['≡', 'Notes'], ['▭', 'Files'], ['◷', 'Timeline'], ['✎', 'Sketch'], ['◫', 'Threads'], ['⚑', 'Flags'], ['⚡', 'Power']];
+  const stage = document.getElementById('stage'), W = 292;
+  const els = ITEMS.map(([g, n]) => { const d = document.createElement('div'); d.className = 'it'; d.innerHTML = `<span class="ic">${g}</span><div><span>${n}</span><i></i></div>`; stage.appendChild(d); return d; });
+  const rect = (cols, i) => { const g = 8, w = (W - g * (cols - 1)) / cols, h = cols === 2 ? 96 : 78; return [(i % cols) * (w + g), Math.floor(i / cols) * (h + g), w, h]; };
+  let cols = 2;
+  function layout(next, animate) {
+    const from = els.map((_, i) => rect(cols, i)); cols = next;
+    els.forEach((el, i) => {
+      const [x0, y0] = from[i], [x1, y1, w, h] = rect(cols, i);
+      el.style.setProperty('--w', w + 'px'); el.style.setProperty('--h', h + 'px');
+      if (!animate || reduce || (x0 === x1 && y0 === y1)) { el.classList.remove('fly'); el.style.transform = `translate(${x1}px, ${y1}px)`; return; }
+      // control point: the chord's midpoint lifted 40px toward the top, so every item arcs the same way
+      const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2 - 40;
+      el.style.transform = ''; el.style.setProperty('--path', `"M${x0} ${y0} Q${cx} ${cy} ${x1} ${y1}"`); el.style.setProperty('--d', (i * 40) + 'ms');
+      el.classList.remove('fly'); void el.offsetWidth; el.classList.add('fly');
+      el.addEventListener('animationend', () => { el.classList.remove('fly'); el.style.transform = `translate(${x1}px, ${y1}px)`; }, { once: true });
+    });
+    document.querySelectorAll('#cols span').forEach((s) => s.classList.toggle('on', +s.dataset.c === cols)); document.getElementById('cnt').textContent = cols + ' cols';
+  }
+  layout(2, false);
+  document.getElementById('cols').addEventListener('click', (e) => { const s = e.target.closest('span'); if (s && +s.dataset.c !== cols) layout(+s.dataset.c, true); });
+  if (!reduce) { setTimeout(() => layout(3, true), 1100); setTimeout(() => layout(2, true), 3200); setTimeout(() => layout(3, true), 5000); }
+</script>

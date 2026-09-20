@@ -1,0 +1,72 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pinch density</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f3f2ee; background-image: linear-gradient(#00000009 1px, transparent 1px), linear-gradient(90deg, #00000009 1px, transparent 1px); background-size: 28px 28px; color: #f5f5f7; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .card { width: 320px; border-radius: 28px; background: #0f0f11; padding: 16px 14px 14px; box-shadow: 0 30px 60px -30px #0008, 0 0 0 1px #00000014; position: relative; overflow: hidden; }
+  .eyebrow { display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; }
+  .eyebrow b { color: #f5f5f7; font-weight: 600; letter-spacing: .16em; } .eyebrow i { font-style: normal; color: var(--acc, #8e8e93); margin-right: 4px; }
+  .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; } .foot b { color: #f5f5f7; font-variant-numeric: tabular-nums; }
+  .hint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; white-space: nowrap; }
+  :root { --acc: #f2b35a; }
+  .stage { position: relative; height: 330px; margin-top: 12px; touch-action: none; cursor: ns-resize; user-select: none; overflow: hidden; border-radius: 10px; }
+  /* Every plate is one absolutely-positioned tile. A density level is just a function
+     index → rect; changing level re-runs it and FLIPs each tile from where it was. */
+  .tile { position: absolute; left: 0; top: 0; border-radius: 10px; overflow: hidden; background: #1a1a1d; transform-origin: top left; will-change: transform; }
+  .tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tile .lbl { position: absolute; left: 44px; top: 0; height: 100%; display: flex; align-items: center; font-size: 11px; font-weight: 600; white-space: nowrap; opacity: 0; transition: opacity 200ms; }
+  .tile .bar { position: absolute; left: 44px; right: 0; bottom: 6px; height: 2px; background: #ffffff22; opacity: 0; transition: opacity 200ms; }
+  .stage[data-level="rows"] .tile .lbl, .stage[data-level="rows"] .tile .bar { opacity: 1; }
+  .stage[data-level="rows"] .tile img { width: 32px; height: 32px; border-radius: 8px; }
+  .stage[data-level="rows"] .tile { background: transparent; }
+  .tile.moving { transition: transform 320ms cubic-bezier(.22,.9,.3,1), width 320ms cubic-bezier(.22,.9,.3,1), height 320ms cubic-bezier(.22,.9,.3,1); }
+  .tile.moving img { transition: width 320ms cubic-bezier(.22,.9,.3,1), height 320ms cubic-bezier(.22,.9,.3,1), border-radius 320ms; }
+  .levels { display: flex; gap: 14px; } .levels span { display: inline-flex; align-items: center; gap: 5px; } .levels span::before { content: ""; width: 10px; height: 3px; border-radius: 2px; background: #3a3a40; transition: background 200ms, width 200ms; } .levels span.on { color: #f5f5f7; } .levels span.on::before { background: var(--acc); width: 16px; }
+  .badge { position: absolute; left: 50%; top: 12px; transform: translate(-50%, -6px); padding: 3px 9px; border-radius: 99px; background: #f5f5f7; color: #0f0f11; font-size: 9px; font-weight: 700; letter-spacing: .1em; opacity: 0; transition: opacity 160ms, transform 240ms cubic-bezier(.22,1.1,.36,1); pointer-events: none; z-index: 3; } .badge.show { opacity: 1; transform: translate(-50%, 0); }
+  @media (prefers-reduced-motion: reduce) { .tile.moving, .tile.moving img { transition: none; } }
+</style>
+<div class="card">
+  <div class="eyebrow"><span><i>●</i><b>Archive</b></span><span>26 plates</span></div>
+  <div class="stage" id="stage" data-level="full"><span class="badge" id="badge">3 COLS</span></div>
+  <div class="foot"><div class="levels" id="levels"><span data-l="full" class="on">Full</span><span data-l="cols">3 cols</span><span data-l="rows">Rows</span></div><span>pinch · wheel</span></div>
+</div>
+<div class="hint">Pinch, or scroll over the plates</div>
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const NAMES = ['Concrete Hall', 'Glass Spine', 'Atrium 04', 'Louvered', 'Sky Court', 'Bridge Deck', 'Cantilever', 'Brick Yard', 'Terrace'];
+  const stage = document.getElementById('stage'), badge = document.getElementById('badge'), W = 292, H = 330;
+  const tiles = NAMES.map((n, i) => { const t = document.createElement('div'); t.className = 'tile'; t.innerHTML = `<img src="_plates/${'abcdefghij'[i]}.jpg" alt="${n}"><span class="lbl">${n}</span><span class="bar"></span>`; stage.appendChild(t); return t; });
+  /* the three densities as rect functions */
+  const LAYOUT = {
+    full: (i) => i === 0 ? [0, 0, W, H] : [W / 2 - 20, H + 40, 40, 40],            // one plate; the rest wait just below the fold
+    cols: (i) => { const g = 6, w = (W - g * 2) / 3, h = w * 1.25; return [(i % 3) * (w + g), Math.floor(i / 3) * (h + g), w, h]; },
+    rows: (i) => [0, i * 36, W, 32],
+  };
+  const ORDER = ['full', 'cols', 'rows']; let level = 0, applied = null;
+  function apply(name) {
+    if (applied === name) return; const first = tiles.map((t) => t.getBoundingClientRect()); applied = name;
+    stage.dataset.level = name; tiles.forEach((t, i) => { const [x, y, w, h] = LAYOUT[name](i); t.style.width = w + 'px'; t.style.height = h + 'px'; t.style.transform = `translate(${x}px, ${y}px)`; t.style.opacity = name === 'full' && i > 0 ? 0 : 1; });
+    if (reduce) return;
+    // FLIP: put each tile back where it was, then let the transition carry it to the new rect
+    tiles.forEach((t, i) => { const last = t.getBoundingClientRect(), dx = first[i].left - last.left, dy = first[i].top - last.top, sx = first[i].width / last.width, sy = first[i].height / last.height; t.classList.remove('moving'); t.style.transform += ` translate(${dx / sx}px, ${dy / sy}px) scale(${sx}, ${sy})`; });
+    void stage.offsetWidth;
+    tiles.forEach((t, i) => { const [x, y] = LAYOUT[name](i); t.classList.add('moving'); t.style.transform = `translate(${x}px, ${y}px)`; });
+    document.querySelectorAll('#levels span').forEach((s) => s.classList.toggle('on', s.dataset.l === name));
+    badge.textContent = name === 'full' ? 'FULL' : name === 'cols' ? '3 COLS' : 'ROWS'; badge.classList.add('show'); clearTimeout(apply._t); apply._t = setTimeout(() => badge.classList.remove('show'), 900);
+  }
+  const go = (d) => { level = Math.max(0, Math.min(2, level + d)); apply(ORDER[level]); };
+  apply('full');
+  /* pinch: two pointers; the ratio of the current distance to the start distance crosses 0.8 / 1.25 to step */
+  const pts = new Map(); let d0 = 0, stepped = false;
+  const dist = () => { const [a, b] = [...pts.values()]; return Math.hypot(a.x - b.x, a.y - b.y); };
+  stage.addEventListener('pointerdown', (e) => { pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (pts.size === 2) { d0 = dist(); stepped = false; } });
+  stage.addEventListener('pointermove', (e) => { if (!pts.has(e.pointerId)) return; pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (pts.size !== 2 || stepped) return; const r = dist() / d0; if (r < .8) { go(1); stepped = true; } if (r > 1.25) { go(-1); stepped = true; } });
+  const up = (e) => pts.delete(e.pointerId); stage.addEventListener('pointerup', up); stage.addEventListener('pointercancel', up);
+  /* wheel / trackpad: pinch on a trackpad arrives as ctrl+wheel; plain wheel steps too */
+  let acc = 0; stage.addEventListener('wheel', (e) => { e.preventDefault(); acc += e.deltaY; if (Math.abs(acc) > 60) { go(acc > 0 ? 1 : -1); acc = 0; } }, { passive: false });
+  document.getElementById('levels').addEventListener('click', (e) => { const s = e.target.closest('span'); if (s) { level = ORDER.indexOf(s.dataset.l); apply(s.dataset.l); } });
+  if (!reduce) { setTimeout(() => go(1), 1100); setTimeout(() => go(1), 2600); setTimeout(() => go(-1), 4200); setTimeout(() => go(-1), 5400); }
+</script>

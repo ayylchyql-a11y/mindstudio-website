@@ -122,6 +122,22 @@ const blurbs: Record<string, string> = {
   // ── dashboard ──
   "dashboard-floating-panel":
     "A restaurant back office with a sidebar that does not touch the screen edges: a floating island with rounded corners and one soft shadow. The plainest of the six sidebar systems, and the one that makes an admin panel stop looking like a form. All six run on real content — a live menu, an order board, thirty days of figures — so the comparison is between sidebars, not between mock-ups. Suited to any SaaS or admin product.",
+  "pinch-density":
+    "One archive of plates, three ways to see it: a single full-bleed image, a three-column grid, or a list with thumbnails — and you move between them by pinching, the way you zoom a map. Nothing reloads or snaps; every picture glides from where it was to where it belongs. The pattern behind photo apps, file browsers and any gallery that has to work at a glance and up close. Rebuilt with real plates from a restaurant's kitchen.",
+  "scroll-progress-rail":
+    "A long document with a slim rail on the side that is more than a scrollbar: its markers sit exactly where each chapter starts, it fills as you read, and the percentage you see is the truth of where you are. Scroll back and it goes back; stop and it waits. Built for specs, long-form articles, course material and legal pages — anywhere a reader needs to know how far there is to go.",
+  "velocity-motion-blur":
+    "Fling a grid of photos and they streak in the direction you threw them, then sharpen as they slow. It is the visual cue that makes a screen feel like it has weight: fast scrolling looks fast. Suited to galleries, feeds and any image-heavy list on a product that wants to feel physical rather than paged. The effect switches itself off the moment the list rests, so it costs nothing while you read.",
+  "stretch-header":
+    "The hero image of a detail page that grows when you pull past the top, with the title fading so the picture takes over, and a soft return when you let go. It is the small gesture that separates a native-feeling product page from a web page: the content answers the finger instead of ignoring it. Common in property, travel, food and portfolio apps — anywhere a single photo leads.",
+  "snap-to-guide":
+    "Drag a card around a layout and it finds the column by itself: as it nears the centre line it clicks into place, a guide appears and a label confirms the alignment. Walk it away and it is free again. The behaviour of every good design tool and dashboard builder, distilled: the user places, the system aligns. Use it in editors, kanban boards, widget layouts and anything with a grid people rearrange.",
+  "arc-reflow":
+    "Switch a grid from two columns to three and, rather than sliding in straight lines, each tile takes a small arc to its new place, one just after the other, like cards being dealt. The same reflow, but it reads as intentional instead of mechanical. A signature move for settings screens, tool palettes and app launchers where the layout changes on the user's command.",
+  "auto-contrast-overlay":
+    "A floating title bar over a scrolling gallery that watches what is behind it and turns its text dark on bright photos and light on dark ones, gliding between the two as you scroll. No more unreadable white labels over a pale sky. For any page that floats controls over pictures — photo viewers, product galleries, travel and real-estate apps, magazine layouts.",
+  "focus-mode-grid":
+    "Tap one photo in a set and the rest step back: they dim, soften and shrink while the chosen one rises and brightens, so the eye has exactly one place to go. Tap again and the set comes back. A focus state for pickers, moodboards, comparison views and any selection grid where the choice should feel like a spotlight rather than a checkbox.",
   "dashboard-command-center":
     "A restaurant back office for the evening shift, on a dark ground with a single moving light behind sheets of glass. Navigation is an icon rail and a command bar you summon with a keystroke; the month is a heatmap you can touch, channels a ring that reacts to the pointer, the order board a kanban whose buttons lean toward the cursor. The look of trading desks and control rooms, applied to a working admin panel with live data, for products that are used at night and at speed.",
   "dashboard-editorial":

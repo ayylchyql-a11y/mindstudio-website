@@ -1,0 +1,59 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scroll progress rail</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f3f2ee; background-image: linear-gradient(#00000009 1px, transparent 1px), linear-gradient(90deg, #00000009 1px, transparent 1px); background-size: 28px 28px; color: #f5f5f7; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .card { width: 320px; border-radius: 28px; background: #0f0f11; padding: 16px 14px 14px; box-shadow: 0 30px 60px -30px #0008, 0 0 0 1px #00000014; position: relative; overflow: hidden; }
+  .eyebrow { display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; }
+  .eyebrow b { color: #f5f5f7; font-weight: 600; letter-spacing: .16em; } .eyebrow i { font-style: normal; color: var(--acc, #8e8e93); margin-right: 4px; }
+  .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; } .foot b { color: #f5f5f7; font-variant-numeric: tabular-nums; }
+  .hint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; white-space: nowrap; }
+  :root { --acc: #7fb0ff; }
+  .body { position: relative; height: 330px; margin-top: 12px; }
+  .doc { height: 100%; overflow: auto; padding-right: 30px; scrollbar-width: none; } .doc::-webkit-scrollbar { display: none; }
+  .sec { padding: 6px 0 22px; } .sec h3 { font-size: 12px; font-weight: 600; padding-left: 8px; border-left: 2px solid #ffffff44; margin-bottom: 10px; transition: border-color 300ms, color 300ms; } .sec.cur h3 { border-color: var(--acc); }
+  .sec i { display: block; height: 4px; border-radius: 2px; background: #2a2a2e; margin-bottom: 8px; width: var(--w); }
+  /* the rail: one track, section nodes placed at each section's start fraction, a thumb at the progress fraction */
+  .rail { position: absolute; right: 6px; top: 6px; bottom: 6px; width: 14px; }
+  .rail .track { position: absolute; left: 6px; top: 0; bottom: 0; width: 2px; background: #2a2a2e; }
+  .rail .fill { position: absolute; left: 6px; top: 0; width: 2px; height: var(--p, 0%); background: var(--acc); }
+  .rail .node { position: absolute; left: 3px; top: var(--y); width: 8px; height: 8px; border-radius: 50%; background: #2a2a2e; border: 2px solid #0f0f11; transition: background 300ms; } .rail .node.done { background: var(--acc); }
+  .rail .thumb { position: absolute; left: 1px; top: var(--p, 0%); width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; background: #f5f5f7; box-shadow: 0 0 0 3px #0f0f11; }
+  .rail .tip { position: absolute; right: 18px; top: var(--p, 0%); transform: translateY(-50%); padding: 2px 6px; border-radius: 99px; background: #f5f5f7; color: #0f0f11; font-size: 9px; font-weight: 700; white-space: nowrap; opacity: 0; transition: opacity 200ms; } .rail.live .tip { opacity: 1; }
+  .read { display: flex; align-items: center; gap: 8px; } .read .bar { width: 80px; height: 3px; border-radius: 2px; background: #2a2a2e; overflow: hidden; } .read .bar i { display: block; height: 100%; width: var(--p, 0%); background: var(--acc); }
+</style>
+<div class="card">
+  <div class="eyebrow"><span><i>●</i><b>Spec</b> · 24 pages</span><span id="cur">Site &amp; Massing</span></div>
+  <div class="body">
+    <div class="doc" id="doc"></div>
+    <div class="rail" id="rail"><div class="track"></div><div class="fill"></div><div class="thumb"></div><span class="tip" id="tip">0%</span></div>
+  </div>
+  <div class="foot"><span class="read">Read <span class="bar"><i id="fbar"></i></span></span><b><span id="pct">0</span> %</b></div>
+</div>
+<div class="hint">Scroll the document · it is reversible</div>
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const SECS = [['Site & Massing', 6], ['Structure', 5], ['Facade System', 7], ['Daylight', 4], ['Materials', 6], ['Detailing', 5]];
+  const doc = document.getElementById('doc'), rail = document.getElementById('rail'), tip = document.getElementById('tip'), pct = document.getElementById('pct'), fbar = document.getElementById('fbar'), cur = document.getElementById('cur');
+  let seed = 3; const rnd = () => (seed = (seed * 48271) % 2147483647) / 2147483647;
+  doc.innerHTML = SECS.map(([n, k]) => `<div class="sec"><h3>${n}</h3>${Array.from({ length: k }, () => `<i style="--w:${55 + rnd() * 45}%"></i>`).join('')}</div>`).join('');
+  const secs = [...doc.querySelectorAll('.sec')];
+  // nodes sit at each section's start as a fraction of the scrollable range; the last section's end is 100%
+  const range = () => doc.scrollHeight - doc.clientHeight;
+  secs.forEach((s) => { const n = document.createElement('i'); n.className = 'node'; n.style.setProperty('--y', (Math.min(1, s.offsetTop / range()) * 100) + '%'); rail.appendChild(n); });
+  const nodes = [...rail.querySelectorAll('.node')];
+  /* progress is READ from the scroll position every time — never accumulated — so it is reversible for free */
+  let idle = 0;
+  function paint() {
+    const p = Math.max(0, Math.min(1, doc.scrollTop / range()));
+    rail.style.setProperty('--p', (p * 100) + '%'); fbar.style.setProperty('--p', (p * 100) + '%'); pct.textContent = Math.round(p * 100); tip.textContent = Math.round(p * 100) + '%';
+    let ci = 0; secs.forEach((s, i) => { if (doc.scrollTop >= s.offsetTop - 40) ci = i; });
+    secs.forEach((s, i) => s.classList.toggle('cur', i === ci)); nodes.forEach((n, i) => n.classList.toggle('done', i <= ci)); cur.textContent = SECS[ci][0];
+    rail.classList.add('live'); clearTimeout(idle); idle = setTimeout(() => rail.classList.remove('live'), 700);
+  }
+  doc.addEventListener('scroll', paint, { passive: true }); paint(); rail.classList.remove('live');
+  if (!reduce) { const t0 = performance.now(); const tick = (now) => { const t = (now - t0) / 1000; if (t < 1) return requestAnimationFrame(tick); const u = Math.min(1, (t - 1) / 4); doc.scrollTop = range() * (u < .6 ? u / .6 * .65 : .65 - (u - .6) / .4 * .3); if (u < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }
+</script>

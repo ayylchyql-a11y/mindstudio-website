@@ -1,0 +1,46 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Velocity motion blur</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f3f2ee; background-image: linear-gradient(#00000009 1px, transparent 1px), linear-gradient(90deg, #00000009 1px, transparent 1px); background-size: 28px 28px; color: #f5f5f7; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .card { width: 320px; border-radius: 28px; background: #0f0f11; padding: 16px 14px 14px; box-shadow: 0 30px 60px -30px #0008, 0 0 0 1px #00000014; position: relative; overflow: hidden; }
+  .eyebrow { display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; }
+  .eyebrow b { color: #f5f5f7; font-weight: 600; letter-spacing: .16em; } .eyebrow i { font-style: normal; color: var(--acc, #8e8e93); margin-right: 4px; }
+  .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; } .foot b { color: #f5f5f7; font-variant-numeric: tabular-nums; }
+  .hint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; white-space: nowrap; }
+  :root { --acc: #ff5c5c; }
+  .grid { height: 330px; margin-top: 12px; overflow: auto; scrollbar-width: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-content: start; } .grid::-webkit-scrollbar { display: none; }
+  .plate { aspect-ratio: .78; border-radius: 12px; overflow: hidden; background: #1a1a1d; } .plate img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  /* the blur is an SVG filter with stdDeviation "0 N": zero across, N along the scroll axis — a directional
+     smear, which CSS blur() cannot do. Applied to the grid's children, not the grid, so the container keeps scrolling. */
+  .grid.smear .plate { filter: url(#smear); }
+  .state { color: var(--acc); } .state.idle { color: #8e8e93; }
+</style>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="smear" x="-10%" y="-30%" width="120%" height="160%"><feGaussianBlur id="gb" stdDeviation="0 0" edgeMode="duplicate"/></filter></svg>
+<div class="card">
+  <div class="eyebrow"><span><i>●</i><b>Plates</b></span><span class="state idle" id="state">Idle</span></div>
+  <div class="grid" id="grid"></div>
+  <div class="foot"><span>Velocity</span><b><span id="v">0</span> px/s</b></div>
+</div>
+<div class="hint">Fling the grid</div>
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const grid = document.getElementById('grid'), gb = document.getElementById('gb'), vEl = document.getElementById('v'), state = document.getElementById('state');
+  grid.innerHTML = Array.from({ length: 14 }, (_, i) => `<div class="plate"><img src="_plates/${'abcdefghij'[i % 10]}.jpg" alt=""></div>`).join('');
+  /* velocity is Δscroll/Δt measured on scroll events; between events it decays by 0.85 per frame, so the
+     blur eases out rather than dropping to zero the instant the wheel stops */
+  let last = grid.scrollTop, lastT = performance.now(), v = 0, shown = 0;
+  grid.addEventListener('scroll', () => { const now = performance.now(), dt = Math.max(1, now - lastT); v = (grid.scrollTop - last) / dt * 1000; last = grid.scrollTop; lastT = now; }, { passive: true });
+  (function frame() {
+    if (performance.now() - lastT > 40) v *= .85;             // no scroll event lately: decay
+    shown += (Math.abs(v) - shown) * .3;
+    const sd = reduce ? 0 : Math.min(14, shown / 180);           // 2500 px/s ≈ 14px of smear
+    gb.setAttribute('stdDeviation', `0 ${sd.toFixed(2)}`); grid.classList.toggle('smear', sd > .2);
+    vEl.textContent = Math.round(shown); state.textContent = shown > 30 ? 'Scrolling' : 'Idle'; state.classList.toggle('idle', shown <= 30);
+    requestAnimationFrame(frame);
+  })();
+  if (!reduce) { const t0 = performance.now(); const max = () => grid.scrollHeight - grid.clientHeight; const tick = (now) => { const t = (now - t0) / 1000; if (t < 1) return requestAnimationFrame(tick); const u = Math.min(1, (t - 1) / 3.2); const e = u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; grid.scrollTop = max() * (u < .55 ? e * 1.2 : 1 - (u - .55) / .45 * .7); if (u < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }
+</script>

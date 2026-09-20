@@ -1,0 +1,54 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auto contrast overlay</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f3f2ee; background-image: linear-gradient(#00000009 1px, transparent 1px), linear-gradient(90deg, #00000009 1px, transparent 1px); background-size: 28px 28px; color: #f5f5f7; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .card { width: 320px; border-radius: 28px; background: #0f0f11; padding: 16px 14px 14px; box-shadow: 0 30px 60px -30px #0008, 0 0 0 1px #00000014; position: relative; overflow: hidden; }
+  .eyebrow { display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; }
+  .eyebrow b { color: #f5f5f7; font-weight: 600; letter-spacing: .16em; } .eyebrow i { font-style: normal; color: var(--acc, #8e8e93); margin-right: 4px; }
+  .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; } .foot b { color: #f5f5f7; font-variant-numeric: tabular-nums; }
+  .hint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; white-space: nowrap; }
+  :root { --acc: #ff8a3d; }
+  .card { padding: 0; }
+  .scroll { position: relative; height: 380px; overflow: auto; scrollbar-width: none; } .scroll::-webkit-scrollbar { display: none; }
+  .scroll img { width: 100%; display: block; }
+  /* the floating bar: its ink is a mix between white and near-black by --luma (0 = dark backdrop, 1 = bright).
+     Registered so it can transition; sampled from a canvas copy of the images under the bar. */
+  @property --ink { syntax: "<color>"; inherits: true; initial-value: #ffffff; }
+  .bar { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; --ink: #ffffff; transition: --ink 300ms; color: var(--ink); }
+  .bar b { font-size: 13px; font-weight: 600; } .bar .back { font-size: 16px; margin-right: 10px; }
+  .bar .pl { font-size: 9px; letter-spacing: .16em; text-transform: uppercase; padding: 4px 8px; border-radius: 99px; border: 1px solid color-mix(in srgb, currentColor 40%, transparent); } .bar .pl i { color: var(--acc); font-style: normal; margin-right: 4px; }
+  .luma { position: absolute; left: 14px; bottom: 12px; z-index: 2; display: flex; align-items: center; gap: 8px; font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #ffffffb0; mix-blend-mode: difference; } .luma i { width: 60px; height: 3px; border-radius: 2px; background: #ffffff33; overflow: hidden; } .luma i::after { content: ""; display: block; height: 100%; width: var(--w, 0%); background: #fff; }
+</style>
+<div class="card">
+  <div class="scroll" id="scroll">
+    <div class="bar" id="bar"><span><span class="back">←</span><b>Concrete Hall</b></span><span class="pl"><i>●</i>Plate 07</span></div>
+    <img src="_plates/f.jpg" alt="" style="margin-top:-48px"><img src="_plates/b.jpg" alt=""><img src="_plates/g.jpg" alt=""><img src="_plates/c.jpg" alt=""><img src="_plates/j.jpg" alt="">
+  </div>
+  <div class="luma">Backdrop luma <i id="lbar"></i><span id="lv">0.00</span></div>
+</div>
+<div class="hint">Scroll · the bar reads what is behind it</div>
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const sc = document.getElementById('scroll'), bar = document.getElementById('bar'), lbar = document.getElementById('lbar'), lv = document.getElementById('lv');
+  const imgs = [...sc.querySelectorAll('img')];
+  /* sample: draw the image that sits under the bar into a 16×4 canvas and average — 64 pixels, once per frame */
+  const cv = document.createElement('canvas'); cv.width = 16; cv.height = 4; const ctx = cv.getContext('2d', { willReadFrequently: true });
+  let raf = 0;
+  function sample() {
+    raf = 0; const br = bar.getBoundingClientRect(); const y = br.top + br.height / 2;
+    const img = imgs.find((im) => { const r = im.getBoundingClientRect(); return y >= r.top && y < r.bottom; }); if (!img || !img.naturalWidth) return;
+    const r = img.getBoundingClientRect(), fy = (br.top - r.top) / r.height, fh = br.height / r.height;
+    ctx.drawImage(img, 0, Math.max(0, fy) * img.naturalHeight, img.naturalWidth, Math.max(1, fh * img.naturalHeight), 0, 0, 16, 4);
+    const d = ctx.getImageData(0, 0, 16, 4).data; let s = 0; for (let i = 0; i < d.length; i += 4) s += (0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]) / 255;
+    const luma = s / (d.length / 4);
+    bar.style.setProperty('--ink', luma > .5 ? '#0f0f11' : '#ffffff');   // the ink flips at 0.5; the registered colour transition makes it a 300ms glide, not a cut
+    lbar.style.setProperty('--w', (luma * 100) + '%'); lv.textContent = luma.toFixed(2);
+  }
+  sc.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(sample); }, { passive: true });
+  Promise.all(imgs.map((im) => im.complete ? 1 : new Promise((r) => im.onload = r))).then(sample);
+  if (!reduce) setTimeout(() => { const t0 = performance.now(); const max = sc.scrollHeight - sc.clientHeight; const tick = (now) => { const u = Math.min(1, (now - t0) / 6000); sc.scrollTop = max * (u < .7 ? u / .7 : 1 - (u - .7) / .3 * .5); if (u < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }, 1000);
+</script>

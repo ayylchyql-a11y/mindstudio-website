@@ -31,7 +31,7 @@ const PORT = 8765;
 const WIDTH = 960;
 const SECONDS = 8;
 /** 个别样板的 plays 标的是「怎么看」不是「怎么驱动」：bin-eats-label 标 hover，真要点一下才吃标签。 */
-const DRIVE_OVERRIDE = { "bin-eats-label": "click", "command-bar": "type", "dashboard-ambient-ai": "ask", "dashboard-terminal": "ask", "dashboard-keyboard": "keys" };
+const DRIVE_OVERRIDE = { "bin-eats-label": "click", "command-bar": "type", "dashboard-ambient-ai": "ask", "dashboard-terminal": "ask", "dashboard-keyboard": "keys", "snap-to-guide": "self", "stretch-header": "self" };
 /** 「ask」类：往提示词栏里打两句话、各回车一次（天空 AI 那条是意大利语后台，打英文会穿帮）。 */
 const ASK_TEXT = { "dashboard-ambient-ai": ["Come va oggi?", "Metti in pausa gli ordini 20 minuti"], "dashboard-terminal": ["ordini attesa", "conferma tutti"] };
 /** 「keys」类：按键序列（字符串 = 按键，数字 = 等待 ms）。键盘优先那条：J/K 走行、Enter 开详情、C 推进。 */

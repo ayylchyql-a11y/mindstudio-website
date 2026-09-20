@@ -1,0 +1,56 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Snap to guide</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #f3f2ee; background-image: linear-gradient(#00000009 1px, transparent 1px), linear-gradient(90deg, #00000009 1px, transparent 1px); background-size: 28px 28px; color: #f5f5f7; overflow: hidden; display: grid; place-items: center; -webkit-font-smoothing: antialiased; }
+  .card { width: 320px; border-radius: 28px; background: #0f0f11; padding: 16px 14px 14px; box-shadow: 0 30px 60px -30px #0008, 0 0 0 1px #00000014; position: relative; overflow: hidden; }
+  .eyebrow { display: flex; justify-content: space-between; align-items: center; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; }
+  .eyebrow b { color: #f5f5f7; font-weight: 600; letter-spacing: .16em; } .eyebrow i { font-style: normal; color: var(--acc, #8e8e93); margin-right: 4px; }
+  .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; } .foot b { color: #f5f5f7; font-variant-numeric: tabular-nums; }
+  .hint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; white-space: nowrap; }
+  :root { --acc: #c9a3ff; }
+  .canvas { position: relative; height: 330px; margin-top: 12px; border-radius: 14px; background: #131316; overflow: hidden; touch-action: none; }
+  .blk { position: absolute; border-radius: 10px; background: #1e1e22; padding: 10px; display: grid; gap: 5px; align-content: start; } .blk i { display: block; height: 4px; border-radius: 2px; background: #2f2f36; width: var(--w); } .blk .chart { display: flex; align-items: flex-end; gap: 4px; height: 34px; margin-top: 4px; } .blk .chart b { flex: 1; background: #2f2f36; border-radius: 2px; height: var(--h); } .blk .chart b.hi { background: var(--acc); }
+  .drag { cursor: grab; box-shadow: 0 0 0 1px #ffffff14; transition: box-shadow 160ms; user-select: none; } .drag.held { cursor: grabbing; box-shadow: 0 0 0 1px var(--acc), 0 20px 40px -20px #000; z-index: 3; }
+  .drag.snap { transition: box-shadow 160ms, transform 90ms; }
+  /* guides: one per reference edge/centre of the other blocks; only the one that is hit is drawn */
+  .guide { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--acc); opacity: 0; transition: opacity 120ms; } .guide.on { opacity: 1; }
+  .tag { position: absolute; transform: translate(-50%, -100%); padding: 2px 7px; border-radius: 6px; background: var(--acc); color: #1a0f2a; font-size: 8px; font-weight: 800; letter-spacing: .12em; opacity: 0; transition: opacity 120ms; pointer-events: none; } .tag.on { opacity: 1; }
+  .foot b.st { color: var(--acc); }
+</style>
+<div class="card">
+  <div class="eyebrow"><span><i>●</i><b>Canvas</b></span><span id="state">Free</span></div>
+  <div class="canvas" id="canvas">
+    <div class="blk" style="left:10px;top:10px;width:128px;height:96px"><i style="--w:70%"></i><i style="--w:90%"></i><i style="--w:55%"></i><i style="--w:80%"></i></div>
+    <div class="blk" style="left:154px;top:10px;width:128px;height:96px"><div class="chart"><b style="--h:30%"></b><b style="--h:55%"></b><b style="--h:40%"></b><b class="hi" style="--h:90%"></b><b style="--h:60%"></b></div></div>
+    <div class="blk" style="left:10px;top:118px;width:128px;height:96px"><i style="--w:60%"></i><i style="--w:85%"></i><i style="--w:40%"></i></div>
+    <div class="guide" id="guide"></div><span class="tag" id="tag">ALIGN</span>
+    <div class="blk drag" id="drag" style="left:40px;top:236px;width:128px;height:80px"><i style="--w:75%"></i><i style="--w:50%"></i><i style="--w:65%"></i></div>
+  </div>
+  <div class="foot"><span>Offset <b id="off">0</b> px</span><b class="st" id="snapl">Threshold 12px</b></div>
+</div>
+<div class="hint">Drag the bottom block toward a column</div>
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cv = document.getElementById('canvas'), el = document.getElementById('drag'), guide = document.getElementById('guide'), tag = document.getElementById('tag'), off = document.getElementById('off'), state = document.getElementById('state'), snapl = document.getElementById('snapl');
+  const TH = 12, W = 128;
+  /* the guides are the centres of the two columns (74, 218) — an x the dragged block's centre can land on */
+  const GUIDES = [74, 218];
+  let held = null, x = 40, y = 236, snapped = null;
+  const paint = () => { el.style.left = x + 'px'; el.style.top = y + 'px'; };
+  el.addEventListener('pointerdown', (e) => { held = { dx: e.clientX - x, dy: e.clientY - y }; el.classList.add('held'); el.classList.remove('snap'); el.setPointerCapture(e.pointerId); });
+  el.addEventListener('pointermove', (e) => {
+    if (!held) return; let nx = e.clientX - held.dx; y = Math.max(0, Math.min(330 - 80, e.clientY - held.dy));
+    const c = nx + W / 2; let best = null, bd = Infinity; GUIDES.forEach((g) => { const d = Math.abs(c - g); if (d < bd) { bd = d; best = g; } });
+    off.textContent = Math.round(bd);
+    if (bd < TH) { if (snapped !== best) { snapped = best; /* the snap: one 2px kick, 90ms, the way a magnet clicks */ el.classList.add('snap'); el.style.transform = `translateX(${c < best ? 2 : -2}px)`; setTimeout(() => el.style.transform = '', 90); } nx = best - W / 2; guide.style.left = best + 'px'; guide.classList.add('on'); tag.style.left = best + 'px'; tag.style.top = (y - 6) + 'px'; tag.classList.add('on'); state.textContent = 'Snapped'; snapl.textContent = 'Snap · center'; }
+    else { snapped = null; guide.classList.remove('on'); tag.classList.remove('on'); state.textContent = 'Free'; snapl.textContent = 'Threshold 12px'; }
+    x = Math.max(0, Math.min(292 - W, nx)); paint();
+  });
+  const up = () => { held = null; el.classList.remove('held'); }; el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+  paint();
+  if (!reduce) setTimeout(() => { const ev = (t, x, y) => el.dispatchEvent(new PointerEvent(t, { clientX: x, clientY: y, pointerId: 1, bubbles: true })); const r = el.getBoundingClientRect(); const sx = r.left + 60, sy = r.top + 40; ev('pointerdown', sx, sy); const t0 = performance.now(); const tick = (now) => { const t = Math.min(1, (now - t0) / 1600); const e = .5 - Math.cos(t * Math.PI) / 2; ev('pointermove', sx + e * 130, sy - e * 120); if (t < 1) requestAnimationFrame(tick); else setTimeout(() => ev('pointerup', sx + 130, sy - 120), 500); }; requestAnimationFrame(tick); }, 1000);
+</script>
