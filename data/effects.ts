@@ -1,4 +1,5 @@
 import type { Localized } from "@/lib/i18n";
+import { OPEN_SLUGS } from "@/lib/lab-open";
 
 /**
  * Lab = 设计效果库。
@@ -3038,6 +3039,22 @@ export function demoPath(e: Effect): string {
 }
 
 /**
+ * 橱窗视频与海报（scripts/record-lab-videos.mjs 录的，public/lab-video/）。
+ * 公开页用它代替 iframe：看得到效果、拿不到代码。
+ */
+export function videoPath(e: Effect): string {
+  return `/lab-video/${e.slug}.mp4`;
+}
+export function posterPath(e: Effect): string {
+  return `/lab-video/${e.slug}.jpg`;
+}
+
+/** 完整公开的那几条（lib/lab-open.ts 的 OPEN_SLUGS）：demo 可碰、代码提示词都给。 */
+export function isOpen(e: Effect): boolean {
+  return OPEN_SLUGS.includes(e.slug);
+}
+
+/**
  * /lab 的界面文案。
  *
  * 没有并进 `lib/i18n.ts` 的 `Dictionary`，因为那个类型是严格的
@@ -3050,9 +3067,10 @@ export const labCopy = {
   navLabel: { en: "Design Library", zh: "设计库", "zh-tw": "設計庫", ja: "デザイン集", ko: "디자인 라이브러리", it: "Libreria design" },
   title: { en: "Design Library", zh: "设计库", "zh-tw": "設計庫", ja: "デザインライブラリ", ko: "디자인 라이브러리", it: "Libreria design" },
   intro: {
-    en: "Interface effects and whole interfaces, rebuilt so they can be taken apart: every sample runs live in the page — hover it, scroll it, replay it — and comes with the numbers it was built from, the full source file, and a prompt that reproduces it from scratch. The web templates next door are assembled from these parts.",
-    zh: "网页特效与整套界面，拆开重做成能用的样板：每一条都在页面里真的跑着 —— 可以碰、可以滚、可以重播；附它赖以成立的数值、完整源文件、以及一句能从零复现它的提示词。隔壁「网页设计」里的整站，就是用这些零件搭出来的。",
-    "zh-tw": "網頁特效與整套介面，拆開重做成能用的樣板：每一條都在頁面裡真的跑著 —— 可以碰、可以捲、可以重播；附它賴以成立的數值、完整原始檔、以及一句能從零複現它的提示詞。隔壁「網頁設計」裡的整站，就是用這些零件搭出來的。",
+    /* 橱窗模式（lib/lab-gate.ts）：公开访客看到的是录屏，样板/参数/提示词在门后 —— 文案不能再说「每一条都在页面里跑着」 */
+    en: "Interface effects and whole interfaces, rebuilt from scratch and catalogued: what each one is and where it belongs, with a recording of it running. The full library adds the live sample — hover it, scroll it, replay it — the numbers it was built from, the source file and a prompt that reproduces it. The web templates next door are assembled from these parts.",
+    zh: "网页特效与整套界面，从零重做并归档：每一条是什么、适合用在哪，附一段它跑起来的录屏。完整版里还有可交互样板 —— 可以碰、可以滚、可以重播 —— 以及它赖以成立的数值、源文件和一句能复现它的提示词。隔壁「网页设计」里的整站，就是用这些零件搭出来的。",
+    "zh-tw": "網頁特效與整套介面，從零重做並歸檔：每一條是什麼、適合用在哪，附一段它跑起來的錄影。完整版裡還有可互動樣板 —— 可以碰、可以捲、可以重播 —— 以及它賴以成立的數值、原始檔和一句能複現它的提示詞。隔壁「網頁設計」裡的整站，就是用這些零件搭出來的。",
   },
   englishOnly: {
     en: "",
@@ -3090,6 +3108,25 @@ export const labCopy = {
   needsHover: { en: "hover it", zh: "要悬停", "zh-tw": "要停留", ja: "ホバー", ko: "호버", it: "passa sopra" },
   needsScroll: { en: "scroll it", zh: "要滚动", "zh-tw": "要捲動", ja: "スクロール", ko: "스크롤", it: "scorri" },
   needsClick: { en: "click it", zh: "要点击", "zh-tw": "要點擊", ja: "クリック", ko: "클릭", it: "clicca" },
+  /* ── 橱窗模式（lib/lab-gate.ts）：公开页上的那几句 ── */
+  /** 录屏下面、拆解的位置上：这条效果是什么、用在哪 —— 内容在 data/effect-blurbs.ts */
+  aboutTitle: { en: "What it is", zh: "这是什么", "zh-tw": "這是什麼", ja: "概要", ko: "소개", it: "Cos’è" },
+  ctaTitle: { en: "Want this on your site?", zh: "想把它用在你的网站上？", "zh-tw": "想把它用在你的網站上？", ja: "自分のサイトに使いたい？", ko: "내 사이트에 쓰고 싶다면", it: "Lo vuoi sul tuo sito?" },
+  ctaBody: {
+    en: "Mind Studio builds websites with effects like this one, made to measure. See what a site costs and what is included.",
+    zh: "Mind Studio 做带这类效果的网站，按需定制。看看做一个站要多少钱、包含什么。",
+    "zh-tw": "Mind Studio 做帶這類效果的網站，按需訂製。看看做一個站要多少錢、包含什麼。",
+    it: "Mind Studio realizza siti con effetti come questo, su misura. Guarda cosa costa un sito e cosa include.",
+  },
+  ctaBtn: { en: "See plans", zh: "看方案与报价", "zh-tw": "看方案與報價", ja: "プランを見る", ko: "요금 보기", it: "Vedi i piani" },
+  /** 公开页底部一行：完整版在门后。链接指向 lab-unlocked，没 cookie 会撞上密码门。 */
+  fullLibrary: {
+    en: "Full library — live sample, numbers, prompt and source — is for clients.",
+    zh: "完整版（可交互样板、参数、提示词、源码）是客户专享。",
+    "zh-tw": "完整版（可互動樣板、參數、提示詞、原始碼）是客戶專享。",
+    it: "La libreria completa — sample interattivo, numeri, prompt e sorgente — è riservata ai clienti.",
+  },
+  fullLibraryLink: { en: "I have the password", zh: "我有密码", "zh-tw": "我有密碼", ja: "パスワードを持っている", ko: "비밀번호가 있어요", it: "Ho la password" },
   /** 有海报的重作品：轮播里是静态图，点开才是真的 */
   openToPlay: { en: "open to play", zh: "\u70b9\u5f00\u53ef\u73a9", "zh-tw": "\u9ede\u958b\u53ef\u73a9", ja: "\u958b\u3044\u3066\u64cd\u4f5c", ko: "\uc5f4\uc5b4\uc11c \uc870\uc791", it: "apri per interagire" },
 } satisfies Record<string, Localized>;

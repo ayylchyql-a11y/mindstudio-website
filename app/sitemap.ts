@@ -7,7 +7,6 @@ import { activeCategories, effectsIn } from "@/data/effects";
 import { TEMPLATES_LANGS, templates } from "@/data/templates";
 import { CLIENTS_LANGS, clients } from "@/data/clients";
 import { SERVIZI_LANGS } from "@/data/servizi";
-import { LAB_LOCKED } from "@/lib/lab-gate";
 import { locales, type Locale } from "@/lib/i18n";
 
 const BASE = "https://mindstudioapps.com";
@@ -72,9 +71,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     });
   }
 
-  // 设计库上了密码门就不进 sitemap（lib/lab-gate.ts）；门撤了自动恢复
-  if (!LAB_LOCKED) add(EN_ONLY, () => `/en/lab`, { changeFrequency: "weekly", priority: 0.7 });
-  for (const cat of LAB_LOCKED ? [] : activeCategories()) {
+  // 设计库是「橱窗」模式（lib/lab-gate.ts）：公开页可索引，所以照常进 sitemap；
+  // 完整版树 /lab-unlocked 永远不进（noindex + robots 禁抓）。
+  add(EN_ONLY, () => `/en/lab`, { changeFrequency: "weekly", priority: 0.7 });
+  for (const cat of activeCategories()) {
     add(EN_ONLY, () => `/en/lab/${cat.id}`, { changeFrequency: "weekly", priority: 0.6 });
     for (const e of effectsIn(cat.id)) {
       add(EN_ONLY, () => `/en/lab/${cat.id}/${e.slug}`, {

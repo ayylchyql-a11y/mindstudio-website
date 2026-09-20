@@ -1537,6 +1537,42 @@
   font-size: 14.5px; line-height: 1.7; color: var(--ink-2);
 }
 
+/* ── 橱窗模式（lib/lab-gate.ts）：录屏框 + 招揽块 ── */
+.fx-frame-video video {
+  position: relative; z-index: 1;
+  display: block; width: 100%; border: 0;
+  object-fit: cover; background: transparent;
+}
+.cat-preview-video {
+  position: relative; z-index: 1;
+  display: block; width: 100%; border: 0;
+  object-fit: cover;
+}
+/* 跟 /servizi 的 .sv-cta 同一个模子：深底、一句话、一个按钮。
+   分类页（.lab-wide 1080 宽）上限 680 与头部对齐；详情页在 760 的 prose 里自然就是满宽。 */
+.fx-cta {
+  margin-top: 48px; padding: 28px 30px; border-radius: 22px;
+  background: var(--ink); color: var(--ground);
+  display: grid; gap: 10px; justify-items: start;
+  max-width: 680px;
+}
+/* 🩸 `.prose-page p` 的 16px/margin 会盖过单类名，所以两处都带上 .prose-page 的特异度 */
+.fx-cta-title, .prose-page .fx-cta-title { margin: 0; font-size: 24px; font-weight: 650; letter-spacing: -0.02em; line-height: 1.2; color: inherit; }
+.fx-cta-body, .prose-page .fx-cta-body { margin: 0; font-size: 15px; line-height: 1.55; color: inherit; opacity: 0.78; }
+.fx-cta-btn {
+  margin-top: 6px;
+  display: inline-flex; align-items: center;
+  height: 42px; padding: 0 18px; border-radius: 99px;
+  background: var(--ground); color: var(--ink) !important;
+  font-size: 14.5px; font-weight: 600; text-decoration: none !important;
+  transition: transform 200ms var(--ease-out-strong), opacity 0.2s ease;
+}
+.fx-cta-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.fx-full-note, .prose-page .fx-full-note { margin: 16px 0 0; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); max-width: 680px; }
+.fx-full-note a, .prose-page .fx-full-note a { color: var(--ink-2); text-decoration: underline; text-underline-offset: 2px; }
+.fx-full-note a:hover, .prose-page .fx-full-note a:hover { color: var(--ink); }
+.lab-wide .fx-cta { margin-top: 56px; }
+
 .fx-source { font-size: 15px; }
 .fx-source-at { color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .fx-siblings { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }

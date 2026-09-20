@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { locales, defaultLocale, type Locale } from "@/lib/i18n";
-import { LAB_COOKIE, LAB_LOCKED, isLabPath, labPassword, labToken } from "@/lib/lab-gate";
+import { LAB_COOKIE, LAB_LOCKED, isGatedPath, labPassword, labToken, toFullPath } from "@/lib/lab-gate";
 
 /**
  * 把 `Accept-Language` 里最靠前、我们又支持的那种语言挑出来。
@@ -39,10 +39,10 @@ function negotiate(header: string | null): Locale {
 function gatePage(pathname: string, wrong: boolean): string {
   const lang = pathname.split("/")[1] || "en";
   const t = ({
-    zh: { title: "设计库暂未公开", body: "这个板块还在整理中，输入密码查看。", ph: "密码", btn: "进入", wrong: "密码不对" },
-    "zh-tw": { title: "設計庫暫未公開", body: "這個板塊還在整理中，輸入密碼查看。", ph: "密碼", btn: "進入", wrong: "密碼不對" },
-    it: { title: "Libreria non ancora pubblica", body: "Questa sezione è in preparazione. Inserisci la password per vederla.", ph: "Password", btn: "Entra", wrong: "Password errata" },
-  } as Record<string, { title: string; body: string; ph: string; btn: string; wrong: string }>)[lang] ?? { title: "Library not public yet", body: "This section is still being put together. Enter the password to view it.", ph: "Password", btn: "Enter", wrong: "Wrong password" };
+    zh: { title: "完整版设计库", body: "可交互样板、参数、提示词与源码是客户专享。输入密码继续。", ph: "密码", btn: "进入", wrong: "密码不对" },
+    "zh-tw": { title: "完整版設計庫", body: "可互動樣板、參數、提示詞與原始碼是客戶專享。輸入密碼繼續。", ph: "密碼", btn: "進入", wrong: "密碼不對" },
+    it: { title: "Libreria completa", body: "Sample interattivi, numeri, prompt e sorgente sono riservati ai clienti. Inserisci la password per continuare.", ph: "Password", btn: "Entra", wrong: "Password errata" },
+  } as Record<string, { title: string; body: string; ph: string; btn: string; wrong: string }>)[lang] ?? { title: "Full library", body: "Live samples, numbers, prompts and source are for clients. Enter the password to continue.", ph: "Password", btn: "Enter", wrong: "Wrong password" };
   const esc = (v: string) => v.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
   return `<!doctype html><html lang="${esc(lang)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${esc(t.title)} · Mind Studio</title>
 <style>*{box-sizing:border-box;margin:0}body{min-height:100vh;display:grid;place-items:center;padding:24px;background:#f5f5f7;color:#1d1d1f;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;-webkit-font-smoothing:antialiased}
@@ -57,13 +57,28 @@ export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // —— 设计库密码门（lib/lab-gate.ts）——
-  if (LAB_LOCKED && isLabPath(pathname)) {
+  // 门后面的是：完整版路由树 /xx/lab-unlocked/**，和没开放的样板文件 /effects/*.html。
+  // 公开的 /xx/lab/** 本身不拦；带对 cookie 来访时**改写**到完整版（地址栏不变）。
+  if (LAB_LOCKED) {
     const key = req.cookies.get(LAB_COOKIE)?.value;
-    if (key !== (await labToken(labPassword()))) {
+    const unlocked = key === (await labToken(labPassword()));
+    if (!unlocked && isGatedPath(pathname)) {
       return new NextResponse(gatePage(pathname, req.nextUrl.searchParams.get("wrong") === "1"), {
         status: 401,
         headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" },
       });
+    }
+    if (unlocked) {
+      const full = toFullPath(pathname);
+      if (full) {
+        const url = req.nextUrl.clone();
+        url.pathname = full;
+        // 🩸 完整版是按人下发的，别让 CDN / 浏览器把它缓存后端给下一个没 cookie 的人
+        const res = NextResponse.rewrite(url);
+        res.headers.set("cache-control", "private, no-store");
+        res.headers.set("x-robots-tag", "noindex");
+        return res;
+      }
     }
   }
   // 样板文件本来不经过 proxy（matcher 排除带点号的路径），只为这道门才进来的：
