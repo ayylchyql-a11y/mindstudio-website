@@ -13,13 +13,14 @@
   .hint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; white-space: nowrap; }
   :root { --acc: #c9e04a; }
   .stage { position: relative; height: 330px; margin-top: 12px; }
-  .it { position: absolute; left: 0; top: 0; width: var(--w); height: var(--h); border-radius: 12px; background: #1a1a1d; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; will-change: transform; }
-  .it .ic { width: 26px; height: 26px; border-radius: 8px; background: #c9e04a22; color: var(--acc); display: grid; place-items: center; font-size: 13px; }
+  .it { position: absolute; left: 0; top: 0; width: var(--w); height: var(--h); border-radius: 12px; background: #1a1a1d; padding: 10px 12px; display: flex; flex-direction: column; justify-content: space-between; will-change: transform; overflow: hidden; }
+  .it .ic { width: 24px; height: 24px; border-radius: 8px; background: #c9e04a22; color: var(--acc); display: grid; place-items: center; font-size: 13px; }
   .it span { font-size: 10px; font-weight: 600; } .it i { display: block; height: 2px; width: 24px; border-radius: 1px; background: #2f2f33; margin-top: 4px; }
-  /* the arc: each item moves along its own quadratic path — start → end with the control point lifted 40px
-     above the chord — via offset-path, so the browser does the curve; the delay staggers neighbours */
-  .it.fly { offset-path: path(var(--path)); offset-rotate: 0deg; offset-distance: 0%; animation: fly 520ms cubic-bezier(.22,.9,.3,1) forwards; animation-delay: var(--d); }
-  @keyframes fly { to { offset-distance: 100%; } }
+  /* the arc is drawn by hand: one rAF clock per switch, and every item's transform, width and height
+     are read off the same t — a quadratic bezier from the old rect to the new one with the control
+     point lifted 40px, and a size that interpolates on the same easing. offset-path was tried first:
+     its coordinate space is the element's own box, so every item landed 46px off and snapped at the end. */
+  .it { will-change: transform, width, height; transform-origin: 0 0; }
   .cols { display: flex; gap: 14px; } .cols span { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; } .cols span::before { content: ""; width: 10px; height: 3px; border-radius: 2px; background: #3a3a40; transition: background 200ms; } .cols span.on { color: #f5f5f7; } .cols span.on::before { background: var(--acc); }
 </style>
 <div class="card">
@@ -33,23 +34,32 @@
   const ITEMS = [['⊞', 'Plans'], ['▦', 'Schedule'], ['≡', 'Notes'], ['▭', 'Files'], ['◷', 'Timeline'], ['✎', 'Sketch'], ['◫', 'Threads'], ['⚑', 'Flags'], ['⚡', 'Power']];
   const stage = document.getElementById('stage'), W = 292;
   const els = ITEMS.map(([g, n]) => { const d = document.createElement('div'); d.className = 'it'; d.innerHTML = `<span class="ic">${g}</span><div><span>${n}</span><i></i></div>`; stage.appendChild(d); return d; });
-  const rect = (cols, i) => { const g = 8, w = (W - g * (cols - 1)) / cols, h = cols === 2 ? 96 : 78; return [(i % cols) * (w + g), Math.floor(i / cols) * (h + g), w, h]; };
-  let cols = 2;
+  // row height is whatever lets all nine fit the 330px stage: 5 rows at 2 cols, 3 rows at 3 — a hidden tenth tile would be a bug
+  const rect = (cols, i) => { const g = 8, w = (W - g * (cols - 1)) / cols, rows = Math.ceil(9 / cols), h = (330 - g * (rows - 1)) / rows; return [(i % cols) * (w + g), Math.floor(i / cols) * (h + g), w, h]; };
+  let cols = 2, raf = 0;
+  const ease = (t) => { /* cubic-bezier(.22,.9,.3,1) solved numerically once per frame */ let lo = 0, hi = 1, x; for (let i = 0; i < 12; i++) { const m = (lo + hi) / 2; x = 3 * .22 * m * (1 - m) * (1 - m) + 3 * .3 * m * m * (1 - m) + m * m * m; x < t ? lo = m : hi = m; } const u = (lo + hi) / 2; return 3 * .9 * u * (1 - u) * (1 - u) + 3 * 1 * u * u * (1 - u) + u * u * u; };
+  const place = (el, x, y, w, h) => { el.style.transform = `translate(${x}px, ${y}px)`; el.style.setProperty('--w', w + 'px'); el.style.setProperty('--h', h + 'px'); };
   function layout(next, animate) {
-    const from = els.map((_, i) => rect(cols, i)); cols = next;
-    els.forEach((el, i) => {
-      const [x0, y0] = from[i], [x1, y1, w, h] = rect(cols, i);
-      el.style.setProperty('--w', w + 'px'); el.style.setProperty('--h', h + 'px');
-      if (!animate || reduce || (x0 === x1 && y0 === y1)) { el.classList.remove('fly'); el.style.transform = `translate(${x1}px, ${y1}px)`; return; }
-      // control point: the chord's midpoint lifted 40px toward the top, so every item arcs the same way
-      const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2 - 40;
-      el.style.transform = ''; el.style.setProperty('--path', `"M${x0} ${y0} Q${cx} ${cy} ${x1} ${y1}"`); el.style.setProperty('--d', (i * 40) + 'ms');
-      el.classList.remove('fly'); void el.offsetWidth; el.classList.add('fly');
-      el.addEventListener('animationend', () => { el.classList.remove('fly'); el.style.transform = `translate(${x1}px, ${y1}px)`; }, { once: true });
-    });
+    const from = els.map((_, i) => rect(cols, i)); cols = next; const to = els.map((_, i) => rect(cols, i));
     document.querySelectorAll('#cols span').forEach((s) => s.classList.toggle('on', +s.dataset.c === cols)); document.getElementById('cnt').textContent = cols + ' cols';
+    cancelAnimationFrame(raf);
+    if (!animate || reduce) { els.forEach((el, i) => place(el, ...to[i])); return; }
+    const DUR = 520, STEP = 24, t0 = performance.now();
+    const tick = (now) => {
+      let busy = false;
+      els.forEach((el, i) => {
+        const [x0, y0, w0, h0] = from[i], [x1, y1, w1, h1] = to[i];
+        const t = Math.max(0, Math.min(1, (now - t0 - i * STEP) / DUR)); if (t < 1) busy = true;
+        const e = ease(t), cx = (x0 + x1) / 2, cy = (y0 + y1) / 2 - 40;   // control point: the chord's midpoint lifted 40px
+        const x = (1 - e) * (1 - e) * x0 + 2 * (1 - e) * e * cx + e * e * x1, y = (1 - e) * (1 - e) * y0 + 2 * (1 - e) * e * cy + e * e * y1;
+        place(el, x, y, w0 + (w1 - w0) * e, h0 + (h1 - h0) * e);
+      });
+      if (busy) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
   }
   layout(2, false);
   document.getElementById('cols').addEventListener('click', (e) => { const s = e.target.closest('span'); if (s && +s.dataset.c !== cols) layout(+s.dataset.c, true); });
-  if (!reduce) { setTimeout(() => layout(3, true), 1100); setTimeout(() => layout(2, true), 3200); setTimeout(() => layout(3, true), 5000); }
+  const demo = reduce ? [] : [setTimeout(() => layout(3, true), 1100), setTimeout(() => layout(2, true), 3200), setTimeout(() => layout(3, true), 5000)];
+  document.getElementById('cols').addEventListener('pointerdown', () => demo.forEach(clearTimeout), { once: true });
 </script>

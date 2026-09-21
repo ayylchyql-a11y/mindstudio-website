@@ -34,6 +34,6 @@
   grid.innerHTML = NAMES.map((n, i) => `<div class="it" data-i="${i}"><img src="_plates/${'abcdeg'[i]}.jpg" alt="${n}"><span class="cap">${n}</span></div>`).join('');
   let cur = -1;
   const pick = (i) => { cur = cur === i ? -1 : i; grid.classList.toggle('pick', cur >= 0); [...grid.children].forEach((el, k) => el.classList.toggle('on', k === cur)); cnt.textContent = cur < 0 ? '6 items' : '1 selected'; name.textContent = cur < 0 ? '—' : NAMES[cur]; };
-  grid.addEventListener('click', (e) => { const it = e.target.closest('.it'); if (it) pick(+it.dataset.i); });
-  if (!reduce) { setTimeout(() => pick(3), 1000); setTimeout(() => pick(3), 3200); setTimeout(() => pick(1), 4200); }
+  const demo = reduce ? [] : [setTimeout(() => pick(3), 1000), setTimeout(() => pick(3), 3200), setTimeout(() => pick(1), 4200)];
+  grid.addEventListener('click', (e) => { demo.forEach(clearTimeout); const it = e.target.closest('.it'); if (it) pick(+it.dataset.i); });
 </script>

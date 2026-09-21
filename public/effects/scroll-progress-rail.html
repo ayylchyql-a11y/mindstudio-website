@@ -43,7 +43,9 @@
   const secs = [...doc.querySelectorAll('.sec')];
   // nodes sit at each section's start as a fraction of the scrollable range; the last section's end is 100%
   const range = () => doc.scrollHeight - doc.clientHeight;
-  secs.forEach((s) => { const n = document.createElement('i'); n.className = 'node'; n.style.setProperty('--y', (Math.min(1, s.offsetTop / range()) * 100) + '%'); rail.appendChild(n); });
+  // a node sits where its section starts as a fraction of the whole document, so six sections spread the rail
+  // (dividing by the scrollable range would pile the last two at 100%: their tops sit past the last scroll position)
+  secs.forEach((s) => { const n = document.createElement('i'); n.className = 'node'; n.style.setProperty('--y', (s.offsetTop / doc.scrollHeight * 100) + '%'); rail.appendChild(n); });
   const nodes = [...rail.querySelectorAll('.node')];
   /* progress is READ from the scroll position every time — never accumulated — so it is reversible for free */
   let idle = 0;
@@ -55,5 +57,6 @@
     rail.classList.add('live'); clearTimeout(idle); idle = setTimeout(() => rail.classList.remove('live'), 700);
   }
   doc.addEventListener('scroll', paint, { passive: true }); paint(); rail.classList.remove('live');
-  if (!reduce) { const t0 = performance.now(); const tick = (now) => { const t = (now - t0) / 1000; if (t < 1) return requestAnimationFrame(tick); const u = Math.min(1, (t - 1) / 4); doc.scrollTop = range() * (u < .6 ? u / .6 * .65 : .65 - (u - .6) / .4 * .3); if (u < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }
+  let demoOn = !reduce; doc.addEventListener('pointerdown', () => demoOn = false, { once: true }); doc.addEventListener('wheel', () => demoOn = false, { once: true });
+  if (!reduce) { const t0 = performance.now(); const tick = (now) => { if (!demoOn) return; const t = (now - t0) / 1000; if (t < 1) return requestAnimationFrame(tick); const u = Math.min(1, (t - 1) / 4); doc.scrollTop = range() * (u < .6 ? u / .6 * .65 : .65 - (u - .6) / .4 * .3); if (u < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }
 </script>

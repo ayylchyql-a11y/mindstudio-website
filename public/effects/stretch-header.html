@@ -43,5 +43,6 @@
   hdr.addEventListener('pointermove', (e) => { if (y0 === null) return; set(e.clientY - y0); });
   const release = () => { if (y0 === null) return; y0 = null; hdr.classList.add('settle'); set(0); };
   hdr.addEventListener('pointerup', release); hdr.addEventListener('pointercancel', release);
-  if (!reduce) setTimeout(() => { hdr.classList.remove('settle'); const t0 = performance.now(); const tick = (now) => { const t = Math.min(1, (now - t0) / 900); set(Math.sin(t * Math.PI) * 190); if (t < 1) requestAnimationFrame(tick); else { hdr.classList.add('settle'); set(0); } }; requestAnimationFrame(tick); }, 1100);
+  let demoT = 0; hdr.addEventListener('pointerdown', (e) => { if (e.isTrusted) clearTimeout(demoT); });
+  if (!reduce) demoT = setTimeout(() => { hdr.classList.remove('settle'); const t0 = performance.now(); const tick = (now) => { const t = Math.min(1, (now - t0) / 900); set(Math.sin(t * Math.PI) * 190); if (t < 1) requestAnimationFrame(tick); else { hdr.classList.add('settle'); set(0); } }; requestAnimationFrame(tick); }, 1100);
 </script>

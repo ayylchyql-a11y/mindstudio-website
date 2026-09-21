@@ -12,35 +12,50 @@
   .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: #8e8e93; } .foot b { color: #f5f5f7; font-variant-numeric: tabular-nums; }
   .hint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: #00000055; white-space: nowrap; }
   :root { --acc: #ff5c5c; }
-  .grid { height: 330px; margin-top: 12px; overflow: auto; scrollbar-width: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-content: start; } .grid::-webkit-scrollbar { display: none; }
-  .plate { aspect-ratio: .78; border-radius: 12px; overflow: hidden; background: #1a1a1d; } .plate img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .grid { height: 330px; margin-top: 12px; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-content: start; touch-action: none; cursor: grab; user-select: none; }
+  .grid.held { cursor: grabbing; }
+  .track { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; grid-column: 1 / -1; will-change: transform; }
+  .plate { aspect-ratio: .78; border-radius: 12px; overflow: hidden; background: #1a1a1d; }
+  .plate img { width: 100%; height: 100%; object-fit: cover; display: block; -webkit-user-drag: none; pointer-events: none; }
   /* the blur is an SVG filter with stdDeviation "0 N": zero across, N along the scroll axis — a directional
-     smear, which CSS blur() cannot do. Applied to the grid's children, not the grid, so the container keeps scrolling. */
-  .grid.smear .plate { filter: url(#smear); }
+     smear, which CSS blur() cannot do. It goes on the images, inside their clipped tiles, so the tiles keep
+     their corners and the smear never bleeds into the gaps. */
+  .grid.smear .plate img { filter: url(#smear); }
   .state { color: var(--acc); } .state.idle { color: #8e8e93; }
 </style>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="smear" x="-10%" y="-30%" width="120%" height="160%"><feGaussianBlur id="gb" stdDeviation="0 0" edgeMode="duplicate"/></filter></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="smear" x="0" y="-50%" width="100%" height="200%"><feGaussianBlur id="gb" stdDeviation="0 0" edgeMode="duplicate"/></filter></svg>
 <div class="card">
   <div class="eyebrow"><span><i>●</i><b>Plates</b></span><span class="state idle" id="state">Idle</span></div>
-  <div class="grid" id="grid"></div>
+  <div class="grid" id="grid"><div class="track" id="track"></div></div>
   <div class="foot"><span>Velocity</span><b><span id="v">0</span> px/s</b></div>
 </div>
-<div class="hint">Fling the grid</div>
+<div class="hint">Grab and fling the grid · or scroll</div>
 <script>
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const grid = document.getElementById('grid'), gb = document.getElementById('gb'), vEl = document.getElementById('v'), state = document.getElementById('state');
-  grid.innerHTML = Array.from({ length: 14 }, (_, i) => `<div class="plate"><img src="_plates/${'abcdefghij'[i % 10]}.jpg" alt=""></div>`).join('');
-  /* velocity is Δscroll/Δt measured on scroll events; between events it decays by 0.85 per frame, so the
-     blur eases out rather than dropping to zero the instant the wheel stops */
-  let last = grid.scrollTop, lastT = performance.now(), v = 0, shown = 0;
-  grid.addEventListener('scroll', () => { const now = performance.now(), dt = Math.max(1, now - lastT); v = (grid.scrollTop - last) / dt * 1000; last = grid.scrollTop; lastT = now; }, { passive: true });
-  (function frame() {
-    if (performance.now() - lastT > 40) v *= .85;             // no scroll event lately: decay
+  const grid = document.getElementById('grid'), track = document.getElementById('track'), gb = document.getElementById('gb'), vEl = document.getElementById('v'), state = document.getElementById('state');
+  track.innerHTML = Array.from({ length: 14 }, (_, i) => `<div class="plate"><img src="_plates/${'abcdefghij'[i % 10]}.jpg" alt=""></div>`).join('');
+  /* the scroll is ours: a position y moved by a velocity v. While the finger is down, y follows it and v is
+     measured from the last two moves; on release v keeps pushing y and decays by 0.95 per frame — the fling.
+     A wheel tick just adds to v, so the trackpad gets the same glide. The blur reads |v|. */
+  let y = 0, v = 0, held = null, lastY = 0, lastT = 0, shown = 0;
+  const max = () => Math.max(0, track.scrollHeight - grid.clientHeight);
+  grid.addEventListener('pointerdown', (e) => { held = { y0: e.clientY, s0: y }; lastY = e.clientY; lastT = performance.now(); v = 0; grid.classList.add('held'); grid.setPointerCapture(e.pointerId); });
+  grid.addEventListener('pointermove', (e) => { if (!held) return; const now = performance.now(); v = -(e.clientY - lastY) / Math.max(1, now - lastT) * 1000; lastY = e.clientY; lastT = now; y = held.s0 - (e.clientY - held.y0); });
+  const up = () => { if (!held) return; held = null; grid.classList.remove('held'); if (performance.now() - lastT > 60) v = 0; };
+  grid.addEventListener('pointerup', up); grid.addEventListener('pointercancel', up);
+  grid.addEventListener('wheel', (e) => { e.preventDefault(); v += e.deltaY * 18; }, { passive: false });
+  let last = performance.now();
+  (function frame(now) {
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    if (!held) { y += v * dt; v *= Math.pow(.95, dt * 60); if (Math.abs(v) < 20) v = 0; }
+    if (y < 0) { y = 0; v = 0; } if (y > max()) { y = max(); v = 0; }
+    track.style.transform = `translateY(${-y}px)`;
     shown += (Math.abs(v) - shown) * .3;
-    const sd = reduce ? 0 : Math.min(14, shown / 180);           // 2500 px/s ≈ 14px of smear
-    gb.setAttribute('stdDeviation', `0 ${sd.toFixed(2)}`); grid.classList.toggle('smear', sd > .2);
-    vEl.textContent = Math.round(shown); state.textContent = shown > 30 ? 'Scrolling' : 'Idle'; state.classList.toggle('idle', shown <= 30);
+    const sd = reduce ? 0 : Math.min(16, shown / 60);              // 1000 px/s ≈ 16px of smear
+    gb.setAttribute('stdDeviation', `0 ${sd.toFixed(2)}`); grid.classList.toggle('smear', sd > .3);
+    vEl.textContent = Math.round(shown); state.textContent = shown > 60 ? 'Scrolling' : 'Idle'; state.classList.toggle('idle', shown <= 60);
     requestAnimationFrame(frame);
-  })();
-  if (!reduce) { const t0 = performance.now(); const max = () => grid.scrollHeight - grid.clientHeight; const tick = (now) => { const t = (now - t0) / 1000; if (t < 1) return requestAnimationFrame(tick); const u = Math.min(1, (t - 1) / 3.2); const e = u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; grid.scrollTop = max() * (u < .55 ? e * 1.2 : 1 - (u - .55) / .45 * .7); if (u < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }
+  })(last);
+  /* demo: a real fling — 200px in 180ms, then let go; a second one back at 3.6s */
+  if (!reduce) { const fling = (dir) => { const r = grid.getBoundingClientRect(), ev = (t, cy) => grid.dispatchEvent(new PointerEvent(t, { clientX: r.left + 150, clientY: cy, pointerId: 1, bubbles: true })); const cy0 = r.top + (dir > 0 ? 260 : 60); ev('pointerdown', cy0); const t0 = performance.now(); const tk = (now) => { const t = Math.min(1, (now - t0) / 180); ev('pointermove', cy0 - dir * 200 * t); if (t < 1) requestAnimationFrame(tk); else ev('pointerup', cy0 - dir * 200); }; requestAnimationFrame(tk); }; const demo = [setTimeout(() => fling(1), 1000), setTimeout(() => fling(-1), 3800)]; grid.addEventListener('wheel', () => demo.forEach(clearTimeout), { once: true }); grid.addEventListener('pointerdown', (e) => { if (e.isTrusted) demo.forEach(clearTimeout); }); }
 </script>

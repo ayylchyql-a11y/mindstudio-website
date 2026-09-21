@@ -52,5 +52,6 @@
   });
   const up = () => { held = null; el.classList.remove('held'); }; el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
   paint();
-  if (!reduce) setTimeout(() => { const ev = (t, x, y) => el.dispatchEvent(new PointerEvent(t, { clientX: x, clientY: y, pointerId: 1, bubbles: true })); const r = el.getBoundingClientRect(); const sx = r.left + 60, sy = r.top + 40; ev('pointerdown', sx, sy); const t0 = performance.now(); const tick = (now) => { const t = Math.min(1, (now - t0) / 1600); const e = .5 - Math.cos(t * Math.PI) / 2; ev('pointermove', sx + e * 130, sy - e * 120); if (t < 1) requestAnimationFrame(tick); else setTimeout(() => ev('pointerup', sx + 130, sy - 120), 500); }; requestAnimationFrame(tick); }, 1000);
+  let demoT = 0; el.addEventListener('pointerdown', (e) => { if (e.isTrusted) clearTimeout(demoT); });
+  if (!reduce) demoT = setTimeout(() => { const ev = (t, x, y) => el.dispatchEvent(new PointerEvent(t, { clientX: x, clientY: y, pointerId: 1, bubbles: true })); const r = el.getBoundingClientRect(); const sx = r.left + 60, sy = r.top + 40; ev('pointerdown', sx, sy); const t0 = performance.now(); const tick = (now) => { const t = Math.min(1, (now - t0) / 1600); const e = .5 - Math.cos(t * Math.PI) / 2; ev('pointermove', sx + e * 130, sy - e * 120); if (t < 1) requestAnimationFrame(tick); else setTimeout(() => ev('pointerup', sx + 130, sy - 120), 500); }; requestAnimationFrame(tick); }, 1000);
 </script>

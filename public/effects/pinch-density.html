@@ -20,6 +20,7 @@
   .tile .lbl { position: absolute; left: 44px; top: 0; height: 100%; display: flex; align-items: center; font-size: 11px; font-weight: 600; white-space: nowrap; opacity: 0; transition: opacity 200ms; }
   .tile .bar { position: absolute; left: 44px; right: 0; bottom: 6px; height: 2px; background: #ffffff22; opacity: 0; transition: opacity 200ms; }
   .stage[data-level="rows"] .tile .lbl, .stage[data-level="rows"] .tile .bar { opacity: 1; }
+  .tile .lbl { line-height: 1; }
   .stage[data-level="rows"] .tile img { width: 32px; height: 32px; border-radius: 8px; }
   .stage[data-level="rows"] .tile { background: transparent; }
   .tile.moving { transition: transform 320ms cubic-bezier(.22,.9,.3,1), width 320ms cubic-bezier(.22,.9,.3,1), height 320ms cubic-bezier(.22,.9,.3,1); }
@@ -43,7 +44,7 @@
   const LAYOUT = {
     full: (i) => i === 0 ? [0, 0, W, H] : [W / 2 - 20, H + 40, 40, 40],            // one plate; the rest wait just below the fold
     cols: (i) => { const g = 6, w = (W - g * 2) / 3, h = w * 1.25; return [(i % 3) * (w + g), Math.floor(i / 3) * (h + g), w, h]; },
-    rows: (i) => [0, i * 36, W, 32],
+    rows: (i) => [0, i * 36, W, 32],   // 9 × 36 = 324 < 330
   };
   const ORDER = ['full', 'cols', 'rows']; let level = 0, applied = null;
   function apply(name) {
@@ -66,7 +67,8 @@
   stage.addEventListener('pointermove', (e) => { if (!pts.has(e.pointerId)) return; pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (pts.size !== 2 || stepped) return; const r = dist() / d0; if (r < .8) { go(1); stepped = true; } if (r > 1.25) { go(-1); stepped = true; } });
   const up = (e) => pts.delete(e.pointerId); stage.addEventListener('pointerup', up); stage.addEventListener('pointercancel', up);
   /* wheel / trackpad: pinch on a trackpad arrives as ctrl+wheel; plain wheel steps too */
-  let acc = 0; stage.addEventListener('wheel', (e) => { e.preventDefault(); acc += e.deltaY; if (Math.abs(acc) > 60) { go(acc > 0 ? 1 : -1); acc = 0; } }, { passive: false });
+  let acc = 0, cool = 0; stage.addEventListener('wheel', (e) => { e.preventDefault(); if (performance.now() < cool) return; acc += e.deltaY; if (Math.abs(acc) > 100) { go(acc > 0 ? 1 : -1); acc = 0; cool = performance.now() + 400; } }, { passive: false });   // one level per gesture: 100px, then a 400ms cool-down
   document.getElementById('levels').addEventListener('click', (e) => { const s = e.target.closest('span'); if (s) { level = ORDER.indexOf(s.dataset.l); apply(s.dataset.l); } });
-  if (!reduce) { setTimeout(() => go(1), 1100); setTimeout(() => go(1), 2600); setTimeout(() => go(-1), 4200); setTimeout(() => go(-1), 5400); }
+  const demo = reduce ? [] : [setTimeout(() => go(1), 1100), setTimeout(() => go(1), 2600), setTimeout(() => go(-1), 4200), setTimeout(() => go(-1), 5400)];
+  stage.addEventListener('pointerdown', () => demo.forEach(clearTimeout), { once: true }); stage.addEventListener('wheel', () => demo.forEach(clearTimeout), { once: true });
 </script>
