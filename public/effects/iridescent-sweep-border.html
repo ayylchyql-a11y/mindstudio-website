@@ -1,0 +1,80 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Iridescent sweep border</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    display: grid; place-items: center;
+    background: radial-gradient(120% 90% at 50% 0%, #10131c 0%, #07080c 70%);
+    color: #e9ecf5; overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .scene { display: grid; justify-items: center; gap: 12px; }
+  .cap { font-size: 9px; letter-spacing: .24em; text-transform: uppercase; color: #ffffff2e; }
+
+  /* The angle has to be a registered custom property. A plain --a on :root is
+     a string as far as CSS is concerned, so `transition`/`@keyframes` on it
+     snaps 0deg → 360deg with nothing in between: the ring would jump once per
+     cycle instead of turning. Registering it with syntax "<angle>" is what
+     makes it interpolable. */
+  @property --a { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+
+  /* One rainbow arc, not a full rainbow ring. The conic gradient is dim for
+     200deg and spectral for the remaining 160deg (44% of the circle), so at any
+     instant part of the border is lit and the rest is a hairline in the panel's
+     own colour — that is what reads as "a band running around the edge". */
+  .card {
+    --a: 0deg;
+    --ring: conic-gradient(from var(--a),
+      #191c26   0deg, #191c26 196deg,
+      #ff6b3d 228deg, #ffd23d 252deg, #5ef08a 276deg,
+      #3ddbf0 300deg, #6b8cff 326deg, #c86bff 346deg,
+      #191c26 360deg);
+    position: relative;
+    width: min(380px, calc(100vw - 48px));
+    border-radius: 18px;
+    padding: 1.5px;                    /* this padding IS the border width */
+    background: var(--ring);
+    animation: spin 4.2s linear infinite;
+  }
+  /* The glow is the same gradient again, blurred and pushed behind. Reusing the
+     gradient (rather than a flat box-shadow) keeps the halo the colour of the
+     arc that is currently passing, which a single-colour shadow cannot do. */
+  .card::before {
+    content: ""; position: absolute; inset: -2px; z-index: -1;
+    border-radius: 20px;
+    background: var(--ring);
+    filter: blur(13px); opacity: .55;
+  }
+  @keyframes spin { to { --a: 360deg; } }
+
+  .inner {
+    border-radius: 16.5px;
+    background: linear-gradient(#0d0f16, #0a0c12);
+    padding: 26px 26px 30px;
+  }
+  h1 { font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
+  .bar { height: 5px; border-radius: 99px; background: #ffffff1a; margin-top: 14px; }
+  .bar.b2 { width: 62%; margin-top: 9px; background: #ffffff12; }
+
+  /* Reduced motion: stop the sweep, but leave the ring at an angle where the
+     spectrum is visible. Freezing at 0deg would show the dim segment and read
+     as a broken border. */
+  @media (prefers-reduced-motion: reduce) {
+    .card { animation: none; --a: 300deg; }
+  }
+</style>
+<div class="scene">
+  <div class="cap">Multi-color shimmer border</div>
+  <div class="card">
+    <div class="inner">
+      <h1>Glass Panel</h1>
+      <div class="bar"></div>
+      <div class="bar b2"></div>
+    </div>
+  </div>
+  <div class="cap">Subtle glow effect</div>
+</div>

@@ -1,0 +1,204 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Particle trace border</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    display: grid; place-items: center;
+    background: radial-gradient(130% 100% at 50% 8%, #0c1018 0%, #07080c 72%);
+    color: #e9ecf5; overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .scene { display: grid; justify-items: center; gap: 12px; }
+  .caps { display: flex; gap: 18px; }
+  .cap { font-size: 9px; letter-spacing: .24em; text-transform: uppercase; color: #ffffff2e; }
+
+  /* The canvas is a sibling that sits *over* the card, inset by -40px so the
+     particles that drift outward are not clipped. pointer-events:none keeps the
+     card underneath clickable — a full-bleed canvas over a panel is the classic
+     way to accidentally kill every control inside it. */
+  .stage { position: relative; }
+  .card {
+    width: min(380px, calc(100vw - 48px));
+    border-radius: 18px;
+    padding: 26px 26px 30px;
+    background: linear-gradient(#0d0f16, #0a0c12);
+    border: 1px solid #ffffff08;
+  }
+  canvas { position: absolute; inset: -40px; width: calc(100% + 80px); height: calc(100% + 80px); pointer-events: none; }
+
+  h1 { font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
+  .bar { height: 5px; border-radius: 99px; background: #ffffff1a; margin-top: 14px; }
+  .bar.b2 { width: 62%; margin-top: 9px; background: #ffffff12; }
+
+  .replay {
+    font: inherit; font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
+    color: #8a8a90; background: none; border: 1px solid #ffffff22; border-radius: 99px;
+    padding: 4px 10px; cursor: pointer;
+  }
+  .replay:hover { color: #d8dae2; border-color: #ffffff3d; }
+</style>
+<div class="scene">
+  <div class="cap">Particle shimmer border</div>
+  <div class="stage">
+    <canvas id="c"></canvas>
+    <div class="card">
+      <h1>Glass Panel</h1>
+      <div class="bar"></div>
+      <div class="bar b2"></div>
+    </div>
+  </div>
+  <div class="caps">
+    <span class="cap">Dissipating to void</span>
+    <button class="replay" id="replay" type="button">Dissipate</button>
+  </div>
+</div>
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+  const card = document.querySelector('.card');
+  const PAD = 40;                 // canvas overhang, must match CSS inset
+  const RADIUS = 18;
+  const COUNT = 420;              // steady-state population
+  const SPEED = 130;              // px/s along the path
+  const LIFE = 2.6;               // s, from spawn to fully dissipated
+  const DRIFT_FROM = 0.62;        // fraction of life where it leaves the path
+  const DRIFT_MAX = 15;           // px outward at the end of life
+
+  let W = 0, H = 0, dpr = 1, path = null;
+
+  /* ── The path ───────────────────────────────────────────────────────────
+     A rounded rectangle walked as an arc-length-parameterised curve: four
+     straight runs and four quarter arcs, each with its cumulative length, so
+     pointAt(s) is O(8) and every particle moves at the *same* speed whether it
+     is on a side or rounding a corner. Stepping a naive parameter 0..1 over
+     the four sides instead makes particles visibly sprint round the corners. */
+  function buildPath(w, h, r) {
+    const segs = [];
+    const line = (x1, y1, x2, y2) => segs.push({ t: 'l', x1, y1, x2, y2, len: Math.hypot(x2 - x1, y2 - y1) });
+    const arc = (cx, cy, a0, a1) => segs.push({ t: 'a', cx, cy, a0, a1, len: Math.abs(a1 - a0) * r });
+    const HP = Math.PI / 2;
+    line(r, 0, w - r, 0);                     arc(w - r, r, -HP, 0);
+    line(w, r, w, h - r);                     arc(w - r, h - r, 0, HP);
+    line(w - r, h, r, h);                     arc(r, h - r, HP, Math.PI);
+    line(0, h - r, 0, r);                     arc(r, r, Math.PI, 3 * HP);
+    let total = 0;
+    for (const s of segs) { s.start = total; total += s.len; }
+    return {
+      total,
+      at(s) {
+        s = ((s % total) + total) % total;
+        for (const g of segs) {
+          if (s > g.start + g.len) continue;
+          const k = (s - g.start) / g.len;
+          if (g.t === 'l') {
+            const dx = g.x2 - g.x1, dy = g.y2 - g.y1, L = g.len || 1;
+            // outward normal = tangent rotated −90°, given the clockwise walk above
+            return { x: g.x1 + dx * k, y: g.y1 + dy * k, nx: dy / L, ny: -dx / L };
+          }
+          const a = g.a0 + (g.a1 - g.a0) * k;
+          return { x: g.cx + Math.cos(a) * r, y: g.cy + Math.sin(a) * r, nx: Math.cos(a), ny: Math.sin(a) };
+        }
+      }
+    };
+  }
+
+  /* Hue follows *position*, not time: green down the left edge, cyan across the
+     top, magenta along the right and bottom — same as the source. Because the
+     mapping is s → hue, two particles at the same place are always the same
+     colour, which is what makes the ring read as one object instead of confetti. */
+  const hueAt = (s, total) => {
+    const p = s / total;                       // 0 at top-left, clockwise
+    return 140 + 360 * p;                      // one full turn of hue per lap
+  };
+
+  function resize() {
+    const r = card.getBoundingClientRect();
+    if (!r.width) return;
+    W = r.width + PAD * 2; H = r.height + PAD * 2;
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    path = buildPath(r.width, r.height, RADIUS);
+  }
+
+  const P = [];
+  let dissipating = 0;                          // 0 = emitting, >0 = one-shot fade
+
+  const spawn = (age = 0) => ({
+    s: Math.random() * (path ? path.total : 1000),
+    age,
+    life: LIFE * (0.7 + Math.random() * 0.6),
+    off: (Math.random() - 0.5) * 1.6,           // px perpendicular jitter on the line
+    v: SPEED * (0.75 + Math.random() * 0.5),
+    out: 0.4 + Math.random() * 0.9,             // per-particle outward eagerness
+    size: 0.7 + Math.random() * 1.1
+  });
+
+  function frame(dt) {
+    ctx.clearRect(0, 0, W, H);
+    if (!path) return;
+    if (dissipating > 0) dissipating += dt;
+
+    for (let i = P.length - 1; i >= 0; i--) {
+      const p = P[i];
+      p.age += dt;
+      p.s += p.v * dt;
+      const k = p.age / p.life;
+      if (k >= 1) {
+        // Steady state keeps the population flat: one dies, one is born. During
+        // a dissipation nothing is reborn, which is what empties the ring.
+        P.splice(i, 1);
+        if (!dissipating) P.push(spawn());
+        continue;
+      }
+      // alpha: quick fade in over the first 12%, long fade out over the drift
+      let a = k < 0.12 ? k / 0.12 : 1 - Math.max(0, (k - DRIFT_FROM) / (1 - DRIFT_FROM)) ** 1.9;
+      let d = k > DRIFT_FROM ? ((k - DRIFT_FROM) / (1 - DRIFT_FROM)) ** 2 * DRIFT_MAX * p.out : 0;
+      if (dissipating > 0) {
+        const g = Math.min(1, dissipating / 0.9);   // 0.9s, measured off the source
+        a *= 1 - g; d += g * g * 34 * p.out;
+      }
+      if (a <= 0.01) continue;
+      const q = path.at(p.s);
+      const x = PAD + q.x + q.nx * (p.off + d);
+      const y = PAD + q.y + q.ny * (p.off + d);
+      ctx.fillStyle = `hsl(${hueAt(p.s % path.total, path.total)} 92% 72% / ${a})`;
+      ctx.fillRect(x - p.size / 2, y - p.size / 2, p.size, p.size);
+    }
+
+    if (dissipating > 1.9) { dissipating = 0; while (P.length < COUNT) P.push(spawn(Math.random() * LIFE)); }
+  }
+
+  let last = 0, raf = 0;
+  const loop = (t) => {
+    const dt = Math.min(0.05, (t - last) / 1000 || 0); last = t;
+    frame(dt);
+    raf = requestAnimationFrame(loop);
+  };
+
+  function seed() { P.length = 0; for (let i = 0; i < COUNT; i++) P.push(spawn(Math.random() * LIFE)); }
+
+  addEventListener('resize', () => { resize(); });
+  new ResizeObserver(resize).observe(card);
+  resize(); seed();
+
+  document.getElementById('replay').addEventListener('click', () => {
+    if (dissipating === 0) dissipating = 0.0001;
+  });
+
+  // Squares of 1–2px at 240 particles is cheap, but a tab in the background
+  // still burns a frame budget it cannot show. Stop, don't just skip.
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { cancelAnimationFrame(raf); raf = 0; }
+    else if (!raf && !reduce) { last = performance.now(); raf = requestAnimationFrame(loop); }
+  });
+
+  if (reduce) { resize(); seed(); frame(0); }   // one still frame, not an empty box
+  else raf = requestAnimationFrame(loop);
+})();
+</script>

@@ -1,0 +1,88 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nebula flow border</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    display: grid; place-items: center;
+    background: radial-gradient(130% 110% at 50% 0%, #0b1018 0%, #06070b 70%);
+    color: #e9ecf5; overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .scene { display: grid; justify-items: center; gap: 14px; }
+  .cap { font-size: 9px; letter-spacing: .24em; text-transform: uppercase; color: #ffffff2e; }
+
+  .stage { position: relative; isolation: isolate; }
+
+  /* Four gas clouds parked on the four corners of the frame, each drifting on
+     its own period. The source describes this as "stacked conic gradients,
+     blurred" — one rotating conic gives the same picture, but a rotating
+     gradient has to re-run its blur every single frame. A blurred element that
+     *moves* is filtered once and then transformed by the compositor. Same look,
+     one is free and one is not. */
+  .gas {
+    position: absolute; z-index: -1; pointer-events: none;
+    width: 208px; height: 208px; border-radius: 50%;
+    filter: blur(28px);
+    will-change: transform;
+  }
+  /* Periods 23 / 29 / 37 / 43 s: four primes, so the four clouds never return
+     to the same arrangement. Give any two of them the same period and the whole
+     frame visibly ticks. */
+  .g1 { top: -78px;  left: -76px;  background: radial-gradient(circle, #a06cff 0%, #a06cff44 46%, transparent 70%); opacity: .88; animation: d1 13s ease-in-out infinite alternate; }
+  .g2 { top: -82px;  right: -70px; background: radial-gradient(circle, #35d6e8 0%, #35d6e844 46%, transparent 70%); opacity: .74; animation: d2 17s ease-in-out infinite alternate; }
+  .g3 { bottom: -78px; right: -78px; background: radial-gradient(circle, #ff7ac0 0%, #ff7ac044 46%, transparent 70%); opacity: .80; animation: d3 23s ease-in-out infinite alternate; }
+  .g4 { bottom: -76px; left: -72px;  background: radial-gradient(circle, #2fb8a0 0%, #2fb8a044 46%, transparent 70%); opacity: .70; animation: d4 29s ease-in-out infinite alternate; }
+
+  /* The drift runs mostly *along* the edge it sits on (±90px) and barely across
+     it (±26px). Equal drift in both axes pulls the clouds away from the frame
+     and it stops being a border. */
+  @keyframes d1 { to { transform: translate(104px, 22px)  scale(1.18); } }
+  @keyframes d2 { to { transform: translate(-88px, 26px)  scale(1.10); } }
+  @keyframes d3 { to { transform: translate(-96px, -20px) scale(1.16); } }
+  @keyframes d4 { to { transform: translate(92px, -24px)  scale(1.12); } }
+
+  /* The panel is opaque, so it is the panel that crops the gas into a border:
+     everything inside the rounded rectangle is covered and only the overhang
+     survives. No mask, no ring geometry — the card is the mask. */
+  .card {
+    position: relative;
+    width: min(380px, calc(100vw - 48px));
+    border-radius: 18px;
+    padding: 26px 26px 30px;
+    background: linear-gradient(#0d0f16, #0a0c12);
+    /* A dashed hairline stands in for the fine dotted edge in the source; on a
+       rounded rect the dashes follow the curve, which a repeating-gradient
+       border-image does not. */
+    border: 1px dashed #ffffff1c;
+    box-shadow: 0 24px 60px -30px #000;
+  }
+
+  h1 { font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
+  .bar { height: 5px; border-radius: 99px; background: #ffffff1a; margin-top: 14px; }
+  .bar.b2 { width: 62%; margin-top: 9px; background: #ffffff12; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gas { animation: none; }
+    .g1 { transform: translate(52px, 10px); }
+    .g3 { transform: translate(-48px, -8px); }
+  }
+</style>
+<div class="scene">
+  <div class="cap">Nebula flow border</div>
+  <div class="stage">
+    <div class="gas g1"></div>
+    <div class="gas g2"></div>
+    <div class="gas g3"></div>
+    <div class="gas g4"></div>
+    <div class="card">
+      <h1>Glass Panel</h1>
+      <div class="bar"></div>
+      <div class="bar b2"></div>
+    </div>
+  </div>
+  <div class="cap">Subtle nebula glow</div>
+</div>

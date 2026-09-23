@@ -1,0 +1,178 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neon node border</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    display: grid; place-items: center;
+    background: radial-gradient(130% 110% at 50% 0%, #0a1016 0%, #06070b 72%);
+    color: #e9ecf5; overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .scene { display: grid; justify-items: center; gap: 14px; }
+  .cap { font-size: 9px; letter-spacing: .24em; text-transform: uppercase; color: #ffffff2e; }
+
+  .stage { position: relative; isolation: isolate; }
+  /* The canvas sits behind a *translucent* panel: the halos wash across the
+     edge and dim through the glass instead of stopping dead at it. An opaque
+     panel here reads as four lamps sitting on a lid. */
+  canvas { position: absolute; inset: -90px; width: calc(100% + 180px); height: calc(100% + 180px); z-index: -1; pointer-events: none; }
+
+  .card {
+    position: relative;
+    width: min(380px, calc(100vw - 48px));
+    border-radius: 18px;
+    padding: 26px 26px 30px;
+    background: linear-gradient(rgb(13 15 22 / .88), rgb(10 12 18 / .92));
+    border: 1px solid #ffffff12;
+    backdrop-filter: blur(3px);
+  }
+  h1 { font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
+  .bar { height: 5px; border-radius: 99px; background: #ffffff1f; margin-top: 14px; }
+  .bar.b2 { width: 62%; margin-top: 9px; background: #ffffff14; }
+</style>
+<div class="scene">
+  <div class="cap">Partial neon gaseous edge</div>
+  <div class="stage">
+    <canvas id="c"></canvas>
+    <div class="card">
+      <h1>Glass Panel</h1>
+      <div class="bar"></div>
+      <div class="bar b2"></div>
+    </div>
+  </div>
+  <div class="cap">Generative design frame</div>
+</div>
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+  const card = document.querySelector('.card');
+  const PAD = 90;                 // canvas overhang, must match CSS inset
+  const RADIUS = 18;
+
+  /* Measured off the source: a node covers ~42 px of edge per second, both on
+     the top edge (left→right) and the bottom edge (right→left) — i.e. all four
+     run clockwise at the same rate. On this panel that is a lap of about 37 s.
+     Nodes are given slightly different rates so they drift apart over a minute
+     instead of staying in formation. */
+  const BASE = 42;
+  const NODES = [
+    { hue: 142, sat: 78, rate: 1.00, phase: 0.06, core: 7,  halo: 78, amp: 5 },  // green
+    { hue:  44, sat: 96, rate: 0.93, phase: 0.31, core: 8,  halo: 84, amp: 7 },  // amber
+    { hue: 328, sat: 88, rate: 1.07, phase: 0.56, core: 7,  halo: 80, amp: 6 },  // magenta
+    { hue: 212, sat: 92, rate: 0.88, phase: 0.81, core: 6,  halo: 72, amp: 5 },  // blue
+  ];
+  const SPARKS = 26;
+
+  let W = 0, H = 0, dpr = 1, path = null, t = 0;
+
+  /* Same arc-length walk as the particle border: four lines and four quarter
+     arcs with cumulative lengths, so a node keeps its 42 px/s through the
+     corners. Parameterising 0..1 per side instead makes nodes speed up on the
+     short edges — very visible once two of them are on screen at once. */
+  function buildPath(w, h, r) {
+    const segs = [], HP = Math.PI / 2;
+    const line = (x1, y1, x2, y2) => segs.push({ t: 'l', x1, y1, x2, y2, len: Math.hypot(x2 - x1, y2 - y1) });
+    const arc = (cx, cy, a0, a1) => segs.push({ t: 'a', cx, cy, a0, a1, len: Math.abs(a1 - a0) * r });
+    line(r, 0, w - r, 0);   arc(w - r, r, -HP, 0);
+    line(w, r, w, h - r);   arc(w - r, h - r, 0, HP);
+    line(w - r, h, r, h);   arc(r, h - r, HP, Math.PI);
+    line(0, h - r, 0, r);   arc(r, r, Math.PI, 3 * HP);
+    let total = 0;
+    for (const s of segs) { s.start = total; total += s.len; }
+    return {
+      total,
+      at(s) {
+        s = ((s % total) + total) % total;
+        for (const g of segs) {
+          if (s > g.start + g.len) continue;
+          const k = (s - g.start) / g.len;
+          if (g.t === 'l') {
+            const dx = g.x2 - g.x1, dy = g.y2 - g.y1, L = g.len || 1;
+            return { x: g.x1 + dx * k, y: g.y1 + dy * k, nx: dy / L, ny: -dx / L };
+          }
+          const a = g.a0 + (g.a1 - g.a0) * k;
+          return { x: g.cx + Math.cos(a) * r, y: g.cy + Math.sin(a) * r, nx: Math.cos(a), ny: Math.sin(a) };
+        }
+      }
+    };
+  }
+
+  const sparks = Array.from({ length: SPARKS }, () => ({
+    x: Math.random(), y: Math.random(),
+    vx: (Math.random() - 0.5) * 0.012, vy: (Math.random() - 0.5) * 0.008,
+    p: Math.random() * 6.28, s: 0.6 + Math.random() * 1.1
+  }));
+
+  function resize() {
+    const r = card.getBoundingClientRect();
+    if (!r.width) return;
+    W = r.width + PAD * 2; H = r.height + PAD * 2;
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    path = buildPath(r.width, r.height, RADIUS);
+  }
+
+  function draw() {
+    if (!path) return;
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'lighter';
+
+    for (const n of NODES) {
+      const s = (n.phase * path.total + t * BASE * n.rate) % path.total;
+      const q = path.at(s);
+      // A slow perpendicular wobble keeps a node from looking railed to the
+      // edge; 5–7px is enough to read as drift and not as a wrong path.
+      const off = Math.sin(t * 0.55 + n.phase * 9) * n.amp;
+      const x = PAD + q.x + q.nx * off, y = PAD + q.y + q.ny * off;
+      const puls = 0.82 + 0.18 * Math.sin(t * 0.9 + n.phase * 13);
+
+      const g = ctx.createRadialGradient(x, y, 0, x, y, n.halo * puls);
+      g.addColorStop(0,    `hsl(${n.hue} ${n.sat}% 62% / .55)`);
+      g.addColorStop(0.28, `hsl(${n.hue} ${n.sat}% 55% / .18)`);
+      g.addColorStop(1,    `hsl(${n.hue} ${n.sat}% 50% / 0)`);
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(x, y, n.halo * puls, 0, 6.2832); ctx.fill();
+
+      const c = ctx.createRadialGradient(x, y, 0, x, y, n.core * puls);
+      c.addColorStop(0, `hsl(${n.hue} ${Math.max(0, n.sat - 40)}% 96% / .95)`);
+      c.addColorStop(1, `hsl(${n.hue} ${n.sat}% 62% / 0)`);
+      ctx.fillStyle = c;
+      ctx.beginPath(); ctx.arc(x, y, n.core * puls, 0, 6.2832); ctx.fill();
+    }
+
+    for (const p of sparks) {
+      const x = ((p.x + p.vx * t) % 1 + 1) % 1 * W;
+      const y = ((p.y + p.vy * t) % 1 + 1) % 1 * H;
+      const a = 0.12 + 0.2 * (0.5 + 0.5 * Math.sin(t * 1.7 + p.p));
+      ctx.fillStyle = `hsl(42 92% 72% / ${a})`;
+      ctx.fillRect(x, y, p.s * 2.6, p.s);   // wide-ish: they read as streaks, not dust
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  let last = 0, raf = 0;
+  const loop = (now) => {
+    const dt = Math.min(0.05, (now - last) / 1000 || 0); last = now;
+    t += dt; draw();
+    raf = requestAnimationFrame(loop);
+  };
+
+  addEventListener('resize', resize);
+  new ResizeObserver(resize).observe(card);
+  resize();
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { cancelAnimationFrame(raf); raf = 0; }
+    else if (!raf && !reduce) { last = performance.now(); raf = requestAnimationFrame(loop); }
+  });
+
+  if (reduce) { t = 6; draw(); }              // one composed still, not an empty box
+  else raf = requestAnimationFrame(loop);
+})();
+</script>

@@ -11,6 +11,18 @@
  * 每条一段，80 词上下；缺了哪条构建直接红（blurbOf 会抛）。
  */
 const blurbs: Record<string, string> = {
+  // ── border-effects ──
+  "iridescent-sweep-border":
+    "A single band of rainbow light runs around the edge of a card, over and over, leaving a plain hairline behind it. It is the outline you see on AI products, crypto dashboards and premium upgrade panels — the cheapest way to say 'this one is special' without adding a badge or changing the layout. Because the whole thing is one gradient and one rotating angle, it costs nothing to run and works on any card, button or modal you already have.",
+  "breathing-halo-border":
+    "An outline that fades right down to nothing and comes back, with its glow rising and falling in step, roughly one breath every four and a half seconds. It marks a panel as live — a recording indicator, an active session, a call in progress, an assistant that is listening — without a spinner or a blinking dot. Quiet enough for a minimal interface, and the calmest of the five: nothing moves, only the light changes.",
+  "particle-trace-border":
+    "Hundreds of tiny sparks travel the outline of a panel and drift off into the dark, their colour set by where they are on the frame. Used for the moment something finishes or arrives: an upload that completed, data streaming in, a sci-fi HUD coming online. It also has a one-shot dissolve — press once and the whole ring leaves at the same time, which makes a good transition out of a loading state.",
+  "nebula-flow-border":
+    "Soft clouds of violet, cyan, pink and teal sit just outside a panel and drift along its edges, never quite repeating. This is the decorative frame used on brand pages, album art and product hero sections — the kind of border that gives a flat dark card atmosphere instead of decoration. It is slow on purpose: nothing about it asks for attention, it just stops the panel from looking like a rectangle.",
+  "neon-node-border":
+    "Four points of neon light — green, amber, magenta and blue — orbit the edge of a card and glow through it, so only parts of the frame are ever lit. High-contrast and cyberpunk rather than subtle: good for status indicators, highlighted plans, gaming and music interfaces, and anywhere a panel has to read as powered on. The lamps travel slowly enough to be ambient, and the same code speeds up into a loading state.",
+
   // ── creative ──
   "cyclone-369":
     "A real-time volumetric storm rendered entirely on the GPU, ported from a famous 369-character shader. It is the kind of piece that belongs on a landing page for a creative studio, an audio tool or anything that wants a living, slightly dangerous backdrop behind a single headline. Because it is a shader and not a video, it never loops visibly and costs nothing in bandwidth — the price is paid in GPU, which is why the sample also shows how to keep it cheap on phones.",

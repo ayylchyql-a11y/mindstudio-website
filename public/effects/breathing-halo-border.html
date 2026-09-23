@@ -1,0 +1,68 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Breathing halo border</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    display: grid; place-items: center;
+    background: radial-gradient(130% 100% at 50% 10%, #0e1520 0%, #07080c 72%);
+    color: #e9ecf5; overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .scene { display: grid; justify-items: center; gap: 12px; }
+  .cap { font-size: 9px; letter-spacing: .24em; text-transform: uppercase; color: #ffffff2e; }
+
+  /* One registered number drives everything. Animating border-color,
+     box-shadow and the inset highlight as three separate keyframe tracks lets
+     them drift out of phase if any of them is ever retimed; driving all three
+     from --k means the ring can only ever brighten and dim as one object. */
+  @property --k { syntax: "<number>"; initial-value: 1; inherits: false; }
+
+  .card {
+    --k: 1;
+    --edge: 150 190 255;               /* measured off the source: #8fb1e5 at peak */
+    position: relative;
+    width: min(380px, calc(100vw - 48px));
+    border-radius: 18px;
+    padding: 26px 26px 30px;
+    background: linear-gradient(#0d0f16, #0a0c12);
+
+    /* 0.22 → 0.95 alpha is the whole effect: the border fades *to transparent*
+       rather than to a darker blue, so at the bottom of the breath the panel
+       has no visible edge at all and the halo is the only thing holding it. */
+    border: 1.5px solid rgb(var(--edge) / calc(.22 + .73 * var(--k)));
+    box-shadow:
+      0 0 calc(10px + 26px * var(--k)) rgb(var(--edge) / calc(.06 + .30 * var(--k))),
+      0 0 calc(24px + 60px * var(--k)) rgb(var(--edge) / calc(.02 + .16 * var(--k))),
+      inset 0 0 calc(8px + 20px * var(--k)) rgb(var(--edge) / calc(.02 + .10 * var(--k)));
+
+    animation: breathe 4.6s ease-in-out infinite;
+  }
+  /* 4.6s measured: peak → trough 2.25s, trough → peak 2.35s. The symmetry is
+     why a single ease-in-out on an alternating 0→1→0 works; a sawtooth would
+     pop at the loop point. */
+  @keyframes breathe {
+    0%, 100% { --k: 1; }
+    50%      { --k: 0; }
+  }
+
+  h1 { font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
+  .bar { height: 5px; border-radius: 99px; background: #ffffff1a; margin-top: 14px; }
+  .bar.b2 { width: 62%; margin-top: 9px; background: #ffffff12; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card { animation: none; --k: .55; }   /* park it mid-breath, edge visible */
+  }
+</style>
+<div class="scene">
+  <div class="cap">Fade to transparent</div>
+  <div class="card">
+    <h1>Glass Panel</h1>
+    <div class="bar"></div>
+    <div class="bar b2"></div>
+  </div>
+  <div class="cap">Subtle glow effect</div>
+</div>
