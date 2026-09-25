@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/next";
+import SiteAnalytics from "@/components/SiteAnalytics";
 import "../globals.css";
 import { defaultLocale, getDictionary, hreflangMap, isLocale, localeMeta, locales, type Locale } from "@/lib/i18n";
 
@@ -63,8 +63,9 @@ export default async function LangLayout({
           先加代码后开启的话，每个访客都会白吃一个 404。所以顺序是：
           先在控制台 Enable，再推这行代码。
           不写 cookie，因此不需要同意横幅。
+          站主自己的浏览器带一次 ?va=off 就不再计数（见 components/SiteAnalytics.tsx）。
         */}
-        <Analytics />
+        <SiteAnalytics />
       </body>
     </html>
   );
