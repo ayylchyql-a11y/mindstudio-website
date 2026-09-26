@@ -32,6 +32,8 @@ const blurbs: Record<string, string> = {
     "The voice orb: a sphere of liquid glass that idles, thinks and breathes with sound, rendered in WebGPU. This is the visual language of AI assistants — the thing on screen while the model is listening — and it ships with a full bench of presets so the same orb can be tuned to a brand. It runs in M Translate's voice mode; on the web it suits assistant landing pages, voice-product demos and any interface that needs a face without drawing one.",
 
   // ── mobile-ui ──
+  "slate-card-order":
+    "A complete payment flow for ordering a premium metal card, rebuilt as a working replica: pick a finish from a carousel of cards that flip in, confirm the order, watch the card tap a payment terminal, and get a printed receipt stamped PAID. One card travels through every screen without a cut. A reference for fintech apps, membership upgrades and any checkout that should feel like handling a physical object rather than filling in a form.",
   "mind-space-ai-os":
     "A working replica of an ambient AI phone interface: three screens where the sky takes the colour of whatever you are doing, context cards carry live widgets inside them, and a single prompt bar is the only control. It is a study in what an operating system looks like when the model is the interface. Useful as a reference for AI-first product concepts, pitch prototypes and anyone designing a phone experience where the background itself communicates state.",
   "ambient-hue-follows-focus":
@@ -52,6 +54,12 @@ const blurbs: Record<string, string> = {
     "A one-line strip of three numbers sits at the top of a list. Pull it down and it grows under your finger into the full stats panel, the list sliding down to make room; let go past the threshold and it snaps open, otherwise it springs back. A gesture-driven alternative to a stats tab, used in fitness, habit and productivity apps where the summary matters but should not take permanent space above the list.",
 
   // ── web-effects ──
+  "receipt-print-stamp":
+    "A receipt that prints out of a slot line by line, with the stutter of a real thermal printer, then gets a PAID stamp slammed onto it. It turns an order confirmation into a moment people screenshot. Suited to checkout success pages, booking confirmations, restaurant and café ordering, donation thank-yous — anywhere the end of a purchase should feel finished rather than just acknowledged.",
+  "gooey-loader-button":
+    "The pay button shrinks into a small capsule where two blobs merge and pull apart like liquid while the payment goes through, then opens back up with a check. It keeps the user's eye exactly where they tapped instead of throwing up a spinner somewhere else. For checkout and payment buttons, form submissions and any action that takes a couple of seconds and needs to feel alive while it does.",
+  "flip-card-carousel":
+    "A carousel of cards stood on end: swipe and the next one turns edge-on as it arrives, then settles flat on its own, while the title and price change with it. The motion makes each card feel like an object with weight rather than a slide in a strip. For choosing a plan or card tier, product variants, membership levels and any small set of options where the choice deserves a moment.",
   "cursor-gaze-tracking":
     "A plush mascot whose eyes follow the cursor anywhere on the page, brows leaning a beat later, the head tilting a touch, and a blink every few seconds. Character-driven landing pages, error pages, kids' products and playful brands use this to make a static illustration feel like it is watching you. It is a small effect with a large payoff: visitors move the mouse just to see it react, and that is time on the page.",
   "scroll-pinned-hero-recomposition":

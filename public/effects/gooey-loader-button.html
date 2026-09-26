@@ -1,0 +1,115 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gooey loader button</title>
+<style>
+  @font-face { font-family: "Jakarta"; src: url("_fonts/plus-jakarta-sans-latin.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: #f4f1ef; color: #121212; overflow: hidden; display: grid; place-items: center;
+    font-family: "Jakarta", -apple-system, BlinkMacSystemFont, sans-serif; -webkit-font-smoothing: antialiased;
+  }
+  /* Centred with translate, not grid: a scaled box keeps its unscaled layout size, so a
+     box taller than the frame, grid-centred, is pushed off the bottom. */
+  .rig { position: absolute; left: 50%; top: 50%; width: 440px; height: 150px; transform: translate(-50%, -50%) scale(var(--s, 1)); }
+  .pill {
+    position: absolute; left: 50%; top: 30px; width: 391px; height: 58px; margin-left: -195.5px;
+    border: 0; border-radius: 29px; background: #0b0b0b; color: #fff; cursor: pointer; overflow: hidden;
+    font: 500 15px/1 "Jakarta", sans-serif; letter-spacing: -.01em; display: grid; place-items: center;
+    transition: transform 140ms cubic-bezier(.22, 1, .36, 1);
+  }
+  .pill:active { transform: scale(.975); }
+  .pill .lab { white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+  .pill svg.goo { position: absolute; left: 50%; top: 50%; width: 136px; height: 58px; margin: -29px 0 0 -68px; opacity: 0; }
+  .cap { position: absolute; left: 0; right: 0; top: 104px; height: 14px; font-size: 12px; color: #9d9996; }
+  .cap p { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; gap: 6px; }
+</style>
+
+<div class="rig" id="rig">
+  <button class="pill" id="btn" type="button">
+    <span class="lab" id="lab">Order · $349.00</span>
+    <!-- The goo: blur the two circles together, then crush alpha back to a hard edge.
+         Wherever the blurred halos overlap, the summed alpha clears the threshold and a
+         bridge appears — that is the whole metaball. -->
+    <svg class="goo" id="goo" viewBox="0 0 136 58" aria-hidden="true">
+      <defs><filter id="g" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.2"/><feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -8"/></filter></defs>
+      <g filter="url(#g)" fill="#9a9a9a"><circle id="big" cx="68" cy="29" r="12"/><circle id="small" cx="68" cy="29" r="8"/></g>
+    </svg>
+  </button>
+  <div class="cap">
+    <p id="c1"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="2" y="5" width="8" height="6" rx="1.5"/><path d="M4 5V3.6a2 2 0 0 1 4 0V5"/></svg>Secure payment · Cancel anytime</p>
+    <p id="c2" style="opacity:0"><svg width="12" height="13" viewBox="0 0 12 13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><path d="M6 1.2 1.8 2.8v3.6c0 2.6 1.8 4.6 4.2 5.4 2.4-.8 4.2-2.8 4.2-5.4V2.8Z"/></svg>Confirming your payment…</p>
+    <p id="c3" style="opacity:0; color:#2f9a6a">Payment confirmed</p>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const T0 = () => performance.now();
+  const sleep = (ms) => new Promise((r) => setTimeout(r, reduce ? 0 : ms));
+  function tween(el, frames, o) {
+    const a = el.animate(frames, { fill: "both", ...o, duration: reduce ? 1 : o.duration });
+    return a.finished.then(() => { const last = frames[frames.length - 1]; for (const k in last) if (k !== "offset" && k !== "easing") el.style[k] = last[k]; a.cancel(); }).catch(() => {});
+  }
+  const fade = (el, a, b, d, delay = 0) => tween(el, [{ opacity: a }, { opacity: b }], { duration: d, delay, easing: "cubic-bezier(.22,1,.36,1)" });
+
+  let raf = 0;
+  function goo(on) {
+    cancelAnimationFrame(raf); if (!on || reduce) return;
+    const t0 = performance.now(), big = $("big"), small = $("small");
+    const step = (now) => {
+      // starts merged (cos = 0), splits to the right; one full swing ≈ 1.15 s.
+      // The big blob counter-sways a third as far so the pair reads as one liquid mass.
+      const ph = ((now - t0) / 1150) * Math.PI * 2 - Math.PI / 2;
+      small.setAttribute("cx", (68 + 25 * Math.cos(ph)).toFixed(2));
+      big.setAttribute("cx", (68 - 8 * Math.cos(ph)).toFixed(2));
+      small.setAttribute("r", (7.5 + .8 * Math.sin(ph * 2)).toFixed(2));
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+  }
+
+  /* Beats measured off the source at 30 fps (tap = 0): the label blurs out in 110 ms
+     while the pill keeps its full width; only at 230 ms does the pill snap in to 136 wide,
+     in 110 ms. Shrinking while the label is still legible reads as the text being
+     squashed — the two have to happen one after the other. */
+  let busy = false;
+  async function run() {
+    if (busy) return; busy = true;
+    const btn = $("btn"), lab = $("lab"), svg = $("goo"), t0 = T0();
+    const at = (ms) => sleep(Math.max(0, ms - (T0() - t0)));
+    tween(lab, [{ opacity: 1, filter: "blur(0)" }, { opacity: 0, filter: "blur(6px)" }], { duration: 110, easing: "ease-in" });
+    fade($("c1"), 1, 0, 150);
+    await at(230);
+    await tween(btn, [{ width: "391px", marginLeft: "-195.5px" }, { width: "136px", marginLeft: "-68px" }], { duration: 110, easing: "cubic-bezier(.3,0,.1,1)" });
+    goo(true); fade(svg, 0, 1, 120); fade($("c2"), 0, 1, 200);
+    await at(2330);
+    // The source navigates away here. On its own the button reopens with the result.
+    fade(svg, 1, 0, 120); fade($("c2"), 1, 0, 150);
+    lab.innerHTML = `<svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="#5fd49b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3 3 6-7"/></svg>Paid · $349.00`;
+    await tween(btn, [{ width: "136px", marginLeft: "-68px" }, { width: "391px", marginLeft: "-195.5px" }], { duration: 320, easing: "cubic-bezier(.22,1,.36,1)" });
+    goo(false);
+    fade($("c3"), 0, 1, 200);
+    await tween(lab, [{ opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0)" }], { duration: 200, easing: "ease-out" });
+    await sleep(1400);
+    await Promise.all([fade(lab, 1, 0, 180), fade($("c3"), 1, 0, 180)]);
+    lab.textContent = "Order · $349.00";
+    await Promise.all([fade(lab, 0, 1, 220), fade($("c1"), 0, 1, 220)]);
+    lab.style.filter = "none";
+    busy = false;
+  }
+
+  function fit() { $("rig").style.setProperty("--s", Math.min(1, (innerWidth - 24) / 440, (innerHeight - 8) / 150).toFixed(4)); }
+  addEventListener("resize", fit); fit();
+
+  let demo = !reduce;
+  $("btn").addEventListener("click", (e) => { if (e.isTrusted) demo = false; run(); });
+  document.fonts.ready.then(async () => {
+    await sleep(700);
+    while (demo) { await run(); if (!demo) break; await sleep(900); }
+  });
+})();
+</script>

@@ -1,0 +1,871 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slate — metal card order flow</title>
+<style>
+  /* Fonts are self-hosted OFL latin subsets (see _fonts/OFL.txt). Plus Jakarta Sans is
+     what the source UI is set in; the receipt is a mono, the sign-off an italic serif. */
+  @font-face { font-family: "Jakarta"; src: url("_fonts/plus-jakarta-sans-latin.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+  @font-face { font-family: "JBMono"; src: url("_fonts/jetbrains-mono-latin.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+  @font-face { font-family: "InstrSerif"; src: url("_fonts/instrument-serif-italic-latin.woff2") format("woff2"); font-style: italic; font-weight: 400; font-display: swap; }
+
+  :root {
+    --bg: #f4f1ef; --ink: #121212; --mute: #8e8a87; --panel: #fdfcfc; --line: #efece9;
+    --out: cubic-bezier(.22, 1, .36, 1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: radial-gradient(120% 90% at 50% 18%, #2a2a2e 0%, #0c0c0e 70%);
+    overflow: hidden; color: var(--ink);
+    font-family: "Jakarta", -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    -webkit-font-smoothing: antialiased; -webkit-user-select: none; user-select: none;
+  }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  svg { display: block; }
+
+  /* ───────── device ─────────
+     The screen is laid out at the source's own logical size, 440 × 956 pt (an iPhone
+     Pro Max), so every number below is the number measured off the video. The whole
+     device is then scaled to fit the frame. */
+  .stage { position: absolute; inset: 0; display: grid; place-items: center; }
+  /* Centred with translate, not grid: a scaled box keeps its unscaled layout size, and a
+     980-tall device grid-centred in a 760-tall frame is pushed off the bottom. */
+  .phone {
+    position: absolute; left: 50%; top: 50%; width: 464px; height: 980px; padding: 12px;
+    border-radius: 64px; background: #0b0b0d;
+    box-shadow: 0 50px 90px -40px #000, 0 0 0 1.5px #2c2c31, inset 0 0 0 2px #1a1a1e;
+    transform: translate(-50%, -50%) scale(var(--s, 1));
+  }
+  .screen {
+    position: relative; width: 440px; height: 956px; border-radius: 52px; overflow: hidden;
+    background: var(--bg); isolation: isolate;
+  }
+  .status {
+    position: absolute; left: 0; right: 0; top: 0; height: 54px; z-index: 40; pointer-events: none;
+    display: flex; align-items: center; justify-content: space-between; padding: 6px 34px 0 52px;
+    color: var(--sb, #111); transition: color 300ms; font-size: 17px; font-weight: 600; letter-spacing: -.01em;
+  }
+  .status .ic { display: flex; gap: 6px; align-items: center; }
+  .island { position: absolute; left: 50%; top: 11px; width: 126px; height: 37px; margin-left: -63px; border-radius: 20px; background: #000; z-index: 41; }
+
+  .scr { position: absolute; inset: 0; opacity: 0; visibility: hidden; pointer-events: none; }
+  .scr.on { opacity: 1; visibility: visible; pointer-events: auto; }
+  .back { position: absolute; left: 22px; top: 66px; width: 40px; height: 40px; display: grid; place-items: center; z-index: 6; }   /* above the full-screen drag surface */
+
+  /* ───────── the card ─────────
+     One landscape card, 440 × 279 at scale 1. The picker shows it turned 90°, home and
+     confirm show it at .889, the terminal lays it flat in the terminal's plane. Every one
+     of those is the same element with a different transform. */
+  .card {
+    position: absolute; left: 0; top: 0; width: 440px; height: 279px; border-radius: 18px;
+    overflow: hidden; transform-origin: 50% 50%; color: #1b1914;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='440' height='279'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .7' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .16 -.05'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      linear-gradient(112deg, #ffffff00 18%, #ffffff24 46%, #ffffff00 68%),
+      linear-gradient(160deg, var(--m1) 0%, var(--m0) 42%, var(--m2) 100%);
+    box-shadow: inset 0 0 0 1px #ffffff3a, inset 0 -1px 0 #00000014, 0 10px 24px -14px #0006;
+  }
+  .card.platinum { --m0: #9c9791; --m1: #aaa59f; --m2: #8f8a84; }
+  .card.silver   { --m0: #a0a4a8; --m1: #afb3b7; --m2: #93979b; }
+  .card.gold     { --m0: #bca373; --m1: #c9b182; --m2: #ae9463; }
+  .card .nfc { position: absolute; right: 26px; top: 27px; width: 42px; height: 42px; opacity: .88; }
+  .card .holder { position: absolute; left: 27px; bottom: 36px; font-size: 15px; font-weight: 600; letter-spacing: .05em; opacity: .86; }
+  /* Neutral network mark: the issuer's own wordmark where the source had a card-network logo. */
+  .card .mark { position: absolute; right: 27px; bottom: 19px; text-align: right; line-height: 1; opacity: .9; }
+  .card .mark b { display: block; font-size: 31px; font-weight: 700; font-style: italic; letter-spacing: -.02em; }
+  .card .mark small { display: block; margin-top: 4px; font-size: 11.5px; font-weight: 500; opacity: .62; }
+  #fly { z-index: 20; will-change: transform; pointer-events: none; }   /* taps go to the hit area underneath */
+
+  /* ───────── 1 · home ───────── */
+  #home { background: #fff; }
+  #pick { background: var(--bg); }
+  .hhead { position: absolute; left: 0; right: 0; top: 0; height: 500px; background: #000; color: #fff; border-radius: 0 0 30px 30px; }
+  .hhead h2 { position: absolute; left: 24px; top: 72px; font-size: 26px; font-weight: 500; letter-spacing: -.035em; }
+  .round { position: absolute; top: 68px; width: 45px; height: 45px; border-radius: 50%; background: #1b1b1b; display: grid; place-items: center; color: #fff; }
+  .hhead .avail { position: absolute; left: 24px; top: 142px; font-size: 12.5px; color: #8b8b8b; }
+  .hhead .bal { position: absolute; left: 24px; top: 160px; font-size: 40px; font-weight: 500; letter-spacing: -.03em; }
+  .cardhit { position: absolute; left: 24px; top: 227px; width: 391px; height: 248px; border-radius: 16px; }
+  .tx { position: absolute; left: 0; right: 0; top: 500px; padding: 0 24px; }
+  .tx .hd { display: flex; justify-content: space-between; align-items: baseline; margin-top: 27px; margin-bottom: 9px; }
+  .tx .hd b { font-size: 17px; font-weight: 600; letter-spacing: -.03em; }
+  .tx .hd span { font-size: 13px; color: #9a9795; }
+  .row { display: flex; align-items: center; height: 73px; border-bottom: 1px solid #f1efee; }
+  .row .ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; margin-right: 13px; font-size: 17px; box-shadow: 0 0 0 1px #f7f6f5, 0 2px 6px -4px #0000000f; }
+  .row .t { flex: 1; }
+  .row .t b { display: block; font-size: 15.5px; font-weight: 500; letter-spacing: -.02em; }
+  .row .t i { font-style: normal; font-size: 12.5px; color: #9a9795; }
+  .row .a { font-size: 16px; font-weight: 600; letter-spacing: -.01em; }
+  .row .a.g { color: #2f9a6a; }
+  .tabbar {
+    position: absolute; left: 96px; top: 858px; width: 247px; height: 67px; border-radius: 34px; background: #0e0e0e;
+    display: flex; align-items: center; justify-content: space-around; padding: 0 20px 0 4px; color: #8a8a8a;
+    box-shadow: 0 10px 24px -8px #0008;
+  }
+  .tabbar .cur { width: 60px; height: 60px; border-radius: 50%; background: #fff; color: #000; display: grid; place-items: center; box-shadow: 0 0 0 3px #0e0e0e; }
+
+  /* ───────── 2 · picker ───────── */
+  .titles { position: absolute; left: 0; right: 0; top: 131px; height: 40px; }
+  .titles h2 { position: absolute; left: 0; top: 0; width: 440px; text-align: center; font-size: 31px; font-weight: 500; letter-spacing: -.035em; will-change: transform, opacity; }
+  .prices { position: absolute; left: 0; right: 0; top: 177px; height: 22px; }
+  .prices p { position: absolute; inset: 0; text-align: center; font-size: 14.5px; color: #111; }
+  .prices p span { color: var(--mute); }
+  .carousel { position: absolute; inset: 0; perspective: 1150px; perspective-origin: 219.5px 512px; touch-action: pan-y; cursor: grab; }
+  .carousel:active { cursor: grabbing; }
+  .carousel .card { backface-visibility: hidden; }
+  .dots { position: absolute; left: 0; right: 0; top: 823px; display: flex; justify-content: center; gap: 5px; }
+  .dots i { height: 5px; border-radius: 3px; background: #111; }
+  .pill {
+    position: absolute; left: 24px; width: 391px; height: 57px; border-radius: 29px; background: #0b0b0b; color: #fff;
+    font-size: 15px; font-weight: 500; letter-spacing: -.01em; display: grid; place-items: center; transition: background 220ms, transform 140ms var(--out);
+  }
+  .pill:active { transform: scale(.975); }
+  .pill.dim { background: #6c6a69; pointer-events: none; }
+  #choose { top: 855px; }
+
+  /* ───────── 3 · confirm ───────── */
+  .h1 { position: absolute; left: 24px; font-size: 32px; font-weight: 600; letter-spacing: -.045em; }
+  .sub { position: absolute; left: 24px; font-size: 14.5px; color: #86827f; letter-spacing: -.005em; }
+  .panel { position: absolute; left: 24px; width: 391px; background: var(--panel); border-radius: 22px; padding: 0 22px; box-shadow: 0 1px 0 #0000000a; }
+  .panel .r { display: flex; justify-content: space-between; align-items: center; height: 54px; font-size: 14.5px; position: relative; }
+  .panel .r + .r::before { content: ""; position: absolute; left: 110px; right: 0; top: 0; height: 1px; background: var(--line); }
+  .panel .r span { color: #8e8a87; }
+  .panel .r b { font-weight: 600; letter-spacing: -.01em; }
+  .panel .r.tot span { color: #111; font-weight: 600; font-size: 15px; }
+  .panel .r.tot b { font-size: 17.5px; }
+  #order { top: 822px; height: 58px; left: 50%; width: 391px; margin-left: -195.5px; overflow: hidden; }
+  #order .lab { transition: none; white-space: nowrap; }
+  #order svg.goo { position: absolute; left: 50%; top: 50%; width: 136px; height: 58px; margin: -29px 0 0 -68px; opacity: 0; }
+  .caption { position: absolute; left: 0; right: 0; text-align: center; font-size: 12px; color: #9d9996; display: flex; justify-content: center; align-items: center; gap: 6px; }
+  .spin { width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid #c9c5c2; border-top-color: #6d6a67; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ───────── 4 · paid — the terminal ─────────
+     Orthographic, not perspective: the source illustration is isometric-style, and in a
+     parallel projection the card can use exactly the same rotateX/rotateZ as the
+     terminal and still be a flat sibling element. Angles solved from the card's two
+     projected edges in the source frame (long edge rises 30°, short edge falls 27°). */
+  .pos { position: absolute; left: var(--ox); top: var(--oy); width: 0; height: 0; transform-style: preserve-3d; }
+  .pos div { position: absolute; transform-style: preserve-3d; }
+  .pos .ly { border-radius: 26px; }
+  .pos .key { border-radius: 8px; }
+  .pos svg { position: absolute; overflow: visible; }
+  #check path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .pbtn { position: absolute; left: 24px; width: 391px; height: 56px; border-radius: 28px; font-size: 15.5px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 9px; letter-spacing: -.02em; transition: transform 140ms var(--out); }
+  .pbtn:active { transform: scale(.975); }
+
+  /* ───────── 5 · receipt ───────── */
+  #receipt { background: radial-gradient(90% 60% at 50% 38%, #1f1e1e 0%, #141313 70%); color: #fff; }
+  #receipt .hdr { position: absolute; left: 0; right: 0; top: 78px; text-align: center; font-size: 15.5px; font-weight: 500; pointer-events: none; }
+  .printer {
+    position: absolute; left: 43px; top: 214px; width: 354px; height: 66px; border-radius: 16px; z-index: 3;
+    background: linear-gradient(180deg, #fbfbfb 0%, #e6e6e6 38%, #c6c6c6 74%, #a9a9a9 100%);
+    box-shadow: inset 0 1.5px 0 #fff, inset 0 -2px 3px #0000002e, 0 14px 22px -10px #000c;
+  }
+  .printer::before { content: "SLATE"; position: absolute; left: 24px; top: 25px; font: 500 7.5px/1 "JBMono", monospace; letter-spacing: .35em; color: #9a9a9a; text-shadow: 0 1px 0 #fff; }
+  .printer::after { content: ""; position: absolute; right: 25px; top: 26px; width: 5px; height: 5px; border-radius: 50%; background: #3cc47c; box-shadow: 0 0 6px #3cc47c; }
+  .printer .slot { position: absolute; left: 17px; right: 17px; top: 43px; height: 9px; border-radius: 5px; background: #0c0c0c; box-shadow: inset 0 2px 2px #000, 0 1px 0 #ffffff80; }
+  .feed { position: absolute; left: 60px; top: 262px; width: 320px; height: 560px; overflow: hidden; z-index: 2; padding: 0 10px; }
+  .paper {
+    position: relative; width: 300px; background: #f3f0e8; color: #141414; padding: 21px 22px 34px;
+    transform: translateY(-110%); transform-origin: 50% 0;
+    font: 500 10px/1.3 "JBMono", ui-monospace, monospace;
+    /* Torn bottom edge: a 12 × 8 conic tile, apex at the tile's bottom centre, one downward tooth. */
+    -webkit-mask: linear-gradient(#000 0 0) top / 100% calc(100% - 8px) no-repeat, conic-gradient(from -45deg at 50% 100%, #000 90deg, #0000 0) bottom / 12px 8px repeat-x;
+            mask: linear-gradient(#000 0 0) top / 100% calc(100% - 8px) no-repeat, conic-gradient(from -45deg at 50% 100%, #000 90deg, #0000 0) bottom / 12px 8px repeat-x;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 .4  0 0 0 0 .38  0 0 0 0 .32  0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      linear-gradient(180deg, #0000 0 38%, #00000008 39%, #0000 41% 70%, #00000006 71%, #0000 73%);
+  }
+  .shadowbox { position: absolute; left: 70px; top: 262px; width: 300px; height: 0; border-radius: 2px; box-shadow: 0 30px 50px -10px #000c; z-index: 1; }
+  .paper .brand { text-align: center; font: 500 22px/1 "Jakarta", sans-serif; letter-spacing: .32em; margin-left: .32em; }
+  .paper .kicker { text-align: center; font-size: 8.5px; letter-spacing: .32em; color: #777; margin-top: 8px; }
+  .paper hr { border: 0; border-top: 1px dashed #b7b3aa; margin: 17px 0 13px; }
+  .paper hr.solid { border-top: 1.3px solid #1a1a1a; margin: 17px 0 17px; }
+  .paper .m { display: flex; justify-content: space-between; font-size: 9px; letter-spacing: .06em; margin: 5px 0; }
+  .paper .m span { color: #858178; }
+  .paper .i { display: flex; justify-content: space-between; font-size: 10.5px; font-weight: 700; margin: 10px 0 0; }
+  .paper .i small { display: block; font-weight: 400; font-size: 8px; color: #8a867d; margin-top: 3px; }
+  .paper .tot { display: flex; justify-content: space-between; align-items: baseline; font: 600 15px/1 "Jakarta", sans-serif; letter-spacing: .02em; }
+  .paper .tot b { font-size: 19.5px; font-weight: 600; letter-spacing: -.01em; }
+  .paper .by { display: flex; justify-content: space-between; font-size: 7.5px; letter-spacing: .12em; color: #7b776f; margin-top: 10px; }
+  .paper .bars { margin: 8px auto 0; width: 256px; height: 48px; }
+  .paper .no { text-align: center; font-size: 8.5px; letter-spacing: .32em; margin-top: 7px; color: #333; }
+  .paper .thanks { text-align: center; font: italic 400 17px/1 "InstrSerif", Georgia, serif; margin-top: 17px; }
+  .stamp { position: absolute; left: 104px; top: 232px; width: 96px; height: 96px; opacity: 0; pointer-events: none; mix-blend-mode: multiply; }
+  #rcap { top: 872px; color: #7f7c79; }
+  .rbtn { position: absolute; top: 853px; height: 56px; border-radius: 28px; font-size: 15.5px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 8px; opacity: 0; transition: transform 140ms var(--out); }
+  .rbtn:active { transform: scale(.975); }
+  #again { left: 28px; width: 187px; background: #1e1d1d; color: #e8e8e8; }
+  #rdone { left: 226px; width: 189px; background: #fff; color: #111; }
+
+  @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+</style>
+
+<div class="stage">
+  <div class="phone" id="phone">
+    <div class="screen" id="screen">
+      <div class="island"></div>
+      <div class="status" id="status">
+        <span>9:41</span>
+        <span class="ic">
+          <svg width="19" height="12" viewBox="0 0 19 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><path d="M8.5 2.2c2.3 0 4.4.9 6 2.4l1.2-1.2A10.1 10.1 0 0 0 8.5.5 10.1 10.1 0 0 0 1.3 3.4l1.2 1.2a8.4 8.4 0 0 1 6-2.4Zm0 3.4c1.4 0 2.6.5 3.6 1.4L13.3 5.8a6.7 6.7 0 0 0-9.6 0L4.9 7c1-.9 2.2-1.4 3.6-1.4Zm0 3.4c.5 0 1 .2 1.3.5L8.5 11.3 7.2 9.5c.3-.3.8-.5 1.3-.5Z"/></svg>
+          <svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.8" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2.4" fill="currentColor"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2Z" fill="currentColor" opacity=".45"/></svg>
+        </span>
+      </div>
+
+      <!-- 1 · home -->
+      <section class="scr on" id="home">
+        <div class="hhead">
+          <h2>Hello Alex</h2>
+          <button class="round" style="left:314px" aria-label="Search"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="8" cy="8" r="6"/><path d="m12.5 12.5 4 4" stroke-linecap="round"/></svg></button>
+          <button class="round" style="left:370px" aria-label="New card" data-act="pick"><svg width="16" height="16" viewBox="0 0 16 16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M8 2v12M2 8h12"/></svg></button>
+          <p class="avail">Available balance</p>
+          <p class="bal">$22,000</p>
+          <button class="cardhit" data-act="pick" aria-label="Order a new card"></button>
+        </div>
+        <div class="tx">
+          <div class="hd"><b>Recent transactions</b><span>See all</span></div>
+          <div id="txrows"></div>
+        </div>
+        <nav class="tabbar" aria-label="Tabs">
+          <span class="cur"><svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor"><path d="M3 10.2 11 3l8 7.2V19a1 1 0 0 1-1 1h-4.6v-5.2H8.6V20H4a1 1 0 0 1-1-1v-8.8Z"/></svg></span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h15l-4-4M20 16H5l4 4"/></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 10h18M7 15h4"/></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.2-4 4.3-6 8-6s6.8 2 8 6" stroke-linecap="round"/></svg>
+        </nav>
+      </section>
+
+      <!-- 2 · picker -->
+      <section class="scr" id="pick">
+        <button class="back" data-act="home" aria-label="Back"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2 2 10l8 8"/></svg></button>
+        <div class="titles" id="titles"></div>
+        <div class="prices" id="prices"></div>
+        <div class="carousel" id="carousel" aria-roledescription="carousel"></div>
+        <div class="dots" id="dots"></div>
+        <button class="pill" id="choose" data-act="choose"><span id="chooseLab">Choose Platinum</span></button>
+      </section>
+
+      <!-- 3 · confirm -->
+      <section class="scr" id="confirm">
+        <button class="back" data-act="unpick" aria-label="Back"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2 2 10l8 8"/></svg></button>
+        <h1 class="h1" style="top:118px" id="ctitle">Confirm order</h1>
+        <p class="sub" style="top:162px" id="csub">Review your new card before you pay.</p>
+        <div class="panel" style="top:485px" id="cpanel">
+          <div class="r"><span>Card</span><b id="cCard">Gold metal</b></div>
+          <div class="r"><span>Annual fee</span><b id="cFee">$349.00</b></div>
+          <div class="r"><span>Delivery</span><b>Free · 5–7 days</b></div>
+          <div class="r tot"><span>Total today</span><b id="cTot">$349.00</b></div>
+        </div>
+        <button class="pill" id="order" data-act="order">
+          <span class="lab" id="orderLab">Order · $349.00</span>
+          <svg class="goo" viewBox="0 0 136 58" aria-hidden="true">
+            <defs><filter id="goo" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.2"/><feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -8"/></filter></defs>
+            <g filter="url(#goo)" fill="#9a9a9a"><circle id="gBig" cx="68" cy="29" r="12"/><circle id="gSmall" cx="90" cy="29" r="8"/></g>
+          </svg>
+        </button>
+        <p class="caption" style="top:895px" id="capSecure"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="2" y="5" width="8" height="6" rx="1.5"/><path d="M4 5V3.6a2 2 0 0 1 4 0V5"/></svg>Secure payment · Cancel anytime</p>
+        <p class="caption" style="top:895px; opacity:0" id="capConfirm"><svg width="12" height="13" viewBox="0 0 12 13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><path d="M6 1.2 1.8 2.8v3.6c0 2.6 1.8 4.6 4.2 5.4 2.4-.8 4.2-2.8 4.2-5.4V2.8Z"/></svg>Confirming your payment…</p>
+      </section>
+
+      <!-- 4 · paid -->
+      <section class="scr" id="paid">
+        <div id="posWrap" style="position:absolute; inset:0; transform-origin:221px 285px"><div class="pos" id="pos" style="--ox:0px; --oy:0px"></div></div>
+        <h1 class="h1" style="top:470px; left:0; width:440px; text-align:center; font-weight:600" id="ptitle">Order placed</h1>
+        <p class="sub" style="top:516px; left:0; width:440px; text-align:center; line-height:1.5" id="psub">Your Gold card is on its way.<br>We’ll let you know the moment it ships.</p>
+        <div class="panel" style="top:585px" id="ppanel">
+          <div class="r"><span>Paid</span><b id="pPaid">$349.00</b></div>
+          <div class="r"><span>Arrives</span><b>5–7 business days</b></div>
+        </div>
+        <button class="pbtn" style="top:787px; background:#fff" id="view" data-act="receipt"><svg width="17" height="18" viewBox="0 0 17 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M3 1.8h11v14.4l-2.2-1.5-2 1.5-1.3-1-1.3 1-2-1.5L3 16.2Z"/><path d="M6 6h5M6 9h5" stroke-linecap="round"/></svg>View receipt</button>
+        <button class="pbtn" style="top:855px; background:#0b0b0b; color:#fff" id="pdone" data-act="home">Done</button>
+      </section>
+
+      <!-- 5 · receipt -->
+      <section class="scr" id="receipt">
+        <button class="back" data-act="unreceipt" aria-label="Back"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2 2 10l8 8"/></svg></button>
+        <div class="hdr">Receipt</div>
+        <div class="printer"><div class="slot"></div></div>
+        <div class="shadowbox" id="shadowbox"></div>
+        <div class="feed"><div class="paper" id="paper"></div></div>
+        <p class="caption" id="rcap"><svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><path d="M3.5 4.5V1.5h6v3M3.5 9.5h-2v-5h10v5h-2"/><path d="M3.5 7.5h6v4h-6z"/></svg>Printing your receipt…</p>
+        <button class="rbtn" id="again" data-act="again"><svg width="15" height="15" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><path d="M3.5 4.5V1.5h6v3M3.5 9.5h-2v-5h10v5h-2"/><path d="M3.5 7.5h6v4h-6z"/></svg>Print again</button>
+        <button class="rbtn" id="rdone" data-act="home">Done</button>
+      </section>
+
+      <div class="card platinum" id="fly"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const D = Math.PI / 180;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, reduce ? Math.min(ms, 60) : ms));
+
+  /* ─────────── data ─────────── */
+  const TIERS = [
+    { id: "platinum", name: "Platinum", price: 199 },
+    { id: "silver",   name: "Silver",   price: 99 },
+    { id: "gold",     name: "Gold",     price: 349 },
+  ];
+  const HOLDER = "Alex Morgan";
+  const RECEIPT_NO = "SL-260926-0941";
+  const money = (n) => "$" + n.toFixed(2);
+
+  const nfc = `<svg class="nfc" viewBox="0 0 42 42" fill="none" stroke="currentColor" stroke-width="3.3" stroke-linecap="round"><path d="M6 20a16 16 0 0 1 16 16"/><path d="M6 11a25 25 0 0 1 25 25"/><path d="M6 2a34 34 0 0 1 34 34"/></svg>`;
+  const cardHTML = (t) => `${nfc}<span class="holder">${HOLDER}</span><span class="mark"><b>SLATE</b><small>${t.name}</small></span>`;
+  function setCard(el, t) { el.className = "card " + t.id; el.innerHTML = cardHTML(t); }
+
+  /* ─────────── one tween helper ───────────
+     WAAPI, then the final keyframe is written to inline style and the animation cancelled,
+     so nothing is left holding a fill and the next tween starts from real computed style. */
+  function tween(el, frames, o) {
+    const a = el.animate(frames, { fill: "both", ...o, duration: reduce ? 1 : o.duration });
+    return a.finished.then(() => {
+      const last = frames[frames.length - 1];
+      for (const k in last) if (k !== "offset" && k !== "easing" && k !== "composite") el.style[k] = last[k];
+      a.cancel();
+    }).catch(() => {});
+  }
+  const fade = (el, a, b, duration, delay = 0, extra = {}) =>
+    tween(el, [{ opacity: a, ...extra.from }, { opacity: b, ...extra.to }], { duration, delay, easing: extra.easing || "cubic-bezier(.22,1,.36,1)" });
+
+  /* ─────────── the flying card ───────────
+     Same transform shape everywhere — translate · rotateX · rotateZ · scale — so WAAPI
+     interpolates function by function and a flat card can fall into the terminal's plane. */
+  const fly = $("fly");
+  const pose = (cx, cy, rz = 0, s = 1, rx = 0) => `translate(${(cx - 220).toFixed(2)}px, ${(cy - 139.5).toFixed(2)}px) rotateX(${rx}deg) rotateZ(${rz}deg) scale(${s})`;
+  const P = {
+    home:    pose(219.5, 351, 0, .889),
+    pick:    pose(219.5, 512, 90, 1),
+    confirm: pose(219.5, 333.5, 0, .889),
+  };
+  setCard(fly, TIERS[0]);
+  fly.style.transform = P.home;
+
+  /* ─────────── home rows ─────────── */
+  const TX = [
+    ["↗", "Transfer", "4:07pm", "$1,050.00"], ["+", "Top up", "12:07pm", "+$2,400.00"],
+    ["⇆", "Conversion", "4:07pm", "$950.00"], ["↗", "Transfer", "4:07pm", "$1,050.00"],
+    ["+", "Top up", "9:12am", "+$1,200.00"], ["⇆", "Conversion", "8:40am", "$620.00"],
+  ];
+  $("txrows").innerHTML = TX.map(([i, t, h, a]) => `<div class="row"><span class="ico">${i}</span><span class="t"><b>${t}</b><i>${h}</i></span><span class="a ${a[0] === "+" ? "g" : ""}">${a}</span></div>`).join("");
+
+  /* ─────────── screens ─────────── */
+  const SCR = ["home", "pick", "confirm", "paid", "receipt"];
+  function only(...ids) { SCR.forEach((s) => { const el = $(s); const on = ids.includes(s); el.classList.toggle("on", on); if (on) el.style.opacity = ""; }); }
+  const statusInk = (c) => $("status").style.setProperty("--sb", c);
+  statusInk("#fff");
+
+  /* ═══════════ 2 · picker carousel ═══════════ */
+  const titles = $("titles"), prices = $("prices"), dots = $("dots"), car = $("carousel");
+  const slots = TIERS.map((t) => { const el = document.createElement("div"); setCard(el, t); car.appendChild(el); return el; });
+  const heads = TIERS.map((t) => { const h = document.createElement("h2"); h.textContent = t.name; titles.appendChild(h); return h; });
+  const cost  = TIERS.map((t) => { const p = document.createElement("p"); p.innerHTML = `<b>$${t.price}</b> <span>/ year</span>`; prices.appendChild(p); return p; });
+  const dot   = TIERS.map(() => { const i = document.createElement("i"); dots.appendChild(i); return i; });
+
+  let cpos = 0;                    // continuous page index
+  const hold = new Set();          // slots hidden while the flying card stands in for them
+  let incoming = -1, latched = false;
+  const rot = TIERS.map(() => 0);  // per-card rotateY, degrees
+  let lastT = performance.now();
+
+  /* The flip, as measured at 30 fps in the source:
+       – the card being swiped in rises to edge-on (90°) by the time it is 30 % of a page
+         from centre (p = .3), in step with the finger;
+       – from there it is no longer tied to position: it falls back to flat on a clock,
+         exponential with τ ≈ 120 ms (90 → 55 → 43 → 31 → 23 … → 5° over 330 ms),
+         so the card arrives while still visibly turning;
+       – the card leaving stays flat and just shrinks away.
+     Tying rotation to position alone gives an edge-on card parked at p = .3 and no
+     "settling" — which is the whole feel of it. */
+  function renderCarousel(now) {
+    const dt = Math.min(.05, (now - lastT) / 1000); lastT = now;
+    slots.forEach((el, i) => {
+      const p = i - cpos, ap = Math.abs(p);
+      if (i === incoming && !latched && ap > .3 && ap < 1 && !reduce) rot[i] = 90 * (1 - ap) / .7 * Math.sign(p);
+      else {
+        if (i === incoming && ap <= .3) latched = true;
+        rot[i] *= Math.exp(-dt / .12);
+        if (Math.abs(rot[i]) < .05) rot[i] = 0;
+      }
+      const x = 219.5 + p * 291, s = 1 - .12 * Math.min(1, ap);
+      el.style.transform = `translate(${(x - 220).toFixed(2)}px, ${512 - 139.5}px) rotateY(${rot[i].toFixed(2)}deg) scale(${s.toFixed(4)}) rotate(90deg)`;
+      el.style.opacity = (1 - .28 * Math.min(1, ap)).toFixed(3);
+      el.style.visibility = hold.has(i) || ap > 1.6 ? "hidden" : "visible";
+      heads[i].style.transform = `translateX(${(p * 200).toFixed(1)}px)`;
+      heads[i].style.opacity = Math.max(0, 1 - ap * 1.35).toFixed(3);
+      cost[i].style.opacity = Math.max(0, 1 - ap * 2.2).toFixed(3);
+      dot[i].style.width = (5 + 13 * Math.max(0, 1 - ap)).toFixed(2) + "px";
+      dot[i].style.opacity = (.22 + .78 * Math.max(0, 1 - ap)).toFixed(3);
+    });
+    const near = Math.max(0, Math.min(TIERS.length - 1, Math.round(cpos))), off = Math.abs(cpos - near);
+    const lab = $("chooseLab");
+    const want = "Choose " + TIERS[near].name;
+    if (lab.textContent !== want) lab.textContent = want;
+    lab.style.opacity = Math.max(0, 1 - off * 4).toFixed(3);
+  }
+  function loop(now) { requestAnimationFrame(loop); renderCarousel(now); }
+  requestAnimationFrame(loop);
+
+  /* Page tween: easeOutQuad over 450 ms matches the source's incoming card
+     (p = .7 left at 230 ms, .1 at 300 ms, .03 at 400 ms). */
+  let pageAnim = null;
+  function goTo(i, dur = 450) {
+    i = Math.max(0, Math.min(TIERS.length - 1, i));
+    const from = cpos, to = i;
+    if (from === to) return Promise.resolve();
+    incoming = to; latched = false;
+    const t0 = performance.now();
+    cancelAnimationFrame(pageAnim);
+    return new Promise((res) => {
+      const step = (now) => {
+        const k = Math.min(1, (now - t0) / (reduce ? 1 : dur));
+        const e = 1 - (1 - k) * (1 - k);
+        cpos = from + (to - from) * e;
+        if (k < 1) pageAnim = requestAnimationFrame(step); else { cpos = to; res(); }
+      };
+      pageAnim = requestAnimationFrame(step);
+    });
+  }
+
+  // drag
+  let drag = null;
+  car.addEventListener("pointerdown", (e) => {
+    if (busy) return;
+    cancelAnimationFrame(pageAnim);
+    drag = { x: e.clientX, start: cpos, t: performance.now(), lastX: e.clientX, v: 0 };
+    car.setPointerCapture(e.pointerId);
+  });
+  car.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    const sc = scale || 1;
+    const dx = (e.clientX - drag.x) / sc;
+    let c = drag.start - dx / 291;
+    if (c < 0) c = c * .3; if (c > TIERS.length - 1) c = TIERS.length - 1 + (c - TIERS.length + 1) * .3;
+    const now = performance.now();
+    drag.v = ((e.clientX - drag.lastX) / sc) / Math.max(1, now - drag.t); drag.t = now; drag.lastX = e.clientX;
+    const dirIn = c > drag.start ? Math.ceil(c) : Math.floor(c);
+    if (dirIn !== incoming && dirIn !== Math.round(drag.start)) { incoming = dirIn; latched = false; }
+    cpos = c;
+  });
+  const endDrag = () => {
+    if (!drag) return;
+    const flingPages = -drag.v * 180 / 291;           // px/ms → pages, ~180 ms of momentum
+    // at most one page per swipe, and never past either end (the rubber band can overshoot)
+    const s0 = Math.round(drag.start);
+    const target = Math.max(0, Math.min(TIERS.length - 1, Math.round(Math.max(s0 - 1, Math.min(s0 + 1, cpos + flingPages)))));
+    drag = null;
+    const from = cpos; incoming = target;
+    if (Math.abs(target - from) < .001) return;
+    latched = Math.abs(target - from) <= .3 ? true : latched;
+    const t0 = performance.now(), dur = 380 * Math.min(1, Math.abs(target - from) + .2);
+    const step = (now) => {
+      const k = Math.min(1, (now - t0) / dur), e = 1 - (1 - k) * (1 - k);
+      cpos = from + (target - from) * e;
+      if (k < 1) pageAnim = requestAnimationFrame(step); else cpos = target;
+    };
+    pageAnim = requestAnimationFrame(step);
+  };
+  car.addEventListener("pointerup", endDrag);
+  car.addEventListener("pointercancel", endDrag);
+  car.addEventListener("keydown", (e) => { if (e.key === "ArrowRight") goTo(Math.round(cpos) + 1); if (e.key === "ArrowLeft") goTo(Math.round(cpos) - 1); });
+  car.tabIndex = 0;
+
+  /* ═══════════ 4 · the terminal ═══════════
+     Geometry solved from the source frame (t = 11.6 s), not eyeballed:
+       – the gold card's four corners give the two in-plane axes → rotateZ −45°, rotateX 55°,
+         card scale .368 (its long edge projects to 133 pt);
+       – the black body's four silhouette extremes (L 62,328 · R 381,248 · T 262,192 ·
+         B 192,394) give the plane origin (221.5, 285) and half-extents U + V = 226;
+       – the green key back-projects to (u −136, v 49), the check mark to u ≈ 62.
+     The card is not lying on the keys: it back-projects to beyond the far edge at a
+     height of ~26 — a contactless tap, hovering. */
+  const RX = 55, RZ = -45;
+  const cz = Math.cos(RZ * D), sz = Math.sin(RZ * D), cxr = Math.cos(RX * D), sxr = Math.sin(RX * D);
+  const proj = (u, v, z = 0) => [u * cz - v * sz, (u * sz + v * cz) * cxr - z * sxr];
+  const CARD_SCALE = .368;
+  const CARD_AT = { u: -25.6, v: -82.2, z: 26 };
+  const ORIGIN = { x: 221.5, y: 285 };
+  const pos = $("pos");
+  pos.style.setProperty("--ox", ORIGIN.x + "px"); pos.style.setProperty("--oy", ORIGIN.y + "px");
+  pos.style.transform = `rotateX(${RX}deg) rotateZ(${RZ}deg)`;
+  const posePOS = (lift = 0, du = 0, dv = 0) => {
+    const [px, py] = proj(CARD_AT.u + du, CARD_AT.v + dv, CARD_AT.z + lift);
+    return pose(ORIGIN.x + px, ORIGIN.y + py, RZ, CARD_SCALE, RX);
+  };
+
+  function plane(u, v, w, h, z, css) {
+    const d = document.createElement("div");
+    d.style.cssText = `left:${u - w / 2}px; top:${v - h / 2}px; width:${w}px; height:${h}px; transform:translateZ(${z}px); ${css || ""}`;
+    pos.appendChild(d); return d;
+  }
+  function buildPOS() {
+    // Body footprint: u −172…166 (keypad end → printer end), v −62…82 (far → near).
+    const U0 = -172, U1 = 144, V0 = -62, V1 = 76, CU = (U0 + U1) / 2, CV = (V0 + V1) / 2, W = U1 - U0, Hh = V1 - V0;
+    plane(CU + 10, CV + 26, W + 40, Hh + 60, -34, "border-radius:90px; background:#00000026; filter:blur(22px)");
+    /* Extruded as stacked slices so the rounded corners carry down the sides. Upper
+       shell black; lower shell pale; a black grip wraps the near side under the screen
+       and printer, as in the illustration. */
+    for (let z = -27; z <= 0; z += 1) {
+      const upper = z > -6;
+      plane(CU, CV, W, Hh, z, `border-radius:34px; background:${upper ? "#1c1a1c" : "#ecebe7"}`);
+      // the grip: a black rounded strap standing proud of the near side, below the shell seam
+      if (z < -8 && z > -25) plane(46, V1 + 1, 196, 24, z + .02, "border-radius:15px; background:#161416");
+    }
+    plane(CU, CV, W, Hh, .2, "border-radius:34px; background:linear-gradient(90deg,#141214,#222022 55%,#191719)");
+    const key = (u, v, top, side) => {
+      plane(u, v + 1.2, 30, 19, .8, `border-radius:10px; background:${side}`);
+      plane(u, v, 30, 19, 3.4, `border-radius:10px; background:${top}`);
+    };
+    // function column at the far end (grey · grey · green), then 3 × 4 digit keys
+    [[-36, "#6f6d6f", "#2a282a"], [13, "#6f6d6f", "#2a282a"], [60, "#23a866", "#137a45"]].forEach(([v, t, sd]) => key(-148, v, t, sd));
+    [-114, -80, -46].forEach((u) => [-36, -4, 28, 60].forEach((v) => key(u, v, "#ecebe7", "#b8b5af")));
+    [-36, -4, 28, 60].forEach((v) => plane(-17, v, 12, 20, 1.6, "border-radius:4px; background:#3d3b3d"));
+    // screen
+    plane(52, -2, 106, 124, .6, "border-radius:11px; background:#0c0b0c");
+    const scr = plane(52, -2, 94, 112, 1.3, "border-radius:6px; background:#fcfcfe; overflow:visible");
+    scr.innerHTML = `<svg id="check" width="94" height="112" viewBox="0 0 94 112"><path pathLength="1" d="M52 22 L26 44 L62 86" fill="none" stroke="#24a866" stroke-width="13" stroke-linecap="butt" stroke-linejoin="miter"/></svg>`;
+    // printer: half-cylinder along v at the near end, sliced by height
+    for (let z = 0; z <= 28; z += 1) {
+      const hw = Math.sqrt(Math.max(0, 20 * 20 - (z - 6) * (z - 6)));
+      if (hw > .6) plane(122, CV, hw * 2 + 4, Hh - 6, z, `border-radius:${Math.min(13, hw)}px; background:${z > 24 ? "#2a282a" : "#121012"}`);
+    }
+    const pap = plane(122, CV - 6, 74, 88, 25, "transform-origin:0 50%; border-radius:2px; background:linear-gradient(90deg,#fdfdfc,#f0efec); box-shadow:inset 0 0 0 .5px #00000014");
+    pap.style.transform = "translateZ(25px) rotateY(-30deg)";
+    pap.innerHTML = [16, 28, 40, 52].map((x, i) => `<i style="position:absolute; left:${x}px; top:${14 + (i % 2) * 8}px; width:3.5px; height:${52 - (i % 3) * 12}px; background:#cfcdc9; border-radius:2px"></i>`).join("");
+  }
+  buildPOS();
+  const checkPath = () => $("check").querySelector("path");
+
+  /* ═══════════ 5 · receipt ═══════════ */
+  // Code 128, subset B. Widths are bar/space module counts; every symbol is 11 modules
+  // (stop is 13). The checksum is start value + Σ position × value, mod 103.
+  const C128 = "212222 222122 222221 121223 121322 131222 122213 122312 132212 221213 221312 231212 112232 122132 122231 113222 123122 123221 223211 221132 221231 213212 223112 312131 311222 321122 321221 312212 322112 322211 212123 212321 232121 111323 131123 131321 112313 132113 132311 211313 231113 231311 112133 112331 132131 113123 113321 133121 313121 211331 231131 213113 213311 213131 311123 311321 331121 312113 312311 332111 314111 221411 431111 111224 111422 121124 121421 141122 141221 112214 112412 122114 122411 142112 142211 241211 221114 413111 241112 134111 111242 121142 121241 114212 124112 124211 411212 421112 421211 212141 214121 412121 111143 111341 131141 114113 114311 411113 411311 113141 114131 311141 411131 211412 211214 211232 2331112".split(" ");
+  function code128(text) {
+    const vals = [104, ...[...text].map((ch) => ch.charCodeAt(0) - 32)];
+    const check = vals.reduce((s, v, i) => s + v * (i || 1), 0) % 103;
+    const seq = [...vals, check, 106].map((v) => C128[v]).join("");
+    let x = 0, bars = "";
+    [...seq].forEach((w, i) => { const n = +w; if (i % 2 === 0) bars += `<rect x="${x}" y="0" width="${n}" height="1"/>`; x += n; });
+    return `<svg class="bars" viewBox="0 0 ${x} 1" preserveAspectRatio="none" fill="#141414" aria-label="Barcode ${text}">${bars}</svg>`;
+  }
+  const stampSVG = `
+    <svg class="stamp" id="stamp" viewBox="0 0 96 96" aria-hidden="true">
+      <defs>
+        <path id="ring" d="M48 48 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0"/>
+        <filter id="ink" x="-10%" y="-10%" width="120%" height="120%">
+          <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="n"/>
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="2.2"/>
+          <feComponentTransfer><feFuncA type="table" tableValues="0 .75 .92"/></feComponentTransfer>
+        </filter>
+      </defs>
+      <g filter="url(#ink)" fill="none" stroke="#2c7a5f" color="#2c7a5f">
+        <circle cx="48" cy="48" r="45" stroke-width="3"/>
+        <circle cx="48" cy="48" r="31" stroke-width="1.3"/>
+        <text fill="currentColor" stroke="none" font-family="JBMono, monospace" font-size="7.4" font-weight="700" letter-spacing="1.6"><textPath href="#ring">THANK YOU · PAYMENT RECEIVED ·</textPath></text>
+        <text x="48" y="50" text-anchor="middle" fill="currentColor" stroke="none" font-family="Jakarta, sans-serif" font-size="19" font-weight="700" letter-spacing="1">PAID</text>
+        <text x="48" y="62" text-anchor="middle" fill="currentColor" stroke="none" font-family="JBMono, monospace" font-size="6.2" letter-spacing=".6">26 SEP 2026</text>
+      </g>
+    </svg>`;
+  function fillReceipt(t) {
+    $("paper").innerHTML = `
+      <div class="brand">SLATE</div>
+      <div class="kicker">CARD ORDER RECEIPT</div>
+      <hr>
+      <div class="m"><span>RECEIPT</span>${RECEIPT_NO}</div>
+      <div class="m"><span>DATE</span>26 SEP 2026 · 09:41</div>
+      <div class="m"><span>CARDHOLDER</span>${HOLDER.toUpperCase()}</div>
+      <hr>
+      <div class="i"><span>${t.name} metal card<small>Annual fee · billed yearly</small></span>${money(t.price)}</div>
+      <div class="i"><span>Card issuance</span>FREE</div>
+      <div class="i"><span>Delivery · 5–7 days</span>FREE</div>
+      <hr class="solid">
+      <div class="tot">TOTAL <b>${money(t.price)}</b></div>
+      <div class="by"><span>PAID BY CARD</span>APPROVED</div>
+      <hr>
+      ${code128(RECEIPT_NO)}
+      <div class="no">${RECEIPT_NO}</div>
+      <div class="thanks">Thank you for choosing Slate.</div>
+      ${stampSVG}`;
+  }
+
+  /* ═══════════ choreography ═══════════ */
+  let busy = false, tier = TIERS[2];
+  const lock = async (fn) => { if (busy) return; busy = true; try { await fn(); } finally { busy = false; } };
+
+  async function toPick() {
+    only("home", "pick");
+    $("pick").style.opacity = 0;
+    cpos = 0; incoming = -1; slots.forEach((_, i) => rot[i] = 0);
+    setCard(fly, TIERS[0]); fly.style.transform = P.home; fly.style.opacity = 1;
+    hold.add(0);
+    $("choose").classList.add("dim");
+    statusInk("#111");
+    const bits = [titles, prices, dots, $("choose")];
+    bits.forEach((b) => b.style.opacity = 0);
+    slots[1].animate([{ translate: "40px 0", opacity: 0 }, { translate: "0 0", opacity: 1 }], { duration: reduce ? 1 : 360, delay: reduce ? 0 : 160, easing: "cubic-bezier(.22,1,.36,1)", fill: "backwards" });
+    await Promise.all([
+      tween(fly, [{ transform: P.home }, { transform: P.pick }], { duration: 360, delay: 30, easing: "cubic-bezier(.5,0,.2,1)" }),
+      fade($("pick"), 0, 1, 300),           // the home page washes out to the picker's paper
+      fade(titles, 0, 1, 260, 200), fade(prices, 0, 1, 260, 240), fade(dots, 0, 1, 260, 260), fade($("choose"), 0, 1, 200, 500),
+    ]);
+    only("pick");
+    fly.style.opacity = 0; hold.delete(0);
+    await sleep(80);
+    $("choose").classList.remove("dim");
+  }
+
+  async function toHomeFromPick() {
+    const t = TIERS[Math.round(cpos)];
+    setCard(fly, t); fly.style.transform = pose(219.5, 512, 90, 1); fly.style.opacity = 1;
+    TIERS.forEach((_, i) => hold.add(i));
+    $("home").classList.add("on"); $("home").style.opacity = 1;
+    statusInk("#fff");
+    await Promise.all([
+      tween(fly, [{ transform: P.pick }, { transform: P.home }], { duration: 420, easing: "cubic-bezier(.3,.75,.25,1)" }),
+      fade($("pick"), 1, 0, 300, 40),
+    ]);
+    setCard(fly, TIERS[0]);
+    only("home"); hold.clear();
+  }
+
+  async function choose() {
+    tier = TIERS[Math.round(cpos)];
+    cpos = Math.round(cpos);
+    setCard(fly, tier); fly.style.transform = P.pick; fly.style.opacity = 1;
+    hold.add(cpos);
+    $("choose").classList.add("dim");
+    // confirm copy for the chosen tier
+    $("cCard").textContent = tier.name + " metal"; $("cFee").textContent = $("cTot").textContent = money(tier.price);
+    $("orderLab").textContent = "Order · " + money(tier.price);
+    const rows = [...$("cpanel").children];
+    $("confirm").classList.add("on"); $("confirm").style.opacity = 1;
+    [$("ctitle"), $("csub"), $("capSecure"), $("order")].forEach((e) => e.style.opacity = 0);
+    rows.forEach((r) => r.style.opacity = 0); $("cpanel").style.opacity = 0;
+    $("order").classList.add("dim");
+    await Promise.all([
+      // 380 ms with a small overshoot: the source lands the card at −4° and settles
+      tween(fly, [{ transform: P.pick }, { transform: P.confirm }], { duration: 320, easing: "cubic-bezier(.25,.9,.3,1.14)" }),
+      fade($("pick"), 1, 0, 240),
+      fade($("ctitle"), 0, 1, 220, 60), fade($("csub"), 0, 1, 220, 90),
+      fade($("cpanel"), 0, 1, 200, 150),
+      ...rows.map((r, i) => fade(r, 0, 1, 220, 170 + i * 45, { from: { transform: "translateY(6px)", filter: "blur(3px)" }, to: { transform: "none", filter: "blur(0)" } })),
+      fade($("order"), 0, 1, 200, 330), fade($("capSecure"), 0, 1, 200, 380),
+    ]);
+    only("confirm");
+    await sleep(100);
+    $("order").classList.remove("dim");
+    hold.clear();
+  }
+
+  async function unpick() {
+    const i = TIERS.indexOf(tier);
+    cpos = i; hold.add(i);
+    $("pick").classList.add("on"); $("pick").style.opacity = 0;
+    $("choose").classList.remove("dim");
+    await Promise.all([
+      tween(fly, [{ transform: P.confirm }, { transform: P.pick }], { duration: 380, easing: "cubic-bezier(.32,1.1,.42,1)" }),
+      fade($("confirm"), 1, 0, 220), fade($("pick"), 0, 1, 260, 80),
+    ]);
+    only("pick"); fly.style.opacity = 0; hold.delete(i);
+  }
+
+  // gooey loader: the small blob swings through the big one, the big one counter-sways
+  let gooRAF = 0;
+  function goo(on) {
+    cancelAnimationFrame(gooRAF);
+    if (!on) return;
+    const t0 = performance.now(), big = $("gBig"), small = $("gSmall");
+    const step = (now) => {
+      // starts merged (cos = 0) and splits to the right, as in the source; one swing ≈ 1.15 s
+      const ph = ((now - t0) / 1150) * Math.PI * 2 - Math.PI / 2;
+      small.setAttribute("cx", (68 + 25 * Math.cos(ph)).toFixed(2));
+      big.setAttribute("cx", (68 - 8 * Math.cos(ph)).toFixed(2));
+      small.setAttribute("r", (7.5 + .8 * Math.sin(ph * 2)).toFixed(2));
+      gooRAF = requestAnimationFrame(step);
+    };
+    gooRAF = requestAnimationFrame(step);
+  }
+
+  /* Every beat below is pinned to the source (tap at 6.55 s = t 0):
+       label blurs out 0–110 ms at full width · pill snaps to 136 wide 230–340 ms ·
+       blobs from 340 ms · terminal at 2.45 s · card lands 3.0 s · check 3.45 s ·
+       title 3.84 · copy 3.98 · panel 4.14 · buttons 4.52 · card slides off 5.25 s. */
+  async function order() {
+    const btn = $("order"), lab = $("orderLab"), svg = btn.querySelector(".goo");
+    const T = performance.now(), at = (ms) => sleep(Math.max(0, ms - (performance.now() - T)));
+    btn.style.pointerEvents = "none";
+    tween(lab, [{ opacity: 1, filter: "blur(0)" }, { opacity: 0, filter: "blur(6px)" }], { duration: 110, easing: "ease-in" });
+    fade($("capSecure"), 1, 0, 150);
+    await at(230);
+    await tween(btn, [{ width: "391px", marginLeft: "-195.5px" }, { width: "136px", marginLeft: "-68px" }], { duration: 110, easing: "cubic-bezier(.3,0,.1,1)" });
+    goo(true);
+    fade(svg, 0, 1, 120); fade($("capConfirm"), 0, 1, 200);
+
+    // → terminal
+    await at(2450);
+    $("paid").classList.add("on"); $("paid").style.opacity = 1;
+    ["ptitle", "psub", "ppanel", "view", "pdone"].forEach((id) => $(id).style.opacity = 0);
+    const path = checkPath(); path.style.strokeDashoffset = 1;
+    const hover = posePOS(14), rest = posePOS(0);
+    fade($("confirm"), 1, 0, 250);
+    tween($("posWrap"), [{ opacity: 0, transform: "scale(1.07)" }, { opacity: 1, transform: "scale(1)" }], { duration: 260, easing: "cubic-bezier(.22,1,.36,1)" });
+    await tween(fly, [{ transform: P.confirm }, { transform: hover }], { duration: 380, easing: "cubic-bezier(.6,0,.3,1)" });
+    only("paid"); goo(false);
+    await tween(fly, [{ transform: hover }, { transform: rest, offset: .6 }, { transform: posePOS(3), offset: .82 }, { transform: rest }], { duration: 200, easing: "ease-out" });
+    await at(3450);
+    await tween(path, [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 250, easing: "cubic-bezier(.5,0,.2,1)" });
+    const up = (el, delay, d = 240) => fade(el, 0, 1, d, delay, { from: { transform: "translateY(8px)" }, to: { transform: "none" } });
+    await at(3840);
+    up($("ptitle"), 0); up($("psub"), 140); up($("ppanel"), 300, 260);
+    await at(4520);
+    up($("view"), 0, 340); up($("pdone"), 90, 340);
+    await at(5250);
+    // the card slides off the near edge of the terminal and is gone
+    await Promise.all([
+      tween(fly, [{ transform: rest }, { transform: posePOS(-8, 26, 70) }], { duration: 820, easing: "cubic-bezier(.55,0,.35,1)" }),
+      fade(fly, 1, 0, 380, 440, { easing: "linear" }),
+    ]);
+    // reset the confirm button for next time
+    btn.style.width = "391px"; btn.style.marginLeft = "-195.5px"; btn.style.pointerEvents = "";
+    lab.style.opacity = 1; lab.style.filter = "none"; svg.style.opacity = 0; $("capConfirm").style.opacity = 0; $("capSecure").style.opacity = 1;
+  }
+
+  /* Printing. Speed is modulated, not stepped: progress q(t) = t − k·sin(2πnt)/(2πn)
+     stays monotonic for k < 1 (dq/dt = 1 − k·cos ≥ .25) and lands exactly on 1 when n is
+     a whole number — so the paper surges and hesitates like a thermal feed, never backs
+     up, and stops dead where it should. */
+  let printRAF = 0;
+  function feed(dur) {
+    const paper = $("paper"), H = paper.offsetHeight, n = 23, k = .72;
+    const t0 = performance.now();
+    return new Promise((res) => {
+      const step = (now) => {
+        const t = Math.min(1, (now - t0) / (reduce ? 1 : dur));
+        const q = t - k * Math.sin(2 * Math.PI * n * t) / (2 * Math.PI * n);
+        const p = 1 - Math.pow(1 - q, 1.25);
+        const jx = t < 1 ? (Math.random() - .5) * .7 : 0;
+        paper.style.transform = `translate(${jx.toFixed(2)}px, ${(-H * (1 - p)).toFixed(2)}px)`;
+        $("shadowbox").style.height = (H * p).toFixed(1) + "px";
+        if (t < 1) printRAF = requestAnimationFrame(step); else res();
+      };
+      printRAF = requestAnimationFrame(step);
+    });
+  }
+  async function print() {
+    const paper = $("paper"), stamp = $("stamp");
+    [$("again"), $("rdone")].forEach((b) => { b.style.opacity = 0; b.style.pointerEvents = "none"; });
+    $("rcap").style.opacity = 1;
+    stamp.style.opacity = 0;
+    await feed(2400);
+    // off the cutter: drops a few px and rocks
+    await tween(paper, [{ transform: "translate(0,0) rotate(0)" }, { transform: "translate(0,5px) rotate(.9deg)", offset: .45 }, { transform: "translate(0,2px) rotate(-.3deg)", offset: .75 }, { transform: "translate(0,3px) rotate(0)" }], { duration: 520, easing: "ease-out" });
+    await sleep(110);
+    // stamp: comes down big and blurred, overshoots, lands at −14°
+    const land = tween(stamp, [
+      { opacity: 0, transform: "scale(2.4) rotate(-34deg)", filter: "blur(4px)" },
+      { opacity: .95, transform: "scale(.94) rotate(-12deg)", filter: "blur(0)", offset: .72 },
+      { opacity: .92, transform: "scale(1) rotate(-14deg)", filter: "blur(0)" }], { duration: 280, easing: "cubic-bezier(.5,0,.75,0)" });
+    setTimeout(() => tween(paper, [{ transform: "translate(0,3px)" }, { transform: "translate(0,6px)", offset: .35 }, { transform: "translate(0,3px)" }], { duration: 200, easing: "ease-out" }), reduce ? 0 : 200);
+    await land;
+    await sleep(250);
+    await fade($("rcap"), 1, 0, 200);
+    await Promise.all([$("again"), $("rdone")].map((b, i) => fade(b, 0, 1, 320, i * 60, { from: { transform: "translateY(10px)" }, to: { transform: "none" } })));
+    [$("again"), $("rdone")].forEach((b) => b.style.pointerEvents = "");
+  }
+
+  async function toReceipt() {
+    fillReceipt(tier);
+    const paper = $("paper");
+    paper.style.transform = "translateY(-110%)"; $("shadowbox").style.height = "0px";
+    $("receipt").classList.add("on"); $("receipt").style.opacity = 0;
+    [$("again"), $("rdone")].forEach((b) => b.style.opacity = 0);
+    $("rcap").style.opacity = 0;
+    statusInk("#fff");
+    await Promise.all([fade($("receipt"), 0, 1, 320), fade($("paid"), 1, 0, 320)]);
+    only("receipt");
+    await fade($("rcap"), 0, 1, 240);
+    await sleep(760);
+    await print();
+  }
+  async function reprint() {
+    const paper = $("paper");
+    await Promise.all([
+      tween(paper, [{ transform: getComputedStyle(paper).transform, opacity: 1 }, { transform: "translate(0,60px)", opacity: 0 }], { duration: 320, easing: "ease-in" }),
+      fade($("again"), 1, 0, 160), fade($("rdone"), 1, 0, 160), fade($("shadowbox"), 1, 0, 300),
+    ]);
+    fillReceipt(tier);
+    paper.style.opacity = 1; paper.style.transform = "translateY(-110%)"; $("shadowbox").style.opacity = 1; $("shadowbox").style.height = "0px";
+    await sleep(380);
+    await print();
+  }
+  async function unreceipt() {
+    $("paid").classList.add("on"); $("paid").style.opacity = 0;
+    statusInk("#111");
+    await Promise.all([fade($("paid"), 0, 1, 300), fade($("receipt"), 1, 0, 300)]);
+    only("paid");
+  }
+  async function toHome() {
+    const from = SCR.find((s) => $(s).classList.contains("on"));
+    if (from === "pick") return toHomeFromPick();
+    setCard(fly, TIERS[0]); fly.style.transform = P.home; fly.style.opacity = 0;
+    $("home").classList.add("on"); $("home").style.opacity = 0;
+    statusInk("#fff");
+    await Promise.all([fade($("home"), 0, 1, 360), fade($(from), 1, 0, 300), fade(fly, 0, 1, 360, 60)]);
+    only("home");
+  }
+
+  const ACT = { pick: toPick, home: toHome, choose, unpick, order, receipt: toReceipt, again: reprint, unreceipt };
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-act]"); if (!b) return;
+    if (e.isTrusted) stopDemo();
+    lock(ACT[b.dataset.act]);
+  });
+
+  /* ═══════════ fit + showcase ═══════════ */
+  let scale = 1;
+  function fit() {
+    scale = Math.min(1, (innerHeight - 24) / 980, (innerWidth - 16) / 464);
+    $("phone").style.setProperty("--s", scale.toFixed(4));
+  }
+  addEventListener("resize", fit); fit();
+
+  // The sample walks the whole flow on its own until someone touches it.
+  let demo = true;
+  function stopDemo() { demo = false; }
+  addEventListener("pointerdown", (e) => { if (e.isTrusted) stopDemo(); }, true);
+  const tap = (act) => demo && lock(ACT[act]);
+  // `?clip` is the 15-second cut used for the gallery recording: same flow, shorter holds.
+  const CLIP = new URLSearchParams(location.search).has("clip");
+  async function clip() {
+    await sleep(500);  await tap("pick");
+    await sleep(350);  await lock(() => goTo(1));
+    await sleep(250);  await lock(() => goTo(2));
+    await sleep(300);  await tap("choose");
+    await sleep(250);  await tap("order");
+    await sleep(200);  await tap("receipt");
+  }
+  async function showcase() {
+    if (CLIP) return clip();
+    await sleep(900);
+    while (demo) {
+      await tap("pick");                       if (!demo) break; await sleep(1100);
+      await lock(() => goTo(1));               if (!demo) break; await sleep(950);
+      await lock(() => goTo(2));               if (!demo) break; await sleep(1000);
+      await tap("choose");                     if (!demo) break; await sleep(1100);
+      await tap("order");                      if (!demo) break; await sleep(1000);
+      await tap("receipt");                    if (!demo) break; await sleep(2600);
+      await tap("home");                       if (!demo) break; await sleep(1400);
+    }
+  }
+  const params = new URLSearchParams(location.search);
+  if (params.has("still")) { demo = false; }
+  else if (!reduce) showcase();
+  window.__slate = { ACT, lock, goTo, get busy() { return busy; }, stopDemo, only, statusInk, fly, posePOS, P };
+})();
+</script>

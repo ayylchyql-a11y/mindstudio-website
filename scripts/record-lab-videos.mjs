@@ -38,6 +38,10 @@ const ASK_TEXT = { "dashboard-ambient-ai": ["Come va oggi?", "Metti in pausa gli
 const KEY_SEQ = { "dashboard-keyboard": ["j", "j", 500, "Enter", 1500, "j", 400, "j", 400, "Enter", 1200, "Escape", 500, "c", 900] };
 /** 一直在自己转的那几条：正放接倒放拼成 16 秒，循环点就没有跳一下的接缝。
  *  有指针/交互的不能这么干 —— 倒放的鼠标动作看着像坏了。 */
+/** 一段完整流程的样板：自己演、不能在 3.5 秒处重载（重载就永远只录到开头），录多长单独给。
+ *  slate-card-order 带 `?clip`：同一套流程、停顿压短，17 秒从首页走到盖章。 */
+const LONG_SELF = { "slate-card-order": { secs: 17, query: "?clip" }, "receipt-print-stamp": { secs: 8 }, "flip-card-carousel": { secs: 8 } };
+const secsOf = (slug) => LONG_SELF[slug]?.secs ?? SECONDS;
 const PALINDROME = new Set(["cyclone-369", "aurora-drift", "holo-card", "shimmer-headline"]);
 
 // data/effects.ts 是 TS，这里不想拖一个编译器进来 —— 正则把三个字段抠出来就够了。
@@ -61,7 +65,7 @@ function loadEffects() {
 }
 
 function demoUrl(e) {
-  return `http://127.0.0.1:${PORT}/effects/${e.bundleDir ? `${e.slug}/index.html` : `${e.slug}.html`}`;
+  return `http://127.0.0.1:${PORT}/effects/${e.bundleDir ? `${e.slug}/index.html` : `${e.slug}.html`}${LONG_SELF[e.slug]?.query ?? ""}`;
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -146,6 +150,7 @@ async function drive(page, e) {
   const scope = showcase ? "[data-showcase]" : e.category === "dashboard" ? "nav, aside, .sidebar, .rail" : ".stage, .win, .room, main, body";
   const t = (await findTarget(page, W, H, scope)) || { x: W / 2, y: H / 2, w: 0, h: 0 };
   const cx = t.x, cy = t.y;
+  if (LONG_SELF[e.slug]) { await sleep(secsOf(e.slug) * 1000 + 800); return; }
   switch (DRIVE_OVERRIDE[e.slug] ?? e.plays) {
     case "hover": {
       // 先停在中间（静止态也要录到），再一笔画出一条平滑的 8 字，最后落在目标上
@@ -262,7 +267,7 @@ async function record(browser, e) {
   // 掐掉开头 0.6 秒（首帧是空白/正在布局），定长 8 秒。
   // 高度取偶数：yuv420p 要求宽高都能被 2 整除，样板有 370 这种奇数高。
   execFileSync(ffmpeg, [
-    "-y", "-loglevel", "error", "-ss", "0.6", "-t", String(SECONDS), "-i", webm,
+    "-y", "-loglevel", "error", "-ss", "0.6", "-t", String(secsOf(e.slug)), "-i", webm,
     "-vf", `scale=${WIDTH}:-2`, "-vsync", "cfr", "-r", "25", "-c:v", "libx264", "-crf", "28", "-preset", "medium",
     "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-an", mp4,
   ]);
