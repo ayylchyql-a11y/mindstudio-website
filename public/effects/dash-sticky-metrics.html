@@ -1,0 +1,168 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sticky metrics · Nodeflux</title>
+<style>
+  @font-face { font-family: "Jakarta"; src: url("_fonts/plus-jakarta-sans-latin.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+  @font-face { font-family: "JBMono"; src: url("_fonts/jetbrains-mono-latin.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: #0c0c0e; overflow: hidden; font-family: "Jakarta", -apple-system, sans-serif; color: #141414; -webkit-font-smoothing: antialiased; -webkit-user-select: none; user-select: none; }
+  :root { --teal: #0f6f6a; --amber: #f5970f; --paper: #f1eee8; }
+  .app { position: absolute; left: 50%; top: 50%; width: 1280px; height: 820px; transform: translate(-50%, -50%) scale(var(--s, 1)); border-radius: 26px; background: var(--paper); overflow: hidden; }
+  .bar { position: absolute; left: 0; right: 0; top: 0; height: 84px; z-index: 5; display: flex; align-items: center; gap: 14px; padding: 0 16px; background: color-mix(in srgb, var(--paper) 94%, transparent); backdrop-filter: blur(6px); }
+  .bar::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; border-bottom: 1px solid #e3dfd7; opacity: var(--line, 0); }
+  .burger, .rnd { width: 46px; height: 46px; border-radius: 50%; background: #fff; display: grid; place-items: center; box-shadow: 0 1px 3px #0000000d; }
+  .y { width: 48px; height: 48px; border-radius: 50%; background: #111; color: #fff; display: grid; place-items: center; font-size: 22px; }
+  .org small { display: block; font-size: 12.5px; color: #555; } .org b { font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
+  .sp { flex: 1; }
+  .who { display: flex; align-items: center; gap: 10px; } .who i { width: 48px; height: 48px; border-radius: 50%; background: #d8c3a6; } .who b { display: block; font-size: 14.5px; } .who small { font-size: 12.5px; color: #555; }
+  .search { width: 150px; height: 46px; border-radius: 23px; background: #fff; display: flex; align-items: center; padding: 0 16px; gap: 8px; color: #888; font-size: 14px; }
+  /* the pill the metrics land in */
+  .pill { position: absolute; left: 330px; top: 20px; width: 460px; height: 44px; border-radius: 22px; background: #e2e7e1; opacity: var(--pill, 0); }
+
+  .scroll { position: absolute; inset: 0; overflow-y: auto; scrollbar-width: none; }
+  .scroll::-webkit-scrollbar { display: none; }
+  .content { position: relative; padding: 84px 14px 30px; }
+  .hello { position: relative; height: 110px; }
+  .date { position: absolute; left: 0; top: 14px; width: 74px; height: 74px; border-radius: 50%; background: #fff; text-align: center; padding-top: 16px; } .date b { display: block; font-size: 22px; } .date small { font-size: 9px; letter-spacing: .06em; color: #555; font-weight: 700; }
+  .inc { position: absolute; left: 110px; top: 26px; height: 50px; border-radius: 25px; background: var(--teal); color: #fff; font-size: 15.5px; font-weight: 600; display: flex; align-items: center; padding: 0 22px; }
+  .cal { position: absolute; left: 370px; top: 28px; width: 46px; height: 46px; border-radius: 50%; background: #fff; display: grid; place-items: center; }
+  .ask { position: absolute; right: 70px; top: 14px; text-align: right; } .ask b { display: block; font-size: 32px; font-weight: 700; letter-spacing: -.03em; } .ask span { font-size: 25px; color: #8a8a8a; font-weight: 600; }
+  .mic { position: absolute; right: 12px; top: 28px; width: 44px; height: 44px; border-radius: 50%; background: #fff; display: grid; place-items: center; }
+  /* the metric row reserves its height in the flow; the numbers themselves are overlays
+     that interpolate between this row and the pill in the bar */
+  .metrics { height: 132px; position: relative; border-bottom: 1px solid #e3dfd7; margin-bottom: 20px; }
+  .metrics small { position: absolute; top: 12px; font-size: 13.5px; color: #555; }
+  .m { position: absolute; left: 0; top: 0; z-index: 6; display: flex; align-items: center; gap: 12px; white-space: nowrap; transform-origin: 0 50%; will-change: transform; font-size: 64px; font-weight: 600; letter-spacing: -.035em; line-height: 1; }
+  .m svg { flex: none; width: 22px; height: 22px; }
+  .m.err { color: var(--amber); }
+
+  .grid { display: grid; grid-template-columns: 442px 246px 246px 1fr; gap: 14px; }
+  .c { background: #fff; border-radius: 22px; padding: 20px 24px; position: relative; overflow: hidden; }
+  .proj { background: linear-gradient(135deg, #0b2d2c, #0e4d4a 60%, #0b2d2c); color: #fff; height: 246px; }
+  .proj b { font-size: 17px; } .proj small { display: block; font-size: 12.5px; color: #9bb9b6; margin-top: 4px; }
+  .proj .live { position: absolute; right: 22px; top: 22px; background: #ffffff1c; border-radius: 16px; padding: 6px 14px; font-size: 12.5px; font-weight: 600; }
+  .proj .ver { font: 500 21px "JBMono", monospace; margin-top: 34px; }
+  .proj .btns { position: absolute; left: 24px; bottom: 26px; display: flex; gap: 12px; } .proj .btns span { height: 46px; border-radius: 23px; padding: 0 22px; display: grid; place-items: center; font-weight: 700; font-size: 15px; }
+  .rate { background: #161616; color: #fff; text-align: center; padding-top: 64px; } .rate i { display: inline-grid; place-items: center; width: 50px; height: 50px; border-radius: 50%; background: #2a2a2a; } .rate b { display: block; font-size: 18px; margin-top: 18px; } .rate small { font-size: 12.5px; color: #999; }
+  .dep { text-align: center; padding-top: 60px; } .dep b { font-size: 36px; } .dep small { display: block; color: #555; font-size: 14px; margin-top: 8px; }
+  .dep .dots { display: flex; justify-content: center; gap: 9px; margin-top: 18px; } .dep .dots i { width: 11px; height: 11px; border-radius: 50%; background: var(--amber); } .dep .dots.g i { background: #e3dfd7; width: 9px; height: 9px; margin-top: 2px; }
+  .lat small { font-size: 14px; color: #555; } .lat .chips { display: flex; gap: 10px; margin-top: 26px; } .lat .chips span { background: #dff0ee; border-radius: 16px; padding: 7px 14px; font-size: 13px; font-weight: 700; } .lat .chips span + span { background: #efebe4; }
+  .grid2 { display: grid; grid-template-columns: 340px 1fr 300px; gap: 14px; margin-top: 14px; }
+  .use { height: 390px; } .use .rings { position: absolute; left: 50%; top: 56%; transform: translate(-50%, -50%); }
+  .use .sel, .log .f span, .p95 .d { font-size: 12.5px; font-weight: 700; border-radius: 14px; padding: 5px 12px; background: #f1eee8; }
+  .use .sel { position: absolute; right: 22px; top: 20px; }
+  .log h4 { font-size: 21px; font-weight: 700; display: inline-block; } .log .f { position: absolute; right: 20px; top: 16px; display: flex; gap: 8px; } .log .f span { padding: 9px 14px; } .log .f span.on { background: #111; color: #fff; } .log .f .s { width: 170px; color: #999; font-weight: 500; }
+  .log .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 26px; } .log .tiles div { background: #f1eee8; border-radius: 16px; height: 210px; padding: 16px; position: relative; }
+  .log .tiles b { font-size: 24px; } .log .tiles b small { font-size: 12px; color: #555; font-weight: 500; }
+  .log .menu p { display: flex; justify-content: space-between; font-size: 15px; font-weight: 600; padding: 9px 0; } .log .menu p::after { content: "›"; color: #999; }
+  .log .hook i { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; background: #fff2d6; color: var(--amber); } .log .hook b { display: block; font-size: 14.5px; margin-top: 14px; } .log .hook small { font-size: 12px; color: #555; } .log .hook span { position: absolute; left: 16px; right: 16px; bottom: 16px; height: 40px; border-radius: 20px; background: #111; color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 14px; }
+  .p95 { height: 188px; } .p95 i { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: #e6f1ef; color: var(--teal); } .p95 .d { position: absolute; right: 20px; top: 22px; background: #dff0ee; color: var(--teal); }
+  .p95 small { display: block; font-size: 14px; color: #555; margin-top: 12px; } .p95 b { font-size: 40px; letter-spacing: -.02em; }
+  .reg { height: 188px; margin-top: 14px; } .reg h4 { font-size: 15px; } .reg p { display: flex; align-items: center; gap: 10px; font: 500 13.5px "JBMono"; margin-top: 12px; } .reg p i { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); } .reg p b { margin-left: auto; font-family: "Jakarta"; }
+  .ep { margin-top: 14px; } .ep h4 { font-size: 19px; }
+  .ep p { display: grid; grid-template-columns: 70px 220px 1fr 90px; align-items: center; height: 51px; font: 500 15px "JBMono"; }
+  .ep p em { font-style: normal; font-size: 11.5px; font-weight: 700; border-radius: 12px; padding: 5px 0; width: 58px; text-align: center; background: #dff0ee; color: var(--teal); } .ep p em.w { background: #fff0d9; color: #c77a06; }
+  .ep p i { height: 8px; border-radius: 4px; background: #ece9e3; position: relative; } .ep p i::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: var(--w); border-radius: 4px; background: var(--teal); } .ep p span { text-align: right; font-size: 13px; color: #555; }
+</style>
+
+<div class="app" id="app">
+  <header class="bar" id="bar">
+    <span class="burger">☰</span><span class="y">Y</span>
+    <div class="org"><small>Nodeflux</small><b>API Console</b></div>
+    <i class="pill" id="pill"></i>
+    <span class="sp"></span>
+    <span class="rnd">+</span>
+    <div class="who"><i></i><div><b>Maya Whitfield</b><small>Platform Engineer</small></div></div>
+    <span class="search">⌕ Search…</span>
+  </header>
+
+  <!-- the four metrics live outside the scroller so they can sit on top of the bar -->
+  <div class="m" id="m0"><svg viewBox="0 0 22 22" fill="#555"><rect x="2" y="12" width="3" height="8"/><rect x="8" y="6" width="3" height="14"/><rect x="14" y="10" width="3" height="10"/></svg>1,842,600</div>
+  <div class="m err" id="m1"><svg viewBox="0 0 22 22" fill="none" stroke="#555" stroke-width="2"><path d="M11 3 20 19H2Z M11 9v5"/></svg>0.34%</div>
+  <div class="m" id="m2"><svg viewBox="0 0 22 22" fill="none" stroke="#555" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M11 7v4l3 2"/></svg>184 ms</div>
+  <div class="m" id="m3"><svg viewBox="0 0 22 22" fill="none" stroke="#555" stroke-width="2"><rect x="3" y="5" width="16" height="14" rx="2"/><path d="M3 10h16M8 3v4M14 3v4"/></svg>13 d</div>
+
+  <div class="scroll" id="scroll">
+    <div class="content">
+      <div class="hello" id="hello">
+        <div class="date"><b>09</b><small>THU, JUL</small></div>
+        <span class="inc">Show open Incidents →</span>
+        <span class="cal">▦</span>
+        <div class="ask"><b>Hey, need a hand?</b><span>Ask Nova anything</span></div>
+        <span class="mic">🎙</span>
+      </div>
+      <div class="metrics" id="metrics"><small style="left:0">Requests (24h)</small><small style="left:432px">Error rate</small><small style="left:750px">P95 latency</small><small style="left:1096px">Uptime streak</small></div>
+
+      <div class="grid">
+        <div class="c proj"><b>Project · checkout-service</b><small>Production environment</small><span class="live">Live ▾</span><div class="ver">us-east · v2.14</div><div class="btns"><span style="background:#fff;color:#111">Deploy</span><span style="background:#ffffff18">Roll back</span></div></div>
+        <div class="c rate"><i>🔒</i><b>Rate Limiting</b><small>428 req/min cap</small></div>
+        <div class="c dep"><b>7</b><small>deploys this week</small><div class="dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="dots g"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+        <div class="c lat"><small>Latency trend</small><svg width="100%" height="60" viewBox="0 0 250 60" style="margin-top:16px" preserveAspectRatio="none"><path d="M0 14 30 18 60 16 90 26 120 22 150 34 180 30 210 44 250 34" fill="none" stroke="var(--teal)" stroke-width="2.5"/></svg><div class="chips"><span>184ms wk</span><span>212ms last</span></div></div>
+      </div>
+      <div class="grid2">
+        <div class="c use"><span style="font-size:15px;color:#555">Monthly Usage</span><span class="sel">Jul ▾</span>
+          <svg class="rings" width="280" height="280" viewBox="0 0 280 280"><circle cx="140" cy="140" r="138" fill="#e3f1ef"/><circle cx="140" cy="140" r="108" fill="#b7dcd7"/><circle cx="140" cy="140" r="80" fill="#6fb8ae"/><circle cx="140" cy="140" r="54" fill="#0f6f6a"/><text x="140" y="140" text-anchor="middle" fill="#fff" font-size="21" font-weight="700" font-family="Jakarta">9.64K</text><text x="140" y="158" text-anchor="middle" fill="#cfe7e4" font-size="10" font-family="Jakarta">Total calls</text></svg></div>
+        <div class="c log"><h4>Activity Log</h4><div class="f"><span class="s">Search activity…</span><span>Errors</span><span>Latency</span><span class="on">Today</span></div>
+          <div class="tiles"><div><b>642 <small>req/s</small></b><svg width="100%" height="90" viewBox="0 0 150 90" style="position:absolute;left:0;bottom:16px"><g id="spark"></g></svg></div><div class="menu"><p>Compute</p><p>Storage</p><p>Networking</p></div><div class="hook"><i>✺</i><b>Enable Webhook Signing</b><small>Verify payloads with a signed HMAC header.</small><span>Enable</span></div></div></div>
+        <div><div class="c p95"><i>⌁</i><span class="d">−12%</span><small>P95 Latency</small><b>184 ms</b><svg width="100%" height="40" viewBox="0 0 250 40" preserveAspectRatio="none"><path d="M0 24 25 12 50 22 75 10 100 26 125 16 150 30 175 20 200 32 250 22" fill="none" stroke="var(--teal)" stroke-width="2.5"/></svg></div>
+          <div class="c reg"><h4>Regions</h4><p><i></i>us-east<b>99.99%</b></p><p><i></i>eu-west<b>99.97%</b></p><p><i style="background:var(--amber)"></i>ap-south<b>99.62%</b></p></div></div>
+      </div>
+      <div class="c ep"><h4>Endpoints</h4>
+        <p><em>GET</em>/v1/orders<i style="--w:82%"></i><span>142 ms</span></p>
+        <p><em class="w">POST</em>/v1/checkout<i style="--w:64%"></i><span>188 ms</span></p>
+        <p><em>GET</em>/v1/catalog<i style="--w:55%"></i><span>96 ms</span></p>
+        <p><em class="w">PUT</em>/v1/cart<i style="--w:38%"></i><span>121 ms</span></p>
+        <p><em>GET</em>/v1/stores<i style="--w:22%"></i><span>74 ms</span></p>
+        <p><em class="w">DELETE</em>/v1/sessions<i style="--w:12%"></i><span>58 ms</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let scale = 1;
+  const fit = () => { scale = Math.min(1, (innerWidth - 12) / 1280, (innerHeight - 12) / 820); $("app").style.setProperty("--s", scale.toFixed(4)); };
+  addEventListener("resize", fit); fit();
+  $("spark").innerHTML = [30, 44, 20, 52, 38, 60, 48, 70, 36, 54, 42, 58].map((h, i) => `<rect x="${12 + i * 11}" y="${80 - h}" width="6" height="${h}" rx="2" fill="${i % 2 ? "#f5970f" : "#0f6f6a"}"/>`).join("");
+
+  /* ── scroll-driven, not scroll-triggered ──
+     Every frame p = clamp(scrollTop / 130) and each metric is placed at
+     lerp(big slot, pill slot, p), with its size lerped 64 → 20 px through a scale on a
+     fixed-size element (no font-size animation, so no layout). Scrolling back runs the
+     same function backwards — nothing to "undo". The greeting row above fades and drifts
+     up over the first 60 %, the pill background fades in over the last 40 %.
+     The pill slots are computed from the rendered widths at 20 px, so the numbers pack
+     tightly whatever they say. */
+  const RANGE = 130, SMALL = 20 / 64;
+  const ms = [0, 1, 2, 3].map((i) => $("m" + i));
+  const BIG = [[14, 84 + 110 + 54], [446, 84 + 110 + 54], [764, 84 + 110 + 54], [1110, 84 + 110 + 54]];   // x, centre-y at p = 0
+  const widths = ms.map((m) => m.getBoundingClientRect().width / scale);
+  const SMALLX = []; { let x = 350; widths.forEach((w, i) => { SMALLX[i] = x; x += w * SMALL + 22; }); }
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const ease = (t) => t < .5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+  function frame() {
+    const st = $("scroll").scrollTop, p = Math.min(1, Math.max(0, st / RANGE)), e = ease(p);
+    ms.forEach((m, i) => {
+      const [bx, by] = BIG[i];
+      const x = lerp(bx, SMALLX[i], e), y = lerp(by - st, 42, e), s = lerp(1, SMALL, e);
+      m.style.transform = `translate(${x}px, ${y - 32}px) scale(${s})`;
+    });
+    $("hello").style.opacity = String(1 - Math.min(1, p / .6));
+    $("app").style.setProperty("--pill", Math.max(0, (p - .6) / .4).toFixed(3));
+    $("bar").style.setProperty("--line", p.toFixed(3));
+  }
+  $("scroll").addEventListener("scroll", frame, { passive: true }); frame();
+
+  // demo: scroll down past the header, dwell, come back up — like the source
+  let demo = !reduce;
+  ["wheel", "pointerdown", "touchstart", "keydown"].forEach((ev) => addEventListener(ev, (e) => { if (e.isTrusted) demo = false; }, { passive: true }));
+  const glide = (to, ms) => new Promise((res) => { const sc = $("scroll"), from = sc.scrollTop, t0 = performance.now(); const step = (n) => { const k = Math.min(1, (n - t0) / ms); sc.scrollTop = from + (to - from) * ease(k); if (k < 1 && demo) requestAnimationFrame(step); else res(); }; requestAnimationFrame(step); });
+  (async () => { await document.fonts.ready; frame(); await new Promise((r) => setTimeout(r, 1300)); while (demo) { await glide(420, 2400); await new Promise((r) => setTimeout(r, 1500)); if (!demo) break; await glide(0, 2000); await new Promise((r) => setTimeout(r, 1800)); } })();
+  document.fonts.ready.then(() => { widths.splice(0, 4, ...ms.map((m) => { const t = m.style.transform; m.style.transform = "none"; const w = m.getBoundingClientRect().width / scale; m.style.transform = t; return w; })); let x = 350; widths.forEach((w, i) => { SMALLX[i] = x; x += w * SMALL + 22; }); frame(); });
+})();
+</script>

@@ -182,6 +182,18 @@ const blurbs: Record<string, string> = {
     "A narrow rail of module icons and a wider panel listing that module's own sections. Switching a module swaps the panel's list; picking a section filters the screen — orders by status, menu by category. The two-level navigation of large admin products (Slack, Linear, Notion-style), applied to a restaurant back office. The right choice when there are more than about eight destinations.",
   "dashboard-hover-expand":
     "Dark throughout. The rail rests narrow and opens wide on hover, labels fading in just after the width starts moving, so text never sits over the shrinking rail on the way out. The collapsing sidebar of dense tools — analytics, dev consoles, POS back offices — done with the timing that keeps it from flickering. Maximises content width without hiding the navigation.",
+  "dash-bento-drag":
+    "A dashboard where the modules are not fixed: pick one up, carry it across the grid, and the others step aside to make room before it snaps into place. The interaction behind every 'customise your dashboard' feature, done so it feels physical rather than like editing a layout file. For back offices, analytics homes and any product where different people care about different numbers.",
+  "dash-expand-in-place":
+    "Tap a chart and it grows out of its own spot into a full detail view, while the rest of the dashboard shrinks into a strip of thumbnails; close it and it goes back the way it came. You never leave the page, so you never lose your place. For analytics, project tracking and any dashboard whose cards have more to say than fits in a card.",
+  "dash-global-filter":
+    "One switch at the top — today, this week, this month — and every number on the page rolls to its new value together, from the headline counter to the charts and the log. It makes the whole dashboard feel like one instrument instead of a collage of widgets. For operations consoles, sales reports and any page where the date range is the first question.",
+  "dash-linked-hover":
+    "Two charts that share a timeline answer to the same pointer: hover a day in one and the same day lights up in the other, joined by a guide line, while everything else steps back. It turns 'what happened on Tuesday' into a single gesture. For scheduling, production planning, sales-versus-traffic and any dashboard with more than one view of the same dates.",
+  "dash-sticky-metrics":
+    "The four numbers that matter start big at the top of the page, and as you scroll they shrink and slide into the header instead of disappearing. Scroll back and they unfold again. The page gets its room back without the key figures ever leaving the screen. For monitoring consoles, finance summaries and long reports with a headline row.",
+  "dash-master-detail":
+    "Click a row and a detail panel slides in from the side while the list compresses to stay visible next to it; the arrow keys flip between records instantly. Comparing one item with the next takes a keystroke, not a round trip. For inventories, CRMs, order lists and any table where people open records one after another.",
   "dashboard-grouped-nav":
     "Items grouped by area under tiny grey labels with generous space between groups. The list scrolls on its own between a pinned brand at the top and a pinned user area at the bottom, so the exit is always where the eye expects it. The pattern for admin products with many sections that fall into a few natural groups — here Sala, Gestione, Sistema for a restaurant.",
 

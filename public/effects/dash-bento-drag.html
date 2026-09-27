@@ -1,0 +1,239 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bento drag · The Daily Grind</title>
+<style>
+  @font-face { font-family: "Jakarta"; src: url("_fonts/plus-jakarta-sans-latin.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+  @font-face { font-family: "Archivo"; src: url("_fonts/archivo-black-latin.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+  @font-face { font-family: "JBMono"; src: url("_fonts/jetbrains-mono-latin.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: #0c0c0e; overflow: hidden; font-family: "Jakarta", -apple-system, sans-serif; color: #f2f2f2; -webkit-font-smoothing: antialiased; -webkit-user-select: none; user-select: none; }
+  /* The board is laid out at 1280 × 820 and scaled to the frame, centred with translate
+     (a scaled box keeps its unscaled layout size; grid-centring it overflows the frame). */
+  .app { position: absolute; left: 50%; top: 50%; width: 1280px; height: 820px; transform: translate(-50%, -50%) scale(var(--s, 1)); border-radius: 26px; background: #1a1a1c; overflow: hidden; }
+  .rail { position: absolute; left: 0; top: 0; bottom: 0; width: 72px; display: flex; flex-direction: column; align-items: center; padding-top: 18px; gap: 18px; color: #8d8d92; }
+  .rail .logo { width: 44px; height: 44px; border-radius: 50%; background: #f4f4f4; color: #111; font: 700 14px/44px "Jakarta"; text-align: center; margin-bottom: 14px; }
+  .rail i { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; }
+  .rail i.on { background: #8fd8ee; color: #111; }
+  .rail .grow { flex: 1; }
+  .rail .plus { width: 40px; height: 40px; border-radius: 50%; background: #f4f4f4; color: #111; display: grid; place-items: center; font-size: 20px; }
+  .rail .me { width: 40px; height: 40px; border-radius: 50%; background: #e38a5b; color: #2b1409; font: 700 13px/40px "Jakarta"; text-align: center; margin-bottom: 20px; }
+  .top { position: absolute; left: 84px; right: 16px; top: 18px; height: 44px; display: flex; align-items: center; gap: 10px; }
+  .crumb { font-size: 19px; color: #8a8a8f; } .crumb b { color: #f2f2f2; font-weight: 500; }
+  .top .sp { flex: 1; }
+  .pillw { height: 44px; border-radius: 22px; background: #f4f4f4; color: #111; display: flex; align-items: center; padding: 0 16px; font-size: 14.5px; font-weight: 600; gap: 6px; }
+  .roundw { width: 44px; height: 44px; border-radius: 50%; background: #f4f4f4; color: #111; display: grid; place-items: center; }
+
+  /* ── the grid ── 12 columns × 6 rows, dense flow: moving one item re-packs the rest */
+  .grid { position: absolute; left: 84px; right: 16px; top: 76px; bottom: 16px; display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(6, 1fr); grid-auto-flow: dense; gap: 16px; }
+  .card { position: relative; border-radius: 22px; padding: 18px 20px; overflow: hidden; cursor: grab; touch-action: none; will-change: transform; }
+  .card.w6 { grid-column: span 6; } .card.w3 { grid-column: span 3; } .card.h2 { grid-row: span 2; } .card.h4 { grid-row: span 4; }
+  .card.ghost { visibility: hidden; }
+  .slot { border: 2px dashed #ffffff40; border-radius: 22px; background: transparent; }
+  .lifted { position: fixed; z-index: 50; cursor: grabbing; box-shadow: 0 30px 60px -20px #000c; pointer-events: none; transition: box-shadow .2s; }
+  h3 { font: 400 27px/1 "Archivo", sans-serif; letter-spacing: .01em; text-transform: uppercase; }
+  .chip { white-space: nowrap; height: 30px; border-radius: 15px; padding: 0 13px; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+  .arrow { position: absolute; right: 18px; top: 18px; width: 34px; height: 34px; border-radius: 50%; background: #f4f4f4; color: #111; display: grid; place-items: center; }
+
+  .cap { background: #6b78f6; color: #fff; }
+  .cap .chip { position: absolute; right: 20px; top: 18px; background: #ffffff33; color: #fff; }
+  .days { display: flex; justify-content: space-between; margin-top: 14px; padding: 0 12px; }
+  .day { text-align: center; font-size: 12.5px; color: #e6e8ff; }
+  .day i { display: grid; place-items: center; width: 54px; height: 54px; margin-top: 8px; border-radius: 50%; background: #fff; color: #111; font: 700 14px "Jakarta"; font-style: normal; }
+  .day i.dark { background: #111; color: #fff; } .day i.fut { background: repeating-linear-gradient(45deg, #ffffff30 0 3px, #ffffff15 3px 7px); color: #fff; }
+  .cap svg { position: absolute; left: 20px; right: 20px; bottom: 16px; }
+
+  .staff, .ai { background: #232325; }
+  .staff .ico { position: absolute; left: 20px; top: 18px; width: 54px; height: 54px; border-radius: 12px; background: #f6c65b; color: #1b1b1b; display: grid; place-items: center; }
+  .staff h3, .staff p { margin-left: 72px; }
+  .staff h3, .ai h3 { font-size: 23px; margin-top: 6px; }
+  .staff p { font-size: 13.5px; color: #a7a7ab; margin-top: 8px; line-height: 1.6; }
+  .timer { background: #f6c65b; color: #1b1b1b; font: 700 13px "JBMono"; padding: 2px 7px; border-radius: 6px; }
+  .bars { position: absolute; left: 20px; right: 20px; bottom: 26px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; font-size: 12.5px; color: #8b8b90; }
+  .bars div i { display: block; margin-top: 8px; height: 8px; border-radius: 4px; background: #2e2e31; position: relative; overflow: hidden; }
+  .bars div i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--w); background: var(--c); border-radius: 4px; }
+
+  .thr { background: linear-gradient(170deg, #f7714f, #f55d3f); color: #1b1b1b; }
+  .thr .head { display: flex; align-items: center; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid #00000020; }
+  .thr .logo2 { width: 44px; height: 44px; border-radius: 12px; background: #1b1b1b; color: #f7714f; display: grid; place-items: center; }
+  .thr h3 { font-size: 37px; }
+  .thr .chip { background: #ffffff38; color: #1b1b1b; }
+  .thr .plot { position: absolute; left: 20px; bottom: 16px; width: 330px; height: 380px; }
+  .thr .plot .b { position: absolute; bottom: 30px; width: 34px; border-radius: 17px; background: repeating-linear-gradient(45deg, #ffffff45 0 3px, #ffffff25 3px 7px); }
+  .thr .plot .b.on { background: #cfe6dc; }
+  .thr .plot .lab { position: absolute; bottom: 0; width: 44px; margin-left: -5px; text-align: center; font-size: 13px; }
+  .thr .plot .lab.on { background: #1b1b1b; color: #fff; border-radius: 11px; padding: 3px 0; bottom: -3px; }
+  .thr .tip { position: absolute; background: #1b1b1b; color: #fff; font: 600 12.5px "JBMono"; border-radius: 13px; padding: 5px 11px; }
+  .thr .stat { position: absolute; right: 20px; width: 204px; height: 170px; border-radius: 18px; background: #ffffff2a; padding: 16px; }
+  .thr .stat small { font-size: 12.5px; font-weight: 700; letter-spacing: .04em; }
+  .thr .stat small em { font-style: normal; font-weight: 600; font-size: 11px; background: #ffffff40; border-radius: 10px; padding: 3px 7px; margin-left: 8px; }
+  .thr .stat b { position: absolute; left: 16px; bottom: 18px; font: 700 34px "Jakarta"; letter-spacing: -.02em; }
+  .thr .stat b span { font-size: 22px; }
+
+  .ai .row { display: flex; gap: 12px; margin-top: 16px; }
+  .ai .av { width: 34px; height: 34px; border-radius: 50%; background: #6b78f6; color: #fff; display: grid; place-items: center; font-size: 12px; font-weight: 700; flex: none; }
+  .ai .msg { background: #2c2c2f; border-radius: 12px; padding: 9px 14px; font-size: 13.5px; line-height: 1.55; flex: 1; }
+  .ai .msg mark { background: #f6c65b; color: #111; border-radius: 4px; padding: 0 4px; }
+  .ai .sug { display: flex; gap: 12px; margin-top: 16px; }
+  .ai .sug span { height: 32px; border-radius: 16px; padding: 0 14px; display: inline-flex; align-items: center; font-size: 12.5px; font-weight: 600; }
+  .ai .ask { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+  .ai .ask i { width: 36px; height: 36px; border-radius: 50%; background: #f55d3f; color: #fff; display: grid; place-items: center; font-style: normal; }
+  .ai .ask div { flex: 1; height: 36px; border-radius: 10px; background: #2a2a2d; color: #77777c; font-size: 12.5px; display: flex; align-items: center; padding: 0 14px; }
+
+  .pts { background: #bde8f7; color: #111; }
+  .pts h3 { font-size: 27px; } .tim h3 { font-size: 23px; line-height: 1; margin-right: 34px; }
+  .pts .chip { background: #fff; color: #111; margin-top: 10px; }
+  .pts .map { position: absolute; left: 18px; right: 18px; bottom: 16px; height: 112px; border-radius: 14px; background: #a6d6ea; overflow: hidden; }
+  .pts .map span { position: absolute; left: 50%; top: 50%; transform: translate(-10%, -50%); background: #fff; border-radius: 16px; padding: 6px 14px; font-size: 12.5px; font-weight: 600; }
+  .tim { background: #c7d4cb; color: #111; }
+  .tim .clock { position: absolute; left: 50%; bottom: 16px; width: 112px; height: 112px; margin-left: -56px; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 4px #eef0ee; }
+  .hand { position: absolute; left: 50%; top: 50%; width: 3px; border-radius: 2px; background: #111; transform-origin: 50% 100%; }
+</style>
+
+<div class="app" id="app">
+  <nav class="rail">
+    <div class="logo">Dg</div>
+    <i class="on"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1Z"/></svg></i>
+    <i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m3 17 6-6 4 4 8-8"/></svg></i>
+    <i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h2"/></svg></i>
+    <i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 8h11v6a5 5 0 0 1-10 0Z M16 10h2a2 2 0 0 1 0 4h-2"/></svg></i>
+    <i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m3 6 6-2 6 2 6-2v14l-6 2-6-2-6 2Z M9 4v14 M15 6v14"/></svg></i>
+    <i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></i>
+    <div class="grow"></div>
+    <div class="plus">+</div>
+    <div class="me">HN</div>
+  </nav>
+  <div class="top">
+    <span class="crumb">Dashboard / <b>Overview</b></span><span class="sp"></span>
+    <span class="roundw"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></span>
+    <span class="pillw">The Daily Grind, NY ▾</span>
+    <span class="roundw"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4Z M10 21h4"/></svg></span>
+  </div>
+
+  <div class="grid" id="grid">
+    <section class="card cap w6 h2" data-id="cap">
+      <h3>Venue capacity</h3><span class="chip">this week ▾</span>
+      <div class="days">
+        <div class="day">Mon<i>78%</i></div><div class="day">Tue<i>82%</i></div><div class="day">Wen<i class="dark">91%</i></div><div class="day">Thu<i>88%</i></div>
+        <div class="day">Fri<i class="fut">95%</i></div><div class="day">Sat<i class="fut">93%</i></div><div class="day">Sun<i class="fut">70%</i></div>
+      </div>
+      <svg height="64" viewBox="0 0 550 64" preserveAspectRatio="none"><path d="M0 24 C60 10 110 20 150 30 S250 44 300 36 S350 10 368 10 L368 64 L0 64Z" fill="#e0556b" opacity=".85"/><path d="M368 10 C420 6 470 0 550 34" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/></svg>
+    </section>
+    <section class="card staff w6 h2" data-id="staff">
+      <div class="ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5"/></svg></div>
+      <h3>Stabilizing staff load</h3>
+      <p>Approve critical alerts and check inventory risk.<br>Shift ends in <span class="timer" id="timer">2:52:25</span></p>
+      <span class="arrow">↗</span>
+      <div class="bars"><div>Baristas<i style="--w:78%;--c:#f6c65b"></i></div><div>Load<i style="--w:96%;--c:#f55d3f"></i></div><div>Break<i style="--w:40%;--c:#f6c65b"></i></div></div>
+    </section>
+    <section class="card thr w6 h4" data-id="thr">
+      <div class="head"><span class="logo2"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 8h12M6 12h12M6 16h12"/></svg></span><h3>Throughput</h3><span class="chip">this week ▾</span><span class="chip">cups, ea ▾</span></div>
+      <div class="plot" id="plot"></div>
+      <div class="stat" style="top:124px"><small>CUPS SERVED<em>+7,5%</em></small><b>9,428 <span>cups</span></b></div>
+      <div class="stat" style="top:310px"><small>AVG. QUEUE TIME<em>−2,4%</em></small><b>3.4 <span>min</span></b></div>
+    </section>
+    <section class="card ai w6 h2" data-id="ai">
+      <h3>AI operations lead</h3><span class="arrow">↗</span>
+      <div class="row"><span class="av">AI</span><div class="msg">Queue time is creeping up and staff load hits <mark>128%</mark> at noon.</div></div>
+      <div class="sug"><span style="background:#bde8f7;color:#111">Show staff load</span><span style="background:#e7e1d8;color:#111">Strategy planning</span></div>
+      <div class="ask"><i>+</i><div>Ask something or choose to start</div></div>
+    </section>
+    <section class="card pts w3 h2" data-id="pts">
+      <h3>Points</h3><span class="arrow" style="width:30px;height:30px;background:#fff">↗</span><br><span class="chip">all points ▾</span>
+      <div class="map"><svg width="100%" height="100%" viewBox="0 0 250 128" preserveAspectRatio="none" stroke="#6aa9c3" stroke-width="1"><path d="M0 20 250 100M0 90 250 10M30 0 90 128M120 0 70 128M150 0 230 128M250 60 0 40M0 120 180 0M60 0 250 128M200 0 130 128"/></svg><svg style="position:absolute;left:40px;top:50px" width="16" height="22" viewBox="0 0 16 22"><path d="M8 0a8 8 0 0 1 8 8c0 6-8 14-8 14S0 14 0 8a8 8 0 0 1 8-8Z" fill="#e8553f"/><circle cx="8" cy="8" r="3" fill="#fff"/></svg><span>Daily Grind</span></div>
+    </section>
+    <section class="card tim w3 h2" data-id="tim">
+      <h3>Operational<br>timing</h3><span class="arrow" style="width:30px;height:30px;background:#fff">↗</span>
+      <div class="clock"><svg width="120" height="120" viewBox="0 0 120 120" style="position:absolute;inset:0"><path d="M60 16 A44 44 0 0 0 30 91" fill="none" stroke="#f55d3f" stroke-width="7"/></svg><i class="hand" id="hh" style="height:30px;margin:-30px 0 0 -1.5px"></i><i class="hand" id="mh" style="height:42px;width:2px;margin:-42px 0 0 -1px"></i><i style="position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px;border-radius:50%;background:#111"></i></div>
+    </section>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const grid = $("grid");
+  let scale = 1;
+  const fit = () => { scale = Math.min(1, (innerWidth - 12) / 1280, (innerHeight - 12) / 820); $("app").style.setProperty("--s", scale.toFixed(4)); };
+  addEventListener("resize", fit); fit();
+
+  // throughput bars
+  const H = [120, 270, 190, 230, 110, 150, 140], D = ["Mon", "Tue", "Wen", "Thu", "Fri", "Sat", "Sun"];
+  $("plot").innerHTML = H.map((h, i) => `<i class="b${i === 1 ? " on" : ""}" style="left:${i * 46 + 6}px;height:${h}px"></i><span class="lab${i === 1 ? " on" : ""}" style="left:${i * 46 + 1}px">${D[i]}</span>`).join("") + `<span class="tip" style="left:6px;bottom:${270 + 44}px">1,642 cups</span>`;
+  // live clock + shift timer
+  let left = 2 * 3600 + 52 * 60 + 25;
+  const tick = () => { const d = new Date(); $("hh").style.transform = `rotate(${(d.getHours() % 12) * 30 + d.getMinutes() / 2}deg)`; $("mh").style.transform = `rotate(${d.getMinutes() * 6}deg)`; left--; $("timer").textContent = `${Math.floor(left / 3600)}:${String(Math.floor(left / 60) % 60).padStart(2, "0")}:${String(left % 60).padStart(2, "0")}`; };
+  tick(); setInterval(tick, 1000);
+
+  /* ── drag ──
+     The dragged card is lifted out (position: fixed, follows the pointer, tilted 1.5°) and a
+     dashed slot of the same span takes its place in the grid. Whenever the pointer is over
+     another card, the slot is moved in DOM order before/after it and the grid re-packs
+     (grid-auto-flow: dense). Every other card FLIPs from its old box to its new one, so the
+     neighbours visibly step aside. Release: the card flies into the slot's box.
+     Reflow 600 ms — measured 0.2 s in the source, which is played back at 3×. */
+  const REFLOW = 600, EASE = "cubic-bezier(.2,.8,.2,1)";
+  let drag = null;
+  const cards = () => [...grid.children].filter((c) => c !== drag?.el);
+  function flip(mutate) {
+    const els = [...grid.children].filter((c) => !c.classList.contains("lifted"));
+    const first = new Map(els.map((e) => [e, e.getBoundingClientRect()]));
+    mutate();
+    els.forEach((e) => {
+      const a = first.get(e), b = e.getBoundingClientRect();
+      const dx = (a.left - b.left) / scale, dy = (a.top - b.top) / scale, sx = a.width / b.width, sy = a.height / b.height;
+      if (Math.abs(dx) + Math.abs(dy) < 1 && Math.abs(sx - 1) < .01) return;
+      e.animate([{ transformOrigin: "0 0", transform: `translate(${dx}px,${dy}px) scale(${sx},${sy})` }, { transformOrigin: "0 0", transform: "none" }], { duration: reduce ? 1 : REFLOW, easing: EASE });
+    });
+  }
+  function start(el, e) {
+    const r = el.getBoundingClientRect();
+    const slot = document.createElement("div");
+    slot.className = el.className.replace("card", "slot").replace(/\b(cap|staff|thr|ai|pts|tim)\b/g, "");
+    slot.style.gridColumn = getComputedStyle(el).gridColumn; slot.style.gridRow = getComputedStyle(el).gridRow;
+    el.replaceWith(slot); document.body.appendChild(el);
+    el.classList.add("lifted");
+    Object.assign(el.style, { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", transformOrigin: "0 0" });
+    drag = { el, slot, ox: e.clientX - r.left, oy: e.clientY - r.top, x: e.clientX, y: e.clientY, r };
+    move(e.clientX, e.clientY);
+    el.animate([{ scale: "1" }, { scale: "1.03" }], { duration: 160, fill: "forwards", easing: "ease-out" });
+  }
+  function move(x, y) {
+    if (!drag) return;
+    drag.x = x; drag.y = y;
+    drag.el.style.transform = `translate(${x - drag.ox - drag.r.left}px, ${y - drag.oy - drag.r.top}px) rotate(-1.5deg) scale(${scale})`;
+    const over = cards().find((c) => { const b = c.getBoundingClientRect(); return c !== drag.slot && x > b.left && x < b.right && y > b.top && y < b.bottom; });
+    if (!over || over === drag.lastOver) return;
+    drag.lastOver = over;
+    const kids = [...grid.children], si = kids.indexOf(drag.slot), oi = kids.indexOf(over);
+    flip(() => grid.insertBefore(drag.slot, si < oi ? over.nextSibling : over));
+  }
+  async function end() {
+    if (!drag) return;
+    const { el, slot } = drag; drag = null;
+    const b = slot.getBoundingClientRect(), a = el.getBoundingClientRect();
+    await el.animate([{ transform: el.style.transform }, { transform: `translate(${b.left - el.offsetLeft}px, ${b.top - el.offsetTop}px) rotate(0) scale(${scale})` }], { duration: reduce ? 1 : 420, easing: EASE, fill: "forwards" }).finished;
+    el.getAnimations().forEach((x) => x.cancel());
+    el.classList.remove("lifted"); el.removeAttribute("style");
+    slot.replaceWith(el);
+  }
+  grid.addEventListener("pointerdown", (e) => { const c = e.target.closest(".card"); if (!c || drag) return; if (e.isTrusted) demo = false; e.preventDefault(); start(c, e); });
+  addEventListener("pointermove", (e) => move(e.clientX, e.clientY));
+  addEventListener("pointerup", end); addEventListener("pointercancel", end);
+
+  // ── demo: pick up VENUE CAPACITY, carry it to the right column, drop; then put it back
+  let demo = !reduce;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const centre = (el) => { const b = el.getBoundingClientRect(); return [b.left + b.width / 2, b.top + b.height * .3]; };
+  async function glide(from, to, ms) { const t0 = performance.now(); while (true) { const k = Math.min(1, (performance.now() - t0) / ms), e = k < .5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2; move(from[0] + (to[0] - from[0]) * e, from[1] + (to[1] - from[1]) * e); if (k >= 1) break; await new Promise(requestAnimationFrame); } }
+  async function carry(id, targetId) {
+    const el = grid.querySelector(`[data-id="${id}"]`), tgt = grid.querySelector(`[data-id="${targetId}"]`);
+    if (!el || !tgt) return;
+    const p = centre(el); start(el, { clientX: p[0], clientY: p[1] });
+    await sleep(350); await glide(p, centre(tgt), 1500); await sleep(700); await end();
+  }
+  (async () => { await document.fonts.ready; await sleep(1200); while (demo) { await carry("cap", "staff"); if (!demo) break; await sleep(2200); if (!demo) break; await carry("cap", "thr"); if (!demo) break; await sleep(2600); } })();
+})();
+</script>

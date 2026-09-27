@@ -1,0 +1,156 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linked hover · Switchyard</title>
+<style>
+  @font-face { font-family: "Jakarta"; src: url("_fonts/plus-jakarta-sans-latin.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: #0c0c0e; overflow: hidden; font-family: "Jakarta", -apple-system, "PingFang SC", sans-serif; color: #141414; -webkit-font-smoothing: antialiased; -webkit-user-select: none; user-select: none; }
+  :root { --hot: #fb5a1f; }
+  .app { position: absolute; left: 50%; top: 50%; width: 1280px; height: 820px; transform: translate(-50%, -50%) scale(var(--s, 1)); border-radius: 26px; background: #eceef2; overflow: hidden; }
+  .top { position: absolute; left: 16px; right: 16px; top: 16px; display: flex; align-items: center; gap: 12px; }
+  .logo { background: #fff; border-radius: 22px; height: 44px; padding: 0 18px; display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; } .logo i { width: 7px; height: 7px; border-radius: 50%; background: var(--hot); }
+  .tabs { margin: 0 auto; background: #fff; border-radius: 24px; padding: 5px; display: flex; gap: 4px; }
+  .tabs span { padding: 9px 20px; border-radius: 19px; font-size: 14px; font-weight: 600; color: #444; } .tabs span.on { background: #141414; color: #fff; }
+  .rb { display: flex; gap: 10px; } .rb span { background: #fff; height: 44px; min-width: 44px; border-radius: 22px; display: grid; place-items: center; padding: 0 14px; font-size: 14px; font-weight: 600; }
+  h1 { position: absolute; left: 16px; top: 88px; font-size: 44px; font-weight: 600; letter-spacing: -.035em; }
+  .phase { position: absolute; left: 16px; top: 164px; display: grid; grid-template-columns: 140px 368px 208px 74px; gap: 7px; }
+  .phase small { display: block; font-size: 11.5px; color: #666; margin-bottom: 8px; }
+  .phase div div { height: 34px; border-radius: 17px; display: grid; place-items: center; font-size: 11.5px; font-weight: 700; }
+  .kpis { position: absolute; right: 0; top: 150px; display: flex; gap: 48px; text-align: center; }
+  .kpis b { display: block; font-size: 48px; font-weight: 600; letter-spacing: -.03em; line-height: 1; } .kpis small { font-size: 12px; color: #555; }
+  .hr { position: absolute; left: 16px; right: 16px; top: 232px; border-top: 1px solid #d9dce2; }
+
+  .card { position: absolute; background: #fff; border-radius: 22px; overflow: hidden; }
+  #photo { left: 16px; top: 250px; width: 372px; height: 248px; }
+  #photo img { width: 100%; height: 100%; object-fit: cover; } #photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 50%, #000a); }
+  #photo .roll { position: absolute; left: 18px; top: 18px; z-index: 1; background: #0009; color: #fff; font-size: 11.5px; font-weight: 700; border-radius: 12px; padding: 5px 11px; } #photo .roll::before { content: "● "; color: var(--hot); }
+  #photo .cap { position: absolute; left: 18px; bottom: 16px; z-index: 1; color: #fff; } #photo .cap b { font-size: 18px; } #photo .cap small { display: block; font-size: 12px; opacity: .8; margin-top: 4px; }
+  #acc { left: 16px; top: 514px; width: 372px; height: 290px; padding: 12px 20px; }
+  .ac { border-bottom: 1px solid #eef0f3; padding: 16px 0; font-size: 14.5px; font-weight: 700; position: relative; } .ac::after { content: "⌄"; position: absolute; right: 2px; top: 13px; color: #888; } .ac.open::after { content: "⌃"; }
+  .ac .it { display: flex; gap: 14px; align-items: center; margin-top: 14px; font-weight: 700; font-size: 13.5px; } .ac .it i { width: 50px; height: 34px; border-radius: 8px; background: linear-gradient(120deg, #7b3fe4, #e8438f); } .ac .it small { display: block; color: #777; font-weight: 500; font-size: 12px; margin-top: 2px; }
+
+  #cam { left: 402px; top: 250px; width: 536px; height: 248px; padding: 20px 22px; }
+  #cam h3 { font-size: 16px; font-weight: 700; } #cam .v { font-size: 26px; font-weight: 600; margin-top: 6px; } #cam .v small { font-size: 12px; color: #666; margin-left: 10px; font-weight: 500; }
+  #cam .go { position: absolute; right: 18px; top: 18px; width: 30px; height: 30px; border-radius: 50%; background: #eef0f3; display: grid; place-items: center; font-size: 13px; }
+  #cal { left: 402px; top: 514px; width: 536px; height: 290px; padding: 16px 16px; }
+  .mon { display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 17px; } .mon span { font-size: 11.5px; font-weight: 600; background: #eef0f3; border-radius: 11px; padding: 5px 12px; color: #555; }
+  .wk { display: grid; grid-template-columns: 34px repeat(7, 1fr); margin-top: 10px; text-align: center; }
+  .wk small { font-size: 12px; color: #555; } .wk b { display: block; font-size: 20px; font-weight: 600; margin-top: 6px; transition: color .3s; }
+  .hours { position: absolute; left: 16px; right: 16px; top: 112px; bottom: 12px; }
+  .hours .h { position: absolute; left: 0; right: 0; border-top: 1px solid #eef0f3; font-size: 9.5px; color: #999; } .hours .h span { position: relative; top: -7px; background: #fff; padding-right: 6px; }
+  .ev { position: absolute; height: 36px; border-radius: 9px; display: flex; align-items: center; padding: 0 12px; font-size: 12.5px; font-weight: 700; transition: opacity .3s, box-shadow .3s; }
+
+  /* columns shared by chart and calendar: same 7 slots, so the guide line can run
+     through both cards at one x */
+  /* left 50 = the calendar's 16 padding + its 34-px hour gutter, right 16 = its padding: the
+     seven chart columns sit exactly over the seven calendar days */
+  .plot { position: absolute; left: 50px; right: 16px; top: 92px; bottom: 16px; display: grid; grid-template-columns: repeat(7, 1fr); }
+  .col { position: relative; transition: opacity .36s; }
+  .col .stem { position: absolute; left: 50%; bottom: 26px; width: 7px; margin-left: -3.5px; border-radius: 4px; background: #5d6470; transition: background .3s; }
+  .col .stem::after { content: ""; position: absolute; left: 50%; bottom: -5px; width: 13px; height: 13px; margin-left: -6.5px; border-radius: 50%; background: inherit; }
+  .col .d { position: absolute; left: 0; right: 0; bottom: 0; text-align: center; font-size: 12px; color: #555; }
+  .col .tag { position: absolute; left: 50%; transform: translate(-50%, -140%); background: var(--hot); color: #fff; font-size: 12px; font-weight: 700; border-radius: 12px; padding: 4px 11px; white-space: nowrap; opacity: 0; transition: opacity .25s; }
+  .guide { position: absolute; top: 330px; height: 470px; width: 0; border-left: 2px dashed var(--hot); opacity: 0; transition: left .36s cubic-bezier(.3,.9,.3,1), opacity .25s; pointer-events: none; z-index: 3; }
+  .guide i { position: absolute; left: -6px; top: 244px; width: 10px; height: 10px; border-radius: 50%; background: var(--hot); }
+  .band { position: absolute; top: 60px; bottom: 0; background: #fb5a1f14; transition: left .36s cubic-bezier(.3,.9,.3,1), opacity .25s; opacity: 0; }
+  .linked .col { opacity: .35; } .linked .col.on { opacity: 1; } .linked .col.on .stem { background: var(--hot); } .linked .col.on .tag { opacity: 1; }
+
+  #ready { left: 952px; top: 250px; width: 312px; height: 132px; padding: 20px 20px; }
+  #ready h3 { font-size: 15px; font-weight: 700; } #ready b { position: absolute; right: 20px; top: 16px; font-size: 22px; font-weight: 600; }
+  #ready .pills { display: flex; gap: 8px; margin-top: 26px; } #ready .pills span { height: 34px; border-radius: 17px; display: grid; place-items: center; font-size: 12.5px; font-weight: 700; }
+  #check { left: 952px; top: 396px; width: 312px; height: 408px; background: #1c1f26; color: #fff; padding: 20px 20px; }
+  #check h3 { font-size: 16px; font-weight: 700; } #check b { position: absolute; right: 20px; top: 18px; font-size: 19px; }
+  .ck { display: flex; align-items: center; gap: 14px; margin-top: 16px; font-size: 13px; font-weight: 700; } .ck i { width: 30px; height: 30px; border-radius: 8px; background: #2c3039; }
+  .ck small { display: block; font-size: 11px; color: #8a8f99; margin-top: 3px; font-weight: 500; } .ck em { margin-left: auto; width: 20px; height: 20px; border-radius: 50%; border: 2px solid #4a4f59; } .ck em.on { background: var(--hot); border-color: var(--hot); }
+</style>
+
+<div class="app" id="app">
+  <div class="top">
+    <span class="logo"><i></i>Switchyard</span>
+    <nav class="tabs"><span class="on">Dashboard</span><span>Shoots</span><span>Stages</span><span>Crew</span><span>Gear</span><span>Calendar</span></nav>
+    <div class="rb"><span>⚙ Setting</span><span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4Z M10 21h4"/></svg></span><span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></span></div>
+  </div>
+  <h1>Welcome in, Stage 03</h1>
+  <div class="phase">
+    <div><small>Prep 布景</small><div style="background:#141414;color:#fff">18%</div></div>
+    <div><small>Shooting 开机</small><div style="background:var(--hot);color:#fff">46%</div></div>
+    <div><small>Turnaround 换景</small><div style="background:repeating-linear-gradient(45deg,#d9dce2 0 4px,#fff 4px 9px)">26%</div></div>
+    <div><small>Idle 空场</small><div style="border:1.5px solid #bbb">10%</div></div>
+  </div>
+  <div class="kpis"><div><b>14</b><small>Shoot days</small></div><div><b>32</b><small>Setups</small></div><div style="margin-right:-20px"><b>4</b><small>Stages live</small></div></div>
+  <div class="hr"></div>
+
+  <section class="card" id="photo"><img src="_plates/c.jpg" alt=""><span class="roll">ROLLING</span><div class="cap"><b>秋冬菜单静物</b><small>Stage 03 · A 组布景 · Day 2/4</small></div></section>
+  <section class="card" id="acc">
+    <div class="ac">灯位方案</div>
+    <div class="ac open">机身与镜头<div class="it"><i></i><div>A 机 · 全画幅电影机<small>35 / 50 / 85 · 备机 ×1</small></div></div></div>
+    <div class="ac">美术与道具</div>
+    <div class="ac" style="border:0">后期交接</div>
+  </section>
+
+  <section class="card" id="cam"><h3>Camera hours</h3><div class="v" id="camv">6.4 h<small>开机时长 · 本周日均</small></div><span class="go">↗</span><div class="plot" id="plot"></div></section>
+  <section class="card" id="cal">
+    <div class="mon"><span>July</span>August 2026<span>September</span></div>
+    <div class="wk" id="wk"></div>
+    <div class="hours" id="hours"></div>
+    <i class="band" id="band"></i>
+  </section>
+  <i class="guide" id="guide"><i></i></i>
+
+  <section class="card" id="ready"><h3>Setup readiness</h3><b>25%</b><div class="pills"><span style="width:124px;background:var(--hot);color:#fff">灯位</span><span style="width:84px;background:#141414;color:#fff">布景</span><span style="width:44px;background:#d6d9df"></span></div></section>
+  <section class="card" id="check"><h3>开机前检查</h3><b>2/8</b><div id="cks"></div></section>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let scale = 1;
+  const fit = () => { scale = Math.min(1, (innerWidth - 12) / 1280, (innerHeight - 12) / 820); $("app").style.setProperty("--s", scale.toFixed(4)); };
+  addEventListener("resize", fit); fit();
+
+  const DAYS = ["日", "一", "二", "三", "四", "五", "六"], DATES = [23, 24, 25, 26, 27, 28, 29];
+  const HRS = [0, 3.1, 3.8, 1.9, 3.2, 4.4, 0];           // camera hours per day
+  const fmt = (h) => h ? `${Math.floor(h)}h ${String(Math.round((h % 1) * 60)).padStart(2, "0")}m` : "空场";
+  $("plot").innerHTML = HRS.map((h, i) => `<div class="col" data-i="${i}"><i class="stem" style="height:${Math.max(4, h * 26)}px"></i><span class="tag" style="bottom:${Math.max(4, h * 26) + 26}px">${fmt(h)}</span><span class="d">${DAYS[i]}</span></div>`).join("");
+  $("wk").innerHTML = `<span></span>` + DAYS.map((d, i) => `<div><small>${d}</small><b data-i="${i}">${DATES[i]}</b></div>`).join("");
+  $("hours").innerHTML = ["9:00", "10:00", "11:00", "12:00"].map((t, i) => `<div class="h" style="top:${i * 52}px"><span>${t}</span></div>`).join("")
+    // events sit in the day columns; x is computed the same way as the chart columns
+    + [[2, 0.3, 1.2, "A 组 · 菜单静物", "#1c1f26", "#fff", "0 0 0 2px var(--hot)"], [4, 1.3, 1.5, "B 组 · 备菜与摆盘", "#fff", "#555", "0 4px 14px -6px #0003"], [5, 2.6, 0.9, "灯位复测", "#6b7078", "#fff", ""]]
+      .map(([d, y, w, t, bg, fg, sh]) => `<div class="ev" data-i="${d}" style="left:${34 + d * (470 / 7) + 4}px;top:${y * 52 + 10}px;width:${w * 136}px;background:${bg};color:${fg};box-shadow:${sh}">${t}</div>`).join("");
+  $("cks").innerHTML = [["灯位复核", "08:10", 1], ["白平衡与色卡", "08:40", 1], ["收音测试", "09:10"], ["道具就位", "09:40"], ["监视器校色", "10:10"], ["存储格式化", "10:40"], ["备用电池清点", "11:10"]].map(([t, h, on]) => `<div class="ck"><i></i><div>${t}<small>${h}</small></div><em class="${on ? "on" : ""}"></em></div>`).join("");
+
+  /* ── the link ──
+     Hovering a day in EITHER card highlights that day in BOTH: the stem turns orange and
+     shows its tag, the other six columns drop to 35 % opacity, the calendar date turns
+     orange with a faint band behind it, and one dashed guide line runs from the stem down
+     through the calendar at the same x. Same index → same x in both cards, so the guide
+     never needs to know about the cards. 360 ms, measured ~0.12 s at 3× playback. */
+  const app = $("app"), cols = [...$("plot").children], dates = [...$("wk").querySelectorAll("b")], evs = [...$("hours").querySelectorAll(".ev")];
+  function link(i) {
+    const on = i != null;
+    $("cam").classList.toggle("linked", on);
+    cols.forEach((c, j) => c.classList.toggle("on", j === i));
+    dates.forEach((d, j) => d.style.color = j === i ? "var(--hot)" : "");
+    evs.forEach((e) => e.style.opacity = on && +e.dataset.i !== i ? .45 : 1);
+    const g = $("guide"), band = $("band");
+    if (!on) { g.style.opacity = 0; band.style.opacity = 0; $("camv").firstChild.textContent = "6.4 h"; return; }
+    const c = cols[i].getBoundingClientRect(), a = app.getBoundingClientRect();
+    const x = (c.left + c.width / 2 - a.left) / scale;
+    g.style.left = x + "px"; g.style.opacity = 1;
+    const cal = $("cal").getBoundingClientRect();
+    band.style.left = (x - (cal.left - a.left) / scale - 30) + "px"; band.style.width = "60px"; band.style.opacity = 1;
+    $("camv").firstChild.textContent = HRS[i] ? HRS[i].toFixed(1) + " h" : "0 h";
+  }
+  const pick = (e) => { const el = e.target.closest("[data-i]"); return el ? +el.dataset.i : null; };
+  ["plot", "wk", "hours"].forEach((id) => {
+    $(id).addEventListener("pointermove", (e) => { if (e.isTrusted) demo = false; const i = pick(e); if (i != null) link(i); });
+    $(id).addEventListener("pointerleave", () => link(null));
+  });
+
+  let demo = !reduce;
+  (async () => { await new Promise((r) => setTimeout(r, 1200)); const seq = [2, 3, 5, 1, 2, null]; let k = 0; while (demo) { link(seq[k++ % seq.length]); await new Promise((r) => setTimeout(r, 1400)); } })();
+})();
+</script>

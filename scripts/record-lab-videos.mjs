@@ -40,7 +40,8 @@ const KEY_SEQ = { "dashboard-keyboard": ["j", "j", 500, "Enter", 1500, "j", 400,
  *  有指针/交互的不能这么干 —— 倒放的鼠标动作看着像坏了。 */
 /** 一段完整流程的样板：自己演、不能在 3.5 秒处重载（重载就永远只录到开头），录多长单独给。
  *  slate-card-order 带 `?clip`：同一套流程、停顿压短，17 秒从首页走到盖章。 */
-const LONG_SELF = { "slate-card-order": { secs: 17, query: "?clip" }, "receipt-print-stamp": { secs: 8 }, "flip-card-carousel": { secs: 8 } };
+const LONG_SELF = { "slate-card-order": { secs: 17, query: "?clip" }, "receipt-print-stamp": { secs: 8 }, "flip-card-carousel": { secs: 8 },
+  "dash-bento-drag": { secs: 9 }, "dash-expand-in-place": { secs: 9 }, "dash-global-filter": { secs: 9 }, "dash-linked-hover": { secs: 9 }, "dash-sticky-metrics": { secs: 9 }, "dash-master-detail": { secs: 9 } };
 const secsOf = (slug) => LONG_SELF[slug]?.secs ?? SECONDS;
 const PALINDROME = new Set(["cyclone-369", "aurora-drift", "holo-card", "shimmer-headline"]);
 

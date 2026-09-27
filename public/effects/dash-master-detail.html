@@ -1,0 +1,162 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Master–detail · Inventory</title>
+<style>
+  @font-face { font-family: "Jakarta"; src: url("_fonts/plus-jakarta-sans-latin.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: #0c0c0e; overflow: hidden; font-family: "Jakarta", -apple-system, "PingFang SC", sans-serif; color: #141414; -webkit-font-smoothing: antialiased; -webkit-user-select: none; user-select: none; }
+  :root { --paper: #ebe8e2; --yel: #f5dc2a; --org: #f98a3c; --ink: #1d1c1f; --D: 600ms; --E: cubic-bezier(.32,.72,0,1); }
+  .app { position: absolute; left: 50%; top: 50%; width: 1280px; height: 820px; transform: translate(-50%, -50%) scale(var(--s, 1)); border-radius: 26px; background: radial-gradient(120% 90% at 30% 10%, #f1eee9, #e3e0da); overflow: hidden; }
+  .rail { position: absolute; left: 0; top: 0; bottom: 0; width: 64px; display: flex; flex-direction: column; align-items: center; padding-top: 22px; gap: 22px; color: #555; }
+  .rail .lg { font: 700 22px "Jakarta"; color: #111; margin-bottom: 8px; } .rail i { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 11px; } .rail i.on { background: #fff; color: #111; box-shadow: 0 2px 6px #0000000f; }
+  .rail .grow { flex: 1; }
+  /* the whole left side is one column whose right edge moves when the drawer opens */
+  .main { position: absolute; left: 76px; top: 18px; bottom: 16px; right: 16px; transition: right var(--D) var(--E); }
+  .app.open .main { right: 432px; }
+  .hd { display: flex; align-items: center; gap: 16px; height: 50px; }
+  .hd h1 { font-size: 38px; font-weight: 700; letter-spacing: -.035em; }
+  .hd span { height: 42px; border-radius: 21px; background: #f6f4f0; display: flex; align-items: center; padding: 0 16px; font-size: 13px; font-weight: 600; box-shadow: 0 1px 3px #0000000d; } .hd span em { font-style: normal; color: #777; margin-right: 8px; }
+  .kpi { display: flex; gap: 14px; margin-top: 14px; height: 198px; }
+  .k { border-radius: 22px; position: relative; overflow: hidden; padding: 16px 18px; transition: flex var(--D) var(--E); }
+  .k h3 { font-size: 15.5px; font-weight: 700; }
+  .k.ord { flex: 1.25; background: var(--yel); } .k.stk { flex: 1; background: var(--org); } .k.re { flex: .8; background: var(--ink); color: #fff; }
+  .app.open .k.stk .badge { right: 18px; top: 104px; }
+  .app.open .k.ord { flex: 1.1; } .app.open .k.stk { flex: .75; } .app.open .k.re { flex: .55; }
+  .step { position: absolute; bottom: 0; }
+  .step b { position: absolute; font-size: 24px; } .step small { position: absolute; font-size: 10px; font-weight: 700; white-space: nowrap; }
+  .k.ord .blk { position: absolute; bottom: 0; }
+  .k.stk .leg { margin-top: 14px; display: grid; gap: 9px; font-size: 12px; font-weight: 700; } .k.stk .leg span::before { content: "●"; margin-right: 8px; color: var(--c); }
+  .k.stk .pie { position: absolute; right: 0; bottom: 0; width: 180px; height: 150px; }
+  .k.stk .badge { position: absolute; right: 118px; top: 58px; background: var(--yel); border-radius: 18px; padding: 6px 14px; font-weight: 700; font-size: 18px; transition: right var(--D) var(--E); }
+  .k.re .ph { position: absolute; left: 14px; right: 14px; top: 52px; bottom: 14px; border-radius: 14px; background: #111; overflow: hidden; display: grid; place-items: center; }
+  .search { display: flex; gap: 12px; margin-top: 16px; height: 46px; }
+  .search .q { flex: 1; border-radius: 23px; background: #f6f4f0; display: flex; align-items: center; padding: 0 18px; color: #888; font-size: 13px; box-shadow: 0 1px 3px #0000000d; }
+  .search span.f { border-radius: 23px; background: #f6f4f0; display: grid; place-items: center; padding: 0 16px; font-size: 12.5px; font-weight: 700; box-shadow: 0 1px 3px #0000000d; white-space: nowrap; transition: opacity var(--D) var(--E), max-width var(--D) var(--E), padding var(--D) var(--E); max-width: 140px; overflow: hidden; }
+  .app.open .search span.f { opacity: 0; max-width: 0; padding: 0; }
+  .tbl { margin-top: 16px; background: #f4f2ee; border-radius: 22px; padding: 6px 12px; position: relative; }
+  .th, .tr { display: grid; grid-template-columns: 40px 60px 210px var(--cols); align-items: center; }
+  .th { height: 34px; font-size: 11px; color: #777; font-weight: 600; } .th span:nth-child(2) { grid-column: 2 / 4; }
+  .tr { height: 70px; border-top: 1px solid #e3e0da; font-size: 14px; font-weight: 700; cursor: pointer; position: relative; border-radius: 14px; transition: background .2s, box-shadow .2s, transform .2s; }
+  .tr:hover { background: #fbfaf7; }
+  .tr.on { background: #fff; box-shadow: 0 10px 24px -14px #0005; border-color: transparent; z-index: 1; }
+  .tr .ck { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid #bbb; display: grid; place-items: center; } .tr.on .ck { background: #111; border-color: #111; color: #fff; font-size: 13px; }
+  .tr .th2 { width: 46px; height: 46px; border-radius: 10px; background: #111; overflow: hidden; }
+  .tr .num { font-weight: 600; } .tr .mut { color: #999; font-weight: 600; } .tr .cat { font-weight: 600; }
+  .tag { width: 46px; height: 26px; border-radius: 13px; color: #fff; display: grid; place-items: center; font-size: 11.5px; font-weight: 700; }
+  .tag.h { background: var(--org); } .tag.l { background: #2f7cf6; } .tag.m { background: #666; }
+  /* columns that fold away when the drawer opens: they collapse to 0 width and fade */
+  .fold { overflow: hidden; white-space: nowrap; transition: opacity 300ms; }
+  .app.open .fold { opacity: 0; }
+
+  .drawer { position: absolute; top: 18px; bottom: 16px; right: 16px; width: 404px; border-radius: 24px; background: var(--ink); color: #fff; padding: 18px 20px; transform: translateX(calc(100% + 24px)); transition: transform var(--D) var(--E); overflow: hidden; }
+  .app.open .drawer { transform: none; }
+  .drawer .t { display: flex; align-items: center; gap: 28px; font-size: 15px; font-weight: 700; } .drawer .t small { color: #888; font-size: 12.5px; }
+  .drawer .x { position: absolute; right: 18px; top: 16px; width: 34px; height: 34px; border-radius: 50%; background: #2c2b2f; display: grid; place-items: center; cursor: pointer; }
+  .dv { position: absolute; left: 20px; right: 20px; top: 60px; bottom: 16px; }
+  .dv .img { height: 232px; border-radius: 18px; background: radial-gradient(80% 70% at 50% 45%, #2a3440, #0b0d12); overflow: hidden; position: relative; display: grid; place-items: center; }
+  .dv .img .tg { position: absolute; left: 14px; bottom: 14px; background: var(--org); border-radius: 11px; padding: 4px 11px; font-size: 11.5px; font-weight: 700; }
+  .dv h2 { font-size: 25px; font-weight: 700; margin-top: 18px; letter-spacing: -.02em; } .dv .sub { font-size: 12.5px; color: #999; margin-top: 4px; }
+  .dv .st { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; } .dv .st div { background: #2a292d; border-radius: 14px; text-align: center; padding: 12px 0; } .dv .st b { font-size: 22px; } .dv .st small { display: block; color: #999; font-size: 11px; margin-top: 4px; }
+  .dv .wk { font-size: 12px; color: #aaa; margin-top: 16px; } .dv .bars { display: flex; align-items: flex-end; gap: 9px; height: 76px; margin-top: 12px; } .dv .bars i { flex: 1; border-radius: 5px; background: #3a393e; } .dv .bars i:last-child { background: var(--yel); }
+  .dv .act { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; } .dv .act span { height: 46px; border-radius: 14px; display: grid; place-items: center; font-weight: 700; font-size: 14px; }
+  .dv .down { position: absolute; left: 50%; bottom: -2px; margin-left: -18px; width: 36px; height: 30px; border-radius: 10px; background: #2a292d; display: grid; place-items: center; font-size: 13px; color: #bbb; }
+</style>
+
+<div class="app" id="app">
+  <nav class="rail"><span class="lg">Ƶ</span><i>▦</i><i class="on">⌂</i><i>☰</i><i>▭</i><i>▤</i><i>▯</i><i>ılı</i><span class="grow"></span><i style="margin-bottom:18px">🔔</i></nav>
+  <div class="main">
+    <div class="hd"><h1>Inventory</h1><span><em>库位</em>南港三号库 · B 区高架 ▾</span><span>本月 ▾</span></div>
+    <div class="kpi">
+      <div class="k ord"><h3>作业单 Orders</h3><div id="ordArt"></div></div>
+      <div class="k stk"><h3>库存 Stock</h3><div class="leg"><span style="--c:#1d1c1f">在库</span><span style="--c:#6b3a1c">缺货</span><span style="--c:#1d1c1f">⫽ 低库存</span><span style="--c:#1d1c1f">呆滞</span></div>
+        <svg class="pie" viewBox="0 0 180 150"><circle cx="150" cy="170" r="130" fill="#d4692a"/><path d="M150 170 L60 60 A130 130 0 0 1 150 40Z" fill="#1d1c1f" opacity=".92"/><path d="M150 170 L150 40 A130 130 0 0 1 230 70Z" fill="#b8541d"/><path d="M150 170 L60 60 A130 130 0 0 0 20 170Z" fill="#2b1d17"/></svg>
+        <span class="badge">732</span></div>
+      <div class="k re"><h3>补货 Reorders</h3><div class="ph" id="rePhoto"></div></div>
+    </div>
+    <div class="search"><div class="q">⌕&nbsp;&nbsp;搜索器材 / 类目 / 供应商…</div><span class="f">全部类目 ▾</span><span class="f">全部供应商 ▾</span><span class="f">全部库位 ▾</span></div>
+    <div class="tbl" id="tbl"></div>
+  </div>
+
+  <aside class="drawer" id="drawer" aria-live="polite">
+    <div class="t">器材详情 <small id="pos">1 / 6</small></div><span class="x" id="x" role="button" aria-label="Close">✕</span>
+    <div class="dv" id="dv"></div>
+  </aside>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const fit = () => $("app").style.setProperty("--s", Math.min(1, (innerWidth - 12) / 1280, (innerHeight - 12) / 820).toFixed(4));
+  addEventListener("resize", fit); fit();
+
+  // a camera, drawn — the source uses product photos; this stays self-contained
+  const cam = (w, tone = "#2b3642", lens = 1) => `<svg width="${w}" viewBox="0 0 200 140"><rect x="22" y="40" width="156" height="78" rx="10" fill="#1a1c21"/><rect x="22" y="40" width="156" height="78" rx="10" fill="url(#g${w})" opacity=".6"/><defs><linearGradient id="g${w}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a5260"/><stop offset="1" stop-color="#0c0d10"/></linearGradient></defs><rect x="70" y="24" width="60" height="22" rx="4" fill="#22252b"/><rect x="146" y="52" width="26" height="60" rx="5" fill="#8a5a36"/><rect x="28" y="52" width="22" height="60" rx="5" fill="#8a5a36" opacity=".8"/><circle cx="100" cy="82" r="${34 * lens}" fill="#0d0f13" stroke="#3c424c" stroke-width="3"/><circle cx="100" cy="82" r="${22 * lens}" fill="${tone}"/><circle cx="92" cy="74" r="${6 * lens}" fill="#fff" opacity=".35"/></svg>`;
+  $("rePhoto").innerHTML = cam(160);
+  // orders: four stepped blocks, each with its own texture, as in the source
+  $("ordArt").innerHTML = [[0, 26, "#1d1c1f", "", 1, "逾期"], [108, 62, "radial-gradient(#1d1c1f 1.4px, transparent 1.6px) 0 0/8px 8px", "", 3, "退回"], [216, 104, "repeating-linear-gradient(-45deg,#1d1c1f 0 4px,transparent 4px 10px)", "", 14, "在办"], [324, 150, "transparent", "", 94, "已完成"]]
+    .map(([x, h, bg, , n, l]) => `<i class="blk" style="left:${18 + x}px;width:104px;height:${h}px;background:${bg};border-radius:${x ? "0" : "10px 10px 0 0"}"></i><span class="step" style="left:${18 + x}px;bottom:${h + 8}px"><b style="bottom:14px;left:4px">${n}</b><small style="bottom:0;left:4px">${l}</small></span>`).join("");
+
+  const ROWS = [
+    { n: "Orbit 360 全景机", v: "Orbit", c: "机身", vol: 6.4, q: 13, t: 9, d: "h", tone: "#223244", w: [50, 58, 34, 72, 26, 64, 44, 30] },
+    { n: "Theta S 近摄 360", v: "Theta", c: "机身", vol: 3.1, q: 103, t: 41, d: "l", tone: "#1f3d4a", w: [30, 22, 40, 28, 36, 20, 34, 26] },
+    { n: "Prime 35mm 定焦", v: "Vantage", c: "镜头", vol: 1.8, q: 46, t: 12, d: "m", tone: "#2a2e3a", w: [40, 46, 38, 52, 44, 48, 36, 42] },
+    { n: "Prime 85mm 人像", v: "Vantage", c: "镜头", vol: 2.2, q: 7, t: 6, d: "h", tone: "#1d3345", w: [54, 60, 66, 58, 70, 62, 74, 68] },
+    { n: "Zoom 24–70 变焦", v: "Vantage", c: "镜头", vol: 2.9, q: 0, t: 5, d: "h", tone: "#281f22", w: [62, 70, 58, 76, 72, 80, 74, 78] },
+    { n: "Mini 手持云台", v: "Orbit", c: "配件", vol: .9, q: 22, t: 18, d: "m", tone: "#243a3f", w: [28, 34, 30, 26, 38, 32, 30, 36] },
+  ];
+  const DL = { h: "ϟ 高", l: "ϟ 低", m: "ϟ 中" };
+  $("tbl").innerHTML = `<div class="th"><span></span><span>器材 Product</span><span class="fold">供应商</span><span class="fold">类目</span><span class="fold">体积 L</span><span>在库</span><span>周转 天</span><span>需求</span></div>`
+    + ROWS.map((r, i) => `<div class="tr" data-i="${i}"><span class="ck"></span><span class="th2">${cam(46, r.tone, .9)}</span><span>${r.n}</span><span class="fold cat">${r.v}</span><span class="fold cat">${r.c}</span><span class="fold num">${r.vol}</span><span class="num">${r.q}</span><span class="mut">${r.t}</span><span><i class="tag ${r.d}">${DL[r.d]}</i></span></div>`).join("");
+  const rows = [...$("tbl").querySelectorAll(".tr")];
+
+  /* The table's column template is a custom property. Open: the three middle columns go
+     to 0 and fade, the numbers slide left — one grid-template-columns transition, so the
+     list compresses instead of being covered. Drawer 600 ms (measured 0.2 s at 3×). */
+  const tbl = $("tbl");
+  const COLS_OPEN = "0px 0px 0px 110px 110px 1fr", COLS_CLOSED = "130px 120px 110px 110px 110px 1fr";
+  tbl.style.setProperty("--cols", COLS_CLOSED);
+  tbl.style.transition = reduce ? "none" : "all 600ms cubic-bezier(.32,.72,0,1)";
+  // grid-template-columns interpolates only between same-shape lists: both have six tracks
+  document.querySelectorAll(".th,.tr").forEach((r) => r.style.transition = reduce ? "none" : "grid-template-columns 600ms cubic-bezier(.32,.72,0,1), background .2s, box-shadow .2s");
+
+  let sel = -1;
+  function detail(i, dir) {
+    const r = ROWS[i], dv = $("dv");
+    const html = `<div class="img">${cam(300, r.tone)}<span class="tg">需求 ${DL[r.d].slice(2)}</span></div><h2>${r.n}</h2><div class="sub">${r.v} · ${r.c}</div>
+      <div class="st"><div><b>${r.q}</b><small>在库</small></div><div><b>${r.t} 天</b><small>周转</small></div><div><b>${r.vol} L</b><small>体积</small></div></div>
+      <div class="wk">近 8 周出库</div><div class="bars">${r.w.map((h) => `<i style="height:${h}px"></i>`).join("")}</div>
+      <div class="act"><span style="background:#2a292d">调拨</span><span style="background:var(--yel);color:#111">补货</span></div><span class="down">↓</span>`;
+    /* switching record while open: content only, 180 ms — "前后对比特别快". A short slide in
+       the direction of travel keeps the two records from reading as a flicker. */
+    if (!dir || reduce) { dv.innerHTML = html; return; }
+    dv.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: `translateY(${-10 * dir}px)` }], { duration: 90, easing: "ease-in" }).onfinish = () => {
+      dv.innerHTML = html;
+      dv.animate([{ opacity: 0, transform: `translateY(${10 * dir}px)` }, { opacity: 1, transform: "none" }], { duration: 140, easing: "ease-out" });
+    };
+  }
+  function select(i) {
+    const open = i >= 0;
+    const dir = sel >= 0 && open ? Math.sign(i - sel) : 0;
+    sel = i;
+    rows.forEach((r, j) => { r.classList.toggle("on", j === i); r.querySelector(".ck").textContent = j === i ? "✓" : ""; });
+    $("app").classList.toggle("open", open);
+    const cols = open ? COLS_OPEN : COLS_CLOSED;
+    document.querySelectorAll(".th,.tr").forEach((r) => r.style.gridTemplateColumns = `40px 60px 210px ${cols}`);
+    if (open) { $("pos").textContent = `${i + 1} / ${ROWS.length}`; detail(i, dir); }
+  }
+  rows.forEach((r, i) => r.addEventListener("click", (e) => { if (e.isTrusted) demo = false; select(sel === i ? -1 : i); }));
+  $("x").addEventListener("click", (e) => { if (e.isTrusted) demo = false; select(-1); });
+  addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { demo = false; select(-1); }
+    if (sel < 0) return;
+    if (e.key === "ArrowDown") { demo = false; select(Math.min(ROWS.length - 1, sel + 1)); }
+    if (e.key === "ArrowUp") { demo = false; select(Math.max(0, sel - 1)); }
+  });
+
+  let demo = !reduce;
+  (async () => { const seq = [2, 0, 1, 2, 3, -1]; let k = 0; await new Promise((r) => setTimeout(r, 1200)); while (demo) { select(seq[k++ % seq.length]); await new Promise((r) => setTimeout(r, seq[(k - 1) % seq.length] < 0 ? 2400 : 1500)); } })();
+})();
+</script>

@@ -1,0 +1,176 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Global filter · Turnstile</title>
+<style>
+  @font-face { font-family: "Jakarta"; src: url("_fonts/plus-jakarta-sans-latin.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: #0c0c0e; overflow: hidden; font-family: "Jakarta", -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif; color: #111; -webkit-font-smoothing: antialiased; -webkit-user-select: none; user-select: none; }
+  .app { position: absolute; left: 50%; top: 50%; width: 1280px; height: 820px; transform: translate(-50%, -50%) scale(var(--s, 1)); border-radius: 26px; background: #000; overflow: hidden; display: grid; grid-template-columns: 188px 236px 1fr; }
+  .nav { color: #d6d6d6; padding: 22px 12px; position: relative; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: .12em; color: #fff; font-size: 15px; padding: 0 4px 24px; }
+  .nav a { display: flex; align-items: center; gap: 12px; padding: 12px 12px; border-radius: 12px; font-size: 15px; font-weight: 600; color: #cfcfcf; }
+  .nav a.on { background: #1c1c1c; color: #fff; }
+  .nav .sub { padding: 6px 0 10px 44px; display: grid; gap: 18px; font-size: 13.5px; color: #8e8e8e; }
+  .nav .sub b { color: #fff; font-weight: 600; }
+  .nav .badge { margin-left: auto; width: 20px; height: 20px; border-radius: 50%; background: #f04f1f; color: #fff; font-size: 11px; display: grid; place-items: center; }
+  .alert { position: absolute; left: 0; right: 0; bottom: 0; background: #1b1b1b; padding: 20px 14px; color: #fff; }
+  .alert .moon { width: 44px; height: 32px; position: relative; } .alert .moon i { position: absolute; width: 30px; height: 30px; border-radius: 50%; top: 0; }
+  .alert b { display: block; margin-top: 12px; font-size: 14px; } .alert small { display: block; margin-top: 6px; color: #9a9a9a; font-size: 11.5px; }
+  .alert span { display: block; margin-top: 18px; background: #272727; border-radius: 10px; text-align: center; padding: 10px; font-size: 13px; font-weight: 600; }
+
+  .list { background: #f3f3f1; padding: 22px 14px; position: relative; }
+  .list h4 { font-size: 16px; font-weight: 700; padding: 0 8px 10px; margin-top: 8px; }
+  .list .it { display: flex; align-items: center; padding: 11px 8px; font-size: 13.5px; font-weight: 600; border-radius: 10px; }
+  .list .it.on { background: #e6e6e3; }
+  .list .it small { margin-left: auto; padding-left: 8px; color: #555; font-weight: 500; margin-right: 8px; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  .list .it i { width: 34px; height: 20px; border-radius: 6px; position: relative; } .list .it i::after { content: ""; position: absolute; left: 7px; right: 7px; top: 8px; height: 4px; border-radius: 2px; background: #111; }
+  .list .new { position: absolute; left: 14px; right: 14px; bottom: 20px; height: 52px; border-radius: 14px; background: #f7c600; display: grid; place-items: center; font-weight: 700; font-size: 14.5px; box-shadow: 0 6px 0 #d7ab00; }
+
+  .main { position: relative; background: #f6f6f5; overflow: hidden; }
+  .head { background: #000; color: #fff; padding: 22px 24px 0; height: 306px; position: relative; }
+  .seg { display: inline-flex; background: #1c1c1c; border-radius: 14px; padding: 5px; position: relative; }
+  .seg button { position: relative; z-index: 1; font: 600 14px "Jakarta", "PingFang SC", sans-serif; color: #bdbdbd; background: none; border: 0; width: 80px; height: 36px; cursor: pointer; transition: color .25s; }
+  .seg button.on { color: #111; }
+  .seg .knob { position: absolute; top: 5px; left: 5px; width: 80px; height: 36px; border-radius: 10px; background: #fff; transition: transform 450ms cubic-bezier(.3,.9,.3,1); }
+  .dd { display: inline-flex; align-items: center; height: 46px; padding: 0 16px; margin-left: 14px; border-radius: 14px; background: #1c1c1c; font-size: 14px; font-weight: 600; vertical-align: top; }
+  .big { display: flex; align-items: baseline; gap: 14px; margin-top: 28px; }
+  .odo { display: inline-flex; font: 700 64px/1 "Jakarta"; letter-spacing: -.04em; height: 64px; overflow: hidden; }
+  .odo span { display: block; height: 64px; overflow: hidden; width: .62em; transition: width 600ms cubic-bezier(.3,.9,.3,1); }
+  .odo span.blank { width: 0; }
+  .odo span b { display: block; font-weight: 700; }
+  .big small { font-size: 17px; color: #bdbdbd; }
+  .trio { display: flex; gap: 52px; margin-top: 28px; }
+  .trio div small { display: block; font-size: 12px; color: #9a9a9a; margin-bottom: 8px; }
+  .trio .odo { font-size: 32px; height: 34px; } .trio .odo span { height: 34px; }
+  .tabs { position: absolute; left: 24px; right: 24px; bottom: 0; border-top: 1px solid #262626; display: flex; gap: 90px; padding: 18px 12px; font-size: 14px; color: #bdbdbd; font-weight: 600; }
+  .tabs b { color: #f7c600; }
+  .ycard { position: absolute; right: 22px; top: 22px; width: 250px; height: 170px; border-radius: 16px; background: #f7c600; padding: 16px; overflow: hidden; }
+  .ycard b { font-size: 13.5px; letter-spacing: .12em; } .ycard small { display: block; font-size: 11px; margin-top: 4px; font-weight: 600; }
+  .ycard .dash { position: absolute; right: 16px; top: 16px; width: 84px; height: 46px; border: 2px dashed #111; border-radius: 6px; }
+  .ycard .sq { position: absolute; left: 16px; top: 82px; width: 38px; height: 32px; border: 3px solid #111; border-radius: 4px; }
+  .ycard .tog { position: absolute; left: 106px; top: 80px; width: 128px; height: 38px; border-radius: 19px; background: #111; } .ycard .tog::after { content: ""; position: absolute; left: 6px; top: 6px; width: 26px; height: 26px; border-radius: 50%; background: #f7c600; }
+  .ycard .r { position: absolute; left: 130px; bottom: -4px; width: 54px; height: 44px; background: #f04f1f; } .ycard .bl { position: absolute; right: -4px; bottom: -4px; width: 64px; height: 60px; background: #2f57d8; border-radius: 6px; }
+
+  .row2 { display: grid; grid-template-columns: 1fr 322px; border-bottom: 1px solid #e5e5e3; }
+  .chart { padding: 20px 24px; height: 256px; border-right: 1px solid #e5e5e3; position: relative; }
+  .chart h4, .share h4, .log h4 { font-size: 17px; font-weight: 700; }
+  .cols { position: absolute; left: 30px; right: 30px; bottom: 36px; height: 160px; display: flex; justify-content: space-around; }
+  .cols .c { position: relative; width: 44px; }
+  .cols .c i { position: absolute; bottom: 0; width: 13px; border-radius: 3px 3px 0 0; transition: height 900ms cubic-bezier(.3,.9,.3,1); }
+  .cols .c i.a { left: 6px; background: #f7c600; } .cols .c i.b { left: 22px; background: #d4d4d2; }
+  .cols .c span { position: absolute; left: 0; right: 0; bottom: -26px; text-align: center; font-size: 12px; color: #555; }
+  .share { padding: 20px 22px; }
+  .stack { display: flex; height: 14px; gap: 3px; margin-top: 22px; } .stack i { transition: flex-grow 900ms cubic-bezier(.3,.9,.3,1); border-radius: 2px; }
+  .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; margin-top: 18px; }
+  .chips span { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 700; background: #fff; border-radius: 12px; padding: 6px 12px; box-shadow: 0 1px 3px #0000000d; }
+  .chips span i { width: 6px; height: 6px; border-radius: 50%; }
+  .log { padding: 16px 24px; }
+  .log .r { display: grid; grid-template-columns: 30px 220px 1fr 200px 60px; align-items: center; gap: 12px; height: 44px; font-size: 13.5px; }
+  .log .r i { width: 26px; height: 26px; border-radius: 6px; } .log .r b { font-weight: 700; } .log .r .t { color: #555; font-variant-numeric: tabular-nums; } .log .r .p { color: #555; }
+  .log .r .d { font-weight: 700; text-align: right; }
+</style>
+
+<div class="app" id="app">
+  <nav class="nav">
+    <div class="brand"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#fff" stroke-width="2"><rect x="1" y="1" width="7" height="7"/><rect x="10" y="1" width="7" height="7"/><rect x="1" y="10" width="7" height="7"/><rect x="10" y="10" width="7" height="7"/></svg>TURNSTILE</div>
+    <a class="on">▯ 门禁</a>
+    <div class="sub"><span>名单</span><b>通行</b><span>统计</span></div>
+    <a>ılı 设备</a>
+    <a>⊞ 服务 <span class="badge">2</span></a>
+    <a>✳ 设置</a>
+    <div class="alert"><div class="moon"><i style="background:#f7c600"></i><i style="left:12px;background:#f04f1f;mix-blend-mode:multiply"></i></div><b>本月安全提醒</b><small>有 2 项 30 天没有刷过</small><span>去核对</span></div>
+  </nav>
+
+  <aside class="list" id="list"></aside>
+
+  <main class="main">
+    <section class="head">
+      <div class="seg" id="seg"><i class="knob" id="knob"></i><button data-r="0">今天</button><button data-r="1">本周</button><button data-r="2" class="on">本月</button></div>
+      <span class="dd">全部门区 ▾</span><span class="dd">全部人员 ▾</span>
+      <div class="big"><span class="odo" id="total"></span><small id="unit">次通行 · 本月</small></div>
+      <div class="trio"><div><small>进门</small><span class="odo" id="in"></span></div><div><small>出门</small><span class="odo" id="out"></span></div><div><small>拒绝</small><span class="odo" id="rej"></span></div></div>
+      <div class="tabs"><b>已启用</b><span>时段限制</span><span>设置</span><span>信息</span></div>
+      <div class="ycard"><b>TURNSTILE</b><small>常规 · 全楼层</small><i class="dash"></i><i class="sq"></i><i class="tog"></i><i class="r"></i><i class="bl"></i></div>
+    </section>
+    <div class="row2">
+      <section class="chart"><h4>每日通行量</h4><div class="cols" id="cols"></div></section>
+      <section class="share"><h4>各门区占比</h4><div class="stack" id="stack"></div><div class="chips" id="chips"></div></section>
+    </div>
+    <section class="log"><h4>通行记录</h4><div id="log"></div></section>
+  </main>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const fit = () => $("app").style.setProperty("--s", Math.min(1, (innerWidth - 12) / 1280, (innerHeight - 12) / 820).toFixed(4));
+  addEventListener("resize", fit); fit();
+
+  const GROUPS = [
+    ["员工", [["常规 · 全楼层", "#f7c600"], ["夜班 · 含机房", "#111"], ["工程 · 含库房", "#2f57d8"]]],
+    ["访客", [["当日访客 A", "#f04f1f"], ["长期外协 B", "#fff"]]],
+    ["实习", [["春季批", "#2f57d8"], ["秋季批", "#fff"]]],
+  ];
+  // one range = every number on the page; the filter only ever swaps which range is shown
+  const RANGES = [
+    { unit: "次通行 · 今天", total: 68, in: 36, out: 31, rej: 1, per: [12, 8, 5, 3, 6, 2, 4],
+      a: [22, 18, 34, 12, 28, 40, 30], b: [14, 26, 20, 30, 12, 18, 26], share: [31, 22, 12, 16, 8, 6, 5],
+      log: [["前台 · 早班", "#f04f1f", "11 月 21 日 09:02", "大堂闸机", "进"], ["工程 · 值班", "#2f57d8", "11 月 21 日 09:40", "库房", "进"], ["行政 · 张", "#5b6776", "11 月 21 日 10:15", "电梯厅", "出"], ["外协 · 李", "#5b6776", "11 月 21 日 10:48", "停车场", "进"], ["安保 · 夜巡", "#111", "11 月 21 日 11:30", "露台", "出"]] },
+    { unit: "次通行 · 本周", total: 173, in: 90, out: 81, rej: 2, per: [44, 27, 19, 9, 21, 6, 12],
+      a: [70, 42, 90, 64, 30, 96, 88], b: [60, 70, 58, 30, 80, 20, 62], share: [28, 25, 14, 13, 10, 5, 5],
+      log: [["前台 · 早班", "#f04f1f", "11 月 18 日 08:55", "大堂闸机", "进"], ["安保 · 夜巡", "#111", "11 月 19 日 23:40", "露台", "出"], ["工程 · 值班", "#2f57d8", "11 月 20 日 13:05", "机房", "进"], ["访客 · 王", "#f04f1f", "11 月 20 日 15:22", "访客厅", "出"], ["行政 · 张", "#5b6776", "11 月 21 日 10:15", "电梯厅", "出"]] },
+    { unit: "次通行 · 本月", total: 284, in: 151, out: 133, rej: 3, per: [120, 82, 51, 31, 63, 16, 40],
+      a: [86, 36, 96, 78, 26, 94, 82], b: [60, 76, 84, 44, 88, 30, 90], share: [31, 22, 12, 16, 8, 6, 5],
+      log: [["前台 · 早班", "#f04f1f", "11 月 21 日 10:10", "电梯厅", "出 ✓"], ["工程 · 值班", "#2f57d8", "11 月 21 日 12:55", "库房", "进 ✓"], ["行政 · 张", "#5b6776", "11 月 21 日 14:27", "停车场", "出"], ["外协 · 李", "#5b6776", "11 月 21 日 16:21", "停车场", "进"], ["安保 · 夜巡", "#111", "11 月 21 日 17:16", "露台", "出"]] },
+  ];
+  const ZONES = [["大堂闸机", "#f7c600"], ["电梯厅", "#f04f1f"], ["机房", "#c44a12"], ["库房", "#2f57d8"], ["停车场", "#5b6776"], ["露台", "#111"], ["访客厅", "#b4b4b4"]];
+  const DAYS = ["日", "一", "二", "三", "四", "五", "六"];
+
+  $("cols").innerHTML = DAYS.map((d) => `<div class="c"><i class="a"></i><i class="b"></i><span>${d}</span></div>`).join("");
+  $("stack").innerHTML = ZONES.map(([, c]) => `<i style="background:${c}"></i>`).join("");
+  $("chips").innerHTML = ZONES.map(([n, c]) => `<span><i style="background:${c}"></i>${n} <em style="font-style:normal" data-p></em></span>`).join("");
+
+  /* ── odometer ──
+     Each digit is a column 0–9 stacked vertically inside a one-digit window; changing the
+     number translates every column to its new digit. Columns further right travel through
+     more digits per unit of change, so the ones column visibly spins and the hundreds
+     barely move — that is what reads as "rolling" rather than a crossfade.
+     Measured on the source: 68 → 284 over 0.4 s at 3× playback → 1.2 s. */
+  const ROLL = 1200;
+  function odo(el, value, digits) {
+    const s = String(value).padStart(digits, " ");
+    if (el.children.length !== digits) el.innerHTML = Array.from({ length: digits }, () => `<span><b>${[..." 0123456789"].map((c) => `<div>${c === " " ? "&nbsp;" : c}</div>`).join("")}</b></span>`).join("");
+    [...el.children].forEach((col, i) => {
+      const ch = s[i], idx = ch === " " ? 0 : +ch + 1;
+      col.classList.toggle("blank", ch === " ");   // an unused leading column folds away so the number stays left-aligned
+      col.firstChild.style.transition = reduce ? "none" : `transform ${ROLL}ms cubic-bezier(.3,.9,.3,1) ${(digits - 1 - i) * 40}ms`;
+      col.firstChild.style.transform = `translateY(${-idx * 100 / 11}%)`;
+    });
+  }
+
+  function render(r, first) {
+    const R = RANGES[r];
+    odo($("total"), R.total, 3); odo($("in"), R.in, 3); odo($("out"), R.out, 3); odo($("rej"), R.rej, 1);
+    $("unit").textContent = R.unit;
+    [...$("cols").children].forEach((c, i) => { c.children[0].style.height = R.a[i] * 1.6 + "px"; c.children[1].style.height = R.b[i] * 1.6 + "px"; });
+    [...$("stack").children].forEach((s, i) => s.style.flexGrow = R.share[i]);
+    [...$("chips").querySelectorAll("[data-p]")].forEach((e, i) => e.textContent = R.share[i] + "%");
+    // side list counts and the log swap with a short fade, no layout jump
+    let k = 0;
+    $("list").innerHTML = GROUPS.map(([g, items]) => `<h4>${g}</h4>` + items.map(([n, c], j) => `<div class="it${g === "员工" && j === 0 ? " on" : ""}">${n}<small>${R.per[k++]} 次 / 今日</small><i style="background:${c}"></i></div>`).join("")).join("") + `<div class="new">新建一项</div>`;
+    const log = $("log");
+    const paint = () => log.innerHTML = R.log.map(([n, c, t, p, d]) => `<div class="r"><i style="background:${c}"></i><b>${n}</b><span class="t">${t}</span><span class="p">${p}</span><span class="d">${d}</span></div>`).join("");
+    if (first || reduce) paint(); else log.animate([{ opacity: 1 }, { opacity: 0, offset: .4 }, { opacity: 1 }], { duration: 500 }).onfinish = null, setTimeout(paint, 200);
+    [...$("seg").querySelectorAll("button")].forEach((b) => b.classList.toggle("on", +b.dataset.r === r));
+    $("knob").style.transform = `translateX(${r * 80}px)`;
+  }
+  let cur = 2; render(cur, true);
+  $("seg").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; if (e.isTrusted) demo = false; cur = +b.dataset.r; render(cur); });
+
+  let demo = !reduce;
+  (async () => { const seq = [0, 2, 1, 2]; let i = 0; await new Promise((r) => setTimeout(r, 1400)); while (demo) { cur = seq[i++ % seq.length]; render(cur); await new Promise((r) => setTimeout(r, 2600)); } })();
+})();
+</script>

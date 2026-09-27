@@ -1,0 +1,220 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Expand in place · Aurora Falls</title>
+<style>
+  @font-face { font-family: "Jakarta"; src: url("_fonts/plus-jakarta-sans-latin.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: #0c0c0e; overflow: hidden; font-family: "Jakarta", -apple-system, sans-serif; color: #141a24; -webkit-font-smoothing: antialiased; -webkit-user-select: none; user-select: none; }
+  .app { position: absolute; left: 50%; top: 50%; width: 1280px; height: 820px; transform: translate(-50%, -50%) scale(var(--s, 1)); border-radius: 26px; background: #eef3f8; overflow: hidden; }
+  .top { position: absolute; left: 22px; right: 22px; top: 20px; height: 70px; display: flex; align-items: center; gap: 18px; }
+  .back { width: 46px; height: 46px; border-radius: 14px; background: #fff; display: grid; place-items: center; box-shadow: 0 2px 8px #0000000d; }
+  .play { width: 66px; height: 66px; border-radius: 18px; background: linear-gradient(160deg, #3d8bf2, #1f63d6); display: grid; place-items: center; box-shadow: 0 10px 24px -8px #1f63d6aa; }
+  .top h1 { font-size: 29px; font-weight: 700; letter-spacing: -.03em; }
+  .top .st { display: flex; align-items: center; gap: 8px; margin-top: 4px; color: #4b5563; font-size: 16px; }
+  .top .st i { width: 20px; height: 20px; border-radius: 50%; background: #f59f1b; display: grid; place-items: center; color: #fff; font-size: 11px; font-style: normal; }
+  .top .st b { background: #e3eefc; color: #2c6fd9; border-radius: 12px; padding: 3px 10px; font-size: 13px; font-weight: 700; }
+  .top .sp { flex: 1; }
+  .invite { display: flex; align-items: center; gap: 14px; font-size: 16px; font-weight: 600; }
+  .invite em { font-style: normal; color: #2c6fd9; font-size: 22px; font-weight: 400; background: #e3eefc; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; }
+  .avs { display: flex; } .avs i { width: 44px; height: 44px; border-radius: 50%; border: 3px solid #eef3f8; margin-left: -12px; }
+  .avs i.n { background: #1f63d6; color: #fff; font: 700 13px/38px "Jakarta"; text-align: center; font-style: normal; }
+
+  .body { position: absolute; left: 22px; right: 22px; top: 106px; bottom: 22px; }
+  .card { position: absolute; background: #fff; border-radius: 22px; box-shadow: 0 1px 2px #0000000a, 0 10px 30px -18px #1b2a4a30; overflow: hidden; transform-origin: 0 0; }
+  #gantt { left: 0; top: 0; width: 720px; height: 438px; padding: 18px 22px; }
+  #chart { left: 736px; top: 0; width: 500px; height: 274px; padding: 22px 24px; cursor: pointer; }
+  #chat { left: 736px; top: 290px; width: 500px; height: 402px; padding: 22px 24px; }
+  #queue { left: 0; top: 454px; width: 346px; height: 238px; padding: 18px 20px; }
+  #task { left: 362px; top: 454px; width: 358px; height: 238px; padding: 18px 20px; }
+  .card.mini { box-shadow: 0 1px 2px #0000000f; }
+
+  .days { display: grid; grid-template-columns: repeat(9, 1fr); font-size: 12.5px; color: #6b7280; text-align: center; padding-bottom: 12px; border-bottom: 1px solid #e5e9f0; }
+  .today { position: absolute; left: 298px; top: 50px; bottom: 210px; border-left: 2px dashed #f59f1b; }
+  .today::before { content: ""; position: absolute; left: -8px; top: -4px; width: 12px; height: 12px; background: #f59f1b; transform: rotate(45deg); border-radius: 2px; }
+  .bar { position: absolute; height: 50px; border-radius: 25px; display: flex; align-items: center; gap: 10px; padding: 0 8px; color: #fff; font-weight: 600; font-size: 15px; box-shadow: 0 8px 18px -10px currentColor; }
+  .bar .dots { display: flex; } .bar .dots i { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #fff; margin-right: -12px; }
+  .bar b { margin-left: auto; margin-right: 8px; font-size: 11px; font-weight: 700; background: #ffffff33; border-radius: 10px; padding: 3px 8px; }
+  #gantt small { position: absolute; left: 22px; bottom: 16px; font-size: 12.5px; color: #6b7280; }
+
+  .ct h2 { font-size: 19px; font-weight: 700; letter-spacing: -.02em; }
+  .ct .tag { display: inline-block; margin-top: 10px; background: #fdf1dc; color: #c77a06; font-size: 12.5px; font-weight: 700; border-radius: 10px; padding: 4px 12px; }
+  .ct .unit { color: #6b7280; font-size: 13.5px; margin-left: 10px; }
+  .ct .pct { position: absolute; right: 24px; top: 20px; color: #f59f1b; font-size: 29px; font-weight: 700; }
+  .ct .stats { position: absolute; top: 22px; left: 440px; display: flex; gap: 70px; opacity: 0; }
+  .ct .stats small { display: block; color: #6b7280; font-size: 13px; }
+  .ct .stats b { font-size: 29px; font-weight: 700; letter-spacing: -.02em; }
+  .ct .x { position: absolute; right: 22px; top: 22px; width: 34px; height: 34px; border-radius: 50%; background: #eef3f8; display: grid; place-items: center; opacity: 0; pointer-events: none; cursor: pointer; }
+  .plot { position: absolute; left: 24px; right: 24px; bottom: 34px; top: 120px; display: flex; align-items: flex-end; gap: 8px; }
+  .plot i { flex: 1; border-radius: 4px 4px 0 0; background: #fdd49a; position: relative; transition: background .18s; }
+  .plot i.hot { background: #f59f1b; }
+  .plot i.ghost { background: #eef1f5; height: 3px !important; }
+  .plot i.on { background: #182030; }
+  .axis { position: absolute; left: 24px; right: 24px; bottom: 12px; display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; }
+  .tipb { position: absolute; background: #182030; color: #fff; font-size: 12.5px; font-weight: 700; border-radius: 13px; padding: 6px 12px; white-space: nowrap; transform: translate(-50%, -130%); pointer-events: none; opacity: 0; transition: opacity .15s; }
+
+  #chat h2 { font-size: 20px; font-weight: 700; }
+  #chat .typ { color: #6b7280; font-size: 13.5px; margin-top: 6px; }
+  #chat .hd { position: absolute; right: 24px; top: 24px; display: flex; gap: 8px; } #chat .hd i { width: 26px; height: 26px; border-radius: 50%; }
+  .voice { position: absolute; left: 70px; top: 116px; background: #eef3f8; border-radius: 16px; padding: 12px 18px; display: flex; align-items: center; gap: 14px; font-size: 13px; }
+  .voice i { width: 34px; height: 34px; border-radius: 50%; background: #1f63d6; display: grid; place-items: center; }
+  .bubble { position: absolute; right: 24px; top: 200px; background: #1f63d6; color: #fff; border-radius: 16px 16px 4px 16px; padding: 14px 20px; font-size: 14px; font-weight: 600; line-height: 1.45; max-width: 290px; }
+  .msgin { position: absolute; left: 24px; right: 24px; bottom: 22px; height: 54px; border-radius: 27px; border: 1px solid #e5e9f0; display: flex; align-items: center; padding: 0 22px; color: #9aa3af; font-size: 14.5px; }
+  #queue h2 { font-size: 17px; font-weight: 700; } #queue h2 span { font-size: 12px; background: #eef3f8; border-radius: 10px; padding: 2px 8px; margin-left: 8px; color: #6b7280; }
+  .q { padding: 11px 0; border-bottom: 1px solid #eef1f5; font-size: 14.5px; font-weight: 600; position: relative; }
+  .q small { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: #6b7280; font-weight: 500; margin-top: 3px; } .q small i { width: 14px; height: 14px; border-radius: 50%; }
+  .q::after { content: "⌄"; position: absolute; right: 4px; top: 12px; color: #9aa3af; }
+  #task .pp { font-size: 13px; color: #4b5563; font-weight: 600; } #task .tk { position: absolute; right: 18px; top: 16px; font-size: 12.5px; font-weight: 700; border: 1px solid #e5e9f0; border-radius: 14px; padding: 5px 12px; }
+  #task h3 { font-size: 19px; font-weight: 700; margin-top: 20px; line-height: 1.25; letter-spacing: -.01em; }
+  #task .as { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 13.5px; color: #4b5563; } #task .as i { width: 20px; height: 20px; border-radius: 50%; background: #e8cfb5; }
+  #task .when { position: absolute; left: 20px; right: 20px; bottom: 18px; background: #eef3f8; border-radius: 14px; padding: 12px 16px 12px 50px; font-size: 13.5px; font-weight: 700; }
+  #task .when small { display: block; font-weight: 500; color: #6b7280; font-size: 12px; margin-top: 3px; }
+  #task .when::before { content: "▦"; position: absolute; left: 18px; top: 14px; color: #1f63d6; }
+</style>
+
+<div class="app" id="app">
+  <header class="top">
+    <span class="back">‹</span>
+    <span class="play"><svg width="22" height="24" viewBox="0 0 22 24"><path d="M3 2 20 12 3 22Z" fill="#fff"/></svg></span>
+    <div><h1>Aurora Falls — S2E04</h1><div class="st"><i>✓</i>Color Stage <b>68%</b></div></div>
+    <span class="sp"></span>
+    <div class="invite"><em>+</em>Invite Crew</div>
+    <div class="avs"><i style="background:#e7c6a5"></i><i style="background:#c4d6e6"></i><i style="background:#d6c6e6"></i><i class="n">+21</i></div>
+  </header>
+
+  <div class="body" id="body">
+    <section class="card" id="gantt">
+      <div class="days"><span>M 8</span><span>T 9</span><span>W 10</span><span>T 11</span><span>F 12</span><span>S 13</span><span>S 14</span><span>M 15</span><span>T 16</span></div>
+      <i class="today"></i>
+      <div class="bar" style="left:22px;top:72px;width:232px;background:#2f6fe4;color:#2f6fe4"><span class="dots"><i style="background:#e7c6a5"></i><i style="background:#c4d6e6"></i></span><span style="color:#fff;margin-left:14px">Editing — Rough Cut</span></div>
+      <div class="bar" style="left:92px;top:144px;width:232px;background:#12a595;color:#12a595"><span class="dots"><i style="background:#c4d6e6"></i></span><span style="color:#fff;margin-left:12px">Sound Design</span><b>57%</b></div>
+      <div class="bar" style="left:196px;top:216px;width:246px;background:#f59f1b;color:#f59f1b"><span class="dots"><i style="background:#d6c6e6"></i></span><span style="color:#fff;margin-left:12px">Color Grading</span><b>68%</b></div>
+      <div class="bar" style="left:336px;top:288px;width:222px;background:#a855f7;color:#a855f7"><span class="dots"><i style="background:#c4d6e6"></i><i style="background:#e7c6a5"></i></span><span style="color:#fff;margin-left:14px">VFX Compositing</span></div>
+      <div class="bar" style="left:466px;top:360px;width:210px;background:#1fa64a;color:#1fa64a"><span class="dots"><i style="background:#e7c6a5"></i></span><span style="color:#fff;margin-left:12px">Delivery Prep</span><b>✓</b></div>
+      <small>5 stages · delivery on Sep 23</small>
+    </section>
+
+    <section class="card ct" id="chart" aria-label="Color Grading — Reel 3, tap to expand">
+      <h2>Color Grading — Reel 3</h2><span class="tag">Color</span><span class="unit">Minutes per shot</span>
+      <span class="pct" id="pct">81%</span>
+      <div class="stats" id="stats"><div><small>Shots graded</small><b>19 / 24</b></div><div><small>Avg per shot</small><b>26 min</b></div><div><small>Longest</small><b>48 min</b></div></div>
+      <span class="x" id="x" role="button" aria-label="Close">✕</span>
+      <div class="plot" id="plot"></div>
+      <div class="axis"><span>Shot 1</span><span>Shot 12</span><span>Shot 24</span></div>
+      <span class="tipb" id="tip"></span>
+    </section>
+
+    <section class="card" id="chat">
+      <h2>Chat</h2><div class="typ">··· Nina is typing…</div>
+      <div class="hd"><i style="background:#d6c6e6"></i><i style="background:#c4d6e6"></i></div>
+      <i style="position:absolute;left:24px;top:136px;width:30px;height:30px;border-radius:50%;background:#c6dccb"></i>
+      <div class="voice"><i><svg width="12" height="14" viewBox="0 0 12 14"><path d="M1 1 11 7 1 13Z" fill="#fff"/></svg></i><svg width="96" height="22" viewBox="0 0 96 22" fill="#1f63d6"><rect x="0" y="6" width="3" height="10" rx="1.5"/><rect x="8" y="2" width="3" height="18" rx="1.5"/><rect x="16" y="8" width="3" height="6" rx="1.5"/><rect x="24" y="3" width="3" height="16" rx="1.5"/><rect x="32" y="6" width="3" height="10" rx="1.5"/><rect x="40" y="1" width="3" height="20" rx="1.5"/><rect x="48" y="7" width="3" height="8" rx="1.5"/><rect x="56" y="3" width="3" height="16" rx="1.5"/><rect x="64" y="8" width="3" height="6" rx="1.5"/><rect x="72" y="4" width="3" height="14" rx="1.5"/></svg><b>1:29</b></div>
+      <div class="bubble">Yep, the corridor grade is complete!</div>
+      <div class="msgin">Message…</div>
+    </section>
+
+    <section class="card" id="queue">
+      <h2>Queue<span>6</span></h2>
+      <div class="q">Rough Cut Assembly<small>by <i style="background:#c4d6e6"></i>Theo</small></div>
+      <div class="q">VFX Shot List — Corridor<small>by <i style="background:#d6c6e6"></i>Nina</small></div>
+      <div class="q" style="border:0">Sound Design Pass — Reel 2<small>by <i style="background:#c6dccb"></i>Marcus</small></div>
+    </section>
+    <section class="card" id="task">
+      <div class="pp">Post Production</div><span class="tk">Task 8 ⌄</span>
+      <h3>Grade the corridor chase sequence</h3>
+      <div class="as"><i></i>Assigned to <b style="color:#141a24">Jade Ansel</b></div>
+      <div class="when">Sunday, 21 September<small>08:00 – 11:00 AM · Review</small></div>
+    </section>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let scale = 1;
+  const fit = () => { scale = Math.min(1, (innerWidth - 12) / 1280, (innerHeight - 12) / 820); $("app").style.setProperty("--s", scale.toFixed(4)); };
+  addEventListener("resize", fit); fit();
+
+  // minutes per shot, 24 shots; the last 5 are not graded yet
+  const M = [22, 28, 25, 34, 30, 44, 48, 24, 27, 22, 31, 42, 46, 30, 26, 23, 35, 28, 24, 0, 0, 0, 0, 0];
+  const top3 = [...M].map((v, i) => [v, i]).sort((a, b) => b[0] - a[0]).slice(0, 4).map((x) => x[1]);
+  $("plot").innerHTML = M.map((v, i) => `<i class="${v ? (top3.includes(i) ? "hot" : "") : "ghost"}" style="height:${(v / 50) * 100}%" data-i="${i}"></i>`).join("");
+  const bars = [...$("plot").children];
+
+  // ── geometry of the two states (in the body's 1236 × 692 box)
+  const BODY = { w: 1236, h: 692 };
+  const OPEN = { chart: [0, 0, 1236, 592] };
+  const CLOSED = {};
+  const others = ["gantt", "queue", "task", "chat"];
+  const rectOf = (el) => [el.offsetLeft, el.offsetTop, el.offsetWidth, el.offsetHeight];
+  ["chart", ...others].forEach((id) => CLOSED[id] = rectOf($(id)));
+  // the rest shrink into a strip of thumbnails along the bottom, in reading order
+  others.forEach((id, i) => { const [,, w, h] = CLOSED[id]; const th = 80, s = th / h; OPEN[id] = [i * 136, 608, w * s, th]; });
+
+  /* Two phases, as in the source (measured 0.47 s at 3× playback → 1.4 s):
+       1) 0–45 %: the chart card grows up and to the left while everything else starts
+          shrinking toward the strip;
+       2) 45–100 %: it fills the stage and the detail stats fade in.
+     Both are one keyframe track per card on the SAME timeline, so nothing drifts. */
+  const DUR = 1400, EASE = "cubic-bezier(.65,0,.2,1)";
+  const place = (el, [x, y, w, h], from) => {
+    const [fx, fy, fw, fh] = from;
+    return el.animate([
+      { left: fx + "px", top: fy + "px", width: fw + "px", height: fh + "px" },
+      { left: x + "px", top: y + "px", width: w + "px", height: h + "px" },
+    ], { duration: reduce ? 1 : DUR, easing: EASE, fill: "forwards" });
+  };
+  /* The small cards are not re-laid out, they are scaled: their content is too rich to
+     reflow into an 80-px strip. transform on the card, geometry via left/top only. */
+  const shrink = (el, id, open) => {
+    const [cx, cy, cw, ch] = CLOSED[id], [ox, oy, ow, oh] = OPEN[id], s = oh / ch;
+    const a = { left: cx + "px", top: cy + "px", transform: "scale(1)" }, b = { left: ox + "px", top: oy + "px", transform: `scale(${s})` };
+    return el.animate(open ? [a, b] : [b, a], { duration: reduce ? 1 : DUR, easing: EASE, fill: "forwards" });
+  };
+
+  let open = false, busy = false;
+  async function toggle(to) {
+    if (busy || to === open) return; busy = true; open = to;
+    const chart = $("chart");
+    chart.style.zIndex = 5;
+    const a = place(chart, open ? OPEN.chart : CLOSED.chart, open ? CLOSED.chart : OPEN.chart);
+    others.forEach((id) => { const el = $(id); el.classList.toggle("mini", open); shrink(el, id, open); el.style.cursor = open ? "pointer" : ""; });
+    $("stats").animate([{ opacity: open ? 0 : 1 }, { opacity: open ? 1 : 0 }], { duration: reduce ? 1 : 500, delay: reduce ? 0 : (open ? 800 : 0), fill: "forwards" });
+    $("x").animate([{ opacity: open ? 0 : 1 }, { opacity: open ? 1 : 0 }], { duration: reduce ? 1 : 300, delay: reduce ? 0 : (open ? 900 : 0), fill: "forwards" });
+    $("x").style.pointerEvents = open ? "auto" : "none";
+    $("pct").animate([{ transform: open ? "none" : "translate(-850px,4px)", right: "24px" }, { transform: open ? "translate(-850px,4px)" : "none" }], { duration: reduce ? 1 : DUR, easing: EASE, fill: "forwards" });
+    chart.style.cursor = open ? "default" : "pointer";
+    await a.finished; busy = false; if (!open) chart.style.zIndex = "";
+  }
+  $("chart").addEventListener("click", (e) => { if (e.isTrusted) demo = false; if (e.target.closest("#x")) toggle(false); else toggle(true); });
+  others.forEach((id) => $(id).addEventListener("click", (e) => { if (open) { if (e.isTrusted) demo = false; toggle(false); } }));
+  addEventListener("keydown", (e) => { if (e.key === "Escape") toggle(false); });
+
+  // hover a bar: it turns ink and gets a tooltip (only when there is room to read it)
+  const tip = $("tip");
+  function hover(i) {
+    bars.forEach((b, j) => b.classList.toggle("on", j === i && M[j] > 0));
+    if (i == null || !M[i]) { tip.style.opacity = 0; return; }
+    const b = bars[i], r = b.getBoundingClientRect(), c = $("chart").getBoundingClientRect();
+    tip.textContent = `Shot ${i + 1} · ${M[i]} min`;
+    tip.style.left = (r.left + r.width / 2 - c.left) / scale + "px"; tip.style.top = (r.top - c.top) / scale + "px"; tip.style.opacity = 1;
+  }
+  $("plot").addEventListener("pointermove", (e) => { const b = e.target.closest("i"); hover(b ? +b.dataset.i : null); });
+  $("plot").addEventListener("pointerleave", () => hover(null));
+
+  // demo: open, sweep the bars, close — until someone touches it
+  let demo = !reduce;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  (async () => {
+    await document.fonts.ready; await sleep(1200);
+    while (demo) {
+      await toggle(true); if (!demo) break; await sleep(500);
+      for (const i of [5, 6, 7, 12, 13, 17]) { if (!demo) break; hover(i); await sleep(520); }
+      hover(null); if (!demo) break; await sleep(700);
+      await toggle(false); if (!demo) break; await sleep(2200);
+    }
+  })();
+})();
+</script>
