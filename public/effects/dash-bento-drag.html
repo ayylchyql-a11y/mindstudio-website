@@ -195,7 +195,9 @@
     slot.style.gridColumn = getComputedStyle(el).gridColumn; slot.style.gridRow = getComputedStyle(el).gridRow;
     el.replaceWith(slot); document.body.appendChild(el);
     el.classList.add("lifted");
-    Object.assign(el.style, { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", transformOrigin: "0 0" });
+    // r is the on-screen (already scaled) box; the lifted card gets its unscaled layout size
+    // and is scaled once by the transform below — using r.width here would scale it twice.
+    Object.assign(el.style, { left: r.left + "px", top: r.top + "px", width: r.width / scale + "px", height: r.height / scale + "px", transformOrigin: "0 0" });
     drag = { el, slot, ox: e.clientX - r.left, oy: e.clientY - r.top, x: e.clientX, y: e.clientY, r };
     move(e.clientX, e.clientY);
     el.animate([{ scale: "1" }, { scale: "1.03" }], { duration: 160, fill: "forwards", easing: "ease-out" });

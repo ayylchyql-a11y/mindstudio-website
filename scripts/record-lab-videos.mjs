@@ -41,7 +41,11 @@ const KEY_SEQ = { "dashboard-keyboard": ["j", "j", 500, "Enter", 1500, "j", 400,
 /** 一段完整流程的样板：自己演、不能在 3.5 秒处重载（重载就永远只录到开头），录多长单独给。
  *  slate-card-order 带 `?clip`：同一套流程、停顿压短，17 秒从首页走到盖章。 */
 const LONG_SELF = { "slate-card-order": { secs: 17, query: "?clip" }, "receipt-print-stamp": { secs: 8 }, "flip-card-carousel": { secs: 8 },
-  "dash-bento-drag": { secs: 9 }, "dash-expand-in-place": { secs: 9 }, "dash-global-filter": { secs: 9 }, "dash-linked-hover": { secs: 9 }, "dash-sticky-metrics": { secs: 9 }, "dash-master-detail": { secs: 9 } };
+  "dash-bento-drag": { secs: 9, vh: 700 }, "dash-expand-in-place": { secs: 9, vh: 700 }, "dash-global-filter": { secs: 9, vh: 700 }, "dash-linked-hover": { secs: 9, vh: 700 }, "dash-sticky-metrics": { secs: 9, vh: 700 }, "dash-master-detail": { secs: 9, vh: 700 } };
+/** vh：录像高度另给（默认 = 样板的 height）。六个 Dashboard 是 1280×820 的整页缩放进画框：
+ *  按画框 470 高录 = 960×470 的视频里 Dashboard 只有 715 宽，cover 进 710×470 的详情画框要裁掉左右圆角；
+ *  按 700 高录，Dashboard 占满 948 宽，cover 进去四周还留 5px。 */
+const recHeight = (e) => LONG_SELF[e.slug]?.vh ?? e.height;
 const secsOf = (slug) => LONG_SELF[slug]?.secs ?? SECONDS;
 const PALINDROME = new Set(["cyclone-369", "aurora-drift", "holo-card", "shimmer-headline"]);
 
@@ -238,9 +242,9 @@ async function drive(page, e) {
 
 async function record(browser, e) {
   const ctx = await browser.newContext({
-    viewport: { width: WIDTH, height: e.height },
+    viewport: { width: WIDTH, height: recHeight(e) },
     deviceScaleFactor: 1,
-    recordVideo: { dir: TMP, size: { width: WIDTH, height: e.height } },
+    recordVideo: { dir: TMP, size: { width: WIDTH, height: recHeight(e) } },
     reducedMotion: "no-preference",
     colorScheme: "light",
   });
