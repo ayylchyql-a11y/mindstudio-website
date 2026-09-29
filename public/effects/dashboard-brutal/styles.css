@@ -54,7 +54,7 @@ h1, h2, h3, .up { text-transform: uppercase; letter-spacing: -.01em; }
 .hours i::after { content: attr(data-h); position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 4px; font-family: var(--mono); font-size: 10px; font-weight: 700; font-style: normal; }
 .hours-pad { height: 18px; }
 .stack { display: flex; height: 44px; margin-top: 12px; border: var(--bw) solid var(--ink); }
-.stack i { flex: 0 0 var(--w); background: var(--c2); border-right: var(--bw) solid var(--ink); display: grid; place-items: center; font-family: var(--mono); font-size: 11px; font-weight: 800; overflow: hidden; transform-origin: left; animation: grow 500ms cubic-bezier(.22,.61,.36,1) both; animation-delay: var(--d); } .stack i:last-child { border-right: 0; }
+.stack i { flex: var(--g) 1 0; min-width: 9px; background: var(--c2); border-right: var(--bw) solid var(--ink); display: grid; place-items: center; font-family: var(--mono); font-size: 11px; font-weight: 800; overflow: hidden; transform-origin: left; animation: grow 500ms cubic-bezier(.22,.61,.36,1) both; animation-delay: var(--d); } .stack i:last-child { border-right: 0; }
 @keyframes grow { from { transform: scaleX(0); } }
 .leg { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; font-size: 11px; font-weight: 700; } .leg span::before { content: ""; display: inline-block; width: 10px; height: 10px; border: 2px solid var(--ink); background: var(--c2); margin-right: 5px; vertical-align: -1px; }
 .dishes { display: grid; gap: 10px; margin-top: 12px; }

@@ -17,7 +17,7 @@
   .stack { position: relative; display: flex; gap: 3px; height: 44px; margin-top: 34px; }
   /* Width is the share. Segments grow in one after another at load — the
      sum reads as "a whole being divided" instead of four blocks appearing. */
-  .seg { position: relative; flex: 0 0 var(--w); border-radius: 7px; background: var(--c); cursor: pointer; transform-origin: left center; animation: grow 480ms cubic-bezier(.22,.61,.36,1) both; animation-delay: var(--d); transition: transform 260ms cubic-bezier(.22,.61,.36,1), filter 200ms; }
+  .seg { position: relative; flex: var(--g) 1 0; min-width: 6px; border-radius: 7px; background: var(--c); cursor: pointer; transform-origin: left center; animation: grow 480ms cubic-bezier(.22,.61,.36,1) both; animation-delay: var(--d); transition: transform 260ms cubic-bezier(.22,.61,.36,1), filter 200ms; }
   .seg:hover { filter: brightness(1.08); }
   /* the picked segment is pulled out of the bar — up, not scaled — so the
      bar stays the same length and nothing else moves */
@@ -48,7 +48,7 @@
   const segs = PARTS.map(([name, pct, c], i) => {
     const s = document.createElement('div'); s.className = 'seg';
     // the 3px gaps come out of the segments' own share so the bar stays 100 % wide
-    s.style.cssText = `--w:calc(${pct}% - ${3 * (PARTS.length - 1) / PARTS.length}px);--c:${c};--d:${i * 110}ms`;
+    s.style.cssText = `--g:${pct};--c:${c};--d:${i * 110}ms`;
     s.addEventListener('click', () => pick(i)); stack.insertBefore(s, tip);
     const l = document.createElement('div'); l.style.setProperty('--c', c); l.innerHTML = `<i></i>${name}<b>${pct}%</b>`; l.addEventListener('click', () => pick(i)); legend.appendChild(l);
     return s;

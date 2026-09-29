@@ -48,14 +48,17 @@
 <script>
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const PARTS = [['Video', 42, '#d9a0b8'], ['Reading', 26, '#f0efe9'], ['Games', 18, '#9a9068'], ['Music', 14, '#6b6b72']];
-  const R = 62, C = 2 * Math.PI * R, GAP = 2.5;              // gap in % of the circle
+  const R = 62, C = 2 * Math.PI * R;
+  // one gap for every slice, as arc length: 2.5% of the circle at most, never more than 45% of the
+  // smallest slice (subtracting a fixed 2.5 points would erase any slice under 2.5% entirely)
+  const GAP = Math.max(1.2, Math.min(C * 0.025, 0.45 * C * Math.min(...PARTS.map(([, pct]) => pct)) / 100));
   const svg = document.getElementById('svg'), g = document.getElementById('slices'), legend = document.getElementById('legend');
   const centre = document.getElementById('centre'), c1 = document.getElementById('c1'), c2 = document.getElementById('c2');
   let acc = 0, delay = 0;
   const slices = PARTS.map(([name, pct, col], i) => {
     const el = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     el.setAttribute('cx', 90); el.setAttribute('cy', 90); el.setAttribute('r', R); el.setAttribute('stroke', col); el.setAttribute('class', 'slice');
-    const len = C * (pct - GAP) / 100;
+    const len = Math.max(0.6, C * pct / 100 - GAP);
     // rotate so this slice starts where the previous one ended (12 o'clock origin)
     el.setAttribute('transform-origin', '90 90');
     el.style.rotate = `${-90 + acc * 3.6}deg`;

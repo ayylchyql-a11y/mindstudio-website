@@ -72,7 +72,7 @@ function wireOverview(root) {
   const stack = $('#stack', root), tip = $('#tip', root), leg = $('#leg', root), parts = D.stats.channels, tot = parts.reduce((a, [, n]) => a + n, 0);
   const segs = parts.map(([name, n], i) => {
     const pct = n / tot * 100, c = PAL[name];
-    const s = document.createElement('div'); s.className = 's'; s.style.cssText = `--w:calc(${pct}% - ${3 * (parts.length - 1) / parts.length}px);--c:${c};--d:${i * 110}ms`;
+    const s = document.createElement('div'); s.className = 's'; s.style.cssText = `--g:${pct};--c:${c};--d:${i * 110}ms`;
     s.addEventListener('click', () => pick(i)); stack.insertBefore(s, tip);
     const l = document.createElement('div'); l.style.setProperty('--c', c); l.innerHTML = `<i></i>${name}<b>${Math.round(pct)}%</b>`; l.addEventListener('click', () => pick(i)); leg.appendChild(l);
     return { s, name, pct };

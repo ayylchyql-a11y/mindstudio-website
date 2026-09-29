@@ -120,7 +120,7 @@ img { display: block; }
 .stp.sweeping .val { transform: scale(1.12); }
 
 /* ── channels, hours, feed ── */
-.stack { display: flex; gap: 3px; height: 26px; margin-top: 14px; } .stack i { flex: 0 0 var(--w); border-radius: 6px; background: var(--c); transform-origin: left; animation: grow 480ms cubic-bezier(.22,.61,.36,1) both; animation-delay: var(--d); }
+.stack { display: flex; gap: 3px; height: 26px; margin-top: 14px; } .stack i { flex: var(--g) 1 0; min-width: 6px; border-radius: 6px; background: var(--c); transform-origin: left; animation: grow 480ms cubic-bezier(.22,.61,.36,1) both; animation-delay: var(--d); }
 @keyframes grow { from { transform: scaleX(0); } }
 .leg { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 10px; font-size: 11px; } .leg span { display: inline-flex; align-items: center; gap: 5px; } .leg i { width: 7px; height: 7px; border-radius: 50%; background: var(--c); } .leg b { font-variant-numeric: tabular-nums; }
 .hours { display: flex; align-items: flex-end; gap: 4px; height: 70px; margin-top: 14px; border-bottom: 1px solid #00000022; }

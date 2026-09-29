@@ -66,7 +66,7 @@ h1 em { font-style: italic; color: var(--accent); }
 /* ── channels: stacked share bar — segments grow in one after another; the picked one lifts 8px ── */
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
 .stack { position: relative; display: flex; gap: 3px; height: 40px; margin-top: 30px; }
-.stack .s { position: relative; flex: 0 0 var(--w); border-radius: 2px; background: var(--c); cursor: pointer; transform-origin: left center; animation: grow 480ms cubic-bezier(.22,.61,.36,1) both; animation-delay: var(--d); transition: transform 260ms cubic-bezier(.22,.61,.36,1), opacity 200ms; }
+.stack .s { position: relative; flex: var(--g) 1 0; min-width: 5px; border-radius: 2px; background: var(--c); cursor: pointer; transform-origin: left center; animation: grow 480ms cubic-bezier(.22,.61,.36,1) both; animation-delay: var(--d); transition: transform 260ms cubic-bezier(.22,.61,.36,1), opacity 200ms; }
 .stack .s.on { transform: translateY(-8px); }
 .stack.pick .s:not(.on) { opacity: .35; }
 @keyframes grow { from { transform: scaleX(0); } }

@@ -94,13 +94,16 @@ function wireOverview(root) {
 
   // share ring
   const g = $('#slices', root), legend = $('#legend', root), ring = $('#ring', root), centre = $('#centre', root), c1 = $('#c1', root), c2 = $('#c2', root);
-  const parts = D.stats.channels, tot = parts.reduce((a, [, n]) => a + n, 0), R = 52, C = 2 * Math.PI * R, GAP = 2.5;
+  const parts = D.stats.channels, tot = parts.reduce((a, [, n]) => a + n, 0), R = 52, C = 2 * Math.PI * R;
+  // One gap for every slice, in arc length: 2.5% of the circle at most, but never more than
+  // 45% of the smallest slice — a 1% channel still gets drawn instead of being eaten by its gap.
+  const GAP = Math.max(1.2, Math.min(C * 0.025, 0.45 * C * Math.min(...parts.map(([, n]) => n / tot))));
   let acc = 0, delay = 0;
   const slices = parts.map(([name, n], i) => {
     const pct = n / tot * 100, col = B.CH[name][0];
     const el = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     el.setAttribute('cx', 75); el.setAttribute('cy', 75); el.setAttribute('r', R); el.setAttribute('stroke', col); el.setAttribute('class', 'slice'); el.setAttribute('transform-origin', '75 75');
-    const len = Math.max(0, C * (pct - GAP) / 100);
+    const len = Math.max(0.6, C * pct / 100 - GAP);
     el.style.rotate = `${-90 + acc * 3.6}deg`; el.style.strokeDasharray = `${len} ${C}`; el.style.strokeDashoffset = reduce ? 0 : len;
     const local = (pct / 2) * 3.6 * Math.PI / 180;   // push direction in the slice's own rotated frame
     el.style.setProperty('--dx', `${6 * Math.cos(local)}px`); el.style.setProperty('--dy', `${6 * Math.sin(local)}px`);
