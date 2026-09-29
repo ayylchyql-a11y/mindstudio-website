@@ -15,7 +15,7 @@ import { OPEN_SLUGS } from "@/lib/lab-open";
  *    在这里再抄一份 = 两处真相，改了 demo 忘了改展示，页面上给的代码就是错的。
  */
 
-export type CategoryId = "web-effects" | "border-effects" | "icon-morph" | "chart-widgets" | "widgets" | "dashboard" | "creative" | "mobile-ui";
+export type CategoryId = "web-effects" | "border-effects" | "icon-morph" | "animated-icons" | "chart-widgets" | "widgets" | "dashboard" | "creative" | "mobile-ui";
 
 export interface Category {
   id: CategoryId;
@@ -83,6 +83,24 @@ export const categories: Category[] = [
       it: "Un'icona a tratto che diventa qualunque altra — menu in x, sole in luna, copia in spunta — senza che nessuno disegni il passaggio. Ricostruito 1:1 da morphicons.com: lo studio con 250 icone di Lucide, Heroicons e Tabler e la matematica in vista, i sei scambi più comuni nelle app reali, un'icona dentro una maschera CSS, un badge di tendenza su un grafico dal vivo e segnaposto su una mappa che cambiano forma con lo stato.",
     },
     accent: "#7928ca",
+  },
+  {
+    id: "animated-icons",
+    title: {
+      en: "Animated icons",
+      zh: "动态图标",
+      "zh-tw": "動態圖標",
+      ja: "アニメーションアイコン",
+      ko: "애니메이션 아이콘",
+      it: "Icone animate",
+    },
+    intro: {
+      en: "Icons that act out what they mean: a bell that rings, a bin whose lid lifts, a plane that flies off and comes back, a check that draws itself in. Twenty-two Lucide icons with original motions built from their own strokes, played by one small player with eight triggers — in, click, hover, loop, loop on hover, morph, boomerang and sequence — plus stroke weight, a second accent colour and speed. The trigger model follows Lordicon; the icons are Lucide and every motion is our own.",
+      zh: "会把自己的意思演出来的图标：铃铛会响、垃圾桶掀盖、纸飞机飞出去再飞回来、勾号自己画出来。22 个 Lucide 图标，每个的动作都是用它自己的笔画原创设计的，由一个小播放器驱动，支持出场、点击、悬停、循环、悬停循环、变形、往返、序列八种触发方式，还能调线宽、第二点缀色和速度。触发方式的思路来自 Lordicon，图标用 Lucide，动作全部是自己设计的。",
+      "zh-tw": "會把自己的意思演出來的圖標：鈴鐺會響、垃圾桶掀蓋、紙飛機飛出去再飛回來、勾號自己畫出來。22 個 Lucide 圖標，每個的動作都是用它自己的筆畫原創設計的，由一個小播放器驅動，支援出場、點擊、懸停、循環、懸停循環、變形、往返、序列八種觸發方式，還能調線寬、第二點綴色和速度。觸發方式的思路來自 Lordicon，圖標用 Lucide，動作全部是自己設計的。",
+      it: "Icone che recitano il loro significato: una campanella che suona, un cestino che alza il coperchio, un aeroplanino che vola via e ritorna, una spunta che si disegna da sola. Ventidue icone Lucide con movimenti originali, un piccolo player con otto trigger, spessore del tratto, un secondo colore e velocità. Il modello dei trigger segue Lordicon; le icone sono Lucide e ogni movimento è nostro.",
+    },
+    accent: "#0070f3",
   },
   {
     id: "chart-widgets",
@@ -215,6 +233,113 @@ export interface Effect {
 }
 
 export const effects: Effect[] = [
+  {
+    slug: "anim-icon-library",
+    category: "animated-icons",
+    date: "2026-09-29",
+    plays: "self",
+    title: { en: "Animated icons · Library and editor", zh: "动态图标 · 图标库与编辑器", "zh-tw": "動態圖標 · 圖標庫與編輯器" },
+    gist: {
+      en: "Twenty-two Lucide icons that each act out their meaning on hover — the bell rings, the bin opens, the door swings, the coin hops — with an editor beside them: pick any of the icon's animations, any of eight triggers, the stroke weight, a primary and a second accent colour and the speed, and read back the one line of code that reproduces it.",
+      zh: "22 个 Lucide 图标，悬停时各自把意思演出来——铃铛摇、垃圾桶掀盖、门打开、硬币跳。旁边是编辑器：可以选这个图标的任意一段动画、八种触发方式、线宽、主色和点缀色、速度，下方直接给出能复现它的那一行代码。",
+      "zh-tw": "22 個 Lucide 圖標，懸停時各自把意思演出來——鈴鐺搖、垃圾桶掀蓋、門打開、硬幣跳。旁邊是編輯器：可以選這個圖標的任意一段動畫、八種觸發方式、線寬、主色和點綴色、速度，下方直接給出能重現它的那一行程式碼。",
+    },
+    height: 1211,
+    previewHeight: 700,
+    accent: "#0070f3",
+    anatomy: [
+      "<b>Motion from the icon's own strokes.</b> A Lucide icon is a handful of separate elements — the bell is a body and a clapper, the bin a body, a lid, a handle and two slats, the eye an outline and a pupil. Each motion animates those parts independently with the Web Animations API, so the bell swings from its hook while the clapper swings later and wider, and the bin lid tilts open around its left end while the slats sink.",
+      "<b>Transforms in the icon's grid.</b> Every animated part gets <code>transform-box: view-box</code>, so transform origins and translations are written in the 24-unit Lucide grid (the bell pivots at 12, 2.5; the door hinges at x = 9) and stay correct at any rendered size.",
+      "<b>Four kinds of animation per icon.</b> <code>in-reveal</code> draws every stroke with <code>pathLength=1</code> and a dash offset from 1 to 0, 650 ms each, 90 ms apart. <code>hover-*</code> is a short gesture that starts fast and lands soft (cubic-bezier(.2,.8,.2,1) overall, eased between keyframes). <code>loop-*</code> runs at an even pace with a pause between cycles. <code>morph-*</code> switches between two Lucide shapes through the morphicons engine.",
+      "<b>Two colours without two drawings.</b> The primary colour is the SVG's <code>color</code>; the secondary is a stroke override on the parts that carry the meaning — the clapper, the lid, the check, the pupil, the arrow.",
+      "<b>The editor is the player's API.</b> The large preview is a mounted icon whose target is the whole stage; every control calls <code>set()</code> on it, and the code block shows the same call. The grid draws itself in once, tile by tile, on load.",
+      "Morph icons are a single path, and Chrome restarts the dash pattern at every subpath — so for the draw-on reveal the path is split into one temporary path per stroke, drawn in sequence, then swapped back.",
+    ],
+    tokens: [
+      { label: "Icons", value: "22 Lucide 1.28.0 · 59 animations (in / hover / loop / morph)" },
+      { label: "Reveal", value: "650 ms per stroke · 90 ms stagger · cubic-bezier(.2,.8,.2,1)" },
+      { label: "Hover", value: "700–1200 ms · starts fast, lands soft" },
+      { label: "Loop", value: "even pace · 0–1400 ms between cycles" },
+      { label: "Stroke", value: "light 1.5 · regular 2 · bold 2.5" },
+      { label: "Speed", value: "0.5× · 1× · 2× (playbackRate)" },
+    ],
+    prompt:
+      "Build a single HTML 'animated icon library' with Lucide icons (icon data as [tag, attrs] nodes) and a tiny player using the Web Animations API. Render each icon as an <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round'> with every element kept separate, and animate parts with transform-box: view-box so origins are in grid units. Motions: bell — body rotates 0,16,-14,10,-6,3,0° about (12,2.5) while the clapper swings -10,22,-16,10,-4,0° a beat later (1000 ms); trash-2 — lid and handle translateY -1.6 and rotate -24° about (3,6), hold, overshoot 3°, close, while the two slats sink 1.6 (1100 ms); send — whole icon flies to (8,-8) fading out, re-enters from (-8,8) (1000 ms); download — arrow lifts 3 then drops 2.4 while the tray squashes to scale(1.06,.72) about (12,21) (900 ms); eye — blink scaleY .08 then the pupil looks left and right; circle-check — the check redraws via pathLength=1 dash while the ring pulses 1.08; house — the door scales to .15 in x about its hinge (9,17) and swings back; coins — the front coin hops 5 units with a second small hop while the back coin squashes; plus heart beat, settings spin with overshoot, clock hands wind, copy sheets shuffle, volume waves, wifi arcs lighting inner→outer, sparkles twinkle, refresh spin, thumbs-up tilt, search zoom. A draw-on reveal for every icon: pathLength=1, stroke-dasharray '1 1', dashoffset 1→0, 650 ms each, 90 ms apart. Morph pairs (lock↔lock-open, bookmark↔bookmark-check, heart↔heart-off, menu↔x, play↔pause) via morphicons. Triggers: in (IntersectionObserver, once), click, hover (finish before replaying), loop, loop-on-hover, morph (hold at the state's peak on enter, reverse on leave), boomerang (there and back), sequence (reveal then the hover motion on repeat); a target element can receive the events. Options: stroke light/regular/bold, primary colour, secondary colour on the meaningful parts, speed via playbackRate. Page: an editor (dotted stage, animation chips, 8-way trigger grid, stroke and speed segmented controls, colour swatches, a code line) next to a grid of 84px tiles that play on hover and open in the editor on click. Respect prefers-reduced-motion.",
+    caveats: [
+      "Part motions only work on icons whose meaning lives in separate strokes. A single-path icon (heart, lock) can only move as a whole or morph into another shape.",
+      "transform-box: view-box is needed for grid-unit origins; without it every origin falls back to the element's own box and the bell swings from its middle.",
+    ],
+    source: { label: "Trigger model after Lordicon (lordicon.com) · icons Lucide (ISC) · all motions original", url: "https://lordicon.com" },
+  },
+  {
+    slug: "anim-icon-triggers",
+    category: "animated-icons",
+    date: "2026-09-29",
+    plays: "hover",
+    title: { en: "Animated icons · Eight triggers", zh: "动态图标 · 八种触发方式", "zh-tw": "動態圖標 · 八種觸發方式" },
+    gist: {
+      en: "The same player, eight ways to start it, side by side: draw in when seen, play on click, play on hover, loop forever, loop while hovered, change shape while hovered, go there and straight back, and a sequence that draws in and then repeats. Each card uses the icon that shows its trigger best.",
+      zh: "同一个播放器的八种启动方式并排摆：看到时画出来、点击播放、悬停播放、一直循环、悬停期间循环、悬停时变形离开时变回、变过去马上变回来、先画出来再重复动作的序列。每张卡片用最能体现这种触发方式的图标。",
+      "zh-tw": "同一個播放器的八種啟動方式並排擺：看到時畫出來、點擊播放、懸停播放、一直循環、懸停期間循環、懸停時變形離開時變回、變過去馬上變回來、先畫出來再重複動作的序列。每張卡片用最能體現這種觸發方式的圖標。",
+    },
+    height: 576,
+    previewHeight: 407,
+    accent: "#0070f3",
+    anatomy: [
+      "<b>in</b> — an IntersectionObserver (threshold 0.5) plays the draw-on reveal once, then disconnects. <b>click</b> — every click restarts the animation from zero. <b>hover</b> — plays once per pointerenter and refuses to restart while it is still running, so a nervous pointer cannot stutter it.",
+      "<b>loop</b> — loop-type states use <code>iterations: Infinity</code> with the pause as <code>endDelay</code>; any other state is chained with a 700 ms rest. <b>loop-on-hover</b> — keeps chaining while the pointer is inside and lets the running cycle finish after it leaves, instead of cutting it mid-swing.",
+      "<b>morph</b> — on enter the state plays to its peak and pauses there (the lock stays open while you hover); on leave the same animations play backwards at the same speed. For shape morphs the engine morphs to the second icon and back. <b>boomerang</b> — the same change, but there and back in one go.",
+      "<b>sequence</b> — reveal first, then the icon's hover motion on repeat with a 500/900 ms rhythm. A session counter cancels any running chain when the options change, so switching trigger never leaves a stray loop behind.",
+      "Every trigger can listen on a different element than the icon (the whole card here), which is how a button or a menu row animates its icon when the row is hovered.",
+    ],
+    tokens: [
+      { label: "in", value: "IntersectionObserver 0.5 · once" },
+      { label: "hover", value: "no restart while running" },
+      { label: "loop", value: "Infinity + endDelay · or 700 ms rest" },
+      { label: "morph", value: "hold at the state's peak · reverse on leave" },
+      { label: "sequence", value: "reveal → hover motion · 500 / 900 ms rhythm" },
+    ],
+    prompt:
+      "Build a single HTML page of 8 cards in a 4 × 2 grid, each demonstrating one trigger of an animated-icon player (Lucide icons animated with the Web Animations API): in (circle-check draws itself in when it scrolls into view, with a Replay button), click (send flies off and back on each click, restarting), hover (bell rings once per hover and finishes before replaying), loop (wifi arcs light inner→outer forever), loop-on-hover (settings spins repeatedly while hovered and finishes its cycle on leave), morph (lock morphs to lock-open while hovered and back on leave — for part animations, play to a peak offset and pause, then reverse with playbackRate -1), boomerang (menu morphs to x and straight back), sequence (download draws in, then its drop motion repeats with pauses). Each card: a mono trigger name, a one-line description (three lines reserved), a 120px dotted box that is the trigger target with the 48px icon centred and the state name in the corner, and a footer hint. Use a session counter so changing options cancels running chains; respect prefers-reduced-motion.",
+    caveats: [
+      "morph and boomerang are only meaningful for states that have a resting 'peak' — a spin has none, so holding it at its peak just freezes it mid-turn.",
+    ],
+    source: { label: "Trigger model after Lordicon (lordicon.com) · icons Lucide (ISC) · all motions original", url: "https://lordicon.com" },
+  },
+  {
+    slug: "anim-icon-in-context",
+    category: "animated-icons",
+    date: "2026-09-29",
+    plays: "click",
+    title: { en: "Animated icons · In a real interface", zh: "动态图标 · 放进真实界面", "zh-tw": "動態圖標 · 放進真實介面" },
+    gist: {
+      en: "A small workspace where every icon has a job: the nav items animate when you hover the whole item, the unread bell keeps ringing until you open the inbox, subscribing flies the plane and draws a check, the download arrow drops and the bin lifts its lid before a file disappears, like and save answer the click, status rows draw themselves in and the speaker waves only move while music plays.",
+      zh: "一个小工作台，每个图标都有自己的用处：悬停整个导航项时图标动；有未读时铃铛一直摇，打开收件箱后才停；点订阅纸飞机飞走、勾号画出来；下载箭头往下落，删除前垃圾桶先掀盖；点赞和收藏会回应点击；状态行一行行画出来；音乐播放时喇叭的声波才动。",
+      "zh-tw": "一個小工作台，每個圖標都有自己的用處：懸停整個導覽項時圖標動；有未讀時鈴鐺一直搖，打開收件匣後才停；點訂閱紙飛機飛走、勾號畫出來；下載箭頭往下落，刪除前垃圾桶先掀蓋；按讚和收藏會回應點擊；狀態列一行行畫出來；音樂播放時喇叭的聲波才動。",
+    },
+    height: 524,
+    previewHeight: 370,
+    accent: "#0070f3",
+    anatomy: [
+      "<b>The target is the thing people point at, not the icon.</b> Nav items, buttons and list rows are the trigger targets; a 17 px icon is too small to aim at, and a row that animates its icon when the row is hovered reads as one object.",
+      "<b>Motion carries state, not decoration.</b> The bell loops only while there is unread mail (badge 3) and drops to hover-only once the inbox is opened. The speaker waves loop only while the player is playing. Save and play are morph toggles (bookmark ↔ bookmark-check, play ↔ pause) driven by the control's own state.",
+      "<b>Confirmations draw themselves.</b> Subscribing plays the send motion on the button, then — 420 ms later, as the plane is coming back — fades in a message whose check-circle draws in. Deleting a file lets the bin's lid lift on hover first; the click then collapses the row (height to 0 in 320 ms) and the count updates; an empty list shows a looping sparkle and a restore link.",
+      "<b>Reveal once, then idle.</b> The status rows use the in trigger (draw when seen) and the connection row a sequence, so the page arrives with a little life and then goes quiet instead of looping everywhere.",
+    ],
+    tokens: [
+      { label: "Targets", value: "nav item · button · row — never the bare icon" },
+      { label: "Bell", value: "loop-ring (1000 ms + 1400 ms rest) while unread · hover afterwards" },
+      { label: "Subscribe", value: "send 1000 ms · check reveal after 420 ms" },
+      { label: "Delete", value: "lid on hover · row collapse 320 ms cubic-bezier(.2,.8,.2,1)" },
+      { label: "Toggles", value: "bookmark ↔ bookmark-check · play ↔ pause (smooth spring)" },
+    ],
+    prompt:
+      "Build a single HTML mock workspace ('Northwind') that shows animated Lucide icons doing real jobs, using a small Web Animations player with triggers and a target element. Top bar: Home, Search, Inbox (bell with a red '3' badge on the icon's corner), Settings — hovering the whole item plays its icon; the bell loops a ring (body swings from 12,2.5 while the clapper lags) while unread, and after the inbox is clicked the badge disappears and the bell only rings on hover. Left column: a digest card with an email field and a 'Subscribe' button whose send icon flies off and back on click, then a green line fades in with a check-circle that draws itself in; a files list whose rows have a download button (arrow drops into a squashing tray on hover) and a delete button (bin lid lifts on hover; click collapses the row to 0 height in 320 ms), an empty state with looping sparkles and 'Restore files'; a player whose play button morphs to pause and whose speaker waves loop only while playing. Right column: release notes with a like button (thumbs-up tilts on click, count +1) and a save button (bookmark morphs to bookmark-check, label Saved), and a status list whose icons draw themselves in when seen. Clean light UI, 10px panels, hairline borders; respect prefers-reduced-motion.",
+    caveats: [
+      "Keep loops for state that deserves attention (unread, playing, loading). A page where every icon moves on its own is noise; most icons here only move when asked.",
+    ],
+    source: { label: "Trigger model after Lordicon (lordicon.com) · icons Lucide (ISC) · all motions original", url: "https://lordicon.com" },
+  },
   {
     slug: "morph-studio",
     category: "icon-morph",

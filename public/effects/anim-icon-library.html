@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Animated icon library · Lucide</title>
+<link rel="stylesheet" href="_morph/base.css">
+<style>
+  body { padding: 24px; }
+  .lib { max-width: 1152px; margin: 0 auto; }
+  .lib .card { box-shadow: var(--shadow-card-lg); }
+  .cols { display: grid; }
+  @media (min-width: 1024px) { .cols { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); } .cols .editor { order: 2; border-left: 1px solid var(--hairline); border-bottom: 0; } }
+
+  /* ── editor ── */
+  .editor { display: flex; flex-direction: column; border-bottom: 1px solid var(--hairline); }
+  .stage { position: relative; display: grid; place-items: center; height: 220px; border-bottom: 1px solid var(--hairline);
+    background-color: var(--canvas-soft); background-image: radial-gradient(var(--hairline) 1px, transparent 1px); background-size: 16px 16px; cursor: pointer; }
+  .stage .who { position: absolute; left: 16px; top: 14px; font-family: var(--mono); font-size: 11px; line-height: 16px; color: var(--mute); }
+  .stage .who b { color: var(--ink); font-weight: 500; }
+  .stage .hint { position: absolute; left: 16px; bottom: 14px; font-size: 12px; color: var(--mute); }
+  .stage .replay { position: absolute; right: 12px; bottom: 10px; display: none; }
+  .stage.in .replay { display: inline-flex; }
+  .ctrl { display: grid; gap: 16px; padding: 18px 20px 20px; }
+  @media (min-width: 640px) and (max-width: 1023px) { .ctrl { grid-template-columns: 1fr 1fr; } .ctrl .wide { grid-column: span 2; } }
+  .chips { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips button { height: 28px; border-radius: 6px; border: 1px solid var(--hairline); background: var(--canvas); padding: 0 10px; font-family: var(--mono); font-size: 11.5px; color: var(--body); transition: color .15s, background-color .15s, border-color .15s; }
+  .chips button:hover { background: var(--canvas-soft-2); color: var(--ink); }
+  .chips button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--canvas); }
+  .trig { margin-top: 8px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); overflow: hidden; border-radius: 6px; border: 1px solid var(--hairline); background: var(--canvas); }
+  .trig button { height: 30px; font-size: 12px; color: var(--body); border-right: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); transition: color .15s, background-color .15s; }
+  .trig button:nth-child(4n) { border-right: 0; } .trig button:nth-child(n+5) { border-bottom: 0; }
+  .trig button:hover { background: var(--canvas-soft-2); color: var(--ink); }
+  .trig button[aria-pressed="true"] { background: var(--ink); color: var(--canvas); }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .sw { margin-top: 8px; display: flex; gap: 6px; }
+  .sw button { height: 22px; width: 22px; border-radius: 9999px; box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.12); outline-offset: 2px; }
+  .sw button[aria-pressed="true"] { outline: 2px solid var(--ink); }
+  .sw button.none { background: repeating-linear-gradient(135deg, transparent 0 4px, var(--hairline) 4px 5px); }
+  .code { border-radius: 8px; background: #171717; color: #ededed; padding: 10px 12px; font-family: var(--mono); font-size: 11.5px; line-height: 18px; white-space: pre-wrap; word-break: break-word; }
+  .code .k { color: #c084fc; } .code .s { color: #4cc2b6; } .code .n { color: #f5a623; }
+
+  /* ── grid ── */
+  .gridside { display: flex; flex-direction: column; gap: 14px; padding: 20px 24px 24px; }
+  .gridside .top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .gridside h3 { font-size: 14px; line-height: 20px; font-weight: 500; }
+  .gridside .top span { font-size: 12.5px; color: var(--mute); }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 6px; }
+  .tile { display: flex; flex-direction: column; align-items: center; gap: 8px; border-radius: 10px; border: 1px solid transparent; padding: 14px 4px 10px; color: var(--body); transition: color .15s, background-color .15s, border-color .15s; }
+  .tile:hover { border-color: var(--hairline); color: var(--ink); }
+  .tile[aria-pressed="true"] { border-color: var(--hairline); background: var(--canvas-soft-2); color: var(--ink); }
+  .tile span { font-family: var(--mono); font-size: 10.5px; line-height: 14px; color: var(--mute); }
+  .tile .m { font-size: 9px; color: var(--link); margin-left: 3px; }
+  .foot { font-size: 12.5px; color: var(--mute); }
+</style>
+</head>
+<body>
+<section class="lib" aria-label="Animated icon library">
+  <div class="card">
+    <div class="cols">
+      <div class="editor">
+        <div class="stage" id="stage">
+          <div class="who"><b id="who">bell</b> · <span id="st">hover-ring</span></div>
+          <div id="big"></div>
+          <div class="hint" id="hint">Plays by itself</div>
+          <button type="button" class="btn replay" id="replay">Replay</button>
+        </div>
+        <div class="ctrl">
+          <div class="wide"><span class="caps">Animation</span><div class="chips" id="states"></div></div>
+          <div class="wide"><span class="caps">Trigger</span><div class="trig" id="trig"></div></div>
+          <div><span class="caps">Stroke</span><div class="segf" id="stroke">
+            <button type="button" data-v="light">light</button><button type="button" data-v="regular">regular</button><button type="button" data-v="bold">bold</button></div></div>
+          <div><span class="caps">Speed</span><div class="segf" id="speed">
+            <button type="button" data-v="0.5">0.5×</button><button type="button" data-v="1">1×</button><button type="button" data-v="2">2×</button></div></div>
+          <div class="row2 wide">
+            <div><span class="caps">Primary</span><div class="sw" id="prim"></div></div>
+            <div><span class="caps">Secondary</span><div class="sw" id="sec"></div></div>
+          </div>
+          <div class="code wide" id="code"></div>
+        </div>
+      </div>
+      <div class="gridside">
+        <div class="top"><h3>Lucide, animated</h3><span id="count"></span></div>
+        <div class="tiles" id="tiles"></div>
+        <p class="foot">Hover a tile to play its motion, click it to open it in the editor. Morph icons (<span style="color:var(--link)">●</span>) switch between two Lucide shapes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="_morph/morphicons.js"></script>
+<script src="_anim/icons.js"></script>
+<script src="_anim/lucanim.js"></script>
+<script>
+(() => {
+  const A = window.LucAnim, $ = (id) => document.getElementById(id);
+  const ICONS = A.icons();
+  const PRIM = ["", "#2563eb", "#7c3aed", "#059669", "#ea580c"];      // "" = ink (currentColor)
+  const SEC = ["", "#0070f3", "#f59e0b", "#10b981", "#ef4444"];        // "" = no second colour
+  const HINT = { in: "Plays once when it scrolls into view", click: "Click the stage", hover: "Hover the stage", loop: "Plays by itself", "loop-on-hover": "Loops while hovered", morph: "Hover to change, leave to go back", boomerang: "Hover: there and back", sequence: "Draws in, then repeats its motion" };
+  const st = { icon: "Bell", state: "loop-ring", trigger: "loop", stroke: "regular", speed: 1, primary: "", secondary: "#0070f3" };
+
+  /* the big preview: the stage itself is the trigger target */
+  const big = A.mount($("big"), { icon: st.icon, size: 112, trigger: st.trigger, state: st.state, stroke: st.stroke, speed: st.speed, primary: st.primary, secondary: st.secondary, target: $("stage") });
+
+  /* tiles: hover plays the icon's default motion; the tile is the target */
+  const tiles = [];
+  for (const ic of ICONS) {
+    const b = document.createElement("button"); b.type = "button"; b.className = "tile"; b.dataset.k = ic.key;
+    b.innerHTML = `<i></i><span>${ic.label}${ic.morph ? '<b class="m">●</b>' : ""}</span>`;
+    $("tiles").appendChild(b);
+    const c = A.mount(b.querySelector("i"), { icon: ic.key, size: 28, trigger: "hover", target: b });
+    tiles.push({ b, c, ic });
+    b.onclick = () => select(ic.key);
+  }
+  $("count").textContent = `${ICONS.length} icons · ${ICONS.reduce((n, i) => n + i.states.length, 0)} animations`;
+  // the library draws itself in once, tile by tile
+  tiles.forEach((t, i) => setTimeout(() => t.c.play("in-reveal"), 120 + i * 45));
+
+  function select(key) {
+    const ic = ICONS.find((i) => i.key === key);
+    st.icon = key;
+    st.state = st.trigger === "in" ? "in-reveal" : ic.states.includes(st.state) ? st.state : pickFor(ic, st.trigger);
+    apply();
+  }
+  function pickFor(ic, trig) {
+    const by = (p) => ic.states.find((s) => s.startsWith(p));
+    if (trig === "loop") return by("loop-") || ic.def;
+    if (trig === "morph" || trig === "boomerang") return by("morph-") || ic.def;
+    if (trig === "in") return "in-reveal";
+    return ic.def;
+  }
+  function apply() {
+    const ic = ICONS.find((i) => i.key === st.icon);
+    big.set({ icon: st.icon, state: st.state, trigger: st.trigger, stroke: st.stroke, speed: st.speed, primary: st.primary, secondary: st.secondary });
+    $("who").textContent = ic.label; $("st").textContent = st.state;
+    $("hint").textContent = HINT[st.trigger];
+    $("stage").classList.toggle("in", st.trigger === "in" || st.trigger === "sequence");
+    $("states").innerHTML = ic.states.map((s) => `<button type="button" data-v="${s}" aria-pressed="${s === st.state}">${s}</button>`).join("");
+    for (const b of $("trig").children) b.setAttribute("aria-pressed", String(b.dataset.v === st.trigger));
+    for (const b of $("stroke").children) b.setAttribute("aria-pressed", String(b.dataset.v === st.stroke));
+    for (const b of $("speed").children) b.setAttribute("aria-pressed", String(Number(b.dataset.v) === st.speed));
+    for (const b of $("prim").children) b.setAttribute("aria-pressed", String(b.dataset.v === st.primary));
+    for (const b of $("sec").children) b.setAttribute("aria-pressed", String(b.dataset.v === st.secondary));
+    for (const t of tiles) t.b.setAttribute("aria-pressed", String(t.ic.key === st.icon));
+    const q = (v) => `<span class="s">"${v}"</span>`;
+    $("code").innerHTML = `LucAnim.<span class="k">mount</span>(el, {\n  icon: ${q(st.icon)}, trigger: ${q(st.trigger)},\n  state: ${q(st.state)}, stroke: ${q(st.stroke)}, speed: <span class="n">${st.speed}</span>${st.primary ? `,\n  primary: ${q(st.primary)}` : ""}${st.secondary ? `,\n  secondary: ${q(st.secondary)}` : ""}\n});`;
+  }
+
+  $("trig").innerHTML = A.TRIGGERS.map((t) => `<button type="button" data-v="${t}">${t}</button>`).join("");
+  $("prim").innerHTML = PRIM.map((c) => `<button type="button" data-v="${c}" aria-label="primary ${c || "ink"}" style="background:${c || "var(--ink)"}"></button>`).join("");
+  $("sec").innerHTML = SEC.map((c) => `<button type="button" data-v="${c}" aria-label="secondary ${c || "none"}" class="${c ? "" : "none"}" style="${c ? `background:${c}` : ""}"></button>`).join("");
+  const pick = (id, fn) => ($(id).onclick = (e) => { const b = e.target.closest("button"); if (b) { fn(b.dataset.v); apply(); } });
+  pick("states", (v) => (st.state = v));
+  pick("trig", (v) => { st.trigger = v; st.state = pickFor(ICONS.find((i) => i.key === st.icon), v); });
+  pick("stroke", (v) => (st.stroke = v));
+  pick("speed", (v) => (st.speed = Number(v)));
+  pick("prim", (v) => (st.primary = v));
+  pick("sec", (v) => (st.secondary = v));
+  $("replay").onclick = (e) => { e.stopPropagation(); big.set({}); };
+  apply();
+
+  /* ?demo (the lab's recording only): walk a few tiles and triggers */
+  if (/[?&]demo\b/.test(location.search)) {
+    const hover = (k) => tiles.find((t) => t.ic.key === k).c.play();
+    const seq = [[1400, () => hover("Trash2")], [2000, () => hover("Send")], [2600, () => hover("Download")], [3200, () => { select("Lock"); st.trigger = "boomerang"; st.state = "morph-unlock"; apply(); big.play(); }],
+      [4600, () => { select("Settings"); st.trigger = "loop"; st.state = "loop-spin"; apply(); }], [6200, () => { select("Sparkles"); st.trigger = "loop"; st.state = "loop-twinkle"; st.secondary = "#f59e0b"; apply(); }], [7600, () => hover("House")]];
+    for (const [ms, fn] of seq) setTimeout(fn, ms);
+  }
+})();
+</script>
+</body>
+</html>

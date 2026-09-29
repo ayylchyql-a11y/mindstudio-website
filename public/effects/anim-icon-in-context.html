@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Animated icons in context</title>
+<link rel="stylesheet" href="_morph/base.css">
+<style>
+  body { padding: 24px; }
+  .app { max-width: 1152px; margin: 0 auto; }
+  .app > .card { box-shadow: var(--shadow-card-lg); }
+  /* top bar: hovering the whole item plays its icon (target = the item) */
+  .bar { display: flex; align-items: center; gap: 4px; border-bottom: 1px solid var(--hairline); padding: 8px 12px; }
+  .brand { display: flex; align-items: center; gap: 8px; margin-right: auto; padding: 0 6px; font-weight: 600; font-size: 14px; letter-spacing: -0.01em; }
+  .brand i { display: grid; place-items: center; height: 22px; width: 22px; border-radius: 6px; background: var(--ink); color: var(--canvas); font-style: normal; font-size: 12px; }
+  .nav { position: relative; display: flex; align-items: center; gap: 7px; height: 34px; border-radius: 8px; padding: 0 10px; font-size: 13px; color: var(--body); transition: color .15s, background-color .15s; }
+  .nav:hover { background: var(--canvas-soft-2); color: var(--ink); }
+  .nav[aria-current="page"] { color: var(--ink); background: var(--canvas-soft-2); }
+  .nav .ic { position: relative; display: grid; }
+  .nav .badge { position: absolute; right: -5px; top: -5px; min-width: 13px; height: 13px; border-radius: 9999px; background: #ef4444; color: #fff; font-size: 8.5px; line-height: 13px; text-align: center; padding: 0 3px; font-weight: 600; box-shadow: 0 0 0 2px var(--canvas); }
+  @media (max-width: 560px) { .nav span.l { display: none; } }
+
+  .body { display: grid; gap: 14px; padding: 16px; background: var(--canvas-soft); }
+  @media (min-width: 640px) { .body { grid-template-columns: 1.15fr 1fr; } }
+  .col { display: grid; gap: 14px; align-content: start; }
+  .panel { border-radius: 10px; border: 1px solid var(--hairline); background: var(--canvas); }
+  .panel > h4 { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px 0; font-size: 13px; font-weight: 500; }
+  .panel > h4 small { font-weight: 400; font-size: 12px; color: var(--mute); }
+  .pad { padding: 10px 14px 14px; }
+
+  /* newsletter */
+  .sub { display: flex; gap: 8px; }
+  .sub input { flex: 1; min-width: 0; height: 36px; border-radius: 8px; border: 1px solid var(--hairline); background: var(--canvas); padding: 0 12px; font-size: 13px; color: var(--ink); outline: none; }
+  .sub input:focus { border-color: var(--ink); }
+  .cta { display: inline-flex; align-items: center; gap: 7px; height: 36px; border-radius: 8px; background: var(--ink); color: var(--canvas); padding: 0 14px; font-size: 13px; font-weight: 500; transition: opacity .15s; }
+  .cta:hover { opacity: 0.9; }
+  .ok { display: flex; align-items: center; gap: 7px; margin-top: 10px; min-height: 20px; font-size: 12.5px; color: #16a34a; opacity: 0; transition: opacity .2s; }
+  .ok.on { opacity: 1; }
+
+  /* files */
+  .files { list-style: none; }
+  .files li { display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--hairline); padding: 0 8px 0 14px; height: 44px; overflow: hidden; transition: height .32s cubic-bezier(.2,.8,.2,1), opacity .25s; }
+  .files li.gone { height: 0; opacity: 0; border-top-width: 0; }
+  .files .nm { flex: 1; min-width: 0; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .files .sz { font-family: var(--mono); font-size: 11px; color: var(--mute); }
+  .ib { display: grid; place-items: center; height: 30px; width: 30px; border-radius: 7px; color: var(--body); transition: color .15s, background-color .15s; }
+  .ib:hover { background: var(--canvas-soft-2); color: var(--ink); }
+  .ib.del:hover { color: #dc2626; background: #fef2f2; }
+  .empty { display: none; flex-direction: column; align-items: center; gap: 6px; padding: 18px 0 16px; border-top: 1px solid var(--hairline); font-size: 12.5px; color: var(--mute); }
+  .empty.on { display: flex; }
+  .empty button { font-size: 12.5px; color: var(--link); } .empty button:hover { text-decoration: underline; }
+
+  /* post */
+  .post p { font-size: 13px; line-height: 19px; color: var(--body); }
+  .acts { display: flex; gap: 6px; margin-top: 10px; }
+  .act { display: inline-flex; align-items: center; gap: 6px; height: 32px; border-radius: 8px; border: 1px solid var(--hairline); padding: 0 10px; font-size: 12.5px; color: var(--body); transition: color .15s, background-color .15s, border-color .15s; }
+  .act:hover { background: var(--canvas-soft-2); color: var(--ink); }
+  .act[aria-pressed="true"] { color: #0070f3; border-color: #bfdbfe; background: #eff6ff; }
+  .act .n { font-family: var(--mono); font-size: 11.5px; }
+
+  /* status: rows draw themselves in, one after another */
+  .stat { list-style: none; }
+  .stat li { display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--hairline); padding: 0 14px; height: 40px; font-size: 13px; }
+  .stat li small { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--mute); }
+
+  /* player */
+  .player { display: flex; align-items: center; gap: 10px; }
+  .pp { display: grid; place-items: center; height: 36px; width: 36px; border-radius: 9999px; background: var(--ink); color: var(--canvas); }
+  .trk { flex: 1; } .trk b { display: block; font-size: 13px; font-weight: 500; } .trk small { font-size: 11.5px; color: var(--mute); }
+  .vol { color: var(--body); }
+</style>
+</head>
+<body>
+<section class="app" aria-label="Animated icons in a real interface">
+  <div class="card">
+    <nav class="bar">
+      <div class="brand"><i>N</i>Northwind</div>
+      <button type="button" class="nav" aria-current="page" data-icon="House"><b class="ic"></b><span class="l">Home</span></button>
+      <button type="button" class="nav" data-icon="Search"><b class="ic"></b><span class="l">Search</span></button>
+      <button type="button" class="nav" data-icon="Bell" id="bellNav"><b class="ic"><span class="badge" id="badge">3</span></b><span class="l">Inbox</span></button>
+      <button type="button" class="nav" data-icon="Settings"><b class="ic"></b><span class="l">Settings</span></button>
+    </nav>
+    <div class="body">
+      <div class="col">
+        <div class="panel">
+          <h4>Weekly digest <small>Tuesday, 8:00</small></h4>
+          <div class="pad">
+            <div class="sub"><input type="email" value="ada@northwind.co" aria-label="Email"><button type="button" class="cta" id="send"><b class="ic" id="sendIc"></b><span id="sendL">Subscribe</span></button></div>
+            <div class="ok" id="ok"><b class="ic" id="okIc"></b>You're in. First issue arrives Tuesday.</div>
+          </div>
+        </div>
+        <div class="panel">
+          <h4>Files <small id="fcount">3 files</small></h4>
+          <ul class="files" id="files"></ul>
+          <div class="empty" id="empty"><b class="ic" id="sparkIc"></b>All clear<button type="button" id="restore">Restore files</button></div>
+        </div>
+        <div class="panel">
+          <div class="pad player" style="padding-top:14px">
+            <button type="button" class="pp" id="pp" aria-label="Play"><b class="ic" id="ppIc"></b></button>
+            <div class="trk"><b>Focus mix</b><small id="trkS">Paused · 42 min</small></div>
+            <b class="ic vol" id="volIc"></b>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="panel post">
+          <h4>Release notes <small>v2.4</small></h4>
+          <div class="pad">
+            <p>Offline mode, faster sync and a new export panel. Thanks to everyone who reported issues this month.</p>
+            <div class="acts">
+              <button type="button" class="act" id="like"><b class="ic" id="likeIc"></b><span class="n" id="likeN">24</span></button>
+              <button type="button" class="act" id="save" aria-pressed="false"><b class="ic" id="saveIc"></b><span id="saveL">Save</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <h4>Status</h4>
+          <ul class="stat" id="stat"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="_morph/morphicons.js"></script>
+<script src="_anim/icons.js"></script>
+<script src="_anim/lucanim.js"></script>
+<script>
+(() => {
+  const A = window.LucAnim, $ = (id) => document.getElementById(id);
+  const SEC = "#0070f3";
+
+  /* 1 · top bar — target = the whole nav item */
+  let bell = null;
+  for (const b of document.querySelectorAll(".nav")) {
+    const k = b.dataset.icon;
+    const opt = k === "Bell" ? { trigger: "loop", state: "loop-ring", secondary: "#ef4444" } : { trigger: "hover" };
+    const c = A.mount(b.querySelector(".ic"), { icon: k, size: 17, target: b, ...opt });
+    if (k === "Bell") bell = c;
+  }
+  // unread mail keeps the bell ringing; opening the inbox clears the badge and the bell goes quiet (hover only)
+  $("bellNav").addEventListener("click", () => { $("badge")?.remove(); bell.set({ trigger: "hover", state: "hover-ring", secondary: "" }); });
+
+  /* 2 · subscribe: the plane flies on click, the check draws itself in */
+  const send = A.mount($("sendIc"), { icon: "Send", size: 15, trigger: "click", target: $("send") });
+  const ok = A.mount($("okIc"), { icon: "CircleCheck", size: 16, trigger: "click", state: "in-reveal", target: $("ok") });
+  $("send").addEventListener("click", () => {
+    $("sendL").textContent = "Subscribed";
+    setTimeout(() => { $("ok").classList.add("on"); ok.play("in-reveal"); }, 420);
+  });
+
+  /* 3 · files: download drops on hover, the bin opens on hover and empties the row on click */
+  const FILES = [["Q3-report.pdf", "2.4 MB"], ["brand-kit.zip", "18 MB"], ["roadmap.key", "6.1 MB"]];
+  function renderFiles() {
+    $("files").innerHTML = ""; $("empty").classList.remove("on");
+    for (const [n, s] of FILES) {
+      const li = document.createElement("li");
+      li.innerHTML = `<span class="nm">${n}</span><span class="sz">${s}</span><button type="button" class="ib" aria-label="Download ${n}"><b class="ic"></b></button><button type="button" class="ib del" aria-label="Delete ${n}"><b class="ic"></b></button>`;
+      $("files").appendChild(li);
+      const [dl, del] = li.querySelectorAll(".ib");
+      A.mount(dl.querySelector(".ic"), { icon: "Download", size: 16, trigger: "hover", target: dl, secondary: SEC });
+      A.mount(del.querySelector(".ic"), { icon: "Trash2", size: 16, trigger: "hover", target: del });
+      del.addEventListener("click", () => { li.classList.add("gone"); setTimeout(() => { li.remove(); count(); }, 340); });
+    }
+    count();
+  }
+  const spark = A.mount($("sparkIc"), { icon: "Sparkles", size: 26, trigger: "loop", state: "loop-twinkle", secondary: "#f59e0b" });
+  function count() { const n = $("files").children.length; $("fcount").textContent = n ? `${n} file${n > 1 ? "s" : ""}` : "empty"; $("empty").classList.toggle("on", n === 0); }
+  $("restore").onclick = renderFiles;
+  renderFiles();
+
+  /* 4 · like (click plays + counts) and save (morph toggle) */
+  const like = A.mount($("likeIc"), { icon: "ThumbsUp", size: 15, trigger: "click", target: $("like") });
+  let liked = false;
+  $("like").addEventListener("click", () => { liked = !liked; $("likeN").textContent = liked ? 25 : 24; $("like").setAttribute("aria-pressed", String(liked)); });
+  const save = A.mount($("saveIc"), { icon: "Bookmark", size: 15, trigger: "click", state: "hover-flutter" });
+  let saved = false;
+  $("save").addEventListener("click", () => { saved = !saved; save.toggle(saved); $("saveL").textContent = saved ? "Saved" : "Save"; $("save").setAttribute("aria-pressed", String(saved)); });
+
+  /* 5 · status: each row draws itself in when the panel comes into view, then idles */
+  const STAT = [["Wifi", "Connected", "EU-west", { trigger: "sequence" }], ["Clock", "Last sync", "2 min ago", { trigger: "in" }], ["Eye", "Visibility", "Team", { trigger: "in" }]];
+  for (const [k, l, v, opt] of STAT) {
+    const li = document.createElement("li"); li.innerHTML = `<b class="ic"></b>${l}<small>${v}</small>`; $("stat").appendChild(li);
+    A.mount(li.querySelector(".ic"), { icon: k, size: 17, target: li, secondary: SEC, ...opt });
+  }
+
+  /* 6 · player: play ↔ pause morph; the speaker waves loop only while playing */
+  const pp = A.mount($("ppIc"), { icon: "Play", size: 16, trigger: "click", state: "hover-nudge" });
+  const vol = A.mount($("volIc"), { icon: "Volume2", size: 18, trigger: "hover", target: $("volIc") });
+  let playing = false;
+  $("pp").addEventListener("click", () => {
+    playing = !playing; pp.toggle(playing);
+    $("pp").setAttribute("aria-label", playing ? "Pause" : "Play");
+    $("trkS").textContent = playing ? "Playing · 42 min" : "Paused · 42 min";
+    vol.set(playing ? { trigger: "loop", state: "loop-waves", secondary: SEC } : { trigger: "hover", state: "", secondary: "" });
+  });
+
+  /* ?demo (recording only): a scripted pass through the page */
+  if (/[?&]demo\b/.test(location.search)) {
+    const enter = (el) => el.dispatchEvent(new PointerEvent("pointerenter"));
+    const navs = [...document.querySelectorAll(".nav")];
+    const seq = [[700, () => enter(navs[0])], [1100, () => enter(navs[1])], [1500, () => enter(navs[3])], [2100, () => $("send").click()],
+      [3300, () => $("like").click()], [3900, () => $("save").click()], [4600, () => $("pp").click()],
+      [5400, () => enter($("files").querySelectorAll(".ib")[0])], [6100, () => enter($("files").querySelectorAll(".ib.del")[0])], [6700, () => $("files").querySelectorAll(".ib.del")[0].click()]];
+    for (const [ms, fn] of seq) setTimeout(fn, ms);
+  }
+})();
+</script>
+</body>
+</html>

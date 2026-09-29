@@ -11,6 +11,13 @@
  * 每条一段，80 词上下；缺了哪条构建直接红（blurbOf 会抛）。
  */
 const blurbs: Record<string, string> = {
+  // ── animated icons (Lucide + original motions; trigger model after Lordicon) ──
+  "anim-icon-library":
+    "A set of everyday icons that act out what they mean — a bell that rings, a bin that opens, a plane that takes off — with an editor to choose how each one plays, how thick it is drawn and which colours it uses. Small motion that makes an interface feel alive and helps people notice the thing that matters.",
+  "anim-icon-triggers":
+    "Eight ways an animated icon can start moving — when it appears, on click, on hover, forever, while hovered, as a two-way change, there and back, and as a sequence — side by side, so choosing the right behaviour for a button, a menu or a status takes one look.",
+  "anim-icon-in-context":
+    "Animated icons doing real work inside an app: a bell that rings only while there is unread mail, a plane that flies when you subscribe, a bin that opens before a file is deleted, a check that draws itself to confirm. The difference between icons that decorate and icons that answer.",
   // ── icon morphing (morphicons.com, MIT) ──
   "morph-studio":
     "A playground where any line icon turns smoothly into any other — a menu into a close button, an arrow into a check, a heart into a star — across three popular icon sets, with the numbers behind each transition shown on screen. The motion engine behind icons that change instead of blinking: toggles, confirmations, state changes. Rebuilt from morphicons.com.",

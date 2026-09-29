@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eight triggers · animated icons</title>
+<link rel="stylesheet" href="_morph/base.css">
+<style>
+  body { padding: 24px; }
+  .wrap { max-width: 1152px; margin: 0 auto; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  @media (min-width: 640px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .card { display: flex; flex-direction: column; }
+  .card > header { padding: 12px 14px 10px; }
+  .card > header h3 { font-family: var(--mono); font-size: 12.5px; line-height: 18px; font-weight: 500; }
+  .card > header p { font-size: 12px; line-height: 17px; min-height: 51px; }
+  .box { position: relative; display: grid; place-items: center; height: 120px; background-color: var(--canvas-soft);
+    background-image: radial-gradient(var(--hairline) 1px, transparent 1px); background-size: 14px 14px; cursor: pointer; transition: background-color .2s; }
+  .box:hover { background-color: var(--canvas-soft-2); }
+  .card footer { display: flex; align-items: center; justify-content: space-between; gap: 6px; border-top: 1px solid var(--hairline); padding: 8px 14px; font-size: 11.5px; color: var(--mute); min-height: 41px; }
+  .box .st { position: absolute; left: 10px; bottom: 8px; font-family: var(--mono); font-size: 10.5px; line-height: 14px; color: var(--mute); }
+  .card footer span { white-space: nowrap; }
+  .mini { height: 24px; border-radius: 6px; border: 1px solid var(--hairline); background: var(--canvas); padding: 0 8px; font-size: 11.5px; color: var(--body); }
+  .mini:hover { background: var(--canvas-soft-2); color: var(--ink); }
+</style>
+</head>
+<body>
+<section class="wrap" aria-label="Animated icon triggers">
+  <div class="grid" id="grid"></div>
+</section>
+
+<script src="_morph/morphicons.js"></script>
+<script src="_anim/icons.js"></script>
+<script src="_anim/lucanim.js"></script>
+<script>
+(() => {
+  const A = window.LucAnim;
+  /* One icon per trigger — the one that shows the trigger best. */
+  const CARDS = [
+    { t: "in", icon: "CircleCheck", state: "in-reveal", d: "Draws itself once, when it scrolls into view.", hint: "on view", replay: true },
+    { t: "click", icon: "Send", state: "hover-fly", d: "Plays on every click; a new click restarts it.", hint: "click" },
+    { t: "hover", icon: "Bell", state: "hover-ring", d: "Plays once per hover and always finishes.", hint: "hover" },
+    { t: "loop", icon: "Wifi", state: "loop-signal", d: "Runs by itself, forever, at an even pace.", hint: "no input" },
+    { t: "loop-on-hover", icon: "Settings", state: "hover-spin", d: "Repeats while hovered, ends its cycle on leave.", hint: "hold hover" },
+    { t: "morph", icon: "Lock", state: "morph-unlock", d: "Hover changes the shape, leaving changes it back.", hint: "hover · leave" },
+    { t: "boomerang", icon: "Menu", state: "morph-close", d: "Goes to the other shape and straight back.", hint: "hover" },
+    { t: "sequence", icon: "Download", state: "", d: "Draws in, then repeats its motion with a pause.", hint: "on view", replay: true },
+  ];
+  const grid = document.getElementById("grid");
+  const ctl = [];
+  for (const c of CARDS) {
+    const card = document.createElement("article"); card.className = "card";
+    card.innerHTML = `<header><h3>${c.t}</h3><p>${c.d}</p></header><div class="box"><i></i><span class="st">${c.state || "reveal → drop"}</span></div><footer><span>${c.hint}</span>${c.replay ? '<button type="button" class="mini">Replay</button>' : ""}</footer>`;
+    grid.appendChild(card);
+    const box = card.querySelector(".box");
+    const m = A.mount(box.querySelector("i"), { icon: c.icon, size: 48, trigger: c.t, state: c.state, target: box, secondary: "#0070f3" });
+    ctl.push({ c, box, m });
+    card.querySelector(".mini")?.addEventListener("click", () => m.set({}));
+  }
+
+  /* ?demo (recording only): drive every card in turn with synthetic events */
+  if (/[?&]demo\b/.test(location.search)) {
+    const by = (t) => ctl.find((x) => x.c.t === t).box;
+    const ev = (el, type) => el.dispatchEvent(new PointerEvent(type, { bubbles: type !== "pointerenter" && type !== "pointerleave" }));
+    const seq = [[900, () => by("click").click()], [1700, () => ev(by("hover"), "pointerenter")], [2600, () => ev(by("hover"), "pointerleave")],
+      [2800, () => ev(by("loop-on-hover"), "pointerenter")], [4900, () => ev(by("loop-on-hover"), "pointerleave")],
+      [5000, () => ev(by("morph"), "pointerenter")], [6400, () => ev(by("morph"), "pointerleave")],
+      [6600, () => ev(by("boomerang"), "pointerenter")], [7500, () => ev(by("boomerang"), "pointerleave")], [7700, () => by("click").click()]];
+    for (const [ms, fn] of seq) setTimeout(fn, ms);
+  }
+})();
+</script>
+</body>
+</html>
