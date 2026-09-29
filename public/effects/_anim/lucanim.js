@@ -138,6 +138,267 @@ window.LucAnim = (() => {
       "morph-pause": { morph: true } } },
   };
 
+  /* ── the second set: 78 more icons with a motion of their own ── */
+  const DRAW = (s = 0, from = 1) => [{ offset: 0, strokeDasharray: "1 1", strokeDashoffset: from }, ...(s ? [{ offset: s, strokeDasharray: "1 1", strokeDashoffset: from }] : []), { offset: 1, strokeDasharray: "1 1", strokeDashoffset: 0 }];
+  const draw = (parts, s = 0, opt = {}) => track(parts, null, DRAW(s, opt.reverse ? -1 : 1), { dash: true, ease: EO, ...opt });
+  const OP = (...p) => p.map(([o, v]) => ({ offset: o, opacity: v }));
+  const T = (o, x, y, r = 0, sx = 1, sy = sx, extra) => f(o, `translate(${x}px, ${y}px) rotate(${r}deg) scale(${sx}, ${sy})`, extra);
+  const Z = (o, extra) => T(o, 0, 0, 0, 1, 1, extra);
+  /* one hover state and (optionally) its looping twin */
+  const pair = (name, st, loop) => (loop == null ? { [`hover-${name}`]: st } : { [`hover-${name}`]: st, [`loop-${name}`]: { ...st, loop } });
+  const icon = (label, accent, name, st, loop, more = {}) => ({ label, accent, def: `hover-${name}`, states: { ...pair(name, st, loop), ...more } });
+  const shake = (o, a) => [R(0, 0), R(0.1, -a), R(0.2, a * 0.9), R(0.3, -a * 0.7), R(0.4, a * 0.5), R(0.5, -a * 0.2), R(0.6, 0), R(1, 0)];
+  const pop = (a = 1.18, at = 0.3) => [S(0, 1), S(at, a), S(at + 0.25, 0.95), S(at + 0.45, 1.02), S(1, 1)];
+  const squash = (at, sx = 1.05, sy = 0.9) => [S(0, 1), S(Math.max(0, at - 0.1), 1), f(at, `scale(${sx}, ${sy})`), f(Math.min(1, at + 0.15), `scale(${2 - sx}, ${2 - sy})`), S(Math.min(1, at + 0.3), 1), S(1, 1)];
+  /* a slider knob moves dx; the line on each side stretches with it */
+  const slide = (knob, left, right, x0, xl, xr, dx, y, delay) => [
+    track([knob], [12, 12], [TR(0, 0, 0), TR(0.4, dx, 0), TR(0.6, dx, 0), TR(1, 0, 0)], { delay }),
+    track([left], [3, y], [S(0, 1), f(0.4, `scale(${(xl - 3 + dx) / (xl - 3)}, 1)`), f(0.6, `scale(${(xl - 3 + dx) / (xl - 3)}, 1)`), S(1, 1)], { delay }),
+    track([right], [21, y], [S(0, 1), f(0.4, `scale(${(21 - xr - dx) / (21 - xr)}, 1)`), f(0.6, `scale(${(21 - xr - dx) / (21 - xr)}, 1)`), S(1, 1)], { delay })];
+
+  Object.assign(DEF, {
+    /* arrows & navigation */
+    ExternalLink: icon("external-link", [0, 1], "out", { d: 950, peak: 0.35, tracks: [
+      track([0, 1], [12, 12], [TR(0, 0, 0, { opacity: 1 }), TR(0.35, 5, -5, { opacity: 0 }), TR(0.4, -3, 3, { opacity: 0 }), TR(0.8, 0.4, -0.4, { opacity: 1 }), TR(1, 0, 0, { opacity: 1 })]),
+      track([2], [3, 21], [S(0, 1), S(0.35, 0.94), S(0.7, 1.02), S(1, 1)])] }, 700),
+    LogOut: icon("log-out", [0, 1], "leave", { d: 900, peak: 0.35, tracks: [
+      track([0, 1], [12, 12], [TR(0, 0, 0), TR(0.35, 3.2, 0), TR(0.6, -0.8, 0), TR(0.8, 0.3, 0), TR(1, 0, 0)]),
+      track([2], [3, 12], [S(0, 1), f(0.35, "scale(0.88, 1)"), f(0.6, "scale(1.03, 1)"), S(1, 1)])] }, 700),
+    LogIn: icon("log-in", [0, 1], "enter", { d: 950, peak: 0.7, tracks: [
+      track([0, 1], [12, 12], [TR(0, 0, 0, { opacity: 1 }), TR(0.25, -5, 0, { opacity: 0 }), TR(0.32, -5, 0, { opacity: 0 }), TR(0.68, 0.9, 0, { opacity: 1 }), TR(0.85, -0.2, 0, { opacity: 1 }), TR(1, 0, 0, { opacity: 1 })]),
+      track([2], [12, 12], [TR(0, 0, 0), TR(0.64, 0, 0), TR(0.74, 0.9, 0), TR(1, 0, 0)])] }, 700),
+    Upload: icon("upload", [0, 1], "send", { d: 950, peak: 0.35, tracks: [
+      track([0, 1], [12, 12], [TR(0, 0, 0, { opacity: 1 }), TR(0.35, 0, -6, { opacity: 0 }), TR(0.4, 0, 5, { opacity: 0 }), TR(0.8, 0, -0.6, { opacity: 1 }), TR(1, 0, 0, { opacity: 1 })]),
+      track([2], [12, 21], squash(0.12, 1.04, 0.8))] }, 800),
+    Share2: icon("share", [0, 2], "spread", { d: 1100, peak: 0.6, tracks: [
+      track([1], [6, 12], pop(1.3, 0.12)),
+      draw([3], 0.15), draw([4], 0.15, { reverse: true }),
+      track([0], [18, 5], [S(0, 1), S(0.45, 1), S(0.6, 1.3), S(0.78, 0.95), S(1, 1)]),
+      track([2], [18, 19], [S(0, 1), S(0.45, 1), S(0.6, 1.3), S(0.78, 0.95), S(1, 1)])] }, 600),
+    Navigation: icon("navigation", [0], "go", { d: 900, peak: 0.3, tracks: [
+      track("all", [12, 12], [Z(0), T(0.3, 2, -2, -8), T(0.6, -0.5, 0.5, 4), T(0.8, 0.2, -0.2, -1), Z(1)])] }, 700),
+    Compass: icon("compass", [1], "find", { d: 1300, peak: 0.45, tracks: [
+      track([1], [12, 12], [R(0, 0), R(0.45, 400), R(0.65, 340), R(0.82, 372), R(1, 360)], { ease: EO })] }, null, {
+      "loop-search": { d: 2400, loop: 0, tracks: [track([1], [12, 12], [R(0, 0), R(0.25, -32), R(0.5, 22), R(0.75, -10), R(1, 0)])] } }),
+    Maximize2: icon("maximize", [0, 3], "expand", { d: 850, peak: 0.35, tracks: [
+      track([0, 1], [12, 12], [TR(0, 0, 0), TR(0.35, 2.2, -2.2), TR(0.6, -0.5, 0.5), TR(0.8, 0.2, -0.2), TR(1, 0, 0)]),
+      track([2, 3], [12, 12], [TR(0, 0, 0), TR(0.35, -2.2, 2.2), TR(0.6, 0.5, -0.5), TR(0.8, -0.2, 0.2), TR(1, 0, 0)])] }, 700),
+
+    /* communication */
+    Mail: icon("mail", [0], "open", { d: 1200, peak: 0.35, tracks: [
+      track([0], [12, 5.5], [S(0, 1), f(0.35, "scale(1, -0.9)"), f(0.62, "scale(1, -0.9)"), f(0.85, "scale(1, 1.06)"), S(1, 1)]),
+      track([1], [12, 20], [S(0, 1), f(0.35, "scale(1.02, 0.97)"), S(0.55, 1), S(1, 1)])] }, 800),
+    MessageCircle: icon("message-circle", [0], "pop", { d: 850, peak: 0.3, tracks: [
+      track("all", [3, 21], [Z(0), T(0.15, 0, 0, 4, 0.88), T(0.4, 0, 0, -6, 1.1), T(0.65, 0, 0, 2, 0.97), Z(1)])] }, 900),
+    MessageSquareText: icon("message-square-text", [1, 2, 3], "type", { d: 1100, peak: 1, tracks: [
+      draw([3], 0), draw([1], 0.25), draw([2], 0.5),
+      track([0], [3, 21], [S(0, 1), S(0.12, 0.96), S(0.3, 1), S(1, 1)])] }, 700),
+    Phone: icon("phone", [0], "ring", { d: 1100, peak: 0.1, tracks: [
+      track("all", [12, 12], [R(0, 0), R(0.07, -14), R(0.14, 12), R(0.21, -12), R(0.28, 10), R(0.35, -8), R(0.42, 6), R(0.5, 0), R(1, 0)])] }, 900),
+    AtSign: icon("at-sign", [0], "write", { d: 1100, peak: 1, tracks: [
+      draw([1], 0),
+      track([0], [12, 12], [S(0, 1), S(0.45, 1), S(0.62, 1.25), S(0.8, 0.95), S(1, 1)])] }, 700, {
+      "hover-spin": { d: 900, peak: 0.5, tracks: [track("all", [12, 12], [R(0, 0), R(1, 360)], { ease: EO })] } }),
+    Inbox: icon("inbox", [0], "receive", { d: 1000, peak: 0.45, tracks: [
+      track([0], [12, 12], [TR(0, 0, 0), TR(0.3, 0, -0.6), TR(0.45, 0, 2.2), TR(0.65, 0, -0.5), TR(0.8, 0, 0.2), TR(1, 0, 0)]),
+      track([1], [12, 20], squash(0.45, 1.03, 0.95))] }, 800),
+    Megaphone: icon("megaphone", [0], "shout", { d: 1000, peak: 0.4, tracks: [
+      track("all", [5, 10], [Z(0), T(0.2, 0, 0, 6, 0.94), T(0.4, 0, 0, -8, 1.08), T(0.6, 0, 0, 3, 0.98), T(0.8, 0, 0, -1, 1), Z(1)])] }, 800),
+    Mic: icon("mic", [2], "level", { d: 1200, peak: 0.2, tracks: [
+      track([2], [12, 15], [f(0, "scale(1, 1)"), f(0.2, "scale(1, 0.8)"), f(0.4, "scale(1, 1.06)"), f(0.6, "scale(1, 0.86)"), f(0.8, "scale(1, 1.02)"), f(1, "scale(1, 1)")]),
+      track([1], [12, 17], [S(0, 1), S(0.2, 1.06), S(0.4, 0.98), S(0.6, 1.04), S(1, 1)])] }, 0),
+
+    /* shopping & money */
+    ShoppingCart: icon("shopping-cart", [0, 1], "roll", { d: 1000, peak: 0.3, tracks: [
+      track([2], [8, 21], [Z(0), T(0.3, 3, 0, -6), T(0.6, -1, 0, 2), T(0.8, 0.3, 0, 0), Z(1)]),
+      track([0, 1], [12, 12], [TR(0, 0, 0), TR(0.3, 3, 0), TR(0.6, -1, 0), TR(0.8, 0.3, 0), TR(1, 0, 0)])] }, 800),
+    ShoppingBag: icon("shopping-bag", [0], "lift", { d: 1100, peak: 0.25, tracks: [
+      track("all", [12, 2], [Z(0), T(0.25, 0, -2, -7), T(0.5, 0, -2, 5), T(0.7, 0, -0.8, -2), Z(1)])] }, 700),
+    CreditCard: icon("credit-card", [1], "swipe", { d: 1000, peak: 0.45, tracks: [
+      track("all", [12, 12], [TR(0, 0, 0, { opacity: 1 }), TR(0.2, -2, 0, { opacity: 1 }), TR(0.45, 7, 0, { opacity: 0 }), TR(0.5, -7, 0, { opacity: 0 }), TR(0.82, 0.4, 0, { opacity: 1 }), TR(1, 0, 0, { opacity: 1 })])] }, 700, {
+      "hover-flip": { d: 900, peak: 0.5, tracks: [track("all", [12, 12], [S(0, 1), f(0.5, "scale(0, 1)"), f(0.8, "scale(1.06, 1)"), S(1, 1)])] } }),
+    Wallet: icon("wallet", [0], "pay", { d: 1000, peak: 0.3, tracks: [
+      track([0], [12, 12], [TR(0, 0, 0), TR(0.3, 1.6, -0.8), TR(0.55, -0.4, 0.2), TR(0.75, 0.2, 0), TR(1, 0, 0)]),
+      track([1], [12, 21], squash(0.3, 1.04, 0.93))] }, 800),
+    Gift: icon("gift", [2], "open", { d: 1200, peak: 0.3, tracks: [
+      track([2, 3], [3, 11], [Z(0), T(0.3, 0, -3, -10), T(0.55, 0, -3, -10), T(0.75, 0, 0.4, 1), Z(1)]),
+      track([1], [12, 21], squash(0.75, 1.04, 0.93))] }, 800),
+    Tag: icon("tag", [1], "swing", { d: 1100, peak: 0.2, tracks: [
+      track("all", [7.5, 7.5], [R(0, 0), R(0.2, -14), R(0.4, 10), R(0.6, -6), R(0.8, 3), R(1, 0)])] }, 700),
+    Receipt: icon("receipt", [0, 1], "flip", { d: 1000, peak: 0.5, tracks: [
+      track([0, 1], [12, 12], [S(0, 1), f(0.25, "scale(0, 1)"), f(0.5, "scale(1, 1)"), f(0.75, "scale(0, 1)"), S(1, 1)]),
+      track([2], [12, 12], [TR(0, 0, 0), TR(0.25, 0, -0.8), TR(0.5, 0, 0), TR(0.75, 0, -0.8), TR(1, 0, 0)])] }, 700),
+    Percent: icon("percent", [1, 2], "flip", { d: 900, peak: 0.5, tracks: [
+      track("all", [12, 12], [R(0, 0), R(1, 180)], { ease: EO }),
+      track([1, 2], "self", [S(0, 1), S(0.4, 0.6), S(0.75, 1.15), S(1, 1)])] }, 700),
+
+    /* files */
+    FileText: icon("file-text", [2, 3, 4], "write", { d: 1100, peak: 1, tracks: [
+      draw([2], 0), draw([3], 0.2), draw([4], 0.4),
+      track([1], [20, 2], [S(0, 1), S(0.15, 0.6), S(0.35, 1.08), S(0.5, 1), S(1, 1)])] }, 700),
+    Folder: icon("folder", [0], "open", { d: 900, peak: 0.3, tracks: [
+      track("all", [12, 20], [S(0, 1), f(0.3, "scale(1.04, 0.9) skewX(-6deg)"), f(0.55, "scale(0.98, 1.04) skewX(2deg)"), f(0.8, "scale(1, 1) skewX(0deg)"), S(1, 1)])] }, 800),
+    Clipboard: icon("clipboard", [0], "clip", { d: 900, peak: 0.2, tracks: [
+      track([0], [12, 4], [TR(0, 0, 0), TR(0.2, 0, -2.2), TR(0.35, 0, 0.6), TR(0.5, 0, 0), TR(1, 0, 0)]),
+      track([1], [12, 22], squash(0.35, 1.02, 0.96))] }, 800),
+    Paperclip: icon("paperclip", [0], "attach", { d: 1000, peak: 0.3, tracks: [
+      track("all", [12, 12], [Z(0), T(0.3, 0, -3, -12), T(0.6, 0, 0.6, 4), T(0.8, 0, 0, -1), Z(1)])] }, 700, {
+      "hover-bend": { d: 1000, peak: 1, tracks: [draw([0], 0)] } }),
+    Save: icon("save", [2], "store", { d: 1000, peak: 0.3, tracks: [
+      track([2], [12, 12], [TR(0, 0, 0), TR(0.3, 3, 0), TR(0.6, 3, 0), TR(0.8, -0.4, 0), TR(1, 0, 0)]),
+      track("all", [12, 21], [Z(0), T(0.25, 0, -2.5), T(0.45, 0, 0, 0, 1.06, 0.9), T(0.6, 0, -0.4, 0, 0.98, 1.02), Z(0.75), Z(1)])] }, 700),
+    Archive: icon("archive", [0, 2], "store", { d: 1100, peak: 0.3, tracks: [
+      track([0], [2, 5.5], [Z(0), T(0.3, 0, -2, -12), T(0.55, 0, -2, -12), T(0.78, 0, 0.3, 1), Z(1)]),
+      track([2], [12, 12], [TR(0, 0, 0), TR(0.4, 0, 0), TR(0.6, 0, 1.6, 0, 1, 1, { opacity: 0 }), TR(0.61, 0, -1, 0, 1, 1, { opacity: 0 }), TR(0.85, 0, 0, 0, 1, 1, { opacity: 1 }), TR(1, 0, 0)]),
+      track([1], [12, 21], squash(0.78, 1.03, 0.95))] }, 700),
+    Printer: icon("printer", [2], "print", { d: 1200, peak: 0.8, tracks: [
+      track([2], [12, 12], [TR(0, 0, 0, { opacity: 1 }), TR(0.2, 0, -4, { opacity: 0 }), TR(0.3, 0, -4, { opacity: 0 }), TR(0.8, 0, 0.6, { opacity: 1 }), TR(1, 0, 0, { opacity: 1 })]),
+      track([0], [12, 12], [TR(0, 0, 0), TR(0.3, 0, 0), TR(0.38, 0, 0.4), TR(0.46, 0, 0), TR(0.54, 0, 0.4), TR(0.62, 0, 0), TR(1, 0, 0)])] }, 700),
+    Link: icon("link", [0], "connect", { d: 900, peak: 0.3, tracks: [
+      track([0], [12, 12], [TR(0, 0, 0), TR(0.3, 1.8, -1.8), TR(0.55, -0.4, 0.4), TR(0.75, 0.1, -0.1), TR(1, 0, 0)]),
+      track([1], [12, 12], [TR(0, 0, 0), TR(0.3, -1.8, 1.8), TR(0.55, 0.4, -0.4), TR(0.75, -0.1, 0.1), TR(1, 0, 0)])] }, 700),
+
+    /* status */
+    CircleAlert: icon("circle-alert", [1, 2], "alert", { d: 900, peak: 0.1, tracks: [
+      track("all", [12, 12], shake(0, 10)),
+      track([2], [12, 16], [S(0, 1), S(0.5, 1), S(0.62, 1.8), S(0.75, 1), S(1, 1)])] }, 900),
+    TriangleAlert: icon("triangle-alert", [1, 2], "flash", { d: 1000, peak: 0.2, tracks: [
+      track([1, 2], null, OP([0, 1], [0.15, 0.1], [0.3, 1], [0.45, 0.1], [0.6, 1], [1, 1])),
+      track([0], [12, 20], [S(0, 1), S(0.15, 1.06), S(0.3, 0.98), S(0.45, 1.04), S(0.6, 1), S(1, 1)])] }, 500),
+    Info: icon("info", [1, 2], "bounce", { d: 1000, peak: 0.25, tracks: [
+      track([2], [12, 12], [TR(0, 0, 0), TR(0.25, 0, -3), TR(0.45, 0, 0), TR(0.6, 0, -1), TR(0.72, 0, 0), TR(1, 0, 0)]),
+      track([1], [12, 16], [S(0, 1), S(0.4, 1), f(0.45, "scale(1, 0.8)"), f(0.58, "scale(1, 1.06)"), S(0.72, 1), S(1, 1)])] }, 800),
+    CircleX: icon("circle-x", [1, 2], "dismiss", { d: 800, peak: 0.5, tracks: [
+      track([1, 2], [12, 12], [f(0, "rotate(0deg) scale(1)"), f(0.5, "rotate(90deg) scale(0.6)"), f(0.8, "rotate(90deg) scale(1.1)"), f(1, "rotate(90deg) scale(1)")], { ease: EO }),
+      track([0], [12, 12], [S(0, 1), S(0.5, 0.94), S(0.8, 1.02), S(1, 1)])] }, 800, {
+      "hover-shake": { d: 700, peak: 0.1, tracks: [track("all", [12, 12], [TR(0, 0, 0), TR(0.12, -2, 0), TR(0.26, 2, 0), TR(0.4, -1.4, 0), TR(0.54, 1, 0), TR(0.7, 0, 0), TR(1, 0, 0)])] } }),
+    CircleQuestionMark: icon("circle-question-mark", [1, 2], "wonder", { d: 1000, peak: 0.25, tracks: [
+      track([1, 2], [12, 17], [R(0, 0), R(0.25, -16), R(0.5, 12), R(0.7, -5), R(0.85, 2), R(1, 0)])] }, 800),
+    Ban: icon("ban", [1], "block", { d: 900, peak: 1, tracks: [
+      draw([1], 0.15),
+      track([0], [12, 12], [S(0, 1), S(0.15, 0.92), S(0.6, 1.04), S(1, 1)])] }, 800),
+    ShieldCheck: icon("shield-check", [1], "check", { d: 800, peak: 1, tracks: [
+      draw([1], 0.25),
+      track([0], [12, 12], [S(0, 1), S(0.3, 1.08), S(0.6, 0.98), S(1, 1)])] }, 1200),
+    BadgeCheck: icon("badge-check", [1], "check", { d: 1000, peak: 1, tracks: [
+      track([0], [12, 12], [R(0, 0), R(1, 90)], { ease: EO }),
+      draw([1], 0.3)] }, 1000),
+
+    /* tools */
+    Pencil: icon("pencil", [1], "write", { d: 1100, peak: 0.2, tracks: [
+      track("all", [2, 22], [Z(0), T(0.2, -1, 0, -6), T(0.4, 1.2, 0.3, 4), T(0.6, -0.8, 0, -5), T(0.8, 0.6, 0, 3), Z(1)])] }, 400),
+    Scissors: icon("scissors", [0, 3], "snip", { d: 900, peak: 0.2, tracks: [
+      track([0, 1, 4], [12, 12], [R(0, 0), R(0.2, -12), R(0.4, 2), R(0.6, -12), R(0.8, 1), R(1, 0)]),
+      track([2, 3], [12, 12], [R(0, 0), R(0.2, 12), R(0.4, -2), R(0.6, 12), R(0.8, -1), R(1, 0)])] }, 500),
+    Wrench: icon("wrench", [0], "tighten", { d: 1000, peak: 0.35, tracks: [
+      track("all", [12, 12], [R(0, 0), R(0.35, -35), R(0.6, 10), R(0.8, -4), R(1, 0)])] }, 700),
+    Hammer: icon("hammer", [2], "hit", { d: 1000, peak: 0.3, tracks: [
+      track("all", [3, 21], [R(0, 0), R(0.3, -22), R(0.42, 6), R(0.52, 0), R(0.62, 3), R(0.75, 0), R(1, 0)])] }, 500),
+    Paintbrush: icon("paintbrush", [0], "paint", { d: 1100, peak: 1, tracks: [
+      track([1, 2], [20, 4], [R(0, 0), R(0.25, -10), R(0.5, 8), R(0.75, -3), R(1, 0)]),
+      draw([0], 0.3)] }, 700),
+    Funnel: icon("funnel", [0], "sift", { d: 900, peak: 0.2, tracks: [
+      track("all", [12, 3], [S(0, 1), f(0.2, "scale(1.08, 0.9)"), f(0.45, "scale(0.95, 1.06)"), f(0.7, "scale(1.02, 0.98)"), S(1, 1)])] }, 800),
+    SlidersHorizontal: icon("sliders-horizontal", [2, 3, 7], "adjust", { d: 1200, peak: 0.4, tracks: [
+      ...slide(2, 0, 6, 14, 10, 14, 3, 5, 0), ...slide(7, 8, 4, 8, 8, 12, 5, 12, 80), ...slide(3, 1, 5, 16, 12, 16, -6, 19, 160)] }, 600),
+    Pin: icon("pin", [1], "push", { d: 900, peak: 0.25, tracks: [
+      track("all", [12, 22], [Z(0), T(0.25, 0, -2.5, -10), T(0.4, 0, 1, 0), T(0.55, 0, 0, 2), Z(1)])] }, 800),
+
+    /* time */
+    Calendar: icon("calendar", [0, 1], "turn", { d: 1000, peak: 0.2, tracks: [
+      track([0], [8, 3], [TR(0, 0, 0), TR(0.15, 0, -1.6), TR(0.35, 0, 0), TR(1, 0, 0)]),
+      track([1], [16, 3], [TR(0, 0, 0), TR(0.25, 0, -1.6), TR(0.45, 0, 0), TR(1, 0, 0)]),
+      track([2, 3], [12, 21], [S(0, 1), S(0.4, 1), f(0.5, "scale(1.03, 0.95)"), S(0.65, 1), S(1, 1)])] }, 800),
+    CalendarCheck: icon("calendar-check", [4], "check", { d: 900, peak: 1, tracks: [
+      draw([4], 0.25),
+      track([0, 1], [12, 3], [TR(0, 0, 0), TR(0.15, 0, -1.4), TR(0.3, 0, 0), TR(1, 0, 0)])] }, 1100),
+    Hourglass: icon("hourglass", [2, 3], "flip", { d: 1100, peak: 0.6, tracks: [
+      track("all", [12, 12], [R(0, 0), R(0.6, 195), R(0.8, 175), R(1, 180)], { ease: EO })] }, 1200),
+    Timer: icon("timer", [1], "start", { d: 1100, peak: 0.5, tracks: [
+      track([0], [12, 12], [TR(0, 0, 0), TR(0.1, 0, 1), TR(0.22, 0, 0), TR(1, 0, 0)]),
+      track([1], [12, 14], [R(0, 0), R(0.15, 0), R(1, 360)], { ease: EO })] }, null, {
+      "loop-run": { d: 2400, loop: 0, linear: true, tracks: [track([1], [12, 14], [R(0, 0), R(1, 360)])] } }),
+    AlarmClock: icon("alarm-clock", [2, 3], "ring", { d: 1000, peak: 0.1, tracks: [
+      track("all", [12, 13], [R(0, 0), R(0.06, -8), R(0.12, 8), R(0.18, -8), R(0.24, 8), R(0.3, -6), R(0.36, 6), R(0.44, -3), R(0.52, 0), R(1, 0)]),
+      track([2, 3], [12, 5], [TR(0, 0, 0), TR(0.06, 0, -1), TR(0.12, 0, 0), TR(0.18, 0, -1), TR(0.24, 0, 0), TR(0.3, 0, -1), TR(0.36, 0, 0), TR(1, 0, 0)])] }, 900),
+
+    /* people & places */
+    User: icon("user", [1], "nod", { d: 900, peak: 0.25, tracks: [
+      track([1], [12, 11], [TR(0, 0, 0), TR(0.25, 0, 1.2), TR(0.5, 0, -0.6), TR(0.7, 0, 0.3), TR(1, 0, 0)]),
+      track([0], [12, 21], squash(0.25, 1.03, 0.96))] }, 900),
+    Users: icon("users", [1, 2], "join", { d: 1000, peak: 0.55, tracks: [
+      track([1, 2], [12, 12], [TR(0, 0, 0, { opacity: 1 }), TR(0.2, -2, 2, { opacity: 0 }), TR(0.55, 0.4, -0.8, { opacity: 1 }), TR(0.75, 0, 0.2, { opacity: 1 }), TR(1, 0, 0, { opacity: 1 })]),
+      track([3], [9, 11], [TR(0, 0, 0), TR(0.55, 0, 0), TR(0.7, 0, 0.8), TR(0.85, 0, -0.2), TR(1, 0, 0)])] }, 900),
+    UserPlus: icon("user-plus", [2, 3], "add", { d: 900, peak: 0.4, tracks: [
+      track([2, 3], [19, 11], [f(0, "rotate(0deg) scale(1)"), f(0.4, "rotate(180deg) scale(1.3)"), f(0.7, "rotate(180deg) scale(0.95)"), f(1, "rotate(180deg) scale(1)")], { ease: EO }),
+      track([0, 1], [9, 21], [S(0, 1), S(0.4, 1), f(0.55, "scale(1.03, 0.96)"), S(0.75, 1), S(1, 1)])] }, 900),
+    MapPin: icon("map-pin", [1], "drop", { d: 1000, peak: 0.2, tracks: [
+      track("all", [12, 22], [Z(0), T(0.2, 0, -4), T(0.4, 0, 0, 0, 1.1, 0.88), T(0.55, 0, -1, 0, 0.97, 1.03), Z(0.7), Z(1)])] }, 800),
+    Map: icon("map", [1, 2], "unfold", { d: 1000, peak: 0.3, tracks: [
+      track("all", [12, 12], [S(0, 1), f(0.3, "scale(0.55, 1)"), f(0.7, "scale(1.05, 1)"), f(0.85, "scale(0.99, 1)"), S(1, 1)])] }, 800),
+    Globe: icon("globe", [1], "spin", { d: 1200, peak: 0.25, tracks: [
+      track([1], [12, 12], [f(0, "scale(1, 1)"), f(0.25, "scale(0.08, 1)"), f(0.5, "scale(1, 1)"), f(0.75, "scale(0.08, 1)"), f(1, "scale(1, 1)")]),
+      track("all", [12, 12], [R(0, 0), R(0.3, -14), R(0.7, 4), R(1, 0)])] }, null, {
+      "loop-spin": { d: 1400, loop: 0, linear: true, tracks: [track([1], [12, 12], [f(0, "scale(1, 1)"), f(0.5, "scale(0.05, 1)"), f(1, "scale(1, 1)")])] } }),
+    Plane: icon("plane", [0], "takeoff", { d: 1100, peak: 0.35, tracks: [
+      track("all", [12, 12], [Z(0, { opacity: 1 }), T(0.35, 6, -6, -8, 1, 1, { opacity: 0 }), T(0.4, -6, 6, 0, 1, 1, { opacity: 0 }), T(0.8, 0.5, -0.5, 0, 1, 1, { opacity: 1 }), Z(1, { opacity: 1 })])] }, 700),
+
+    /* weather & nature */
+    Sun: icon("sun", [1, 2, 3, 4, 5, 6, 7, 8], "shine", { d: 1000, peak: 0.5, tracks: [
+      track([1, 2, 3, 4, 5, 6, 7, 8], [12, 12], [R(0, 0), R(1, 45)], { ease: EO }),
+      track([0], [12, 12], pop(1.2, 0.25))] }, null, {
+      "loop-spin": { d: 1600, loop: 0, linear: true, tracks: [track([1, 2, 3, 4, 5, 6, 7, 8], [12, 12], [R(0, 0), R(1, 45)])] } }),
+    Moon: icon("moon", [0], "rock", { d: 1100, peak: 0.3, tracks: [
+      track("all", [12, 12], [R(0, 0), R(0.3, -20), R(0.6, 8), R(0.8, -3), R(1, 0)])] }, null, {
+      "loop-rock": { d: 3000, loop: 0, tracks: [track("all", [12, 12], [R(0, 0), R(0.5, -12), R(1, 0)])] } }),
+    Cloud: icon("cloud", [0], "drift", { d: 1100, peak: 0.3, tracks: [
+      track("all", [12, 12], [TR(0, 0, 0), TR(0.3, -2, 0), TR(0.65, 1.5, 0), TR(1, 0, 0)])] }, null, {
+      "loop-drift": { d: 3200, loop: 0, tracks: [track("all", [12, 12], [TR(0, 0, 0), TR(0.25, -1.6, 0), TR(0.75, 1.6, 0), TR(1, 0, 0)])] } }),
+    CloudRain: icon("cloud-rain", [1, 2, 3], "rain", { d: 1000, peak: 0.4, tracks: [
+      track([2], [12, 12], [TR(0, 0, 0, { opacity: 1 }), TR(0.4, 0, 4, { opacity: 0 }), TR(0.41, 0, -3, { opacity: 0 }), TR(0.8, 0, 0, { opacity: 1 }), TR(1, 0, 0, { opacity: 1 })]),
+      track([3], [12, 12], [TR(0, 0, 0, { opacity: 1 }), TR(0.4, 0, 4, { opacity: 0 }), TR(0.41, 0, -3, { opacity: 0 }), TR(0.8, 0, 0, { opacity: 1 }), TR(1, 0, 0, { opacity: 1 })], { delay: 120 }),
+      track([1], [12, 12], [TR(0, 0, 0, { opacity: 1 }), TR(0.4, 0, 4, { opacity: 0 }), TR(0.41, 0, -3, { opacity: 0 }), TR(0.8, 0, 0, { opacity: 1 }), TR(1, 0, 0, { opacity: 1 })], { delay: 240 })] }, 0),
+    Zap: icon("zap", [0], "flash", { d: 900, peak: 0.1, tracks: [
+      track("all", [12, 12], [f(0, "scale(1)", { opacity: 1 }), f(0.1, "scale(1.12)", { opacity: 0.25 }), f(0.2, "scale(1.12)", { opacity: 1 }), f(0.3, "scale(1)", { opacity: 0.35 }), f(0.45, "scale(1.04)", { opacity: 1 }), f(1, "scale(1)", { opacity: 1 })])] }, 900),
+    Snowflake: icon("snowflake", [0, 1, 2, 3], "spin", { d: 1200, peak: 0.5, tracks: [
+      track("all", [12, 12], [f(0, "rotate(0deg) scale(1)"), f(0.5, "rotate(120deg) scale(0.85)"), f(1, "rotate(180deg) scale(1)")], { ease: EO })] }, null, {
+      "loop-spin": { d: 4000, loop: 0, linear: true, tracks: [track("all", [12, 12], [R(0, 0), R(1, 180)])] } }),
+    Umbrella: icon("umbrella", [2], "open", { d: 1000, peak: 0.3, tracks: [
+      track([2], [12, 13], [f(0, "scale(1, 1)"), f(0.3, "scale(0.6, 1.15)"), f(0.6, "scale(1.08, 0.95)"), f(0.8, "scale(0.98, 1.02)"), f(1, "scale(1, 1)")]),
+      track([1], [12, 12], [TR(0, 0, 0), TR(0.3, 0, -1.4), TR(0.6, 0, 0.4), TR(0.8, 0, 0), TR(1, 0, 0)]),
+      track([0], [12, 13], [R(0, 0), R(0.3, -8), R(0.6, 5), R(0.8, -2), R(1, 0)])] }, 800),
+    Flame: icon("flame", [0], "flicker", { d: 1200, peak: 0.2, tracks: [
+      track("all", [12, 21], [f(0, "scale(1, 1) skewX(0deg)"), f(0.2, "scale(0.95, 1.08) skewX(-4deg)"), f(0.4, "scale(1.04, 0.94) skewX(3deg)"), f(0.6, "scale(0.97, 1.05) skewX(-2deg)"), f(0.8, "scale(1.02, 0.98) skewX(1deg)"), f(1, "scale(1, 1) skewX(0deg)")])] }, 0),
+
+    /* media */
+    Music: icon("music", [1, 2], "dance", { d: 1100, peak: 0.25, tracks: [
+      track("all", [12, 21], [Z(0), T(0.25, 0, -2.5, -8), Z(0.5), T(0.7, 0, -1.2, 6), Z(1)])] }, 0),
+    Camera: icon("camera", [1], "shoot", { d: 800, peak: 0.15, tracks: [
+      track([1], [12, 13], [S(0, 1), S(0.15, 0.4), S(0.32, 1.15), S(0.5, 0.97), S(0.65, 1), S(1, 1)]),
+      track([0], [12, 20], [S(0, 1), f(0.15, "scale(1.03, 0.96)"), S(0.32, 1), S(1, 1)])] }, 1000),
+    Image: icon("image", [1], "rise", { d: 1100, peak: 0.8, tracks: [
+      track([1], [12, 12], [TR(0, 0, 0, { opacity: 1 }), TR(0.3, 0, 4, { opacity: 0 }), TR(0.35, 0, 4, { opacity: 0 }), TR(0.8, 0, -0.4, { opacity: 1 }), TR(1, 0, 0, { opacity: 1 })]),
+      track([2], [12, 21], [S(0, 1), f(0.3, "scale(1, 0.85)"), f(0.6, "scale(1, 1.04)"), S(0.8, 1), S(1, 1)])] }, 800),
+    Headphones: icon("headphones", [0], "bop", { d: 1000, peak: 0.25, tracks: [
+      track("all", [12, 12], [f(0, "rotate(0deg) scale(1)"), f(0.25, "rotate(-8deg) scale(1.05)"), f(0.5, "rotate(0deg) scale(0.97)"), f(0.75, "rotate(8deg) scale(1.05)"), f(1, "rotate(0deg) scale(1)")])] }, 0),
+    SkipForward: icon("skip-forward", [1], "skip", { d: 850, peak: 0.3, tracks: [
+      track([1], [16, 12], [Z(0), T(0.3, 3, 0, 0, 0.85, 1), T(0.5, -0.6, 0), T(0.7, 0.2, 0), Z(1)]),
+      track([0], [12, 12], [TR(0, 0, 0), TR(0.25, 0, 0), TR(0.35, 1.2, 0), TR(0.6, 0, 0), TR(1, 0, 0)])] }, 700),
+
+    /* misc */
+    Star: icon("star", [0], "spin", { d: 1100, peak: 0.45, tracks: [
+      track("all", [12, 12.6], [f(0, "rotate(0deg) scale(1)"), f(0.45, "rotate(200deg) scale(0.75)"), f(0.8, "rotate(370deg) scale(1.12)"), f(1, "rotate(360deg) scale(1)")], { ease: EO })] }, 800),
+    Flag: icon("flag", [0], "wave", { d: 1200, peak: 0.25, tracks: [
+      track("all", [4, 12], [f(0, "skewY(0deg) scale(1, 1)"), f(0.25, "skewY(-6deg) scale(0.96, 1)"), f(0.5, "skewY(4deg) scale(1, 1)"), f(0.75, "skewY(-2deg) scale(0.98, 1)"), f(1, "skewY(0deg) scale(1, 1)")])] }, 0),
+    Key: icon("key", [2], "unlock", { d: 1100, peak: 0.55, tracks: [
+      track("all", [7.5, 15.5], [Z(0), T(0.3, 1.5, -1.5), T(0.55, 1.5, -1.5, -24), T(0.75, 1.5, -1.5, -24), T(0.9, 0, 0, 2), Z(1)])] }, 700),
+    Plus: icon("plus", [0, 1], "add", { d: 800, peak: 0.5, tracks: [
+      track("all", [12, 12], [f(0, "rotate(0deg) scale(1)"), f(0.5, "rotate(90deg) scale(1.2)"), f(0.75, "rotate(90deg) scale(0.95)"), f(1, "rotate(90deg) scale(1)")], { ease: EO })] }, 800),
+    Power: icon("power", [0], "switch", { d: 1000, peak: 1, tracks: [
+      track([0], [12, 12], [TR(0, 0, 0), TR(0.2, 0, 2.5), TR(0.4, 0, -0.5), TR(0.55, 0, 0), TR(1, 0, 0)]),
+      draw([1], 0.2)] }, 900),
+  });
+
   /* ── generic motions: any Lucide icon, no knowledge of its parts ──
      Eight kinds (pop, wiggle, jump, turn, redraw, cascade, float, breathe) plus
      a directional nudge for icons whose name says where they point. The default

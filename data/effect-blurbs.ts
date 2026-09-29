@@ -13,7 +13,7 @@
 const blurbs: Record<string, string> = {
   // ── animated icons (Lucide + original motions; trigger model after Lordicon) ──
   "anim-icon-library":
-    "A set of everyday icons that act out what they mean — a bell that rings, a bin that opens, a plane that takes off — with an editor to choose how each one plays, how thick it is drawn and which colours it uses. Small motion that makes an interface feel alive and helps people notice the thing that matters.",
+    "Over seventeen hundred everyday icons that move, a hundred of them acting out what they mean — a bell that rings, a bin that opens, scissors that snip — with search and an editor to choose how each one plays, how thick it is drawn and which colours it uses. Small motion that makes an interface feel alive and helps people notice the thing that matters.",
   "anim-icon-triggers":
     "Eight ways an animated icon can start moving — when it appears, on click, on hover, forever, while hovered, as a two-way change, there and back, and as a sequence — side by side, so choosing the right behaviour for a button, a menu or a status takes one look.",
   "anim-icon-in-context":
