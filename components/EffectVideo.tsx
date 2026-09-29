@@ -19,12 +19,15 @@ export default function EffectVideo({
   height,
   title,
   accent,
+  top = false,
 }: {
   src: string;
   poster: string;
   height: number;
   title: string;
   accent: string;
+  /** 从视频顶部开始裁（分类页给高样板用的矮预览），缺省居中裁。 */
+  top?: boolean;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
 
@@ -71,7 +74,7 @@ export default function EffectVideo({
         playsInline
         preload="none"
         aria-label={title}
-        style={{ height }}
+        style={top ? { height, objectPosition: "top" } : { height }}
       />
     </div>
   );

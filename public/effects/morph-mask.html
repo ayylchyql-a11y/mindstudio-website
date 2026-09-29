@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mask adapter · morphicons</title>
+<link rel="stylesheet" href="_morph/base.css">
+<style>
+  body { padding: 24px; }
+  .card { max-width: 1152px; margin: 0 auto; }
+  /* The source goes side by side at 768px; this frame is 710 wide, so the
+     split happens from 640px instead. Everything inside is the same. */
+  .split { display: flex; flex-direction: column; }
+  @media (min-width: 640px) { .split { flex-direction: row; } }
+  .stage { display: flex; flex: 1 1 0%; align-items: center; justify-content: center; background: var(--canvas-soft); padding: 56px 24px; }
+  #el { display: block; height: 144px; width: 144px; color: var(--ink); }
+  @media (min-width: 640px) { #el { height: 160px; width: 160px; } }
+  #el.ink { background-color: currentColor; }
+  #el.gradient { background-image: linear-gradient(135deg, #007cf0 0%, #00dfd8 40%, #7928ca 70%, #ff0080 100%); }
+  .ctrl { display: flex; flex-direction: column; gap: 20px; border-top: 1px solid var(--hairline); padding: 20px; }
+  @media (min-width: 640px) { .ctrl { width: 340px; flex-shrink: 0; border-top: 0; border-left: 1px solid var(--hairline); } }
+  .chips { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips button { height: 32px; border-radius: 6px; border: 1px solid var(--hairline); background: var(--canvas); padding: 0 12px; font-family: var(--mono); font-size: 12px; line-height: 16px; color: var(--body); transition: color .15s cubic-bezier(.4,0,.2,1), background-color .15s cubic-bezier(.4,0,.2,1), border-color .15s cubic-bezier(.4,0,.2,1); }
+  .chips button:hover { background: var(--canvas-soft-2); color: var(--ink); }
+  .chips button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--canvas); }
+  .ctrl .note { margin-top: 8px; font-size: 13px; line-height: 20px; color: var(--mute); }
+</style>
+</head>
+<body>
+<section aria-label="Mask adapter demo">
+  <article class="card">
+    <header>
+      <h3>One element, no path in the DOM</h3>
+      <p>The shape below is a plain span: its geometry is a referenced SVG mask the driver rewrites per frame, and its color is just CSS showing through.</p>
+    </header>
+    <div class="split">
+      <!-- The stage: the masked element itself. -->
+      <div class="stage"><span id="el" role="img" class="gradient" aria-label="menu icon rendered through a CSS mask"></span></div>
+      <!-- Controls + the real input. -->
+      <div class="ctrl">
+        <div><span class="caps">Shape</span><div class="chips" id="shapes"></div></div>
+        <div>
+          <span class="caps">Element paint</span>
+          <div class="segf" role="group" aria-label="Element paint" id="paint">
+            <button type="button" data-v="gradient" aria-pressed="true">Gradient</button>
+            <button type="button" data-v="ink" aria-pressed="false">currentColor</button>
+          </div>
+          <p class="note">The morph never touches color. A gradient, an image, plain currentColor: whatever paints the element shows through the moving mask.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<script src="_morph/morphicons.js"></script>
+<script src="_morph/icons.js"></script>
+<script>
+(() => {
+  const M = window.Morphicons, X = window.MorphIconData.extra;
+  const $ = (id) => document.getElementById(id);
+
+  /* The demo deliberately starts from MARKUP, not icon data: that is the mask
+     adapter's whole premise. Each lucide IconNode is serialized to the SVG an
+     Iconify pipeline would ship, and svgToIcon parses it back. */
+  const toMarkup = (node) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">${node.map(([tag, attrs]) => `<${tag} ${Object.entries(attrs).filter(([, v]) => v !== undefined).map(([k, v]) => `${k}="${v}"`).join(" ")}/>`).join("")}</svg>`;
+  /* Parsed ONCE: reusing the references keeps the plan cache and morphTo's
+     no-op guard alive (both index by identity). */
+  const SHAPES = [["menu", X.Menu], ["x", X.X], ["sun", X.Sun], ["moon", X.Moon], ["heart", X.Heart], ["star", X.Star]].map(([id, node]) => ({ id, input: M.svgToIcon(toMarkup(node)) }));
+
+  const el = $("el");
+  // paint: false — the paint is this demo's OTHER control, so the element
+  // keeps whatever background the page gives it.
+  const target = M.maskTarget(el, { paint: false });
+  const morph = M.createMorph(target, SHAPES[0].input);
+
+  let shape = 0, paint = "gradient", auto = true;
+  $("shapes").innerHTML = SHAPES.map((s, i) => `<button type="button" data-i="${i}">${s.id}</button>`).join("");
+  function render() {
+    for (const b of $("shapes").children) b.setAttribute("aria-pressed", String(Number(b.dataset.i) === shape));
+    for (const b of $("paint").children) b.setAttribute("aria-pressed", String(b.dataset.v === paint));
+    el.className = paint;
+    el.setAttribute("aria-label", `${SHAPES[shape].id} icon rendered through a CSS mask`);
+  }
+  function setShape(i) { shape = i; morph.morphTo(SHAPES[shape].input, "snappy"); render(); }
+
+  /* A quiet auto-cycle sells the motion without a hand on the controls; the
+     first manual pick hands the wheel over for good. */
+  const timer = setInterval(() => { if (auto) setShape((shape + 1) % SHAPES.length); }, 2600);
+  $("shapes").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; auto = false; clearInterval(timer); setShape(Number(b.dataset.i)); };
+  $("paint").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; paint = b.dataset.v; render(); };
+  render();
+})();
+</script>
+</body>
+</html>

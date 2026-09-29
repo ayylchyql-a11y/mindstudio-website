@@ -1,0 +1,76 @@
+/* Shared base for the morphicons replicas (morphicons.com, MIT).
+   Design tokens copied from the site's globals.css: a Vercel-like stark
+   system — one accent (link blue), ink CTAs, hairline borders, four-step
+   surface ladder. Radius rule: cards 12px, controls/inputs 6px, icon tiles 8px. */
+
+@font-face { font-family: "Geist"; src: url("../_fonts/geist-variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Geist Mono"; src: url("../_fonts/geist-mono-variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+
+:root {
+  --canvas: #ffffff;
+  --canvas-soft: #fafafa;
+  --canvas-soft-2: #f5f5f5;
+  --ink: #171717;
+  --body: #4d4d4d;
+  --mute: #888888;
+  --hairline: #ebebeb;
+  --link: #0070f3;
+  --shadow-card: 0px 2px 2px rgb(0 0 0 / 0.04), 0px 8px 8px -8px rgb(0 0 0 / 0.04);
+  --shadow-card-lg: 0px 2px 2px rgb(0 0 0 / 0.04), 0px 8px 16px -4px rgb(0 0 0 / 0.04);
+  --sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --canvas: #101010;
+    --canvas-soft: #0a0a0a;
+    --canvas-soft-2: #1a1a1a;
+    --ink: #ededed;
+    --body: #a1a1a1;
+    --mute: #7d7d7d;
+    --hairline: #262626;
+    --link: #52a8ff;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; border: 0 solid; }
+html { line-height: 1.5; -webkit-text-size-adjust: 100%; font-family: var(--sans); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body { background: var(--canvas-soft); color: var(--ink); font-family: var(--sans); }
+button, input { font: inherit; color: inherit; background: none; letter-spacing: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: default; }
+svg { display: block; flex-shrink: 0; }
+::selection { background: var(--ink); color: var(--canvas-soft); }
+.mono { font-family: var(--mono); }
+
+/* 1px hairline borders everywhere (Tailwind `border border-hairline`). */
+.hl { border: 1px solid var(--hairline); }
+
+/* Card shell: rounded-xl, hairline, canvas, soft shadow. */
+.card { overflow: hidden; border-radius: 12px; border: 1px solid var(--hairline); background: var(--canvas); box-shadow: var(--shadow-card); }
+.card-lg { box-shadow: var(--shadow-card-lg); }
+.card > header { border-bottom: 1px solid var(--hairline); padding: 16px 20px; }
+.card > header h3 { font-size: 14px; line-height: 20px; font-weight: 500; color: var(--ink); }
+.card > header p { margin-top: 2px; font-size: 13px; color: var(--mute); }
+
+/* Segmented controls. `.seg` is the studio's inline flavour (label left, h-7);
+   `.segf` the showcase sidebar's full-width flavour (label above, h-8). */
+.seg-wrap { display: flex; align-items: center; gap: 10px; }
+.seg-label { font-family: var(--mono); font-size: 11px; line-height: 16.5px; color: var(--mute); }
+.seg { display: flex; overflow: hidden; border-radius: 6px; border: 1px solid var(--hairline); background: var(--canvas); }
+.seg button { height: 28px; padding: 0 10px; font-size: 13px; color: var(--body); transition: color .15s cubic-bezier(.4,0,.2,1), background-color .15s cubic-bezier(.4,0,.2,1); }
+.seg button:hover { background: var(--canvas-soft-2); color: var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--canvas); }
+
+.caps { font-family: var(--mono); font-size: 11px; line-height: 16.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mute); }
+.segf { margin-top: 8px; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); overflow: hidden; border-radius: 6px; border: 1px solid var(--hairline); background: var(--canvas); }
+.segf button { display: flex; height: 32px; align-items: center; justify-content: center; gap: 6px; font-size: 13px; color: var(--body); transition: color .15s cubic-bezier(.4,0,.2,1), background-color .15s cubic-bezier(.4,0,.2,1); }
+.segf button:hover { background: var(--canvas-soft-2); color: var(--ink); }
+.segf button[aria-pressed="true"] { background: var(--ink); color: var(--canvas); }
+
+/* The quiet secondary button (Nudge up / Nudge down, the card's copy button). */
+.btn { display: inline-flex; height: 32px; align-items: center; border-radius: 6px; border: 1px solid var(--hairline); background: var(--canvas); padding: 0 12px; font-size: 13px; color: var(--body); transition: color .15s cubic-bezier(.4,0,.2,1), background-color .15s cubic-bezier(.4,0,.2,1); }
+.btn:hover { background: var(--canvas-soft-2); color: var(--ink); }
+
+.tnum { font-variant-numeric: tabular-nums; }

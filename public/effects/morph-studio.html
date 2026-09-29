@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Morph studio · morphicons</title>
+<link rel="stylesheet" href="_morph/base.css">
+<style>
+  body { padding: 24px; }
+  .studio { max-width: 1152px; margin: 0 auto; }
+  .studio .card { box-shadow: var(--shadow-card-lg); }
+  .cols { display: grid; }
+  @media (min-width: 1024px) { .cols { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); } }
+
+  /* ── stage ── */
+  .stage { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; border-bottom: 1px solid var(--hairline); padding: 32px; }
+  @media (min-width: 1024px) { .stage { border-bottom: 0; border-right: 1px solid var(--hairline); } }
+  /* The brand mesh gradient: the page's single decorative object. Static on
+     purpose; motion lives in the morphs. */
+  .mesh { position: absolute; inset: 40px; pointer-events: none;
+    background:
+      radial-gradient(38% 45% at 22% 28%, rgb(0 124 240 / 0.5), transparent 70%),
+      radial-gradient(35% 42% at 78% 24%, rgb(0 223 216 / 0.4), transparent 70%),
+      radial-gradient(40% 48% at 30% 78%, rgb(121 40 202 / 0.38), transparent 70%),
+      radial-gradient(36% 44% at 76% 74%, rgb(255 0 128 / 0.32), transparent 70%),
+      radial-gradient(30% 38% at 52% 50%, rgb(249 203 40 / 0.25), transparent 70%);
+    filter: blur(36px); }
+  @media (prefers-color-scheme: dark) { .mesh { opacity: 0.6; } }
+  .big { position: relative; border-radius: 12px; padding: 16px; color: var(--ink); transition: transform .15s cubic-bezier(.4,0,.2,1); }
+  .big:active { transform: scale(0.97); }
+  .readout { position: relative; display: flex; min-height: 40px; flex-direction: column; align-items: center; gap: 2px; text-align: center; font-family: var(--mono); font-size: 11px; line-height: 16px; }
+  .readout .b { color: var(--body); } .readout .m { color: var(--mute); }
+  .scrub-row { position: relative; display: flex; width: 100%; max-width: 288px; align-items: center; gap: 12px; }
+  .scrub-row span { width: 48px; flex-shrink: 0; text-align: right; font-family: var(--mono); font-size: 11px; line-height: 16.5px; color: var(--mute); }
+  /* The t scrubber: hairline track, ink thumb, quiet until grabbed. */
+  .scrub { appearance: none; -webkit-appearance: none; width: 100%; height: 4px; border-radius: 9999px; background: var(--hairline); cursor: pointer; }
+  .scrub:disabled { opacity: 0.4; cursor: default; }
+  .scrub::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--ink); border: 2px solid var(--canvas); box-shadow: 0 0 0 1px var(--hairline); }
+  .scrub::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--ink); border: 2px solid var(--canvas); box-shadow: 0 0 0 1px var(--hairline); }
+  .scrub:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; }
+  .set { position: relative; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; }
+  .set .it { position: relative; }
+  .set .go { display: flex; height: 40px; width: 40px; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid var(--hairline); color: var(--body); transition: color .15s cubic-bezier(.4,0,.2,1), background-color .15s cubic-bezier(.4,0,.2,1), border-color .15s cubic-bezier(.4,0,.2,1); }
+  .set .go:hover { background: var(--canvas-soft-2); color: var(--ink); }
+  .set .go[aria-current="true"] { border-color: var(--ink); color: var(--ink); }
+  .set .go[aria-current="true"]:hover { background: none; }
+  .set .rm { position: absolute; right: -6px; top: -6px; display: none; height: 16px; width: 16px; align-items: center; justify-content: center; border-radius: 9999px; background: var(--ink); font-size: 9px; line-height: 1; color: var(--canvas); }
+  .set .it:hover .rm, .set .it:focus-within .rm { display: flex; }
+  .set .sep { margin: 0 6px; height: 24px; width: 1px; background: var(--hairline); }
+  .set .play { display: flex; height: 40px; width: 40px; align-items: center; justify-content: center; border-radius: 9999px; border: 1px solid var(--hairline); background: var(--canvas); color: var(--body); box-shadow: var(--shadow-card); transition: color .15s cubic-bezier(.4,0,.2,1), background-color .15s cubic-bezier(.4,0,.2,1); }
+  .set .play:hover { background: var(--canvas-soft-2); color: var(--ink); }
+  .set .play:disabled { opacity: 0.4; }
+
+  /* ── picker ── */
+  .picker { display: flex; flex-direction: column; gap: 16px; padding: 24px; }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  .tabs { display: flex; overflow: hidden; border-radius: 6px; border: 1px solid var(--hairline); }
+  .tabs button { height: 36px; padding: 0 12px; font-size: 13px; color: var(--body); transition: color .15s cubic-bezier(.4,0,.2,1), background-color .15s cubic-bezier(.4,0,.2,1); }
+  .tabs button:hover { background: var(--canvas-soft-2); color: var(--ink); }
+  .tabs button[aria-pressed="true"] { background: var(--ink); color: var(--canvas); }
+  .search { position: relative; min-width: 160px; flex: 1 1 0%; }
+  .search svg { pointer-events: none; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--mute); }
+  .search input { height: 36px; width: 100%; border-radius: 6px; border: 1px solid var(--hairline); background: var(--canvas); padding: 0 12px 0 32px; font-size: 14px; line-height: 20px; color: var(--ink); outline: none; }
+  .search input::placeholder { color: var(--mute); }
+  .search input:focus { border-color: var(--ink); }
+  .search input::-webkit-search-cancel-button { cursor: pointer; }
+  .icon-pane { display: grid; max-height: 320px; grid-template-columns: repeat(auto-fill, minmax(2.75rem, 1fr)); align-content: start; gap: 4px; overflow-y: auto; padding-right: 4px; scrollbar-width: thin; scrollbar-color: var(--hairline) transparent; }
+  .icon-pane button { display: flex; aspect-ratio: 1 / 1; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid transparent; color: var(--body); transition: color .15s cubic-bezier(.4,0,.2,1), background-color .15s cubic-bezier(.4,0,.2,1), border-color .15s cubic-bezier(.4,0,.2,1); }
+  .icon-pane button:hover { border-color: var(--hairline); color: var(--ink); }
+  .icon-pane button[aria-pressed="true"] { border-color: var(--hairline); background: var(--canvas-soft-2); color: var(--ink); }
+  .icon-pane button[hidden] { display: none; }
+  .empty { display: none; max-height: 320px; flex: 1 1 0%; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 48px 0; text-align: center; }
+  .empty p { font-size: 14px; line-height: 20px; color: var(--body); }
+  .empty button { font-size: 14px; line-height: 20px; color: var(--link); }
+  .empty button:hover { text-decoration: underline; }
+  .hint { font-size: 13px; color: var(--mute); }
+
+  /* ── config ── */
+  .config { display: flex; flex-wrap: wrap; align-items: center; column-gap: 32px; row-gap: 12px; border-top: 1px solid var(--hairline); background: var(--canvas-soft); padding: 16px 24px; }
+</style>
+</head>
+<body>
+<section class="studio" aria-label="Morph studio">
+  <div class="card">
+    <div class="cols">
+      <!-- Stage: the morph itself, over the page's single mesh gradient. -->
+      <div class="stage">
+        <div class="mesh" aria-hidden="true"></div>
+        <button type="button" class="big" id="big" aria-label="Morph to the next icon in your set" title="Morph to the next icon">
+          <svg viewBox="0 0 24 24" width="144" height="144" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" id="bigSvg"><path id="bigPath"/></svg>
+        </button>
+        <div class="readout" id="readout"><span class="m">pick icons to morph between them</span></div>
+        <!-- Scrubber: drive the active pair by hand, t from 0 to 1. -->
+        <div class="scrub-row">
+          <input type="range" min="0" max="1" step="0.001" value="1" disabled id="scrub" class="scrub" aria-label="Scrub the morph between the previous and current icon">
+          <span id="tval">t=1.00</span>
+        </div>
+        <!-- The set: tap to morph, x to drop. -->
+        <div class="set" id="set"></div>
+      </div>
+
+      <!-- Picker: library tabs, search, grid. -->
+      <div class="picker">
+        <div class="bar">
+          <div class="tabs" id="tabs">
+            <button type="button" data-v="all" aria-pressed="true">All</button>
+            <button type="button" data-v="lucide" aria-pressed="false">Lucide</button>
+            <button type="button" data-v="heroicons" aria-pressed="false">Heroicons</button>
+            <button type="button" data-v="tabler" aria-pressed="false">Tabler</button>
+          </div>
+          <div class="search">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path id="searchIcon"/></svg>
+            <input type="search" id="q" placeholder="Search icons" aria-label="Search icons">
+          </div>
+        </div>
+        <div class="icon-pane" id="grid"></div>
+        <div class="empty" id="empty">
+          <p id="emptyMsg"></p>
+          <button type="button" id="clear">Clear the search</button>
+        </div>
+        <p class="hint">Click an icon to add it to your set. Icons from different libraries morph into each other: they all share the 24×24 grid.</p>
+      </div>
+    </div>
+
+    <!-- Config: both knobs drive the stage — spring the morph, stroke the drawing. -->
+    <div class="config">
+      <div class="seg-wrap"><span class="seg-label">spring</span>
+        <div class="seg" id="springs">
+          <button type="button" data-v="smooth" aria-pressed="false">smooth</button>
+          <button type="button" data-v="snappy" aria-pressed="true">snappy</button>
+          <button type="button" data-v="bouncy" aria-pressed="false">bouncy</button>
+        </div>
+      </div>
+      <div class="seg-wrap"><span class="seg-label">stroke</span>
+        <div class="seg" id="strokes">
+          <button type="button" data-v="1" aria-pressed="false">1</button>
+          <button type="button" data-v="1.5" aria-pressed="false">1.5</button>
+          <button type="button" data-v="2" aria-pressed="true">2</button>
+          <button type="button" data-v="2.5" aria-pressed="false">2.5</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="_morph/morphicons.js"></script>
+<script src="_morph/icons.js"></script>
+<script>
+(() => {
+  const M = window.Morphicons, D = window.MorphIconData;
+  const $ = (id) => document.getElementById(id);
+  const SVGNS = "http://www.w3.org/2000/svg";
+
+  /* Icon registry: Lucide (live `lucide` data), Heroicons 24/outline and
+     Tabler outline — all on the 24×24 grid, which is why cross-library
+     morphs just work. Same 250 icons, same order as the source. */
+  const ICONS = [];
+  for (const lib of ["lucide", "heroicons", "tabler"])
+    for (const [label, data] of D[lib]) ICONS.push({ id: `${lib}:${label}`, label, lib, data });
+  const byId = new Map(ICONS.map((e) => [e.id, e]));
+
+  /* Canonical `d` per entry, quantized to 4 decimals (the source does this so
+     server and browser agree byte by byte; kept for identical geometry). */
+  const q4 = (d) => d.replace(/-?\d+\.\d+(?:e-?\d+)?/gi, (n) => String(Number(Number(n).toFixed(4))));
+  const dCache = new Map();
+  const dOf = (e) => { let d = dCache.get(e.id); if (!d) { d = typeof e.data === "string" ? e.data : q4(M.cubicsToPathD(M.iconToCubics(e.data))); dCache.set(e.id, d); } return d; };
+  const staticIcon = (e, size, sw = 2) => `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${dOf(e)}"/></svg>`;
+
+  const sampleCache = new Map();
+  const samplesOf = (e) => { let s = sampleCache.get(e.id); if (!s) { s = M.resampleIcon(e.data); sampleCache.set(e.id, s); } return s; };
+  const fmtDeg = (rad) => `${Math.round((rad * 180) / Math.PI)}°`;
+
+  /* The set the page loads with, autoplaying: simple strokes first, the
+     emergent rotations (arrows), then the closed shapes (heart → star). */
+  const DEFAULT_SEQ = ["lucide:x", "lucide:plus", "lucide:arrow-right", "lucide:arrow-down", "lucide:check", "lucide:chevron-down", "lucide:heart", "lucide:star"];
+
+  const st = { seq: DEFAULT_SEQ.slice(), curId: DEFAULT_SEQ[0], prevId: null, tab: "all", q: "", spring: "snappy", strokeWidth: 2, playing: true, t: 1 };
+  let scrubbing = false;
+
+  /* Stage: the vanilla driver directly — morphTo for taps and autoplay,
+     set + seek for the scrubber. */
+  const path = $("bigPath");
+  path.setAttribute("d", dOf(byId.get(st.curId)));
+  const morph = M.createMorph(path, byId.get(st.curId).data);
+
+  /* Pause/Play: itself a MorphIcon (16px, stroke 2, default spring). */
+  const LUCIDE = new Map(D.lucide);
+  const PAUSE = LUCIDE.get("pause"), PLAY = LUCIDE.get("play");
+
+  /* Similarity readout of the rest-to-rest plan for the pair: the math is
+     the product, so the page shows it. */
+  function renderReadout() {
+    const el = $("readout");
+    const { prevId, curId } = st;
+    if (!prevId || prevId === curId) { el.innerHTML = '<span class="m">pick icons to morph between them</span>'; return; }
+    const a = byId.get(prevId), b = byId.get(curId);
+    const plan = M.buildPlan(samplesOf(a), samplesOf(b));
+    const items = plan.items;
+    const maxRes = Math.max(...items.map((it) => it.res));
+    const maxTh = Math.max(...items.map((it) => Math.abs(it.theta)));
+    const shown = items.slice(0, 4);
+    const more = items.length > 4 ? ` +${items.length - 4}` : "";
+    let verdict;
+    if (maxRes < 0.03 && maxTh > 0.09) verdict = "pure rotation, emergent";
+    else if (maxRes < 0.03) verdict = "pure similarity";
+    else if (maxRes < 0.3) verdict = "rotation + residual";
+    else verdict = "coordinate morph, aligned frame";
+    if (a.data !== b.data && samplesOf(a).length !== samplesOf(b).length) verdict += " · cell division";
+    el.innerHTML = "";
+    for (const [cls, text] of [["b", `${a.label} → ${b.label}`], ["m", `θ [${shown.map((it) => fmtDeg(it.theta)).join(" ")}${more}]  res ${maxRes.toFixed(3)}`], ["m", verdict]]) {
+      const s = document.createElement("span"); s.className = cls; s.textContent = text; el.appendChild(s);
+    }
+  }
+
+  function renderScrub() {
+    const r = $("scrub");
+    r.disabled = !st.prevId;
+    if (Number(r.value) !== st.t) r.value = String(st.t);
+    $("tval").textContent = `t=${st.t.toFixed(2)}`;
+  }
+
+  let playMorph = null;
+  function renderSet() {
+    const box = $("set");
+    const entries = st.seq.map((id) => byId.get(id)).filter(Boolean);
+    const playBtn = box.querySelector(".play");
+    box.querySelectorAll(".it, .sep").forEach((n) => n.remove());
+    const frag = document.createDocumentFragment();
+    for (const e of entries) {
+      const it = document.createElement("span"); it.className = "it";
+      it.innerHTML = `<button type="button" class="go" aria-label="Morph to ${e.label}" aria-current="${e.id === st.curId}">${staticIcon(e, 18)}</button>` +
+        (st.seq.length > 1 ? `<button type="button" class="rm" aria-label="Remove ${e.label} from the set">×</button>` : "");
+      it.querySelector(".go").onclick = () => goTo(e.id);
+      const rm = it.querySelector(".rm"); if (rm) rm.onclick = () => remove(e.id);
+      frag.appendChild(it);
+    }
+    const sep = document.createElement("span"); sep.className = "sep"; sep.setAttribute("aria-hidden", "true"); frag.appendChild(sep);
+    if (playBtn) box.insertBefore(frag, playBtn); else box.appendChild(frag);
+    if (!playBtn) {
+      const b = document.createElement("button"); b.type = "button"; b.className = "play";
+      b.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path/></svg>';
+      b.onclick = () => { st.playing = !st.playing; update(); };
+      box.appendChild(b);
+      playMorph = M.createMorph(b.querySelector("path"), st.playing ? PAUSE : PLAY);
+    }
+    const b = box.querySelector(".play");
+    b.disabled = st.seq.length < 2;
+    b.setAttribute("aria-pressed", String(st.playing));
+    b.setAttribute("aria-label", st.playing ? "Pause the sequence" : "Play the sequence");
+    playMorph.morphTo(st.playing ? PAUSE : PLAY);
+  }
+
+  /* Picker grid: built once; the tab/search filter only hides tiles, and
+     "added" is aria-pressed. */
+  const grid = $("grid");
+  const tiles = new Map();
+  for (const e of ICONS) {
+    const b = document.createElement("button");
+    b.type = "button"; b.title = e.id; b.setAttribute("aria-label", `Add ${e.label} (${e.lib})`);
+    b.innerHTML = staticIcon(e, 20);
+    b.onclick = () => pick(e.id);
+    grid.appendChild(b); tiles.set(e.id, b);
+  }
+  $("searchIcon").setAttribute("d", dOf(byId.get("lucide:search")));
+
+  function renderPicker() {
+    const query = st.q.trim().toLowerCase();
+    let shown = 0;
+    for (const e of ICONS) {
+      const b = tiles.get(e.id);
+      const vis = (st.tab === "all" || e.lib === st.tab) && (!query || e.label.includes(query));
+      b.hidden = !vis; if (vis) shown++;
+      b.setAttribute("aria-pressed", String(st.seq.includes(e.id)));
+    }
+    grid.style.display = shown ? "" : "none";
+    $("empty").style.display = shown ? "none" : "flex";
+    $("emptyMsg").textContent = `Nothing matches “${st.q.trim()}”.`;
+    for (const b of $("tabs").children) b.setAttribute("aria-pressed", String(b.dataset.v === st.tab));
+  }
+
+  function renderConfig() {
+    for (const b of $("springs").children) b.setAttribute("aria-pressed", String(b.dataset.v === st.spring));
+    for (const b of $("strokes").children) b.setAttribute("aria-pressed", String(Number(b.dataset.v) === st.strokeWidth));
+    $("bigSvg").setAttribute("stroke-width", String(st.strokeWidth));
+  }
+
+  /* Autoplay: re-armed on every change of (playing, seq, curId, spring), so
+     it behaves as a 1300 ms delay chain — exactly the source's effect deps. */
+  let timer = 0, armKey = "";
+  function arm() {
+    const key = [st.playing, st.seq.join(","), st.curId, st.spring].join("|");
+    if (key === armKey) return;
+    armKey = key;
+    clearInterval(timer); timer = 0;
+    if (!st.playing || st.seq.length < 2) return;
+    timer = setInterval(() => {
+      const i = st.seq.indexOf(st.curId);
+      const next = byId.get(st.seq[(i + 1 + st.seq.length) % st.seq.length]);
+      if (!next) return;
+      st.prevId = st.curId; st.curId = next.id; st.t = 1; scrubbing = false;
+      morph.morphTo(next.data, st.spring);
+      update();
+    }, 1300);
+  }
+
+  function update() { renderReadout(); renderScrub(); renderSet(); renderPicker(); renderConfig(); arm(); }
+
+  function goTo(id) {
+    if (id === st.curId) return;
+    const e = byId.get(id); if (!e) return;
+    st.prevId = st.curId; st.curId = id; st.t = 1; scrubbing = false;
+    morph.morphTo(e.data, st.spring);
+    update();
+  }
+  function advance() {
+    if (st.seq.length < 2) return;
+    const i = st.seq.indexOf(st.curId);
+    goTo(st.seq[(i + 1 + st.seq.length) % st.seq.length]);
+  }
+  function pick(id) { if (!st.seq.includes(id)) st.seq = [...st.seq, id]; goTo(id); update(); }
+  function remove(id) {
+    if (st.seq.length <= 1) return;
+    const old = st.seq, next = old.filter((x) => x !== id);
+    st.seq = next;
+    if (id === st.curId) goTo(next[Math.min(old.indexOf(id), next.length - 1)]);
+    update();
+  }
+
+  /* Scrub: freeze the prev → cur pair at t. On the first input the driver is
+     re-based on prev; a later tap takes off from the frozen shape. */
+  $("scrub").addEventListener("input", (ev) => {
+    const v = Number(ev.target.value);
+    st.t = v;
+    if (st.prevId) {
+      const a = byId.get(st.prevId), b = byId.get(st.curId);
+      st.playing = false;
+      if (!scrubbing) { morph.set(a.data); scrubbing = true; }
+      morph.seek(b.data, v);
+    }
+    update();
+  });
+
+  $("big").onclick = () => advance();
+  $("tabs").onclick = (ev) => { const b = ev.target.closest("button"); if (b) { st.tab = b.dataset.v; update(); } };
+  $("q").addEventListener("input", (ev) => { st.q = ev.target.value; update(); });
+  $("clear").onclick = () => { st.q = ""; $("q").value = ""; update(); };
+  $("springs").onclick = (ev) => { const b = ev.target.closest("button"); if (b) { st.spring = b.dataset.v; update(); } };
+  $("strokes").onclick = (ev) => { const b = ev.target.closest("button"); if (b) { st.strokeWidth = Number(b.dataset.v); update(); } };
+
+  update();
+})();
+</script>
+</body>
+</html>

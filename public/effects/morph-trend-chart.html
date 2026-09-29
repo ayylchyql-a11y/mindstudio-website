@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Streaming chart · canvas adapter · morphicons</title>
+<link rel="stylesheet" href="_morph/base.css">
+<style>
+  body { padding: 24px; }
+  .card { max-width: 1152px; margin: 0 auto; }
+  .card > header p { max-width: 72ch; }
+  .top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px 0; }
+  .nudges { display: flex; align-items: center; gap: 6px; }
+  .reading { display: flex; align-items: center; gap: 10px; }
+  .reading .num { display: flex; min-width: 76px; flex-direction: column; align-items: flex-end; line-height: 1.15; }
+  #value { font-size: 20px; letter-spacing: -0.02em; color: var(--ink); }
+  #pct { font-size: 12px; color: var(--mute); }
+  #host { margin-top: 8px; padding: 0 8px; height: 260px; }
+  #host canvas { display: block; width: 100%; height: 260px; }
+  .foot { border-top: 1px solid var(--hairline); padding: 12px 20px; font-size: 13px; color: var(--mute); }
+</style>
+</head>
+<body>
+<section aria-label="Canvas adapter demo">
+  <article class="card">
+    <header>
+      <h3>A streaming chart · Canvas 2D</h3>
+      <p>The trend indicator is a morph riding the series: when it turns, the shape and the color turn with it, and icon, line and area share one accent driven by the data. Nudge the drift and watch the flip.</p>
+    </header>
+    <div>
+      <div class="top">
+        <div class="nudges">
+          <button type="button" class="btn" id="up">Nudge up</button>
+          <button type="button" class="btn" id="down">Nudge down</button>
+        </div>
+        <!-- min-width + right alignment: the number's width changes every
+             tick; without a reserved box the badge would shuffle sideways. -->
+        <div class="reading">
+          <canvas id="badge" aria-hidden="true"></canvas>
+          <span class="num"><span id="value" class="tnum">…</span><span id="pct" class="tnum"></span></span>
+        </div>
+      </div>
+      <div id="host"><canvas id="chart" role="img" aria-label="Streaming series with a morphing trend indicator"></canvas></div>
+      <p class="foot">simulated market · one sample every 110 ms · the icon only repaints when the sprite writes</p>
+    </div>
+  </article>
+</section>
+
+<script src="_morph/morphicons.js"></script>
+<script src="_morph/icons.js"></script>
+<script>
+(() => {
+  /* canvasTarget in a chart: the icon as a LIVE READING of a datum. When the
+     series turns, trending-up becomes trending-down with spring physics.
+     The icon lives on its own small canvas (a sprite), composited into the
+     badge with `onWrite` as the dirty signal: no write, no frame.
+     The source draws the series with TanStack Charts; here the same chart
+     (margins, domain padding, monotone-X curve, 0.12 area) is drawn with
+     plain Canvas 2D. Everything else is line-for-line the source. */
+  const M = window.Morphicons, X = window.MorphIconData.extra;
+  const $ = (id) => document.getElementById(id);
+
+  const WINDOW = 72, TICK_MS = 110, CHART_H = 260, BADGE_CSS = 30, SPRITE_PX = 60;
+  // Deadband for the trend over the last 16 samples: without it the icon
+  // would flicker on noise.
+  const TREND_N = 16, TREND_DEADBAND = 0.8;
+  const MARGIN = { top: 16, right: 16, bottom: 12, left: 56 };
+  const DARK_ACCENTS = { up: "#3fb950", down: "#f85149", flat: "#8b949e" };
+  const LIGHT_ACCENTS = { up: "#16a34a", down: "#dc2626", flat: "#737373" };
+
+  const mq = matchMedia("(prefers-color-scheme: dark)");
+  const st = { rows: [], seq: 0, level: 100, drift: 0.2, shown: null, tint: "", dark: mq.matches, badgeDirty: true };
+  mq.addEventListener("change", () => { st.dark = mq.matches; st.shown = null; });
+  const accents = () => (st.dark ? DARK_ACCENTS : LIGHT_ACCENTS);
+  const icons = { up: X.TrendingUp, down: X.TrendingDown, flat: X.Minus };
+
+  const trendOf = (data) => {
+    const take = Math.min(TREND_N, data.length), a = accents();
+    if (take < 2) return { icon: icons.flat, color: a.flat, pct: 0 };
+    const tail = data.slice(-take), from = tail[0].v;
+    const pct = ((tail[take - 1].v - from) / from) * 100;
+    if (pct > TREND_DEADBAND) return { icon: icons.up, color: a.up, pct };
+    if (pct < -TREND_DEADBAND) return { icon: icons.down, color: a.down, pct };
+    return { icon: icons.flat, color: a.flat, pct };
+  };
+  const nextRow = () => {
+    // Random walk with drift: the drift is what the nudge buttons push, and
+    // it decays on its own so the series goes back to wandering.
+    st.drift *= 0.985;
+    if (st.level < 40) st.drift = Math.abs(st.drift) + 0.1;
+    if (st.level > 170) st.drift = -Math.abs(st.drift) - 0.1;
+    st.level = Math.min(190, Math.max(20, st.level + st.drift + (Math.random() - 0.5) * 1.4));
+    st.seq += 1;
+    return { id: st.seq, t: st.seq, v: st.level };
+  };
+  st.rows = Array.from({ length: WINDOW }, nextRow);
+  st.tint = accents().flat;
+
+  /* The sprite: a dedicated 60px canvas the morph writes into, white strokes
+     (the shape lives in the alpha), padded viewBox so the spring's overshoot
+     has air. Tint lands at composite time. */
+  const spriteCanvas = document.createElement("canvas");
+  spriteCanvas.width = spriteCanvas.height = SPRITE_PX;
+  const spriteCtx = spriteCanvas.getContext("2d", { willReadFrequently: true });
+  let spriteDirty = true;
+  const PAD = 3;
+  const sprite = M.createMorph(M.canvasTarget(spriteCtx, {
+    viewBox: `${-PAD} ${-PAD} ${24 + PAD * 2} ${24 + PAD * 2}`, strokeWidth: 2.2, color: "#ffffff",
+    onWrite: () => { spriteDirty = true; st.badgeDirty = true; },
+  }), icons.flat);
+
+  const badge = $("badge"), badgeCtx = badge.getContext("2d");
+  const sizeBadge = () => {
+    const dpr = Math.min(devicePixelRatio || 1, 2), w = Math.round(BADGE_CSS * dpr);
+    if (badge.width !== w) { badge.width = badge.height = w; badge.style.width = badge.style.height = `${BADGE_CSS}px`; st.badgeDirty = true; }
+  };
+  const paintBadge = () => {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    badgeCtx.setTransform(1, 0, 0, 1, 0, 0); badgeCtx.clearRect(0, 0, badge.width, badge.height);
+    badgeCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    badgeCtx.drawImage(spriteCanvas, 0, 0, BADGE_CSS, BADGE_CSS);
+    badgeCtx.globalCompositeOperation = "source-atop"; badgeCtx.fillStyle = st.tint; badgeCtx.fillRect(0, 0, BADGE_CSS, BADGE_CSS);
+    badgeCtx.globalCompositeOperation = "source-over";
+  };
+  const compose = () => {
+    sizeBadge();
+    const was = spriteDirty; spriteDirty = false;
+    if (was || st.badgeDirty) { st.badgeDirty = false; paintBadge(); }
+    requestAnimationFrame(compose);
+  };
+  requestAnimationFrame(compose);
+
+  /* ── the chart: linear x over the window, y domain = data extent ± 18 %,
+     grid on y, a y axis with ticks, clip to the plot, monotone-X curve ── */
+  const chart = $("chart"), cx = chart.getContext("2d");
+  function tickStep(lo, hi, count) {
+    const step0 = (hi - lo) / count, power = Math.floor(Math.log10(step0)), error = step0 / 10 ** power;
+    const f = error >= Math.sqrt(50) ? 10 : error >= Math.sqrt(10) ? 5 : error >= Math.sqrt(2) ? 2 : 1;
+    return f * 10 ** power;
+  }
+  // d3-shape curveMonotoneX (Steffen), verbatim maths.
+  function monotone(ctx, pts, first) {
+    const sign = (x) => (x < 0 ? -1 : 1);
+    let x0 = NaN, y0 = NaN, x1 = NaN, y1 = NaN, t0 = NaN, n = 0;
+    const slope3 = (x2, y2) => { const h0 = x1 - x0, h1 = x2 - x1, s0 = (y1 - y0) / (h0 || (h1 < 0 && -0)), s1 = (y2 - y1) / (h1 || (h0 < 0 && -0)), p = (s0 * h1 + s1 * h0) / (h0 + h1); return (sign(s0) + sign(s1)) * Math.min(Math.abs(s0), Math.abs(s1), 0.5 * Math.abs(p)) || 0; };
+    const slope2 = (t) => { const h = x1 - x0; return h ? (3 * (y1 - y0) / h - t) / 2 : t; };
+    const seg = (a, b) => { const dx = (x1 - x0) / 3; ctx.bezierCurveTo(x0 + dx, y0 + dx * a, x1 - dx, y1 - dx * b, x1, y1); };
+    for (const [x, y] of pts) {
+      let t1 = NaN;
+      if (n === 0) { n = 1; first === "move" ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+      else if (n === 1) n = 2;
+      else if (n === 2) { n = 3; t1 = slope3(x, y); seg(slope2(t1), t1); }
+      else { t1 = slope3(x, y); seg(t0, t1); }
+      x0 = x1; x1 = x; y0 = y1; y1 = y; t0 = t1;
+    }
+    if (n === 2) ctx.lineTo(x1, y1); else if (n === 3) seg(t0, slope2(t0));
+  }
+  function draw() {
+    const dpr = Math.min(devicePixelRatio || 1, 2), W = chart.clientWidth, H = CHART_H;
+    if (chart.width !== Math.round(W * dpr)) { chart.width = Math.round(W * dpr); chart.height = Math.round(H * dpr); }
+    cx.setTransform(dpr, 0, 0, dpr, 0, 0); cx.clearRect(0, 0, W, H);
+    const data = st.rows, pl = MARGIN.left, pr = W - MARGIN.right, pt = MARGIN.top, pb = H - MARGIN.bottom;
+    let lo = Infinity, hi = -Infinity; for (const r of data) { if (r.v < lo) lo = r.v; if (r.v > hi) hi = r.v; }
+    const pad = (hi - lo) * 0.18 || 1; lo -= pad; hi += pad;
+    const t0 = data[0].t, t1 = data[data.length - 1].t;
+    const sx = (t) => pl + ((t - t0) / (t1 - t0)) * (pr - pl), sy = (v) => pb - ((v - lo) / (hi - lo)) * (pb - pt);
+    const dark = st.dark;
+    // grid + ticks
+    const step = tickStep(lo, hi, 5), dec = Math.max(0, -Math.floor(Math.log10(step)));
+    cx.font = `11px Geist, ui-sans-serif, system-ui, sans-serif`; cx.textAlign = "right"; cx.textBaseline = "middle";
+    for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) {
+      const y = Math.round(sy(v)) + 0.5;
+      cx.strokeStyle = dark ? "#2a2a2a" : "#e6e6e6"; cx.lineWidth = 1; cx.beginPath(); cx.moveTo(pl, y); cx.lineTo(pr, y); cx.stroke();
+      cx.strokeStyle = dark ? "#4a4a4a" : "#bebebe"; cx.beginPath(); cx.moveTo(pl - 4, y); cx.lineTo(pl, y); cx.stroke();
+      cx.fillStyle = dark ? "#9a9a9a" : "#666666"; cx.fillText(v.toFixed(dec), pl - 8, y);
+    }
+    cx.strokeStyle = dark ? "#4a4a4a" : "#bebebe"; cx.lineWidth = 1; cx.beginPath(); cx.moveTo(pl + 0.5, pt); cx.lineTo(pl + 0.5, pb); cx.stroke();
+    // area + line, clipped to the plot
+    cx.save(); cx.beginPath(); cx.rect(pl, pt, pr - pl, pb - pt); cx.clip();
+    const pts = data.map((r) => [sx(r.t), sy(r.v)]);
+    cx.beginPath(); monotone(cx, pts, "move"); cx.lineTo(pts[pts.length - 1][0], pb + 1); cx.lineTo(pts[0][0], pb + 1); cx.closePath();
+    cx.globalAlpha = 0.12; cx.fillStyle = st.tint; cx.fill(); cx.globalAlpha = 1;
+    cx.beginPath(); monotone(cx, pts, "move"); cx.strokeStyle = st.tint; cx.lineWidth = 2; cx.lineJoin = "round"; cx.stroke();
+    cx.restore();
+  }
+
+  function tick() {
+    st.rows = [...st.rows.slice(-(WINDOW - 1)), nextRow()];
+    const { icon, color, pct } = trendOf(st.rows);
+    if (icon !== st.shown) {
+      st.shown = icon;
+      // smooth (no overshoot): the icon rides a gliding series, and a bounce
+      // here would read as a snag.
+      sprite.morphTo(icon, "smooth");
+      st.tint = color; st.badgeDirty = true;
+    }
+    draw();
+    $("value").textContent = st.rows[st.rows.length - 1].v.toFixed(1);
+    $("pct").textContent = `${pct >= 0 ? "+" : ""}${pct.toFixed(2)}%`;
+    $("pct").style.color = color;
+  }
+  setInterval(tick, TICK_MS);
+  tick();
+  addEventListener("resize", draw);
+  $("up").onclick = () => { st.drift = 0.55; };
+  $("down").onclick = () => { st.drift = -0.55; };
+})();
+</script>
+</body>
+</html>

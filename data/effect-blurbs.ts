@@ -11,6 +11,17 @@
  * 每条一段，80 词上下；缺了哪条构建直接红（blurbOf 会抛）。
  */
 const blurbs: Record<string, string> = {
+  // ── icon morphing (morphicons.com, MIT) ──
+  "morph-studio":
+    "A playground where any line icon turns smoothly into any other — a menu into a close button, an arrow into a check, a heart into a star — across three popular icon sets, with the numbers behind each transition shown on screen. The motion engine behind icons that change instead of blinking: toggles, confirmations, state changes. Rebuilt from morphicons.com.",
+  "morph-showcase":
+    "The six icon changes people meet most in real apps — copy confirmed, password shown, dark mode on, play and mute, a field turning valid, a folder opening — each done as one icon reshaping itself rather than one image replacing another. Small, but it is the difference between an interface that flickers and one that answers. Rebuilt from morphicons.com.",
+  "morph-mask":
+    "An icon that is just a shape cut out of a coloured surface, morphing from one symbol to the next while the colour — here a gradient — stays perfectly still. For icon sets delivered as CSS masks and for brands that want their colour to show through the icon. Rebuilt from morphicons.com.",
+  "morph-trend-chart":
+    "A live price chart whose trend indicator bends from flat to rising to falling as the data turns, changing colour with the line. A small touch that makes a dashboard feel like it is reading the numbers for you — for trading, analytics and monitoring screens. Rebuilt from morphicons.com.",
+  "morph-map-pins":
+    "A map where each pin changes shape as it changes meaning: dropped, located, ready to save, saved — with a ripple across the whole map when you save. For store finders, delivery zones, travel planners and any map where people mark places. Rebuilt from morphicons.com on OpenStreetMap data.",
   // ── border-effects ──
   "iridescent-sweep-border":
     "A single band of rainbow light runs around the edge of a card, over and over, leaving a plain hairline behind it. It is the outline you see on AI products, crypto dashboards and premium upgrade panels — the cheapest way to say 'this one is special' without adding a badge or changing the layout. Because the whole thing is one gradient and one rotating angle, it costs nothing to run and works on any card, button or modal you already have.",

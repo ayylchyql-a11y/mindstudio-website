@@ -15,7 +15,7 @@ import { OPEN_SLUGS } from "@/lib/lab-open";
  *    在这里再抄一份 = 两处真相，改了 demo 忘了改展示，页面上给的代码就是错的。
  */
 
-export type CategoryId = "web-effects" | "border-effects" | "chart-widgets" | "widgets" | "dashboard" | "creative" | "mobile-ui";
+export type CategoryId = "web-effects" | "border-effects" | "icon-morph" | "chart-widgets" | "widgets" | "dashboard" | "creative" | "mobile-ui";
 
 export interface Category {
   id: CategoryId;
@@ -65,6 +65,24 @@ export const categories: Category[] = [
       it: "Cinque modi per far muovere il bordo di un pannello: un arco iridescente che corre lungo il perimetro, un contorno che respira fino a sparire, particelle che tracciano il percorso e si dissolvono, nubi gassose attaccate alla cornice e quattro nodi neon in orbita.",
     },
     accent: "#22d3c5",
+  },
+  {
+    id: "icon-morph",
+    title: {
+      en: "Icon morphing",
+      zh: "图标变形",
+      "zh-tw": "圖標變形",
+      ja: "アイコンモーフィング",
+      ko: "아이콘 모핑",
+      it: "Morphing di icone",
+    },
+    intro: {
+      en: "One stroke icon turning into any other — menu into x, sun into moon, copy into check — without anyone drawing the in-between. Rebuilt 1:1 from morphicons.com: the studio that morphs 250 icons across Lucide, Heroicons and Tabler with the maths on screen, the six swaps real apps repeat most, an icon that lives inside a CSS mask, a trend badge riding a live chart, and map pins that change shape as they change state.",
+      zh: "一个线条图标变成任意另一个——菜单变叉、太阳变月亮、复制变对勾——中间的过渡没有人手画。1:1 复刻 morphicons.com：在 Lucide、Heroicons、Tabler 三套 250 个图标之间任意变形并把算法读数摆在台面上的工作台、真实 App 里最常见的六种图标切换、活在 CSS 遮罩里的图标、跟着实时行情转向的趋势徽标，以及随状态变形的地图图钉。",
+      "zh-tw": "一個線條圖標變成任意另一個——選單變叉、太陽變月亮、複製變勾——中間的過渡沒有人手畫。1:1 復刻 morphicons.com：在 Lucide、Heroicons、Tabler 三套 250 個圖標之間任意變形並把演算法讀數擺上檯面的工作台、真實 App 裡最常見的六種圖標切換、活在 CSS 遮罩裡的圖標、跟著即時行情轉向的趨勢徽標，以及隨狀態變形的地圖圖釘。",
+      it: "Un'icona a tratto che diventa qualunque altra — menu in x, sole in luna, copia in spunta — senza che nessuno disegni il passaggio. Ricostruito 1:1 da morphicons.com: lo studio con 250 icone di Lucide, Heroicons e Tabler e la matematica in vista, i sei scambi più comuni nelle app reali, un'icona dentro una maschera CSS, un badge di tendenza su un grafico dal vivo e segnaposto su una mappa che cambiano forma con lo stato.",
+    },
+    accent: "#7928ca",
   },
   {
     id: "chart-widgets",
@@ -150,6 +168,12 @@ export interface Effect {
   /** demo iframe 的高度(px)。样板自身不该出现滚动条，超了就调这里。 */
   height: number;
   /**
+   * 分类页卡片里录屏的高度（缺省 = height）。给了就从视频**顶部**裁：
+   * 画框 1000+ 高的样板（morph-studio / morph-showcase）不该在分类页撑出一张 1240 高的卡片；
+   * 按 710 宽录的样板，给 height × 0.707（分类页卡片 502 宽）宽高比就对上，cover 不再裁掉左右。
+   */
+  previewHeight?: number;
+  /**
    * 这条效果**要人做什么它才动**。总览页的轮播预览靠它决定顺序和提示：
    * `self` 一加载就自己演（自演的排最前，落地时卡片是活的）；
    * `hover` / `scroll` 在小预览里是静止画面 —— 底栏标出来，
@@ -191,6 +215,186 @@ export interface Effect {
 }
 
 export const effects: Effect[] = [
+  {
+    slug: "morph-studio",
+    category: "icon-morph",
+    date: "2026-09-29",
+    plays: "self",
+    title: { en: "Icon morph · Studio", zh: "图标变形 · 工作台", "zh-tw": "圖標變形 · 工作台" },
+    gist: {
+      en: "Any stroke icon becomes any other. Pick icons from Lucide, Heroicons and Tabler into a set and they morph in sequence, with the maths under the stage: the rotation it found, how far the two shapes are from congruent, and what kind of morph that makes. Scrub it frame by frame.",
+      zh: "任意线条图标变成任意另一个。从 Lucide、Heroicons、Tabler 三套里挑图标组成一组，按顺序自动变形；舞台下面直接显示算法找到的旋转角、两个形状离全等差多远、属于哪种变形，还能拖进度条逐帧看。",
+      "zh-tw": "任意線條圖標變成任意另一個。從 Lucide、Heroicons、Tabler 三套裡挑圖標組成一組，按順序自動變形；舞台下面直接顯示演算法找到的旋轉角、兩個形狀離全等差多遠、屬於哪種變形，還能拖進度條逐幀看。",
+    },
+    height: 1012,
+    previewHeight: 700,
+    accent: "#7928ca",
+    anatomy: [
+      "<b>Every icon becomes the same kind of data.</b> Paths, circles, rects, lines and polylines are lowered to cubic Béziers, and each subpath is resampled to 64 points equidistant by arc length (4-point Gauss–Legendre for length, Newton steps to invert it). Corners — tangent breaks sharper than π/8 — are pinned as exact samples, which is why corners are still sharp when a morph lands.",
+      "<b>Subpaths are paired before anything moves.</b> A cost matrix of centroid distance + 0.35 × length difference is solved exhaustively (up to 8! permutations). When the two icons have different stroke counts, one side is surjected onto the other so a stroke can split in two — the readout calls that <i>cell division</i>.",
+      "<b>Rotation is solved, not declared.</b> For each pair the optimal similarity comes from 2D Procrustes in closed form: <code>θ = atan2(Sxy − Syx, Sxx + Syy)</code>, σ from the zero derivative. Both walking directions and every circular start of a closed loop are tried, scored by residual + 0.05·|θ|/π. If the whole icon is congruent (global residual < 0.005) every subpath shares one rotation — × to + turns 45°, → to ↓ turns 90°, and nobody wrote that down anywhere.",
+      "<b>Interpolate in the aligned frame.</b> Each frame is: centroid lerp, then rotation θ·t and scale exp(ln σ·t) applied to the lerp between the start shape and the target un-rotated into the start's frame. A rotation therefore sweeps an arc instead of collapsing through the middle.",
+      "<b>Springs, interruptible.</b> smooth k 170 c 26 (ζ 1.0), snappy k 420 c 30 (ζ 0.73), bouncy k 300 c 14 (ζ 0.4), integrated in 240 Hz substeps on one shared requestAnimationFrame for every icon on the page. Retargeting mid-flight re-plans from the shape on screen and keeps the velocity (clamped to ±14). At rest the path snaps back to the icon's real cubics.",
+      "The studio around it: the set autoplays on a 1300 ms chain (the timer re-arms on every change, so a tap resets the beat); the scrubber freezes the previous → current pair and seeks t by hand; the grid holds 250 icons on the shared 24×24 grid; the readout is computed from the rest-to-rest plan — θ of the first four pairs, the worst residual, and a verdict (pure rotation below 0.03 residual with |θ| > 0.09 rad, rotation + residual below 0.3, coordinate morph above).",
+      "The engine here is morphicons 1.7.0 itself (MIT), bundled unmodified, which is why every readout matches the source to the last digit — arrow-down → check reads θ [62° −23°] res 0.337 on both.",
+    ],
+    tokens: [
+      { label: "Samples", value: "64 points per subpath · corners sharper than π/8 pinned" },
+      { label: "Pairing", value: "cost = centroid distance + 0.35 × |ΔL| · exhaustive up to 8" },
+      { label: "Rotation", value: "θ = atan2(Sxy − Syx, Sxx + Syy) · tie-break 0.05·|θ|/π · global < 0.005" },
+      { label: "Springs", value: "smooth 170/26 · snappy 420/30 · bouncy 300/14 · 240 Hz substeps" },
+      { label: "Autoplay", value: "1300 ms chain · re-armed on every change" },
+      { label: "Mesh", value: "5 radial gradients · blur(36px) · inset 40px · 0.6 in dark" },
+      { label: "Palette", value: "#fafafa ground · #171717 ink · #4d4d4d body · #888 mute · #ebebeb hairline · Geist / Geist Mono" },
+    ],
+    prompt:
+      "Build a single HTML 'morph studio' that morphs any stroke icon into any other using the MIT library morphicons (createMorph from morphicons/dom, buildPlan and resampleIcon from morphicons). Layout: one card (radius 12px, 1px #ebebeb border, white, shadow 0 2px 2px rgb(0 0 0/.04), 0 8px 16px -4px rgb(0 0 0/.04)) on #fafafa, Geist font. At ≥1024px two columns 2fr / 3fr, stacked below. Left 'stage' (padding 32px, gap 24px, centred): a static mesh behind everything (position absolute, inset 40px, five radial gradients — rgb(0 124 240/.5) at 22% 28%, rgb(0 223 216/.4) at 78% 24%, rgb(121 40 202/.38) at 30% 78%, rgb(255 0 128/.32) at 76% 74%, rgb(249 203 40/.25) at 52% 50% — filter blur(36px)); a 144px SVG (viewBox 0 0 24 24, round caps and joins) whose single <path> is driven by createMorph and advances to the next icon on click (active scale .97); a 11px Geist Mono readout of the previous → current pair computed from buildPlan: 'a → b', 'θ [first four item thetas in degrees]  res maxResidual.toFixed(3)', and a verdict (maxRes < 0.03 and max|θ| > 0.09 → 'pure rotation, emergent'; maxRes < 0.03 → 'pure similarity'; < 0.3 → 'rotation + residual'; else 'coordinate morph, aligned frame'; append ' · cell division' when the subpath counts differ); a 288px range input 0–1 step .001 (4px hairline track, 14px ink thumb with a 2px white ring) that on first input calls set(previous) then seek(current, t) and pauses autoplay; and the set as 40px rounded-8 tiles (current one with an ink border, a 16px ink × badge on hover removes it) plus a round play/pause button whose own icon morphs. Autoplay the set every 1300 ms, re-arming the timer whenever the current icon, the set, the spring or play state changes. Right 'picker' (padding 24px, gap 16px): segmented All / Lucide / Heroicons / Tabler (h 36, active ink), a search input with a 15px search icon, and a grid repeat(auto-fill, minmax(44px,1fr)) gap 4px max-height 320px of 20px static icons (canonical d from cubicsToPathD(iconToCubics(data)), numbers rounded to 4 decimals) — click adds the icon to the set and morphs to it; icons already in the set get a hairline border and #f5f5f5 fill. Empty search shows 'Nothing matches “q”.' and a blue 'Clear the search'. Bottom bar (#fafafa, border-top, padding 16px 24px): 'spring' smooth / snappy / bouncy and 'stroke' 1 / 1.5 / 2 / 2.5 segmented controls (h 28, 13px) that drive the stage. Default set: lucide x, plus, arrow-right, arrow-down, check, chevron-down, heart, star.",
+    caveats: [
+      "Stroke icons only. Filled glyphs (Material Symbols, Font Awesome solid) have no centreline to resample, so the library rejects them up front rather than morphing outlines badly.",
+      "Above 8 subpaths per side the pairing falls back to greedy matching with repair, and above 1e5 surjections to greedy assignment: dense icons (a cog into a sparkle) still morph, but the pairing is no longer provably the cheapest.",
+    ],
+    source: { label: "morphicons.com · Guillermo (guillermolg00) · library and site MIT", url: "https://www.morphicons.com" },
+  },
+  {
+    slug: "morph-showcase",
+    category: "icon-morph",
+    date: "2026-09-29",
+    plays: "click",
+    title: { en: "Icon morph · Six everyday swaps", zh: "图标变形 · 六个日常图标切换", "zh-tw": "圖標變形 · 六個日常圖標切換" },
+    gist: {
+      en: "Copy settling into Check, Eye into EyeOff, Sun into Moon, Play into Pause with Mute beside it, a validation mark that flips between check and x, folders that morph open: the six icon swaps real apps repeat most, each done in one slot instead of two stacked icons. Switch library, spring or stroke and every preview follows.",
+      zh: "复制变对勾、睁眼变闭眼、太阳变月亮、播放变暂停外加静音、跟着输入在 ✓ 和 ✗ 之间翻的校验标记、会变形打开的文件夹——真实 App 里重复最多的六种图标切换，每个都在同一个位置变形，不是两个图标叠着换。切图标库、弹簧或线宽，所有预览一起跟着变。",
+      "zh-tw": "複製變勾、睜眼變閉眼、太陽變月亮、播放變暫停外加靜音、跟著輸入在 ✓ 和 ✗ 之間翻的校驗標記、會變形打開的資料夾——真實 App 裡重複最多的六種圖標切換，每個都在同一個位置變形，不是兩個圖標疊著換。切圖標庫、彈簧或線寬，所有預覽一起跟著變。",
+    },
+    height: 1240,
+    previewHeight: 700,
+    accent: "#0070f3",
+    anatomy: [
+      "<b>The six are chosen by frequency, not taste.</b> The source counted icon swaps across real shadcn/ui apps: copy 53, eye 41, sun/moon 27, play/pause 21, check/x 8, folder 6. Chevron pairs were left out on purpose — most sightings are separate prev/next buttons, not one morphing slot.",
+      "<b>One slot, one path.</b> Every control holds a single <code>&lt;svg&gt;&lt;path&gt;</code> driven by the morph driver; the state flip calls <code>morphTo(nextIcon)</code>. No second SVG fading in, no CSS swap, and a double click mid-flight re-plans from the shape on screen instead of restarting.",
+      "<b>Library switching morphs everything.</b> Icons are fed as the quantized canonical <code>d</code> of the chosen library (Lucide, Heroicons 24/outline or Tabler outline) — all on the 24×24 grid — so changing the library morphs every preview to its counterpart. A label missing from a library falls back to Lucide.",
+      "The validation mark stays mounted with <code>opacity: 0</code> while the field is empty, so valid ↔ invalid is always a morph, never a remount. The file tree's disclosure chevron is plain CSS (<code>rotate(90deg)</code>, 150 ms) — only the folder morphs.",
+      "Each card's code button generates the same component for React, Vue or Svelte with the chosen library, spring and stroke (Lucide imports icon data from <code>lucide</code>; Heroicons and Tabler ship as raw <code>d</code> strings) and confirms with its own Copy → Check morph, reverting after 1600 ms.",
+    ],
+    tokens: [
+      { label: "Icon sizes", value: "copy 18 · eye 18 · theme 20 · play/mute 17 · validation 18 · folder 18 · card button 13" },
+      { label: "Springs", value: "previews follow the sidebar (default snappy 420/30) · card button always snappy" },
+      { label: "Copied", value: "Copy → Check, back after 1600 ms" },
+      { label: "Validation", value: "/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/ · hidden (opacity 0) while empty" },
+      { label: "Layout", value: "sidebar 240px sticky · cards 2-up · card body padding 48 / 24" },
+    ],
+    prompt:
+      "Build a single HTML showcase of six icon swaps with the MIT library morphicons (createMorph from morphicons/dom), Geist font, #fafafa page. Left sidebar card (240px, sticky at ≥1024px; 2 columns of controls on tablet): full-width segmented controls with 11px uppercase mono labels — Library (Lucide / Heroicons / Tabler), Framework (React / Vue / Svelte with their logos), Spring (smooth / snappy / bouncy), Stroke (1 / 1.5 / 2 / 2.5) — and a 13px note. Right: a 2-column grid of six cards (radius 12, hairline border, header 16px 20px with a 14px title, a 13px grey description and an 'React' copy button whose 13px icon morphs Copy → Check and back after 1600 ms; body centred, padding 48px 24px). Cards: 1) 'npm i morphicons' mono pill (h 44) with a ghost 32px button morphing copy → check for 1600 ms; 2) a password input (h 40) with a trailing 32px button morphing eye ↔ eye-off and toggling the input type; 3) a 44px square theme button morphing sun ↔ moon (20px icon); 4) a small player card (filename + 3:42 in 11px mono, a 4px progress bar at 1/3, an ink 36px button morphing play ↔ pause, a ghost button morphing volume ↔ volume-x); 5) an email input whose trailing 18px icon is check when /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/ matches and x otherwise, kept mounted with opacity 0 while empty; 6) a file tree with 'components' (open: button.tsx, input.tsx, toggle.tsx) and 'lib' rows — an 8×10 chevron rotating 90° in CSS and an 18px folder ↔ folder-open morph. Feed icons as the canonical d of the selected library so switching library morphs all previews; apply the sidebar spring and stroke to every preview.",
+    caveats: [
+      "Tabler has no plain folder icon: the file-tree preview falls back to Lucide's, and — exactly as on the source — copying that card with Tabler selected produces nothing.",
+      "Inside the library's sandboxed frame the async clipboard is refused; the copy buttons fall back to execCommand and show the check either way. In a normal page the source only confirms when the write succeeds.",
+    ],
+    source: { label: "morphicons.com · Guillermo (guillermolg00) · library and site MIT", url: "https://www.morphicons.com" },
+  },
+  {
+    slug: "morph-mask",
+    category: "icon-morph",
+    date: "2026-09-29",
+    plays: "self",
+    title: { en: "Icon morph · Through a CSS mask", zh: "图标变形 · CSS 遮罩里的形状", "zh-tw": "圖標變形 · CSS 遮罩裡的形狀" },
+    gist: {
+      en: "The icon is not an SVG at all but a plain span painted with a gradient, and its shape is a mask that morphs from menu to x to sun, moon, heart and star. The colour never moves; only the hole it shows through does. The way icon sets delivered as CSS masks can animate without being rebuilt as inline SVG.",
+      zh: "这个图标根本不是 SVG，而是一个刷了渐变色的普通 span，它的形状是一层遮罩，在菜单、叉、太阳、月亮、爱心、星星之间变形。颜色从头到尾没动，动的只是让颜色透出来的那个洞。用 CSS 遮罩交付的图标库不用改成内联 SVG 也能这样动起来。",
+      "zh-tw": "這個圖標根本不是 SVG，而是一個刷了漸層色的普通 span，它的形狀是一層遮罩，在選單、叉、太陽、月亮、愛心、星星之間變形。顏色從頭到尾沒動，動的只是讓顏色透出來的那個洞。用 CSS 遮罩交付的圖標庫不用改成內嵌 SVG 也能這樣動起來。",
+    },
+    height: 440,
+    previewHeight: 312,
+    accent: "#00dfd8",
+    anatomy: [
+      "<b>Start from markup, like an Iconify pipeline.</b> Each Lucide icon is serialized to the SVG string an icon pipeline would ship, and <code>svgToIcon</code> parses it back into morphable data — once, at load, so the plan cache and the no-op guard (both keyed by identity) keep working.",
+      "<b>A referenced mask, double-buffered.</b> <code>maskTarget(span)</code> appends a hidden inline SVG with a pair of <code>&lt;mask&gt;&lt;path&gt;</code> buffers and points the span's <code>mask-image</code> at them; each frame writes the next buffer and flips the reference. Flipping is what keeps Safari repainting, and a referenced mask avoids the trap of a data-URI per frame, which Chromium decodes asynchronously and therefore shows as blank for the whole flight.",
+      "<b>Paint is somebody else's job.</b> With <code>paint: false</code> the element keeps its own background — here a 135° gradient #007cf0 → #00dfd8 → #7928ca → #ff0080, or currentColor — and the morph only ever rewrites geometry.",
+      "A quiet auto-cycle (2600 ms, snappy) sells the motion until the first manual pick, which hands the wheel over for good.",
+    ],
+    tokens: [
+      { label: "Shapes", value: "menu · x · sun · moon · heart · star (Lucide)" },
+      { label: "Element", value: "160 × 160 span (144 on mobile)" },
+      { label: "Gradient", value: "linear-gradient(135deg, #007cf0 0%, #00dfd8 40%, #7928ca 70%, #ff0080 100%)" },
+      { label: "Cycle", value: "2600 ms until the first pick · snappy" },
+    ],
+    prompt:
+      "Build a single HTML demo of a morphing CSS-mask icon with the MIT library morphicons (createMorph from morphicons/dom; maskTarget and svgToIcon from morphicons/adapters). A card titled 'One element, no path in the DOM' with a two-column body: left a #fafafa stage with a 160×160 <span> painted either with linear-gradient(135deg, #007cf0 0%, #00dfd8 40%, #7928ca 70%, #ff0080 100%) or background-color: currentColor; right a 340px control column with 11px uppercase mono labels: SHAPE chips (menu, x, sun, moon, heart, star — h 32, mono 12px, active ink) and an ELEMENT PAINT segmented control (Gradient / currentColor) plus a 13px grey note. Serialize each Lucide icon node to an SVG string, parse it once with svgToIcon, create the target with maskTarget(span, { paint: false }) and the morph with createMorph(target, shapes[0]); morphTo(shape, 'snappy') on pick. Auto-advance every 2600 ms until the first manual pick.",
+    caveats: [
+      "Every frame re-rasterizes the mask on the main thread — budget it like a hover effect (toggles, navigation, empty states). For icon-dense views inline SVG stays leaner.",
+      "Client-only by nature, and fill-drawn sets (Material Symbols) are rejected up front.",
+    ],
+    source: { label: "morphicons.com · Guillermo (guillermolg00) · library and site MIT", url: "https://www.morphicons.com" },
+  },
+  {
+    slug: "morph-trend-chart",
+    category: "icon-morph",
+    date: "2026-09-29",
+    plays: "self",
+    title: { en: "Icon morph · Trend badge on a live chart", zh: "图标变形 · 实时行情里的趋势徽标", "zh-tw": "圖標變形 · 即時行情裡的趨勢徽標" },
+    gist: {
+      en: "A price streams in nine times a second, and the trend badge beside it is not swapped but morphed: flat into rising into falling, turning green or red with the line and the area under it. Nudge the market up or down and watch the arrow bend over. The icon reads as part of the data rather than an image changing.",
+      zh: "价格每秒刷新九次，旁边的趋势徽标不是换图而是变形：持平→上涨→下跌，颜色跟曲线、曲线下面积一起变绿或变红。点「推高」「压低」，看箭头自己拐过去。图标读起来像数据的一部分，而不是一张图被换掉。",
+      "zh-tw": "價格每秒刷新九次，旁邊的趨勢徽標不是換圖而是變形：持平→上漲→下跌，顏色跟曲線、曲線下面積一起變綠或變紅。點「推高」「壓低」，看箭頭自己拐過去。圖標讀起來像資料的一部分，而不是一張圖被換掉。",
+    },
+    height: 510,
+    previewHeight: 360,
+    accent: "#16a34a",
+    anatomy: [
+      "<b>The icon is a sprite, not a node in the chart.</b> It morphs on its own 60 px canvas through <code>canvasTarget</code> (white strokes, a viewBox padded by 3 so the spring's overshoot is not clipped), and the badge composites it into a 30 px canvas with <code>source-atop</code> tint. <code>onWrite</code> is the dirty flag: no write, no repaint.",
+      "<b>Colour lives at composite time.</b> canvasTarget fixes the stroke colour at creation, so the shape stays white and the data's accent (#16a34a up, #dc2626 down, #737373 flat) is applied where it can change — the same accent drives the line and the 12 % area.",
+      "<b>A deadband so noise does not flicker the icon.</b> Trend = change over the last 16 samples; beyond ±0.8 % it is up or down, inside it is flat. The morph is <i>smooth</i> (critically damped): a bounce on a gliding series would read as a snag.",
+      "The data is a random walk with drift (±0.7 noise, drift ×0.985 per tick, walls at 40 and 170); the nudge buttons set the drift to ±0.55. One sample every 110 ms over a 72-sample window; y domain = data extent ± 18 %, monotone-X curve, margins 16 / 16 / 12 / 56. The source draws the series with TanStack Charts; here it is plain Canvas 2D with the same parameters.",
+    ],
+    tokens: [
+      { label: "Stream", value: "1 sample / 110 ms · window 72 · trend over 16 · deadband ±0.8 %" },
+      { label: "Accents", value: "up #16a34a · down #dc2626 · flat #737373 (dark #3fb950 / #f85149 / #8b949e)" },
+      { label: "Badge", value: "30 CSS px · sprite 60 px · stroke 2.2 · pad 3 · smooth spring" },
+      { label: "Chart", value: "height 260 · margins 16/16/12/56 · line 2px · area 0.12 · y ± 18 %" },
+    ],
+    prompt:
+      "Build a single HTML streaming chart with a morphing trend badge using the MIT library morphicons (createMorph from morphicons/dom, canvasTarget from morphicons/adapters) and Lucide's trending-up, trending-down and minus icon data. Card header 'A streaming chart', then a row with 'Nudge up' / 'Nudge down' buttons (h 32, hairline) and on the right a 30px badge canvas next to the latest value (20px, tabular, tracking -0.02em) and the % change (12px, coloured). Every 110 ms append a random-walk sample (level += drift + (random − .5)·1.4, drift ×= 0.985, bounce off 40 and 170; nudges set drift ±0.55) to a 72-sample window, and redraw a 260px canvas chart: y domain = extent ± 18 %, gridlines #e6e6e6 at nice ticks, a y axis with 4px ticks and 11px labels, a 2px monotone-X line and a 0.12-opacity area in the trend colour, clipped to the plot (margins 16 16 12 56). Trend over the last 16 samples: > +0.8 % up #16a34a, < −0.8 % down #dc2626, else flat #737373. The icon morphs on a dedicated 60px canvas via canvasTarget({ viewBox: '-3 -3 30 30', strokeWidth: 2.2, color: '#fff', onWrite: markDirty }) with morphTo(icon, 'smooth') only when the trend changes; each animation frame, if dirty, draw the sprite into the badge and tint it with globalCompositeOperation 'source-atop'. Footer: 'simulated market · one sample every 110 ms · the icon only repaints when the sprite writes'.",
+    caveats: [
+      "You own the resolution: size the sprite at 2× the badge for Retina, and re-dirty the badge when devicePixelRatio changes.",
+    ],
+    source: { label: "morphicons.com · Guillermo (guillermolg00) · library and site MIT", url: "https://www.morphicons.com" },
+  },
+  {
+    slug: "morph-map-pins",
+    category: "icon-morph",
+    date: "2026-09-29",
+    plays: "self",
+    title: { en: "Icon morph · Map pins with states", zh: "图标变形 · 会变状态的地图图钉", "zh-tw": "圖標變形 · 會變狀態的地圖圖釘" },
+    gist: {
+      en: "Drop a pin on a map of central Madrid: it is born as a pin, turns into a flag when its street name arrives, becomes a bookmark under the pointer and a check when saved — and saving sends a ripple through the whole map, pins included. One object changing shape tells the story of the interaction.",
+      zh: "在马德里市中心的地图上放一个图钉：它生下来是图钉，街道名查到后变成旗子，指针移上去变书签，点一下保存变对勾——保存的一刻，整张地图连同图钉一起荡开一圈波纹。同一个对象不断变形，把整个交互过程讲清楚了。",
+      "zh-tw": "在馬德里市中心的地圖上放一個圖釘：它生下來是圖釘，街道名查到後變成旗子，指標移上去變書籤，點一下儲存變勾——儲存的一刻，整張地圖連同圖釘一起盪開一圈波紋。同一個物件不斷變形，把整個互動過程講清楚了。",
+    },
+    height: 710,
+    previewHeight: 502,
+    accent: "#0070f3",
+    anatomy: [
+      "<b>A marker is an object with states.</b> Click → map-pin (placed, looking up the address) → flag once the address arrives → bookmark under the pointer (“this can be saved”) → circle-check when saved; click again to undo. Each step is <code>morphTo(icon, 'smooth')</code> plus a tint — smooth because it tells a state change rather than acknowledging a click.",
+      "<b>The address is the trigger.</b> The flag appears only when the reverse lookup answers, so the pin tells you it knows where it is. If the pointer stayed on it during the lookup it goes straight to hover. (The source asks Mapbox's geocoder; here it is the nearest named OpenStreetMap street within 150 m.)",
+      "<b>The cursor is a pin.</b> Over free ground the native cursor hides and a 30 px pin sprite marks the point with its tip; over a pin the roles flip. On placement the cursor pin disappears <i>without</i> a fade in the same frame the map pin is born on that spot with that shape, so it reads as one object dropped. Tip fraction (12+3)/30 × (21.8+3)/30 anchors both.",
+      "<b>Each pin owns a sprite.</b> A 64 px canvas the morph writes white strokes into; the map draws it tinted (source-atop) at pixel ratio 2. Hit-testing measures the real distance to the icon centre (radius 16 + 12 px slack — strokes have holes) instead of trusting the label's box.",
+      "<b>The save wave bends the map's own pixels.</b> A WebGL ripple samples the map canvas every frame (amplitude 0.36, speed 0.8, wavelength 100, 2 rings, decay 1.25, refraction 55, dispersion 0.2, shine 0.28), so streets, labels and pins deform as one surface; the overlay hides again when the last wave dies.",
+      "The base map is drawn with Canvas 2D from OpenStreetMap data (≈10 k ways around Puerta del Sol, simplified to 2 m) where the source uses Mapbox GL: drag to pan, ⌘/ctrl + scroll or the buttons to zoom, pin labels placed before base labels so the base map yields.",
+    ],
+    tokens: [
+      { label: "States", value: "map-pin #171717 → flag #0070f3 → bookmark #d97706 → circle-check #16a34a" },
+      { label: "Sprites", value: "pin 64 px @2 · cursor 30 px · stroke 2.2 · pad 3 · smooth spring" },
+      { label: "Hit test", value: "distance to icon centre ≤ 28 px" },
+      { label: "Ripple", value: "amp 0.36 · speed 0.8 · λ 100 · rings 2 · decay 1.25 · refraction 55 · dispersion 0.2 · shine 0.28" },
+      { label: "View", value: "Madrid −3.7038, 40.4168 · zoom 13.2 · 520 px tall" },
+    ],
+    prompt:
+      "Build a single HTML map demo where every pin is a morphing icon, using the MIT library morphicons (createMorph from morphicons/dom, canvasTarget from morphicons/adapters) and Lucide icon data (map-pin, flag, bookmark, circle-check). Draw a light street map on a canvas (land #f4f4f1, parks #e0e9d6, water #c9d6dc, white roads with #d9d9d6 casing, 10–11px halo labels), pannable by drag and zoomable with ⌘/ctrl + wheel and +/− buttons. Each pin owns a 64px sprite canvas the morph writes white strokes into (canvasTarget with viewBox '-3 -3 30 30', strokeWidth 2.2); draw it at 32px with a source-atop tint, anchored so the pin's tip ((12+3)/30, (21.8+3)/30 of the box) sits on the clicked point. States: click on free ground → map-pin in #171717, then after a ~0.5 s reverse lookup show the street name under it (12px, white halo) and morph to flag #0070f3 (or straight to bookmark if still hovered); hover a labelled unsaved pin → bookmark #d97706, leave → flag; click a labelled pin → toggle saved: circle-check #16a34a plus a WebGL ripple that samples the map canvas every frame and refracts it (amplitude 0.36, speed 0.8, wavelength 100, 2 rings, decay 1.25, refraction 55, dispersion 0.2, shine 0.28). All morphs use 'smooth'. Over free ground hide the cursor and show a 30px map-pin sprite whose tip follows the pointer; over a pin show the pointer cursor instead; on placement hide the cursor pin with no fade. Hit-test by distance to the icon centre ≤ 28px. Footer: a hint ('Click anywhere on the map to drop a pin.' → 'Hover the pin, then click it to save.') and 'N saved of M'.",
+    caveats: [
+      "The ripple re-uploads the whole map canvas as a texture every frame while a wave is alive — cheap on a laptop, noticeable on low-end phones. It only runs during a wave for that reason.",
+      "Street names come from OpenStreetMap (© OpenStreetMap contributors, ODbL); the source's Mapbox version needs an access token and bills per map load. The ripple shader is Canvas UI's (MIT + Commons Clause) — fine for a personal library, not for resale.",
+    ],
+    source: { label: "morphicons.com · Guillermo (guillermolg00) · library and site MIT", url: "https://www.morphicons.com" },
+  },
   {
     slug: "iridescent-sweep-border",
     category: "border-effects",

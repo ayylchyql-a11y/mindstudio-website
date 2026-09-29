@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Map pins with states · canvas adapter · morphicons</title>
+<link rel="stylesheet" href="_morph/base.css">
+<style>
+  body { padding: 24px; }
+  .card { max-width: 1152px; margin: 0 auto; }
+  .card > header p { max-width: 72ch; }
+  #box { position: relative; height: 420px; width: 100%; overflow: hidden; touch-action: none; -webkit-user-select: none; user-select: none; }
+  @media (min-width: 640px) { #box { height: 520px; } }
+  #map { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  #ripple { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; opacity: 0; }
+  #cursor { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 3; opacity: 0; filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.7)); transition: opacity .15s; }
+  /* NavigationControl (showCompass: false), as mapbox-gl.css draws it. */
+  .nav { position: absolute; top: 10px; right: 10px; z-index: 4; overflow: hidden; border-radius: 4px; background: #fff; box-shadow: 0 0 0 2px rgb(0 0 0 / 0.1); }
+  .nav button { display: block; height: 29px; width: 29px; color: #333; }
+  .nav button + button { border-top: 1px solid #ddd; }
+  .nav button:hover { background: rgb(0 0 0 / 0.05); }
+  .nav button:disabled { color: #aaa; }
+  .nav svg { margin: auto; }
+  .attrib { position: absolute; right: 0; bottom: 0; z-index: 4; border-top-left-radius: 4px; background: rgb(255 255 255 / 0.5); padding: 0 5px; font-size: 10.5px; line-height: 18px; color: rgb(0 0 0 / 0.75); }
+  /* cooperativeGestures: a plain wheel scrolls the page; the map asks for ⌘. */
+  .blocker { position: absolute; inset: 0; z-index: 5; display: flex; align-items: center; justify-content: center; background: rgb(0 0 0 / 0.7); color: #fff; font-size: 22px; text-align: center; opacity: 0; pointer-events: none; transition: opacity .75s ease-in-out; }
+  .blocker.on { opacity: 1; transition-duration: 0s; }
+  @media (prefers-color-scheme: dark) {
+    .nav { background: #2b2b2b; box-shadow: 0 0 0 2px rgb(255 255 255 / 0.08); } .nav button { color: #ddd; } .nav button + button { border-top-color: #444; }
+    .attrib { background: rgb(0 0 0 / 0.45); color: rgb(255 255 255 / 0.7); }
+  }
+  .foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; column-gap: 24px; row-gap: 4px; border-top: 1px solid var(--hairline); padding: 12px 20px; font-size: 13px; color: var(--mute); }
+</style>
+</head>
+<body>
+<section aria-label="Canvas adapter demo">
+  <article class="card">
+    <header>
+      <h3>Map pins with states · Canvas 2D</h3>
+      <p>Every pin is a sprite whose pixels come from a morphing 2D canvas: place it, watch it learn its address, hover it, save it. Saving rolls a wave through the map's own pixels, pins included.</p>
+    </header>
+    <div>
+      <div id="box">
+        <canvas id="map" aria-label="Map of central Madrid: click to drop a pin"></canvas>
+        <canvas id="ripple" aria-hidden="true"></canvas>
+        <div class="nav">
+          <button type="button" id="zin" aria-label="Zoom in"><svg width="29" height="29" viewBox="0 0 29 29" aria-hidden="true"><path d="M14.5 8.5c-.75 0-1.5.75-1.5 1.5v3h-3c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h3v3c0 .75.75 1.5 1.5 1.5S16 19.75 16 19v-3h3c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13h-3v-3c0-.75-.75-1.5-1.5-1.5z" fill="currentColor"/></svg></button>
+          <button type="button" id="zout" aria-label="Zoom out"><svg width="29" height="29" viewBox="0 0 29 29" aria-hidden="true"><path d="M10 13c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h9c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13h-9z" fill="currentColor"/></svg></button>
+        </div>
+        <div class="attrib">© OpenStreetMap contributors</div>
+        <div class="blocker" id="blocker">Use ⌘ + scroll to zoom the map</div>
+      </div>
+      <p class="foot"><span id="hint">Loading the map…</span><span class="tnum" id="counts">0 saved of 0</span></p>
+    </div>
+  </article>
+</section>
+
+<script src="_morph/morphicons.js"></script>
+<script src="_morph/icons.js"></script>
+<script src="_morph/ripple.js"></script>
+<script src="_morph/madrid.js"></script>
+<script>
+(() => {
+  /* canvasTarget on a map: the icon as the STATE of an interaction.
+       click on the map    → map-pin       placed, looking up the address
+       the address arrives → flag          the spot is marked, with its name
+       hover               → bookmark      "this can be saved"
+       click the pin       → circle-check  saved (and a wave rolls the map)
+       click again         → flag … hover  undone
+     The source runs this inside Mapbox GL (StyleImages + reverse geocoding).
+     Here the map is drawn with Canvas 2D from OpenStreetMap data and the
+     address is the nearest named street; the pin state machine, sprites,
+     tints, cursor pin, hit test and the ripple are the source's own. */
+  const M = window.Morphicons, X = window.MorphIconData.extra;
+  const $ = (id) => document.getElementById(id);
+  const box = $("box"), mapCanvas = $("map"), mctx = mapCanvas.getContext("2d");
+
+  const SIZE = 64, PAD = 3, GRID = 24 + PAD * 2;
+  // Where a lucide map-pin has its tip, as a fraction of its padded box: the
+  // same fraction anchors the cursor pin and the map pin, which is what makes
+  // one appear exactly where the other was.
+  const TIP_FX = (12 + PAD) / GRID, TIP_FY = (21.8 + PAD) / GRID;
+  const ICON_PX = SIZE / 2; // pixelRatio 2 → 32 CSS px
+  const TIP_DY = ICON_PX * (1 - TIP_FY);
+  const CURSOR_SIZE = 30;
+  const HIT_R = ICON_PX / 2 + 12; // half an icon plus slack: strokes have holes
+
+  const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+  /* `locating` matches the cursor pin's color on purpose: the map pin is born
+     the same frame the cursor pin disappears. */
+  const PALETTE = dark
+    ? { text: "#e8eaed", halo: "#0b0d10", states: { locating: { icon: X.MapPin, rgb: [255, 255, 255] }, placed: { icon: X.Flag, rgb: [88, 166, 255] }, hover: { icon: X.Bookmark, rgb: [255, 209, 102] }, saved: { icon: X.CircleCheck, rgb: [126, 231, 135] } } }
+    : { text: "#1f2937", halo: "#ffffff", states: { locating: { icon: X.MapPin, rgb: [23, 23, 23] }, placed: { icon: X.Flag, rgb: [0, 112, 243] }, hover: { icon: X.Bookmark, rgb: [217, 119, 6] }, saved: { icon: X.CircleCheck, rgb: [22, 163, 74] } } };
+  const STATE = PALETTE.states;
+  const STYLE = dark
+    ? { land: "#1d1e1f", green: "#212923", water: "#11191e", rail: "#343536", casing: "#141515", road: "#3a3b3c", minor: "#2e2f30", place: "#8d9094", placeHalo: "#1d1e1f", roadText: "#9a9da1" }
+    : { land: "#f4f4f1", green: "#e0e9d6", water: "#c9d6dc", rail: "#d2d2d0", casing: "#d9d9d6", road: "#ffffff", minor: "#ffffff", place: "#707377", placeHalo: "#f4f4f1", roadText: "#6a6d71" };
+
+  /* ── the base map: OSM ways in local metres around Puerta del Sol ── */
+  const C0 = [-3.7038, 40.4168], KX = 111320 * Math.cos(C0[1] * Math.PI / 180), KY = 110574;
+  const WAYS = window.MadridMap.map(([c, name, flat]) => {
+    const pts = new Float32Array(flat.length); let x = 0, y = 0, x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (let i = 0; i < flat.length; i += 2) { x += flat[i]; y += flat[i + 1]; pts[i] = x; pts[i + 1] = y; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+    return { c, name, pts, bb: [x0, y0, x1, y1] };
+  });
+  const PLACES = [
+    ["Sol", 40.4169, -3.7035, "poi"], ["Plaza Mayor", 40.4155, -3.7074, "poi"], ["Palacio Real", 40.4179, -3.7143, "poi"], ["Templo de Debod", 40.4240, -3.7178, "poi"],
+    ["Parque del Retiro", 40.4153, -3.6845, "park"], ["Estación de Atocha", 40.4066, -3.6892, "poi"], ["Madrid Río", 40.4015, -3.7215, "park"],
+    ["MALASAÑA", 40.4262, -3.7050, "hood"], ["CHUECA", 40.4226, -3.6975, "hood"], ["LAVAPIÉS", 40.4085, -3.7010, "hood"], ["LA LATINA", 40.4108, -3.7112, "hood"],
+    ["SALAMANCA", 40.4300, -3.6790, "hood"], ["CHAMBERÍ", 40.4345, -3.7035, "hood"], ["ARGÜELLES", 40.4300, -3.7155, "hood"], ["ARGANZUELA", 40.3985, -3.6985, "hood"],
+    ["LAS LETRAS", 40.4140, -3.6985, "hood"], ["JERÓNIMOS", 40.4128, -3.6870, "hood"], ["IBIZA", 40.4190, -3.6740, "hood"], ["PALACIO", 40.4150, -3.7180, "hood"],
+  ].map(([n, lat, lng, k]) => ({ n, k, x: (lng - C0[0]) * KX, y: (C0[1] - lat) * KY }));
+
+  // Mapbox's own framing: center Madrid, zoom 13.2 (512px tiles → 6.34 m/px).
+  const MPP13 = (40075016.686 * Math.cos(C0[1] * Math.PI / 180)) / (512 * 2 ** 13.2);
+  const view = { x: 0, y: 0, z: 13.2 };
+  const ZMIN = 12.4, ZMAX = 17;
+  let W = 0, H = 0, dpr = 1;
+  const scale = () => 2 ** (view.z - 13.2) / MPP13;
+  const toScreen = (mx, my) => { const s = scale(); return [W / 2 + (mx - view.x) * s, H / 2 + (my - view.y) * s]; };
+  const toWorld = (px, py) => { const s = scale(); return [view.x + (px - W / 2) / s, view.y + (py - H / 2) / s]; };
+
+  function resize() {
+    dpr = Math.min(devicePixelRatio || 1, 2); W = box.clientWidth; H = box.clientHeight;
+    mapCanvas.width = Math.round(W * dpr); mapCanvas.height = Math.round(H * dpr);
+    dirty = true;
+  }
+
+  const labelBoxes = [];
+  const collides = (b) => labelBoxes.some((o) => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
+  function haloText(ctx, text, x, y, color, halo, hw) { ctx.lineWidth = hw * 2; ctx.strokeStyle = halo; ctx.lineJoin = "round"; ctx.strokeText(text, x, y); ctx.fillStyle = color; ctx.fillText(text, x, y); }
+
+  function drawBase() {
+    const ctx = mctx, s = scale(), z = view.z;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = STYLE.land; ctx.fillRect(0, 0, W, H);
+    const [wx0, wy0] = toWorld(-40, -40), [wx1, wy1] = toWorld(W + 40, H + 40);
+    const visible = (w) => w.bb[2] >= wx0 && w.bb[0] <= wx1 && w.bb[3] >= wy0 && w.bb[1] <= wy1;
+    const pathOf = (cls, close) => { const p = new Path2D(); for (const w of WAYS) { if (w.c !== cls || !visible(w)) continue; const a = w.pts; p.moveTo(W / 2 + (a[0] - view.x) * s, H / 2 + (a[1] - view.y) * s); for (let i = 2; i < a.length; i += 2) p.lineTo(W / 2 + (a[i] - view.x) * s, H / 2 + (a[i + 1] - view.y) * s); if (close) p.closePath(); } return p; };
+    ctx.lineCap = "round"; ctx.lineJoin = "round";
+    ctx.fillStyle = STYLE.green; ctx.fill(pathOf("g", true));
+    ctx.fillStyle = STYLE.water; ctx.fill(pathOf("a", true));
+    ctx.strokeStyle = STYLE.water; ctx.lineWidth = Math.max(2, 14 * s); ctx.stroke(pathOf("v", false));
+    const f = 1.5 ** (z - 13.2); // road widths grow ×1.5 per zoom level, like the style's exponential stops
+    ctx.strokeStyle = STYLE.rail; ctx.lineWidth = Math.max(0.8, 1 * f); ctx.setLineDash([3, 3]); ctx.stroke(pathOf("x", false)); ctx.setLineDash([]);
+    ctx.strokeStyle = STYLE.minor; ctx.lineWidth = Math.max(0.6, 0.9 * f); ctx.stroke(pathOf("r", false));
+    ctx.lineWidth = Math.max(0.6, 0.8 * f); ctx.stroke(pathOf("w", false));
+    const major = [["t", 1.6], ["s", 2.1], ["p", 2.6], ["m", 3.2]].map(([c, b]) => [c, b * f, pathOf(c, false)]);
+    for (const [, w, p] of major) { ctx.strokeStyle = STYLE.casing; ctx.lineWidth = w + 1.6; ctx.stroke(p); }
+    for (const [, w, p] of major) { ctx.strokeStyle = STYLE.road; ctx.lineWidth = w; ctx.stroke(p); }
+  }
+
+  function drawRoadLabels() {
+    if (view.z < 14.2) return;
+    const ctx = mctx, s = scale(); const done = new Set();
+    ctx.font = `500 ${view.z > 15.5 ? 11.5 : 10.5}px Geist, ui-sans-serif, system-ui, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    const cls = view.z > 15 ? /[mpst]/ : /[mps]/;
+    for (const w of WAYS) {
+      if (!w.name || !cls.test(w.c) || done.has(w.name)) continue;
+      const a = w.pts; let best = -1, bl = 0;
+      for (let i = 0; i + 3 < a.length; i += 2) { const l = Math.hypot(a[i + 2] - a[i], a[i + 3] - a[i + 1]) * s; if (l > bl) { bl = l; best = i; } }
+      const tw = ctx.measureText(w.name).width; if (best < 0 || bl < tw + 16) continue;
+      const [x0, y0] = toScreen(a[best], a[best + 1]), [x1, y1] = toScreen(a[best + 2], a[best + 3]);
+      const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2; if (cx < 20 || cx > W - 20 || cy < 12 || cy > H - 12) continue;
+      let ang = Math.atan2(y1 - y0, x1 - x0); if (ang > Math.PI / 2) ang -= Math.PI; if (ang < -Math.PI / 2) ang += Math.PI;
+      const hw = Math.abs(Math.cos(ang)) * tw / 2 + 6, hh = Math.abs(Math.sin(ang)) * tw / 2 + 7, b = [cx - hw, cy - hh, cx + hw, cy + hh];
+      if (collides(b)) continue; labelBoxes.push(b); done.add(w.name);
+      ctx.save(); ctx.translate(cx, cy); ctx.rotate(ang); haloText(ctx, w.name, 0, 0, STYLE.roadText, STYLE.placeHalo, 1.5); ctx.restore();
+    }
+  }
+  function drawPlaces() {
+    const ctx = mctx; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    for (const p of PLACES) {
+      const [x, y] = toScreen(p.x, p.y); if (x < -60 || x > W + 60 || y < -20 || y > H + 20) continue;
+      const hood = p.k === "hood";
+      ctx.font = hood ? `500 10px Geist, ui-sans-serif, system-ui, sans-serif` : `${p.k === "park" ? "italic " : ""}500 11px Geist, ui-sans-serif, system-ui, sans-serif`;
+      if ("letterSpacing" in ctx) ctx.letterSpacing = hood ? "1.5px" : "0px";
+      const tw = ctx.measureText(p.n).width, b = [x - tw / 2 - 4, y - 8, x + tw / 2 + 4, y + 8];
+      if (collides(b)) continue; labelBoxes.push(b);
+      haloText(ctx, p.n, x, y, p.k === "park" ? (dark ? "#7fa27f" : "#5f7f5a") : STYLE.place, STYLE.placeHalo, 1.6);
+    }
+    if ("letterSpacing" in mctx) mctx.letterSpacing = "0px";
+  }
+
+  /* ── pins: each owns a sprite (64 px canvas the morph writes into, white
+     strokes, padded viewBox); render() tints it at composite time ── */
+  const pins = []; let nextId = 1, hoveredId = null, dirty = true;
+  function makeSprite(icon) {
+    const canvas = document.createElement("canvas"); canvas.width = canvas.height = SIZE;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    const sp = { canvas, ctx, dirty: true, tint: document.createElement("canvas") };
+    sp.tint.width = sp.tint.height = SIZE;
+    sp.morph = M.createMorph(M.canvasTarget(ctx, { viewBox: `${-PAD} ${-PAD} ${24 + PAD * 2} ${24 + PAD * 2}`, strokeWidth: 2.2, color: "#ffffff", onWrite: () => { sp.dirty = true; dirty = true; } }), icon);
+    return sp;
+  }
+  function tinted(pin) {
+    const sp = pin.sprite;
+    if (sp.dirty) {
+      const t = sp.tint.getContext("2d"); t.globalCompositeOperation = "source-over"; t.clearRect(0, 0, SIZE, SIZE); t.drawImage(sp.canvas, 0, 0);
+      t.globalCompositeOperation = "source-atop"; t.fillStyle = `rgb(${pin.rgb.join(",")})`; t.fillRect(0, 0, SIZE, SIZE); sp.dirty = false;
+    }
+    return sp.tint;
+  }
+  /* smooth, not snappy: the morph is the story of a state change. */
+  const toState = (pin, s) => { pin.rgb = s.rgb; pin.sprite.dirty = true; dirty = true; pin.sprite.morph.morphTo(s.icon, "smooth"); };
+
+  /* Pin labels are placed first (their layer is on top): text-anchor top,
+     offset 0.6 em, no overlap between them (text-optional keeps the icon). */
+  function placePinLabels() {
+    const out = []; mctx.font = `12px Geist, ui-sans-serif, system-ui, sans-serif`;
+    for (const p of pins) {
+      if (!p.label) continue;
+      const [x, y] = toScreen(p.x, p.y), ty = y + TIP_DY + 7.2, tw = mctx.measureText(p.label).width, b = [x - tw / 2 - 2, ty - 2, x + tw / 2 + 2, ty + 16];
+      if (collides(b)) continue; labelBoxes.push(b); out.push([p.label, x, ty]);
+    }
+    return out;
+  }
+  function drawPins(labels) {
+    const ctx = mctx;
+    for (const p of pins) { const [x, y] = toScreen(p.x, p.y); ctx.drawImage(tinted(p), x - ICON_PX / 2, y + TIP_DY - ICON_PX, ICON_PX, ICON_PX); }
+    ctx.font = `12px Geist, ui-sans-serif, system-ui, sans-serif`; ctx.textAlign = "center"; ctx.textBaseline = "top";
+    for (const [t, x, y] of labels) haloText(ctx, t, x, y, PALETTE.text, PALETTE.halo, 1.4);
+  }
+  function frame() {
+    if (dirty) {
+      dirty = false; labelBoxes.length = 0;
+      drawBase();
+      // the pin layer is on top, so it is placed first and base labels yield to it
+      for (const p of pins) { const [x, y] = toScreen(p.x, p.y); labelBoxes.push([x - ICON_PX / 2, y + TIP_DY - ICON_PX, x + ICON_PX / 2, y + TIP_DY]); }
+      const pinLabels = placePinLabels();
+      drawRoadLabels(); drawPlaces(); drawPins(pinLabels);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* The save wave: the ripple's source is the map's OWN canvas, so streets,
+     labels and the other pins bend together, as one surface. */
+  const rippleCanvas = $("ripple");
+  const ripple = window.createRipple({ source: mapCanvas, output: rippleCanvas, onIdle: () => (rippleCanvas.style.opacity = "0") },
+    { amplitude: 0.36, speed: 0.8, wavelength: 100, rings: 2, decay: 1.25, refraction: 55, dispersion: 0.2, shine: 0.28, interval: 0 });
+  const splashAt = (pin) => { if (!ripple) return; const [x, y] = toScreen(pin.x, pin.y); rippleCanvas.style.opacity = "1"; ripple.splash(x, y, 1); };
+
+  /* The cursor IS a pin: over free ground the native cursor hides and this
+     sprite's tip marks the exact point. Over a pin the roles flip. */
+  const cursor = document.createElement("canvas"); cursor.id = "cursor"; cursor.width = cursor.height = CURSOR_SIZE; box.appendChild(cursor);
+  M.createMorph(M.canvasTarget(cursor.getContext("2d"), { viewBox: `${-PAD} ${-PAD} ${24 + PAD * 2} ${24 + PAD * 2}`, strokeWidth: 2.2, color: `rgb(${STATE.locating.rgb.join(",")})` }), X.MapPin);
+  const TIP_X = TIP_FX * CURSOR_SIZE, TIP_Y = TIP_FY * CURSOR_SIZE;
+  const moveCursorPin = (x, y) => { cursor.style.transform = `translate(${x - TIP_X}px, ${y - TIP_Y}px)`; };
+  const showCursorPin = (show) => { cursor.style.transition = ""; cursor.style.opacity = show ? "1" : "0"; };
+  // On placement it goes out WITHOUT a fade: the map pin is born on that exact spot with that exact shape.
+  const dropCursorPin = () => { cursor.style.transition = "none"; cursor.style.opacity = "0"; };
+
+  const pinAt = (x, y) => {
+    let best = null, bestD = Infinity;
+    for (const p of pins) { const [px, py] = toScreen(p.x, p.y); const d = Math.hypot(px - x, py + TIP_DY - ICON_PX / 2 - y); if (d <= HIT_R && d < bestD) { bestD = d; best = p; } }
+    return best;
+  };
+
+  const setCounts = () => { $("counts").textContent = `${pins.filter((p) => p.saved).length} saved of ${pins.length}`; };
+  /* Reverse geocoding stand-in: the nearest named street within 150 m, after a
+     network-like pause. The address arriving IS the trigger for the
+     map-pin → flag morph. */
+  function nearestStreet(mx, my) {
+    let best = "", bd = 150;
+    for (const w of WAYS) {
+      if (!w.name || w.c === "g" || w.c === "a" || w.c === "x") continue;
+      if (mx < w.bb[0] - bd || mx > w.bb[2] + bd || my < w.bb[1] - bd || my > w.bb[3] + bd) continue;
+      const a = w.pts;
+      for (let i = 0; i + 3 < a.length; i += 2) {
+        const ax = a[i], ay = a[i + 1], bx = a[i + 2], by = a[i + 3], dx = bx - ax, dy = by - ay, L2 = dx * dx + dy * dy || 1;
+        const t = Math.max(0, Math.min(1, ((mx - ax) * dx + (my - ay) * dy) / L2)), d = Math.hypot(ax + t * dx - mx, ay + t * dy - my);
+        if (d < bd) { bd = d; best = w.name; }
+      }
+    }
+    return best;
+  }
+  function locate(pin) {
+    setTimeout(() => {
+      const lng = C0[0] + pin.x / KX, lat = C0[1] - pin.y / KY;
+      pin.label = nearestStreet(pin.x, pin.y) || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+      // If the pointer stayed on it while we looked it up, go straight to hover.
+      toState(pin, hoveredId === pin.id ? STATE.hover : STATE.placed);
+      setCounts();
+    }, 380 + Math.random() * 260);
+  }
+
+  function clickAt(x, y) {
+    // One handler for both actions: near a pin it saves, elsewhere it plants.
+    const hit = pinAt(x, y);
+    if (hit) {
+      if (!hit.label) return; // still locating
+      hit.saved = !hit.saved;
+      toState(hit, hit.saved ? STATE.saved : STATE.hover);
+      if (hit.saved) splashAt(hit); // saving shakes the whole map
+      setCounts(); return;
+    }
+    const [mx, my] = toWorld(x, y);
+    const pin = { id: nextId++, x: mx, y: my, label: "", saved: false, sprite: makeSprite(STATE.locating.icon), rgb: STATE.locating.rgb };
+    pins.push(pin); dirty = true; setCounts();
+    $("hint").textContent = "Hover the pin, then click it to save.";
+    // The handover: the cursor pin goes dark the same frame the map pin is born.
+    dropCursorPin(); hoveredId = pin.id; mapCanvas.style.cursor = "pointer";
+    locate(pin);
+  }
+  const leave = (id) => { const pin = pins.find((p) => p.id === id); if (pin && !pin.saved && pin.label) toState(pin, STATE.placed); };
+  function moveAt(x, y) {
+    moveCursorPin(x, y);
+    const hit = pinAt(x, y);
+    showCursorPin(!hit); mapCanvas.style.cursor = hit ? "pointer" : "none";
+    if ((hit?.id ?? null) === hoveredId) return;
+    if (hoveredId !== null) leave(hoveredId);
+    hoveredId = hit?.id ?? null;
+    if (hit && !hit.saved && hit.label) toState(hit, STATE.hover);
+  }
+  function outOfMap() { showCursorPin(false); mapCanvas.style.cursor = ""; if (hoveredId !== null) leave(hoveredId); hoveredId = null; }
+
+  /* ── input: drag pans, a still press is a click, ⌘/ctrl + wheel zooms ── */
+  let drag = null;
+  const local = (e) => { const r = box.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  mapCanvas.addEventListener("pointerdown", (e) => { if (e.isTrusted) stopDemo(); const [x, y] = local(e); drag = { x, y, vx: view.x, vy: view.y, moved: false }; mapCanvas.setPointerCapture(e.pointerId); });
+  mapCanvas.addEventListener("pointermove", (e) => {
+    if (e.isTrusted) stopDemo();
+    const [x, y] = local(e);
+    if (drag) {
+      if (!drag.moved && Math.hypot(x - drag.x, y - drag.y) > 3) { drag.moved = true; showCursorPin(false); mapCanvas.style.cursor = "grabbing"; } // while panning, the grab cursor rules
+      if (drag.moved) { const s = scale(); view.x = drag.vx - (x - drag.x) / s; view.y = drag.vy - (y - drag.y) / s; clampView(); dirty = true; return; }
+    }
+    moveAt(x, y);
+  });
+  mapCanvas.addEventListener("pointerup", (e) => { const [x, y] = local(e); const d = drag; drag = null; if (d && !d.moved) clickAt(x, y); else moveAt(x, y); });
+  mapCanvas.addEventListener("pointerleave", () => { if (!drag) outOfMap(); });
+  let blockTimer = 0;
+  box.addEventListener("wheel", (e) => {
+    if (!(e.metaKey || e.ctrlKey)) { const b = $("blocker"); b.classList.add("on"); clearTimeout(blockTimer); blockTimer = setTimeout(() => b.classList.remove("on"), 1000); return; }
+    e.preventDefault(); stopDemo();
+    const [x, y] = local(e); zoomAround(x, y, view.z - e.deltaY * 0.004);
+  }, { passive: false });
+  function zoomAround(x, y, z) { const [mx, my] = toWorld(x, y); view.z = Math.min(ZMAX, Math.max(ZMIN, z)); const s = scale(); view.x = mx - (x - W / 2) / s; view.y = my - (y - H / 2) / s; clampView(); dirty = true; $("zin").disabled = view.z >= ZMAX; $("zout").disabled = view.z <= ZMIN; }
+  let zoomAnim = 0;
+  function zoomBy(dz) { cancelAnimationFrame(zoomAnim); const z0 = view.z, z1 = Math.min(ZMAX, Math.max(ZMIN, Math.round((z0 + dz) * 10) / 10)), t0 = performance.now(); const step = (now) => { const k = Math.min(1, (now - t0) / 300), e = 1 - (1 - k) ** 3; zoomAround(W / 2, H / 2, z0 + (z1 - z0) * e); if (k < 1) zoomAnim = requestAnimationFrame(step); }; zoomAnim = requestAnimationFrame(step); }
+  $("zin").onclick = () => { stopDemo(); zoomBy(1); };
+  $("zout").onclick = () => { stopDemo(); zoomBy(-1); };
+  function clampView() { const hx = 4000, hy = 2600; view.x = Math.max(-hx, Math.min(hx, view.x)); view.y = Math.max(-hy, Math.min(hy, view.y)); }
+
+  /* ── auto-demo until the first real pointer: plant, learn the address,
+     hover, save (the wave), plant another, leave it; then start over ── */
+  let demo = true, demoTimers = [];
+  function stopDemo() { if (!demo) return; demo = false; demoTimers.forEach(clearTimeout); cancelAnimationFrame(glideRaf); }
+  const at = (ms, fn) => demoTimers.push(setTimeout(() => demo && fn(), ms));
+  let glideRaf = 0, cur = [0, 0];
+  function glide(to, ms) { const from = cur.slice(), t0 = performance.now(); cancelAnimationFrame(glideRaf); const step = (now) => { if (!demo) return; const k = Math.min(1, (now - t0) / ms), e = k < 0.5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2; cur = [from[0] + (to[0] - from[0]) * e, from[1] + (to[1] - from[1]) * e]; moveAt(cur[0], cur[1]); if (k < 1) glideRaf = requestAnimationFrame(step); }; glideRaf = requestAnimationFrame(step); }
+  function runDemo() {
+    if (!demo) return; demoTimers = [];
+    const A = [W * 0.40, H * 0.46], B = [W * 0.64, H * 0.36], O = [W * 0.80, H * 0.66];
+    cur = [W * 0.22, H * 0.62]; at(0, () => moveAt(cur[0], cur[1]));
+    at(80, () => glide(A, 800));
+    at(1100, () => clickAt(A[0], A[1]));
+    at(2500, () => clickAt(A[0], A[1]));
+    at(3700, () => glide(B, 900));
+    at(4800, () => clickAt(B[0], B[1]));
+    at(6000, () => glide(O, 800));
+    at(8600, () => { for (const p of pins.splice(0)) p.sprite.morph.destroy(); hoveredId = null; dirty = true; setCounts(); $("hint").textContent = "Click anywhere on the map to drop a pin."; });
+    at(9000, runDemo);
+  }
+
+  resize(); addEventListener("resize", () => { resize(); ripple?.resize(); });
+  $("zout").disabled = false;
+  requestAnimationFrame(frame);
+  document.fonts.ready.then(() => { dirty = true; $("hint").textContent = "Click anywhere on the map to drop a pin."; setTimeout(runDemo, 600); });
+})();
+</script>
+</body>
+</html>

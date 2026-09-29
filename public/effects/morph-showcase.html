@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Showcase · morphicons</title>
+<link rel="stylesheet" href="_morph/base.css">
+<style>
+  body { padding: 24px; }
+  .wrap { max-width: 1152px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+  @media (min-width: 1024px) { .wrap { flex-direction: row; gap: 24px; } }
+
+  /* Controls: everything drives both the previews and the copied code. */
+  aside .panel { display: grid; gap: 20px; border-radius: 12px; border: 1px solid var(--hairline); background: var(--canvas); padding: 20px; box-shadow: var(--shadow-card); }
+  @media (min-width: 640px) { aside .panel { grid-template-columns: repeat(2, minmax(0, 1fr)); } aside .note { grid-column: span 2 / span 2; } }
+  @media (min-width: 1024px) { aside { width: 240px; flex-shrink: 0; } aside .panel { position: sticky; top: 24px; grid-template-columns: repeat(1, minmax(0, 1fr)); } aside .note { grid-column: span 1 / span 1; } }
+  aside .note { font-size: 13px; line-height: 20px; color: var(--mute); }
+
+  /* The six recipes. The source goes two-up at 768px; this frame is 710 wide,
+     so it goes two-up from 640px instead — the cards are identical. */
+  .cards { display: grid; flex: 1 1 0%; align-content: start; gap: 20px; }
+  @media (min-width: 640px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .cards .card { display: flex; flex-direction: column; }
+  .cards .card > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .cards .card > .body { display: flex; flex: 1 1 0%; align-items: center; justify-content: center; padding: 48px 24px; }
+  .snip { display: inline-flex; height: 32px; flex-shrink: 0; align-items: center; gap: 6px; border-radius: 6px; border: 1px solid var(--hairline); background: var(--canvas); padding: 0 10px 0 8px; font-size: 12px; line-height: 16px; font-weight: 500; color: var(--body); transition: color .15s cubic-bezier(.4,0,.2,1), background-color .15s cubic-bezier(.4,0,.2,1); }
+  .snip:hover { background: var(--canvas-soft-2); color: var(--ink); }
+
+  /* 1 · copy */
+  .cmd { display: inline-flex; height: 44px; align-items: center; gap: 12px; border-radius: 6px; border: 1px solid var(--hairline); background: var(--canvas); padding: 0 6px 0 16px; font-family: var(--mono); font-size: 14px; line-height: 20px; color: var(--ink); box-shadow: var(--shadow-card); }
+  .ghost { display: flex; height: 32px; width: 32px; align-items: center; justify-content: center; border-radius: 4px; color: var(--mute); transition: color .15s cubic-bezier(.4,0,.2,1), background-color .15s cubic-bezier(.4,0,.2,1); }
+  .ghost:hover { background: var(--canvas-soft-2); color: var(--ink); }
+  /* 2 · password + 5 · validation */
+  .field { position: relative; width: 100%; max-width: 256px; }
+  .field input { height: 40px; width: 100%; border-radius: 6px; border: 1px solid var(--hairline); background: var(--canvas); padding: 0 40px 0 14px; font-size: 16px; line-height: 24px; color: var(--ink); outline: none; }
+  @media (min-width: 640px) { .field input { font-size: 14px; line-height: 20px; } }
+  .field input::placeholder { color: var(--mute); }
+  .field input:focus { border-color: var(--ink); }
+  .field .eye { position: absolute; right: 4px; top: 50%; display: flex; height: 32px; width: 32px; transform: translateY(-50%); align-items: center; justify-content: center; border-radius: 4px; color: var(--mute); transition: color .15s cubic-bezier(.4,0,.2,1); }
+  .field .eye:hover { color: var(--ink); }
+  .field .mark { pointer-events: none; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--ink); }
+  .field .mark.off { opacity: 0; }
+  /* 3 · theme */
+  .square { display: flex; height: 44px; width: 44px; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid var(--hairline); background: var(--canvas); color: var(--body); box-shadow: var(--shadow-card); transition: color .15s cubic-bezier(.4,0,.2,1), background-color .15s cubic-bezier(.4,0,.2,1); }
+  .square:hover { background: var(--canvas-soft-2); color: var(--ink); }
+  /* 4 · player */
+  .player { display: flex; width: 100%; max-width: 256px; flex-direction: column; gap: 12px; border-radius: 8px; border: 1px solid var(--hairline); background: var(--canvas); padding: 14px; box-shadow: var(--shadow-card); }
+  .player .meta { display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: 11px; line-height: 16.5px; color: var(--mute); }
+  .player .track { height: 4px; overflow: hidden; border-radius: 9999px; background: var(--canvas-soft-2); }
+  .player .track i { display: block; height: 100%; width: 33.333333%; border-radius: 9999px; background: var(--ink); }
+  .player .row { display: flex; align-items: center; gap: 6px; }
+  .player .pp { display: flex; height: 36px; width: 36px; align-items: center; justify-content: center; border-radius: 6px; background: var(--ink); color: var(--canvas); transition: opacity .15s cubic-bezier(.4,0,.2,1); }
+  .player .pp:hover { opacity: 0.9; }
+  .player .vol { display: flex; height: 36px; width: 36px; align-items: center; justify-content: center; border-radius: 6px; color: var(--body); transition: color .15s cubic-bezier(.4,0,.2,1), background-color .15s cubic-bezier(.4,0,.2,1); }
+  .player .vol:hover { background: var(--canvas-soft-2); color: var(--ink); }
+  /* 6 · tree */
+  .tree { width: 100%; max-width: 256px; }
+  .tree .row { display: flex; width: 100%; align-items: center; gap: 8px; border-radius: 6px; padding: 6px 8px; text-align: left; font-size: 14px; line-height: 20px; color: var(--ink); transition: background-color .15s cubic-bezier(.4,0,.2,1); }
+  .tree .row:hover { background: var(--canvas-soft-2); }
+  .tree .chev { flex-shrink: 0; color: var(--mute); transition: transform .15s cubic-bezier(.4,0,.2,1); }
+  .tree .row[aria-expanded="true"] .chev { transform: rotate(90deg); }
+  .tree .row .fold { color: var(--body); }
+  .tree ul { list-style: none; margin-left: 1.4rem; border-left: 1px solid var(--hairline); padding-left: 12px; }
+  .tree ul[hidden] { display: none; }
+  .tree li { padding: 4px 8px; font-family: var(--mono); font-size: 13px; color: var(--body); }
+</style>
+</head>
+<body>
+<section class="wrap" aria-label="Component showcase">
+  <aside>
+    <div class="panel">
+      <div><span class="caps">Library</span><div class="segf" role="group" aria-label="Library" id="libs"></div></div>
+      <div><span class="caps">Framework</span><div class="segf" role="group" aria-label="Framework" id="fws"></div></div>
+      <div><span class="caps">Spring</span><div class="segf" role="group" aria-label="Spring" id="springs"></div></div>
+      <div><span class="caps">Stroke</span><div class="segf" role="group" aria-label="Stroke" id="strokes"></div></div>
+      <p class="note">Previews run the React binding live. Each card copies the same component for your framework, spring and stroke included.</p>
+    </div>
+  </aside>
+
+  <div class="cards">
+    <article class="card" data-recipe="copy" data-title="Copy to clipboard">
+      <header><div><h3>Copy to clipboard</h3><p>The most repeated swap in real apps: Copy settles into Check.</p></div></header>
+      <div class="body">
+        <span class="cmd">npm i morphicons<button type="button" class="ghost" id="cmd" aria-label="Copy the install command"></button></span>
+      </div>
+    </article>
+
+    <article class="card" data-recipe="password" data-title="Password visibility">
+      <header><div><h3>Password visibility</h3><p>Eye to EyeOff on the input's trailing button.</p></div></header>
+      <div class="body">
+        <div class="field">
+          <input type="password" name="password" value="correct-horse-battery" aria-label="Password" id="pw">
+          <button type="button" class="eye" id="eye" aria-label="Show password" aria-pressed="false"></button>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-recipe="theme" data-title="Theme toggle">
+      <header><div><h3>Theme toggle</h3><p>Sun to Moon in one slot: no double SVG, no CSS swap.</p></div></header>
+      <div class="body"><button type="button" class="square" id="theme" aria-label="Toggle theme" aria-pressed="false"></button></div>
+    </article>
+
+    <article class="card" data-recipe="player" data-title="Player controls">
+      <header><div><h3>Player controls</h3><p>Play and pause, plus mute on the same cluster.</p></div></header>
+      <div class="body">
+        <div class="player">
+          <div class="meta"><span>ambient-01.wav</span><span class="tnum">3:42</span></div>
+          <div class="track"><i></i></div>
+          <div class="row">
+            <button type="button" class="pp" id="pp" aria-label="Play"></button>
+            <button type="button" class="vol" id="vol" aria-label="Mute" aria-pressed="false"></button>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-recipe="validation" data-title="Inline validation">
+      <header><div><h3>Inline validation</h3><p>The trailing icon tracks the field: Check when valid, X when not.</p></div></header>
+      <div class="body">
+        <div class="field">
+          <input type="email" name="email" placeholder="you@example.com" aria-label="Email" id="email">
+          <span id="mark"></span>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-recipe="tree" data-title="File tree">
+      <header><div><h3>File tree</h3><p>Folders morph open; the disclosure chevron stays CSS.</p></div></header>
+      <div class="body"><div class="tree" id="tree"></div></div>
+    </article>
+  </div>
+</section>
+
+<script src="_morph/morphicons.js"></script>
+<script src="_morph/icons.js"></script>
+<script src="_morph/snippets.js"></script>
+<script>
+(() => {
+  const M = window.Morphicons, D = window.MorphIconData, S = window.MorphSnippets;
+  const $ = (id) => document.getElementById(id);
+
+  const ICONS = [];
+  for (const lib of ["lucide", "heroicons", "tabler"]) for (const [label, data] of D[lib]) ICONS.push({ id: `${lib}:${label}`, label, lib, data });
+  const byId = new Map(ICONS.map((e) => [e.id, e]));
+  const q4 = (d) => d.replace(/-?\d+\.\d+(?:e-?\d+)?/gi, (n) => String(Number(Number(n).toFixed(4))));
+  const dCache = new Map();
+  const dOf = (e) => { let d = dCache.get(e.id); if (!d) { d = typeof e.data === "string" ? e.data : q4(M.cubicsToPathD(M.iconToCubics(e.data))); dCache.set(e.id, d); } return d; };
+  S.init(byId, dOf);
+
+  /* Ordered by how often the swap appears in real shadcn/ui apps: copy 53,
+     eye 41, sun/moon 27, play/pause 21, check/x 8, folder 6. */
+  const LIBS = [{ v: "lucide", label: "Lucide" }, { v: "heroicons", label: "Heroicons" }, { v: "tabler", label: "Tabler" }];
+  const FRAMEWORKS = [{ v: "react", logo: S.REACT_LOGO }, { v: "vue", logo: S.VUE_LOGO }, { v: "svelte", logo: S.SVELTE_LOGO }];
+  const SPRINGS = ["smooth", "snappy", "bouncy"];
+  const STROKES = [1, 1.5, 2, 2.5];
+  const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const st = { lib: "lucide", framework: "react", spring: "snappy", strokeWidth: 2 };
+  const opts = () => ({ lib: st.lib, framework: st.framework, spring: st.spring, strokeWidth: st.strokeWidth });
+
+  /* Icon data from the selected library, as the quantized canonical `d`
+     (strings, verbatim). Switching the library morphs every preview to its
+     counterpart: same label, same 24×24 grid; missing ones fall back to Lucide. */
+  const d = (label) => dOf(byId.get(`${st.lib}:${label}`) ?? byId.get(`lucide:${label}`));
+
+  /* A MorphIcon: <svg> + <path> driven by the DOM driver. `follow` icons take
+     the sidebar's spring and stroke; the card's copy button does not. */
+  const icons = [];
+  function morphIcon(host, { size, icon, sw = 2, spring, follow = true, className = "" }) {
+    host.insertAdjacentHTML("beforeend", `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="${className}"><path/></svg>`);
+    const svg = host.lastElementChild;
+    const m = M.createMorph(svg.firstChild, icon);
+    const h = { svg, m, spring, follow, to(i) { m.morphTo(i, h.follow ? st.spring : h.spring); } };
+    icons.push(h);
+    return h;
+  }
+
+  /* Sidebar: full-width segmented controls. */
+  function seg(host, options, get, set) {
+    host.innerHTML = options.map((o) => `<button type="button" data-v="${o.v}">${o.icon ? `<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="${o.icon}"/></svg>` : ""}${o.label}</button>`).join("");
+    const paint = () => { for (const b of host.children) b.setAttribute("aria-pressed", String(b.dataset.v === String(get()))); };
+    host.onclick = (e) => { const b = e.target.closest("button"); if (!b) return; set(b.dataset.v); paint(); refresh(); };
+    paint();
+  }
+  seg($("libs"), LIBS, () => st.lib, (v) => (st.lib = v));
+  seg($("fws"), FRAMEWORKS.map((f) => ({ v: f.v, label: S.FRAMEWORK_LABEL[f.v], icon: f.logo })), () => st.framework, (v) => (st.framework = v));
+  seg($("springs"), SPRINGS.map((s) => ({ v: s, label: s })), () => st.spring, (v) => (st.spring = v));
+  seg($("strokes"), STROKES.map((s) => ({ v: s, label: String(s) })), () => st.strokeWidth, (v) => (st.strokeWidth = Number(v)));
+
+  /* The card's "get the code" action: copies the generated component and
+     confirms with the library's own Copy → Check morph (lucide, 13px, snappy).
+     The lab runs this in a sandboxed iframe where the async clipboard is
+     refused, so it falls back to execCommand and confirms either way; the
+     only silent case is the source's own — snippet() throwing (Tabler has no
+     `folder`, so the file-tree card with Tabler copies nothing). */
+  const LCOPY = D.extra.Copy, LCHECK = D.extra.Check;
+  const labels = [];
+  for (const card of document.querySelectorAll(".card")) {
+    const btn = document.createElement("button"); btn.type = "button"; btn.className = "snip";
+    card.querySelector("header").appendChild(btn);
+    const ic = morphIcon(btn, { size: 13, icon: LCOPY, spring: "snappy", follow: false });
+    const label = document.createElement("span"); btn.appendChild(label); labels.push({ btn, label, title: card.dataset.title });
+    let timer = 0;
+    btn.onclick = () => {
+      let text;
+      try { text = S.snippet(card.dataset.recipe, opts()); } catch { return; }
+      writeClipboard(text);
+      ic.to(LCHECK);
+      clearTimeout(timer); timer = setTimeout(() => ic.to(LCOPY), 1600);
+    };
+  }
+  function writeClipboard(text) {
+    const legacy = () => { const ta = document.createElement("textarea"); ta.value = text; ta.style.cssText = "position:fixed;opacity:0"; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch {} ta.remove(); };
+    try { navigator.clipboard.writeText(text).catch(legacy); } catch { legacy(); }
+  }
+
+  /* 1 · Copy to clipboard */
+  let cmdCopied = false, cmdTimer = 0;
+  const cmdIcon = morphIcon($("cmd"), { size: 18, icon: d("copy") });
+  $("cmd").onclick = () => {
+    writeClipboard("npm i morphicons");
+    cmdCopied = true; clearTimeout(cmdTimer);
+    cmdTimer = setTimeout(() => { cmdCopied = false; refresh(); }, 1600);
+    refresh();
+  };
+  /* 2 · Password visibility */
+  let visible = false;
+  const eyeIcon = morphIcon($("eye"), { size: 18, icon: d("eye") });
+  $("eye").onclick = () => { visible = !visible; refresh(); };
+  /* 3 · Theme toggle */
+  let dark = false;
+  const themeIcon = morphIcon($("theme"), { size: 20, icon: d("sun") });
+  $("theme").onclick = () => { dark = !dark; refresh(); };
+  /* 4 · Player controls */
+  let playing = false, muted = false;
+  const ppIcon = morphIcon($("pp"), { size: 17, icon: d("play") });
+  const volIcon = morphIcon($("vol"), { size: 17, icon: d("volume") });
+  $("pp").onclick = () => { playing = !playing; refresh(); };
+  $("vol").onclick = () => { muted = !muted; refresh(); };
+  /* 5 · Inline validation — stays mounted so valid ↔ invalid morphs. */
+  const markIcon = morphIcon($("mark"), { size: 18, icon: d("x"), className: "mark off" });
+  $("email").addEventListener("input", refresh);
+
+  /* 6 · File tree — the disclosure chevron rotates in CSS; only the folder morphs. */
+  const rows = [{ name: "components", files: ["button.tsx", "input.tsx", "toggle.tsx"], open: true }, { name: "lib", files: ["utils.ts"], open: false }];
+  for (const r of rows) {
+    const wrap = document.createElement("div");
+    wrap.innerHTML = `<button type="button" class="row" aria-expanded="${r.open}"><svg class="chev" viewBox="0 0 8 10" width="8" height="10" fill="none" aria-hidden="true"><path d="M1.5 1.5 6 5 1.5 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="slot" style="display:contents"></span>${r.name}</button><ul role="list"${r.open ? "" : " hidden"}>${r.files.map((f) => `<li>${f}</li>`).join("")}</ul>`;
+    $("tree").appendChild(wrap);
+    const btn = wrap.firstElementChild, ul = wrap.lastElementChild;
+    r.icon = morphIcon(btn.querySelector(".slot"), { size: 18, icon: d(r.open ? "folder-open" : "folder"), className: "fold" });
+    btn.onclick = () => { r.open = !r.open; btn.setAttribute("aria-expanded", String(r.open)); ul.hidden = !r.open; refresh(); };
+  }
+
+  function refresh() {
+    for (const h of icons) if (h.follow) h.svg.setAttribute("stroke-width", String(st.strokeWidth));
+    for (const l of labels) { l.label.textContent = S.FRAMEWORK_LABEL[st.framework]; l.btn.setAttribute("aria-label", `Copy the ${l.title} component for ${S.FRAMEWORK_LABEL[st.framework]}`); }
+    cmdIcon.to(cmdCopied ? d("check") : d("copy"));
+    $("cmd").setAttribute("aria-label", cmdCopied ? "Copied" : "Copy the install command");
+    $("pw").type = visible ? "text" : "password";
+    $("eye").setAttribute("aria-label", visible ? "Hide password" : "Show password");
+    $("eye").setAttribute("aria-pressed", String(visible));
+    eyeIcon.to(visible ? d("eye-off") : d("eye"));
+    $("theme").setAttribute("aria-pressed", String(dark));
+    themeIcon.to(dark ? d("moon") : d("sun"));
+    $("pp").setAttribute("aria-label", playing ? "Pause" : "Play");
+    ppIcon.to(playing ? d("pause") : d("play"));
+    $("vol").setAttribute("aria-label", muted ? "Unmute" : "Mute");
+    $("vol").setAttribute("aria-pressed", String(muted));
+    volIcon.to(muted ? d("volume-x") : d("volume"));
+    const email = $("email").value;
+    markIcon.to(EMAIL.test(email) ? d("check") : d("x"));
+    markIcon.svg.classList.toggle("off", !email);
+    for (const r of rows) r.icon.to(d(r.open ? "folder-open" : "folder"));
+  }
+  refresh();
+
+  /* `?demo` only (the lab's showcase recording): the source has no autoplay,
+     so the recorder gets a scripted pass over the six cards instead. */
+  if (/[?&]demo\b/.test(location.search)) {
+    const seq = [
+      [500, () => $("eye").click()], [1300, () => $("theme").click()], [2000, () => $("pp").click()], [2600, () => $("vol").click()],
+      [3300, () => typeIn("hi@mind")], [4300, () => typeIn("hi@mind.studio")], [5000, () => document.querySelectorAll(".tree .row")[1].click()],
+      [5600, () => $("cmd").click()], [6400, () => $("libs").querySelector('[data-v="heroicons"]').click()], [7800, () => $("libs").querySelector('[data-v="lucide"]').click()],
+    ];
+    function typeIn(v) { const el = $("email"); el.value = v; el.dispatchEvent(new Event("input")); }
+    for (const [ms, fn] of seq) setTimeout(fn, ms);
+  }
+})();
+</script>
+</body>
+</html>

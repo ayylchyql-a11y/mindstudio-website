@@ -78,7 +78,8 @@ export default async function LabCategoryPage({ params, full }: { params: Catego
                 <EffectVideo
                   src={videoPath(e)}
                   poster={posterPath(e)}
-                  height={e.height}
+                  height={e.previewHeight ?? e.height}
+                  top={e.previewHeight !== undefined}
                   title={pick(e.title, lang)}
                   accent={e.accent}
                 />
