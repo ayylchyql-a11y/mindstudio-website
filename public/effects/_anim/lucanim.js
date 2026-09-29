@@ -138,6 +138,57 @@ window.LucAnim = (() => {
       "morph-pause": { morph: true } } },
   };
 
+  /* ── generic motions: any Lucide icon, no knowledge of its parts ──
+     Eight kinds (pop, wiggle, jump, turn, redraw, cascade, float, breathe) plus
+     a directional nudge for icons whose name says where they point. The default
+     is picked from the name; icons with a custom motion keep theirs. */
+  const GENERIC = ["hover-pop", "hover-wiggle", "hover-jump", "hover-turn", "hover-redraw", "hover-cascade", "loop-float", "loop-breathe"];
+  // real Lucide names when the full data is loaded ("AArrowDown" is a-arrow-down, which no regex can know)
+  const NAMES = new Map((window.LucAnimMeta?.list || []).map(([n]) => [n.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(""), n]));
+  const kebab = (k) => NAMES.get(k) || k.replace(/([a-z])([A-Z0-9])/g, "$1-$2").replace(/([0-9])([A-Za-z])/g, "$1-$2").toLowerCase();
+  function directionOf(words) {
+    if (!words.some((w) => /^(arrow|arrows|chevron|chevrons|move|corner|trending|log|redo|undo|forward|reply|navigation|send|square|circle)$/.test(w))) return null;
+    if (!words.some((w) => /^(arrow|arrows|chevron|chevrons|move|corner|trending|log|redo|undo|forward|reply|navigation)$/.test(w))) return null;
+    let dx = 0, dy = 0;
+    for (const w of words) { if (!dx && w === "right") dx = 1; if (!dx && w === "left") dx = -1; if (!dy && w === "up") dy = -1; if (!dy && w === "down") dy = 1; }
+    if (words[0] === "trending" && !dx) dx = 1;
+    if (words[0] === "log" && words[1] === "in") dx = 1;
+    if (words[0] === "log" && words[1] === "out") dx = 1;
+    if (words[0] === "redo" || words[0] === "forward") dx = dx || 1;
+    if (words[0] === "undo" || words[0] === "reply") dx = dx || -1;
+    return dx || dy ? [dx, dy] : null;
+  }
+  function genericStates(key, nParts) {
+    const words = kebab(key).split("-"), dir = directionOf(words);
+    const st = {
+      "hover-pop": { d: 700, peak: 0.3, tracks: [track("all", [12, 12], [S(0, 1), S(0.3, 1.18), S(0.55, 0.94), S(0.8, 1.04), S(1, 1)])] },
+      "hover-wiggle": { d: 750, peak: 0.15, tracks: [track("all", [12, 12], [R(0, 0), R(0.15, -12), R(0.35, 10), R(0.55, -7), R(0.75, 4), R(1, 0)])] },
+      "hover-jump": { d: 800, peak: 0.35, tracks: [track("all", [12, 22], [f(0, "translate(0px,0px) scale(1,1)"), f(0.35, "translate(0px,-3.5px) scale(0.96,1.04)"), f(0.6, "translate(0px,0px) scale(1.06,0.92)"), f(0.8, "translate(0px,-0.6px) scale(0.99,1.01)"), f(1, "translate(0px,0px) scale(1,1)")])] },
+      "hover-turn": { d: 900, peak: 0.5, tracks: [track("all", [12, 12], [R(0, 0), R(1, 360)], { ease: EO })] },
+      "hover-redraw": { d: 650, peak: 1, redraw: true },
+      "hover-cascade": { d: 520, peak: 0.35, tracks: [track("each", "self", [f(0, "translate(0px,0px) scale(1)"), f(0.35, "translate(0px,-2.4px) scale(1.08)"), f(0.7, "translate(0px,0.5px) scale(0.98)"), f(1, "translate(0px,0px) scale(1)")], { stagger: 60 })] },
+      "loop-float": { d: 2200, loop: 0, tracks: [track("all", [12, 12], [TR(0, 0, 0), TR(0.5, 0, -1.6), TR(1, 0, 0)])] },
+      "loop-breathe": { d: 2600, loop: 0, tracks: [track("all", [12, 12], [f(0, "scale(1)", { opacity: 1 }), f(0.5, "scale(1.07)", { opacity: 0.7 }), f(1, "scale(1)", { opacity: 1 })])] },
+    };
+    if (dir) { const [x, y] = dir; st["hover-nudge"] = { d: 700, peak: 0.3, tracks: [track("all", [12, 12], [TR(0, 0, 0), TR(0.3, 3 * x, 3 * y), TR(0.55, -0.8 * x, -0.8 * y), TR(0.8, 0.5 * x, 0.5 * y), TR(1, 0, 0)])] }; }
+    const has = (re) => re.test(words.join("-"));
+    const def = dir ? "hover-nudge"
+      : has(/(refresh|rotate|loader|repeat|iteration|fan|orbit|disc|cog|settings|cycle|recycle|circle-dashed|aperture|ferris)/) ? "hover-turn"
+      : has(/(bell|alarm|vibrate|megaphone|siren|phone-call|bug)/) ? "hover-wiggle"
+      : has(/(heart|star|sparkle|badge|award|gem|crown|smile|thumbs|party|trophy|medal)/) ? "hover-pop"
+      : nParts >= 3 ? "hover-cascade" : "hover-jump";
+    return { st, def };
+  }
+  const defCache = new Map();
+  function defOf(key) {
+    let d = defCache.get(key); if (d) return d;
+    const custom = DEF[key], nParts = (N[key] || []).length;
+    const g = genericStates(key, custom?.morph ? 1 : nParts);
+    if (custom) d = { ...custom, custom: Object.keys(custom.states), states: { ...custom.states, ...Object.fromEntries(Object.entries(g.st).filter(([k]) => !custom.states[k])) } };
+    else d = { label: kebab(key), def: g.def, custom: [], states: g.st };
+    defCache.set(key, d); return d;
+  }
+
   const STROKES = { light: 1.5, regular: 2, bold: 2.5 };
   const TRIGGERS = ["in", "click", "hover", "loop", "loop-on-hover", "morph", "boomerang", "sequence"];
   const reduced = () => reduceQ.matches;
@@ -154,7 +205,7 @@ window.LucAnim = (() => {
 
     function build() {
       g.replaceChildren(); parts = []; morph?.destroy(); morph = null; cancel();
-      def = DEF[o.icon];
+      def = defOf(o.icon);
       if (def.morph) {
         const p = document.createElementNS(NS, "path"); g.appendChild(p);
         morph = window.Morphicons.createMorph(p, N[o.icon]); parts = [p];
@@ -170,7 +221,7 @@ window.LucAnim = (() => {
       parts.forEach((p, i) => { if (!morph && o.secondary && (def.accent || []).includes(i)) p.setAttribute("stroke", o.secondary); else p.removeAttribute("stroke"); });
     }
     const stateName = () => (o.state && (o.state === "in-reveal" || def.states[o.state]) ? o.state : o.trigger === "in" ? "in-reveal" : def.def);
-    const targetsOf = (t) => (t.parts === "all" ? [g] : t.parts.map((i) => parts[i]).filter(Boolean));
+    const targetsOf = (t) => (t.parts === "all" ? [g] : t.parts === "each" ? parts : t.parts.map((i) => parts[i]).filter(Boolean));
 
     function cancel() { gen++; for (const a of running) a.cancel(); running = []; for (const p of parts) { p.removeAttribute("pathLength"); } }
 
@@ -184,16 +235,18 @@ window.LucAnim = (() => {
         morph.morphTo(N[def.morph], "smooth");
         return hold ? Promise.resolve() : sleep(650 / o.speed).then(() => { if (my === gen) { morph.morphTo(N[o.icon], "smooth"); return sleep(650 / o.speed); } });
       }
+      if (st.redraw) return reveal(my);
       if (reduced()) return Promise.resolve();
       const loop = iterations === Infinity;
       for (const t of st.tracks) {
-        for (const el of targetsOf(t)) {
-          if (t.origin) { el.style.transformBox = "view-box"; el.style.transformOrigin = `${t.origin[0]}px ${t.origin[1]}px`; }
+        targetsOf(t).forEach((el, i) => {
+          if (t.origin === "self") { el.style.transformBox = "fill-box"; el.style.transformOrigin = "center"; }
+          else if (t.origin) { el.style.transformBox = "view-box"; el.style.transformOrigin = `${t.origin[0]}px ${t.origin[1]}px`; }
           if (t.dash) el.setAttribute("pathLength", "1");
           const frames = t.frames.map((k) => ({ easing: st.linear ? "linear" : t.ease || EIO, ...k }));
-          const a = el.animate(frames, { duration: st.d, delay: t.delay || 0, endDelay: loop ? st.loop || 0 : 0, iterations, fill: hold ? "forwards" : "none", easing: "linear" });
+          const a = el.animate(frames, { duration: st.d, delay: (t.delay || 0) + (t.stagger || 0) * i, endDelay: loop ? st.loop || 0 : 0, iterations, fill: hold ? "forwards" : "none", easing: "linear" });
           a.playbackRate = o.speed; running.push(a);
-        }
+        });
       }
       if (hold) {
         // play to the state's peak and rest there (morph / hold-style triggers)
@@ -253,7 +306,7 @@ window.LucAnim = (() => {
         case "in": case "sequence": {
           io = new IntersectionObserver((es) => { if (!es.some((e) => e.isIntersecting)) return; io.disconnect(); io = null;
             if (o.trigger === "in") run("in-reveal");
-            else (async () => { const me = session; await run("in-reveal"); const hov = def.states[def.def]?.morph ? def.def : Object.keys(def.states).find((k) => k.startsWith("hover-")) || def.def; while (me === session) { await sleep(500 / o.speed); if (me !== session) break; await run(hov); await sleep(900 / o.speed); } })();
+            else (async () => { const me = session; await run("in-reveal"); const hov = def.states[def.def]?.morph || def.def.startsWith("hover-") ? def.def : Object.keys(def.states).find((k) => k.startsWith("hover-")) || def.def; while (me === session) { await sleep(500 / o.speed); if (me !== session) break; await run(hov); await sleep(900 / o.speed); } })();
           }, { threshold: 0.5 });
           io.observe(host); break;
         }
@@ -274,5 +327,10 @@ window.LucAnim = (() => {
     };
   }
 
-  return { mount, DEF, TRIGGERS, STROKES, icons: () => Object.keys(DEF).map((k) => ({ key: k, label: DEF[k].label, def: DEF[k].def, states: ["in-reveal", ...Object.keys(DEF[k].states)], morph: !!DEF[k].morph })) };
+  const info = (k) => { const d = defOf(k); return { key: k, label: d.label, def: d.def, states: ["in-reveal", ...Object.keys(d.states)], custom: d.custom, morph: !!d.morph }; };
+  return { mount, DEF, TRIGGERS, STROKES, GENERIC, info, kebab,
+    /* icons with a custom motion (the curated set) */
+    icons: () => Object.keys(DEF).filter((k) => N[k]).map(info),
+    /* every icon in the loaded data, custom or not */
+    all: () => Object.keys(N) };
 })();

@@ -10,7 +10,7 @@
   .lib { max-width: 1152px; margin: 0 auto; }
   .lib .card { box-shadow: var(--shadow-card-lg); }
   .cols { display: grid; }
-  @media (min-width: 1024px) { .cols { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); } .cols .editor { order: 2; border-left: 1px solid var(--hairline); border-bottom: 0; } }
+  @media (min-width: 1024px) { .cols { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); } .pane { height: auto; flex: 1 1 0; min-height: 420px; } .cols .editor { order: 2; border-left: 1px solid var(--hairline); border-bottom: 0; } }
 
   /* ── editor ── */
   .editor { display: flex; flex-direction: column; border-bottom: 1px solid var(--hairline); }
@@ -41,17 +41,41 @@
   .code .k { color: #c084fc; } .code .s { color: #4cc2b6; } .code .n { color: #f5a623; }
 
   /* ── grid ── */
-  .gridside { display: flex; flex-direction: column; gap: 14px; padding: 20px 24px 24px; }
-  .gridside .top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .gridside { display: flex; flex-direction: column; min-width: 0; }
+  .gridside .top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 18px 20px 0; }
   .gridside h3 { font-size: 14px; line-height: 20px; font-weight: 500; }
-  .gridside .top span { font-size: 12.5px; color: var(--mute); }
-  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 6px; }
-  .tile { display: flex; flex-direction: column; align-items: center; gap: 8px; border-radius: 10px; border: 1px solid transparent; padding: 14px 4px 10px; color: var(--body); transition: color .15s, background-color .15s, border-color .15s; }
+  .gridside .top span { font-size: 12.5px; color: var(--mute); font-variant-numeric: tabular-nums; }
+  .tools { display: flex; gap: 8px; padding: 12px 20px 0; }
+  .search { position: relative; flex: 1; min-width: 0; }
+  .search svg { position: absolute; left: 10px; top: 50%; translate: 0 -50%; width: 15px; height: 15px; color: var(--mute); pointer-events: none; }
+  .search input { width: 100%; height: 32px; border-radius: 6px; border: 1px solid var(--hairline); background: var(--canvas); padding: 0 10px 0 32px; font-size: 13px; color: var(--ink); }
+  .search input::placeholder { color: var(--mute); }
+  .search input:focus { outline: 2px solid var(--link); outline-offset: -1px; border-color: transparent; }
+  .tools .segf { flex: none; margin-top: 0; }
+  .tools .segf button { padding: 0 10px; white-space: nowrap; }
+  .tools .segf .dot { color: var(--link); margin-right: 4px; }
+  .cats { display: flex; gap: 6px; overflow-x: auto; padding: 10px 20px 12px; scrollbar-width: none; border-bottom: 1px solid var(--hairline); }
+  .cats::-webkit-scrollbar { display: none; }
+  .cats { mask-image: linear-gradient(90deg, #000 calc(100% - 40px), transparent); }
+  .cats button { flex: none; height: 26px; border-radius: 9999px; border: 1px solid var(--hairline); background: var(--canvas); padding: 0 10px; font-size: 12px; color: var(--body); transition: color .15s, background-color .15s, border-color .15s; }
+  .cats button:hover { background: var(--canvas-soft-2); color: var(--ink); }
+  .cats button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--canvas); }
+  .pane { height: 560px; overflow-y: auto; overscroll-behavior: contain; padding: 12px 14px 16px 20px; scrollbar-gutter: stable; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 4px; }
+  .tile { position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; border-radius: 10px; border: 1px solid transparent; padding: 14px 4px 10px; color: var(--body); transition: color .15s, background-color .15s, border-color .15s; }
   .tile:hover { border-color: var(--hairline); color: var(--ink); }
   .tile[aria-pressed="true"] { border-color: var(--hairline); background: var(--canvas-soft-2); color: var(--ink); }
-  .tile span { font-family: var(--mono); font-size: 10.5px; line-height: 14px; color: var(--mute); }
-  .tile .m { font-size: 9px; color: var(--link); margin-left: 3px; }
-  .foot { font-size: 12.5px; color: var(--mute); }
+  .tile i { display: block; width: 28px; height: 28px; }
+  .tile i svg { display: block; }
+  .tile span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--mono); font-size: 10.5px; line-height: 14px; color: var(--mute); }
+  .tile .c { position: absolute; right: 8px; top: 8px; width: 6px; height: 6px; border-radius: 9999px; background: var(--link); }
+  .empty { padding: 48px 0; text-align: center; font-size: 13px; color: var(--mute); }
+  .foot { border-top: 1px solid var(--hairline); padding: 10px 20px; font-size: 12px; line-height: 17px; color: var(--mute); }
+  .foot .c { display: inline-block; width: 6px; height: 6px; border-radius: 9999px; background: var(--link); margin: 0 2px 1px; }
+  .grp { display: flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 11px; color: var(--mute); }
+  .grp:first-child { margin-top: 8px; }
+  .grp .c { width: 6px; height: 6px; border-radius: 9999px; background: var(--link); }
+  .chips.sub { margin-top: 6px; }
 </style>
 </head>
 <body>
@@ -66,7 +90,7 @@
           <button type="button" class="btn replay" id="replay">Replay</button>
         </div>
         <div class="ctrl">
-          <div class="wide"><span class="caps">Animation</span><div class="chips" id="states"></div></div>
+          <div class="wide"><span class="caps">Animation</span><div id="states"></div></div>
           <div class="wide"><span class="caps">Trigger</span><div class="trig" id="trig"></div></div>
           <div><span class="caps">Stroke</span><div class="segf" id="stroke">
             <button type="button" data-v="light">light</button><button type="button" data-v="regular">regular</button><button type="button" data-v="bold">bold</button></div></div>
@@ -81,68 +105,130 @@
       </div>
       <div class="gridside">
         <div class="top"><h3>Lucide, animated</h3><span id="count"></span></div>
-        <div class="tiles" id="tiles"></div>
-        <p class="foot">Hover a tile to play its motion, click it to open it in the editor. Morph icons (<span style="color:var(--link)">●</span>) switch between two Lucide shapes.</p>
+        <div class="tools">
+          <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input id="q" type="search" placeholder="Search icons and tags" autocomplete="off" spellcheck="false" aria-label="Search icons"></label>
+          <div class="segf" id="only"><button type="button" data-v="all">All</button><button type="button" data-v="custom"><span class="dot">●</span>Custom</button></div>
+        </div>
+        <div class="cats" id="cats" aria-label="Categories"></div>
+        <div class="pane" id="pane"><div class="tiles" id="tiles"></div><p class="empty" id="empty" hidden>No icon matches.</p></div>
+        <p class="foot">Hover a tile to play it, click to open it in the editor. <span class="c"></span> marks a motion written for that icon; every other icon uses the generic set.</p>
       </div>
     </div>
   </div>
 </section>
 
 <script src="_morph/morphicons.js"></script>
-<script src="_anim/icons.js"></script>
+<script src="_anim/lucide-all.js"></script>
 <script src="_anim/lucanim.js"></script>
 <script>
 (() => {
   const A = window.LucAnim, $ = (id) => document.getElementById(id);
-  const ICONS = A.icons();
+  const META = window.LucAnimMeta;
+  const pascal = (k) => k.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join("");
+  const CUSTOM = new Set(A.icons().map((i) => i.key));
+  /* every icon: key, kebab name, category indexes, search text */
+  const ALL = META.list.map(([name, cats, tags]) => ({ key: pascal(name), name, cats, text: `${name} ${tags}` }));
+  const infoCache = new Map(), info = (k) => infoCache.get(k) || (infoCache.set(k, A.info(k)), infoCache.get(k));
   const PRIM = ["", "#2563eb", "#7c3aed", "#059669", "#ea580c"];      // "" = ink (currentColor)
   const SEC = ["", "#0070f3", "#f59e0b", "#10b981", "#ef4444"];        // "" = no second colour
   const HINT = { in: "Plays once when it scrolls into view", click: "Click the stage", hover: "Hover the stage", loop: "Plays by itself", "loop-on-hover": "Loops while hovered", morph: "Hover to change, leave to go back", boomerang: "Hover: there and back", sequence: "Draws in, then repeats its motion" };
   const st = { icon: "Bell", state: "loop-ring", trigger: "loop", stroke: "regular", speed: 1, primary: "", secondary: "#0070f3" };
+  const view = { q: "", cat: -1, only: "all" };
 
   /* the big preview: the stage itself is the trigger target */
   const big = A.mount($("big"), { icon: st.icon, size: 112, trigger: st.trigger, state: st.state, stroke: st.stroke, speed: st.speed, primary: st.primary, secondary: st.secondary, target: $("stage") });
 
-  /* tiles: hover plays the icon's default motion; the tile is the target */
-  const tiles = [];
-  for (const ic of ICONS) {
-    const b = document.createElement("button"); b.type = "button"; b.className = "tile"; b.dataset.k = ic.key;
-    b.innerHTML = `<i></i><span>${ic.label}${ic.morph ? '<b class="m">●</b>' : ""}</span>`;
-    $("tiles").appendChild(b);
-    const c = A.mount(b.querySelector("i"), { icon: ic.key, size: 28, trigger: "hover", target: b });
-    tiles.push({ b, c, ic });
-    b.onclick = () => select(ic.key);
+  /* Tiles are plain static SVG until first hovered; only then do they get a
+     player. 1,756 players up front would be 1,756 sets of listeners for nothing. */
+  const ATTR = (a) => Object.entries(a).map(([k, v]) => `${k}="${v}"`).join(" ");
+  const staticSvg = (k) => `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="overflow:visible">${window.LucAnimIcons[k].map(([t, a]) => `<${t} ${ATTR(a)}/>`).join("")}</svg>`;
+  const tileOf = new Map();                      // key -> { b, c }
+  function player(key) {
+    const t = tileOf.get(key); if (!t) return null;
+    if (!t.c) { const i = t.b.querySelector("i"); i.replaceChildren(); t.c = A.mount(i, { icon: key, size: 28, trigger: "hover", target: t.b }); }
+    return t.c;
   }
-  $("count").textContent = `${ICONS.length} icons · ${ICONS.reduce((n, i) => n + i.states.length, 0)} animations`;
-  // the library draws itself in once, tile by tile
-  tiles.forEach((t, i) => setTimeout(() => t.c.play("in-reveal"), 120 + i * 45));
+  function makeTile(ic) {
+    const b = document.createElement("button"); b.type = "button"; b.className = "tile"; b.dataset.k = ic.key; b.title = ic.name;
+    b.innerHTML = `<i>${staticSvg(ic.key)}</i><span>${ic.name}</span>${CUSTOM.has(ic.key) ? '<b class="c" aria-label="custom motion"></b>' : ""}`;
+    b.setAttribute("aria-pressed", String(ic.key === st.icon));
+    b.addEventListener("pointerenter", () => { const had = tileOf.get(ic.key).c; const c = player(ic.key); if (!had) c.play(); });
+    b.onclick = () => select(ic.key);
+    const t = { b, c: null }; tileOf.set(ic.key, t); return b;
+  }
+
+  /* filtered list, rendered in pages of 120 as the pane scrolls */
+  let shown = [], drawn = 0;
+  const PAGE = 120, sentinel = document.createElement("div");
+  function matches(ic) {
+    if (view.only === "custom" && !CUSTOM.has(ic.key)) return false;
+    if (view.cat >= 0 && !ic.cats.includes(view.cat)) return false;
+    if (!view.q) return true;
+    return view.q.split(/\s+/).every((w) => ic.text.includes(w));
+  }
+  function render() {
+    for (const t of tileOf.values()) t.c?.destroy();
+    tileOf.clear(); $("tiles").replaceChildren(); drawn = 0;
+    shown = ALL.filter(matches);
+    // custom motions first while browsing; plain A–Z once you search
+    if (!view.q) shown.sort((x, y) => CUSTOM.has(y.key) - CUSTOM.has(x.key));
+    $("empty").hidden = shown.length > 0;
+    $("pane").scrollTop = 0;
+    more();
+    const n = shown.length;
+    $("count").textContent = view.q || view.cat >= 0 || view.only === "custom" ? `${n.toLocaleString("en")} of ${ALL.length.toLocaleString("en")}` : `${ALL.length.toLocaleString("en")} icons · ${CUSTOM.size} custom`;
+  }
+  function more() {
+    const frag = document.createDocumentFragment();
+    for (const ic of shown.slice(drawn, drawn + PAGE)) frag.appendChild(makeTile(ic));
+    drawn = Math.min(shown.length, drawn + PAGE);
+    $("tiles").appendChild(frag);
+    if (drawn < shown.length) $("tiles").after(sentinel); else sentinel.remove();
+  }
+  new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) more(); }, { root: $("pane"), rootMargin: "400px" }).observe(sentinel);
+
+  $("cats").innerHTML = `<button type="button" data-v="-1">All</button>` + META.cats.map((c, i) => [c, i]).sort((a, b) => a[0].localeCompare(b[0])).map(([c, i]) => `<button type="button" data-v="${i}">${c.replace(/-/g, " ")}</button>`).join("");
+  const syncFilters = () => {
+    for (const b of $("cats").children) b.setAttribute("aria-pressed", String(Number(b.dataset.v) === view.cat));
+    for (const b of $("only").children) b.setAttribute("aria-pressed", String(b.dataset.v === view.only));
+  };
+  $("cats").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; view.cat = Number(b.dataset.v); syncFilters(); render(); };
+  $("only").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; view.only = b.dataset.v; syncFilters(); render(); };
+  let qt = 0;
+  $("q").addEventListener("input", () => { clearTimeout(qt); qt = setTimeout(() => { view.q = $("q").value.trim().toLowerCase(); render(); }, 120); });
+  syncFilters(); render();
+  // the first screen of the library draws itself in once, tile by tile
+  [...tileOf.keys()].slice(0, 36).forEach((k, i) => setTimeout(() => player(k)?.play("in-reveal"), 120 + i * 40));
 
   function select(key) {
-    const ic = ICONS.find((i) => i.key === key);
+    const ic = info(key);
     st.icon = key;
     st.state = st.trigger === "in" ? "in-reveal" : ic.states.includes(st.state) ? st.state : pickFor(ic, st.trigger);
     apply();
   }
   function pickFor(ic, trig) {
     const by = (p) => ic.states.find((s) => s.startsWith(p));
-    if (trig === "loop") return by("loop-") || ic.def;
+    if (trig === "loop") return (ic.custom.length ? ic.custom.find((s) => s.startsWith("loop-")) : null) || by("loop-") || ic.def;
     if (trig === "morph" || trig === "boomerang") return by("morph-") || ic.def;
     if (trig === "in") return "in-reveal";
     return ic.def;
   }
   function apply() {
-    const ic = ICONS.find((i) => i.key === st.icon);
+    const ic = info(st.icon);
     big.set({ icon: st.icon, state: st.state, trigger: st.trigger, stroke: st.stroke, speed: st.speed, primary: st.primary, secondary: st.secondary });
     $("who").textContent = ic.label; $("st").textContent = st.state;
     $("hint").textContent = HINT[st.trigger];
     $("stage").classList.toggle("in", st.trigger === "in" || st.trigger === "sequence");
-    $("states").innerHTML = ic.states.map((s) => `<button type="button" data-v="${s}" aria-pressed="${s === st.state}">${s}</button>`).join("");
+    const chip = (s) => `<button type="button" data-v="${s}" aria-pressed="${s === st.state}">${s}</button>`;
+    const own = ic.custom, gen = ic.states.filter((s) => !own.includes(s));
+    $("states").innerHTML = (own.length ? `<div class="grp"><span class="c"></span>Written for ${ic.label}</div><div class="chips sub">${own.map(chip).join("")}</div><div class="grp">Generic</div>` : "") + `<div class="chips sub">${gen.map(chip).join("")}</div>`;
     for (const b of $("trig").children) b.setAttribute("aria-pressed", String(b.dataset.v === st.trigger));
     for (const b of $("stroke").children) b.setAttribute("aria-pressed", String(b.dataset.v === st.stroke));
     for (const b of $("speed").children) b.setAttribute("aria-pressed", String(Number(b.dataset.v) === st.speed));
     for (const b of $("prim").children) b.setAttribute("aria-pressed", String(b.dataset.v === st.primary));
     for (const b of $("sec").children) b.setAttribute("aria-pressed", String(b.dataset.v === st.secondary));
-    for (const t of tiles) t.b.setAttribute("aria-pressed", String(t.ic.key === st.icon));
+    for (const [k, t] of tileOf) t.b.setAttribute("aria-pressed", String(k === st.icon));
     const q = (v) => `<span class="s">"${v}"</span>`;
     $("code").innerHTML = `LucAnim.<span class="k">mount</span>(el, {\n  icon: ${q(st.icon)}, trigger: ${q(st.trigger)},\n  state: ${q(st.state)}, stroke: ${q(st.stroke)}, speed: <span class="n">${st.speed}</span>${st.primary ? `,\n  primary: ${q(st.primary)}` : ""}${st.secondary ? `,\n  secondary: ${q(st.secondary)}` : ""}\n});`;
   }
@@ -152,7 +238,7 @@
   $("sec").innerHTML = SEC.map((c) => `<button type="button" data-v="${c}" aria-label="secondary ${c || "none"}" class="${c ? "" : "none"}" style="${c ? `background:${c}` : ""}"></button>`).join("");
   const pick = (id, fn) => ($(id).onclick = (e) => { const b = e.target.closest("button"); if (b) { fn(b.dataset.v); apply(); } });
   pick("states", (v) => (st.state = v));
-  pick("trig", (v) => { st.trigger = v; st.state = pickFor(ICONS.find((i) => i.key === st.icon), v); });
+  pick("trig", (v) => { st.trigger = v; st.state = pickFor(info(st.icon), v); });
   pick("stroke", (v) => (st.stroke = v));
   pick("speed", (v) => (st.speed = Number(v)));
   pick("prim", (v) => (st.primary = v));
@@ -162,9 +248,13 @@
 
   /* ?demo (the lab's recording only): walk a few tiles and triggers */
   if (/[?&]demo\b/.test(location.search)) {
-    const hover = (k) => tiles.find((t) => t.ic.key === k).c.play();
-    const seq = [[1400, () => hover("Trash2")], [2000, () => hover("Send")], [2600, () => hover("Download")], [3200, () => { select("Lock"); st.trigger = "boomerang"; st.state = "morph-unlock"; apply(); big.play(); }],
-      [4600, () => { select("Settings"); st.trigger = "loop"; st.state = "loop-spin"; apply(); }], [6200, () => { select("Sparkles"); st.trigger = "loop"; st.state = "loop-twinkle"; st.secondary = "#f59e0b"; apply(); }], [7600, () => hover("House")]];
+    const hover = (k) => player(k)?.play();
+    const search = (q) => { $("q").value = q; view.q = q; render(); };
+    const arrows = () => [...tileOf.keys()].slice(0, 12).forEach((k, i) => setTimeout(() => hover(k), i * 110));
+    const seq = [[1300, () => hover("Trash2")], [1800, () => hover("Send")], [2300, () => hover("Download")],
+      [2900, () => search("arrow")], [3300, arrows],
+      [5000, () => { search(""); select("Lock"); st.trigger = "boomerang"; st.state = "morph-unlock"; apply(); big.play(); }],
+      [6400, () => { select("Sparkles"); st.trigger = "loop"; st.state = "loop-twinkle"; st.secondary = "#f59e0b"; apply(); }], [7600, () => hover("House")]];
     for (const [ms, fn] of seq) setTimeout(fn, ms);
   }
 })();
