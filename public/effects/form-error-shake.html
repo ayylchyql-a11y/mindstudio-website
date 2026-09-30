@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Form error · shake, red, a line underneath</title>
+<link rel="stylesheet" href="_glass/glass.css">
+<style>
+  :root { --err: #e8765f; --ok: #e7c27a; }
+  .card { height: 262px; display: flex; flex-direction: column; }
+  form { flex: 1; display: flex; flex-direction: column; margin-top: 14px; }
+  .fld { position: relative; }
+  .fld + .fld { margin-top: 9px; }
+  .box { position: relative; display: block; height: 40px; border-radius: 11px; transition: border-color .2s, box-shadow .2s; cursor: text; }
+  .box input { position: absolute; inset: 0; width: 100%; padding: 17px 36px 0 14px; border: 0; background: none; outline: none; color: #fff; font: 600 14px/1 "Inter", system-ui, sans-serif; }
+  .box .lb { position: absolute; left: 14px; top: 12px; font-size: 14px; font-weight: 500; color: rgb(255 255 255 / .82); pointer-events: none; transform-origin: left top;
+    transition: transform .2s var(--ease), letter-spacing .2s, font-weight .2s; }
+  /* the placeholder becomes the label: small caps above the value once there is a value or focus */
+  .box.up .lb { transform: translateY(-7px) scale(.62); letter-spacing: .14em; text-transform: uppercase; font-weight: 700; }
+  .box:not(.up) input { padding-top: 0; }
+  .box.focus { border-color: rgb(231 194 122 / .9); box-shadow: 0 0 0 .5px rgb(231 194 122 / .9); }
+  .fld.bad .box { border-color: var(--err); box-shadow: 0 0 0 .5px var(--err); }
+  .ico { position: absolute; right: 12px; top: 12px; width: 16px; height: 16px; color: var(--err); opacity: 0; transform: scale(.5); transition: opacity .2s, transform .3s var(--spring); pointer-events: none; }
+  .fld.bad .ico { opacity: 1; transform: none; }
+  .msg { overflow: hidden; height: 0; transition: height .26s var(--ease); }
+  .msg span { display: block; padding: 5px 0 0 14px; font-size: 11px; font-weight: 600; color: #f39a86; transform: translateY(-8px); opacity: 0; transition: transform .26s var(--ease), opacity .2s; }
+  .fld.bad .msg { height: 21px; } .fld.bad .msg span { transform: none; opacity: 1; }
+  .shake { animation: shake .42s cubic-bezier(.36, .07, .19, .97); }
+  @keyframes shake { 0%, 100% { transform: none; } 15% { transform: translateX(-6px); } 30% { transform: translateX(5px); } 45% { transform: translateX(-4px); } 60% { transform: translateX(3px); } 75% { transform: translateX(-1.5px); } }
+  .submit { margin-top: auto; height: 36px; border-radius: 18px; background: #fbf9fa; color: #1c181e; font-size: 13px; font-weight: 700; transition: transform .12s; }
+  .submit:active { transform: scale(.98); }
+  .sent { position: absolute; inset: 0; display: grid; place-items: center; font-size: 15px; font-weight: 600; background: rgb(40 36 34 / .6); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity .25s; border-radius: inherit; }
+  .sent.on { opacity: 1; }
+</style>
+</head>
+<body>
+<main class="card" aria-label="Join the tour">
+  <header><h2>Join the tour</h2><p>Your details</p></header>
+  <form id="f" novalidate>
+    <div class="fld"><label class="box glass-row up"><span class="lb">Name</span><input name="name" value="Mia" autocomplete="off"></label><div class="msg"><span>Tell us your name</span></div>
+      <svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8" cy="8" r="6.4"/><path d="M8 4.8v3.6M8 11h.01"/></svg></div>
+    <div class="fld"><label class="box glass-row"><span class="lb">Group size</span><input name="size" inputmode="numeric" autocomplete="off" aria-describedby="m2"></label><div class="msg"><span id="m2">Tell us how many people are coming</span></div>
+      <svg class="ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8" cy="8" r="6.4"/><path d="M8 4.8v3.6M8 11h.01"/></svg></div>
+    <button class="submit" type="submit">Submit</button>
+  </form>
+  <div class="sent" id="sent" aria-live="polite">See you on the tour, Mia</div>
+</main>
+<script>
+(() => {
+  const f = document.getElementById("f"), flds = [...f.querySelectorAll(".fld")];
+  const valid = (inp) => (inp.name === "size" ? /^\s*[1-9]\d?\s*$/.test(inp.value) : inp.value.trim().length > 0);
+  flds.forEach((fld) => {
+    const box = fld.querySelector(".box"), inp = fld.querySelector("input");
+    const lift = () => box.classList.toggle("up", !!inp.value || document.activeElement === inp);
+    inp.addEventListener("focus", () => { box.classList.add("focus"); lift(); });
+    inp.addEventListener("blur", () => { box.classList.remove("focus"); lift(); });
+    // fixing it clears the error as you type — no second submit needed
+    inp.addEventListener("input", () => { lift(); if (fld.classList.contains("bad") && valid(inp)) { fld.classList.remove("bad"); inp.removeAttribute("aria-invalid"); } });
+  });
+  f.addEventListener("submit", (e) => {
+    e.preventDefault();
+    let first = null;
+    flds.forEach((fld) => {
+      const inp = fld.querySelector("input");
+      if (valid(inp)) return;
+      first ??= inp; fld.classList.add("bad"); inp.setAttribute("aria-invalid", "true");
+      const box = fld.querySelector(".box"); box.classList.remove("shake"); void box.offsetWidth; box.classList.add("shake");
+    });
+    if (!first) { const s = document.getElementById("sent"); s.textContent = `See you on the tour, ${f.elements.name.value.trim()}`; s.classList.add("on"); setTimeout(() => s.classList.remove("on"), 1600); }
+  });
+  document.querySelectorAll(".box").forEach((b) => b.addEventListener("animationend", () => b.classList.remove("shake")));
+
+  /* ?demo (recording only): submit empty, type 4, clear, submit, type 6 */
+  if (/[?&]demo\b/.test(location.search)) {
+    const inp = f.elements.size, sub = f.querySelector(".submit");
+    const type = (v) => { inp.focus(); inp.value = v; inp.dispatchEvent(new Event("input")); };
+    [[700, () => sub.click()], [2300, () => type("4")], [3300, () => { inp.blur(); type(""); inp.blur(); }], [4000, () => sub.click()], [5600, () => type("6")], [6600, () => inp.blur()]].forEach(([ms, fn]) => setTimeout(fn, ms));
+  }
+})();
+</script>
+</body>
+</html>

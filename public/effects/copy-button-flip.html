@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copy button · flip to a check</title>
+<link rel="stylesheet" href="_glass/glass.css">
+<style>
+  .card { height: 262px; }
+  .lbl { display: block; margin-top: 26px; font-size: 9px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
+  .lbl + .field { margin-top: 7px; }
+  .field + .lbl { margin-top: 23px; }
+  .field { position: relative; display: flex; align-items: center; height: 52px; padding: 0 9px 0 15px; border-radius: 12px; }
+  .field { transition: background-color .25s, border-color .25s; }
+  .field:has(.cp:active) { background: rgb(120 150 205 / .45); border-color: rgb(170 195 240 / .6); }  /* the whole row tints while pressed */
+  .field .v { flex: 1; font-size: 15px; font-weight: 600; }
+  .field .v.mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-weight: 400; font-size: 16px; letter-spacing: .09em; }
+  .cp { position: relative; width: 38px; height: 38px; perspective: 160px; }
+  .cp .face { position: absolute; inset: 0; display: grid; place-items: center; border-radius: 9px; backface-visibility: hidden; transition: transform .42s cubic-bezier(.34, 1.3, .64, 1); }
+  .cp .front { box-shadow: inset 0 0 0 1px rgb(255 255 255 / .38); }
+  .cp .back { background: #fff; color: #1c181e; transform: rotateY(-180deg); }
+  .cp.done .front { transform: rotateY(180deg); } .cp.done .back { transform: rotateY(0); }
+  .cp svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .cp .back svg { width: 16px; height: 16px; stroke-width: 2.6; }
+  .cp:hover .front { background: rgb(255 255 255 / .12); }
+  /* the "Copied" tag rises out of the button */
+  .tip { position: absolute; right: 2px; bottom: calc(100% + 1px); display: flex; align-items: center; gap: 4px; height: 23px; padding: 0 9px; border-radius: 7px;
+    background: #1f1b20; color: #fff; font-size: 12px; font-weight: 600; white-space: nowrap; pointer-events: none;
+    opacity: 0; transform: translateY(6px) scale(.9); transform-origin: 70% 100%; transition: opacity .18s, transform .3s cubic-bezier(.34, 1.4, .64, 1); }
+  .tip::after { content: ""; position: absolute; right: 14px; top: 100%; border: 4px solid transparent; border-top-color: #1f1b20; }
+  .tip svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+  .cp.done .tip { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+<main class="card" aria-label="Tour details">
+  <header><h2>Tour details</h2><p>Tap to copy</p></header>
+  <span class="lbl">Trip code</span>
+  <div class="field glass-row"><span class="v mono">LIS-TRAM-28</span><button type="button" class="cp" aria-label="Copy trip code"></button></div>
+  <span class="lbl">Meeting point</span>
+  <div class="field glass-row"><span class="v">Rossio Square, north side</span><button type="button" class="cp" aria-label="Copy meeting point"></button></div>
+</main>
+<script>
+(() => {
+  const COPY = '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></svg>';
+  const CHECK = '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></svg>';
+  document.querySelectorAll(".cp").forEach((b) => {
+    b.innerHTML = `<span class="face front">${COPY}</span><span class="face back">${CHECK}</span><span class="tip" role="status">${CHECK.replace("24 24", "24 24")}Copied</span>`;
+    let t = 0;
+    b.addEventListener("click", async () => {
+      const text = b.parentElement.querySelector(".v").textContent;
+      try { await navigator.clipboard.writeText(text); } catch {}          // blocked inside the lab's sandboxed frame; the feedback still plays
+      b.classList.add("done"); clearTimeout(t);
+      t = setTimeout(() => b.classList.remove("done"), 2300);             // measured off the recording: ~2.3 s, then back
+    });
+  });
+  /* ?demo (recording only) */
+  if (/[?&]demo\b/.test(location.search)) { const [a, c] = document.querySelectorAll(".cp"); [[700, a], [2600, c], [4600, a], [5000, c]].forEach(([ms, el]) => setTimeout(() => el.click(), ms)); }
+})();
+</script>
+</body>
+</html>

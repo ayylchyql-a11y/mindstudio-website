@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Step sheet · three steps, one sheet</title>
+<link rel="stylesheet" href="_glass/glass.css">
+<style>
+  .card { height: 262px; }
+  .photos { position: relative; margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 11px; height: 178px; cursor: pointer; }
+  .photos img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 12px; -webkit-user-drag: none; }
+  .photos::after { content: ""; position: absolute; inset: 0; border-radius: 12px; background: rgb(20 14 12 / .45); opacity: 0; transition: opacity .45s var(--ease); pointer-events: none; }
+  .card.open .photos::after { opacity: 1; }
+
+  /* the sheet: pinned to the card's bottom, its height follows the step it shows */
+  .sheet { position: absolute; left: 3px; right: 3px; bottom: 0; z-index: 2; height: 161px; padding: 0 17px 15px; border-radius: 18px 18px 19px 19px;
+    background: rgb(56 49 46 / .96); box-shadow: 0 -10px 30px -18px rgb(0 0 0 / .6);
+    transform: translateY(105%); transition: transform .34s cubic-bezier(.4, 0, 1, 1), height .38s cubic-bezier(.32, .72, 0, 1); }
+  .card.open .sheet { transform: none; transition: transform .56s cubic-bezier(.34, 1.25, .64, 1), height .38s cubic-bezier(.32, .72, 0, 1); }
+  .sheet::before { content: ""; position: absolute; top: 6px; left: calc(50% - 14px); width: 28px; height: 3px; border-radius: 2px; background: rgb(255 255 255 / .32); }
+  .head { display: flex; align-items: center; justify-content: space-between; height: 30px; padding-top: 8px; }
+  .head span { font-size: 9px; font-weight: 600; letter-spacing: .14em; opacity: .75; }
+  .dots { display: flex; gap: 4px; }
+  .dots i { width: 5px; height: 5px; border-radius: 3px; background: rgb(255 255 255 / .32); transition: width .35s var(--ease), background-color .35s; }
+  .dots i.on { width: 18px; background: #fff; }
+
+  /* panes slide sideways inside a viewport whose height is animated with the sheet */
+  .vp { position: relative; overflow: hidden; margin: 0 -17px; padding: 0 17px; }
+  .pane { position: absolute; left: 17px; right: 17px; top: 0; opacity: 0; transform: translateX(56px); pointer-events: none;
+    transition: transform .34s cubic-bezier(.32, .72, 0, 1), opacity .24s; }
+  .pane.cur { opacity: 1; transform: none; pointer-events: auto; }
+  .pane.gone { transform: translateX(-56px); }
+  .pane h3 { font-size: 16px; line-height: 20px; font-weight: 600; letter-spacing: -.01em; }
+  .p1 { padding-top: 9px; } .p2 { padding-top: 6px; } .p3 { padding-top: 1px; }
+  .chips { display: flex; gap: 8px; margin-top: 12px; }
+  .p2 .chips { margin-top: 11px; }
+  .chip { height: 26px; padding: 0 13px; border-radius: 13px; font-size: 12px; font-weight: 600; background: rgb(255 255 255 / .08); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .14); transition: background-color .2s, color .2s; }
+  .chip:hover { background: rgb(255 255 255 / .14); }
+  .chip.on { background: #f3f1f2; color: var(--ink); box-shadow: none; }
+  .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 14px; margin-top: 8px; }
+  .day { display: grid; place-items: center; align-content: center; gap: 1px; height: 39px; border-radius: 10px; background: rgb(255 255 255 / .07); transition: background-color .2s, color .2s; }
+  .day small { font-size: 8px; font-weight: 600; opacity: .7; } .day b { font-size: 15px; line-height: 17px; font-weight: 600; }
+  .day:hover { background: rgb(255 255 255 / .13); }
+  .day.on { background: #f3f1f2; color: var(--ink); }
+  .done { display: flex; align-items: center; gap: 12px; }
+  .done i { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: #ee7b3b; transform: scale(.4); opacity: 0; transition: transform .45s var(--spring) .12s, opacity .2s .12s; }
+  .pane.cur .done i { transform: none; opacity: 1; }
+  .done svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .done b { display: block; font-size: 16px; font-weight: 700; } .done small { display: block; margin-top: 2px; font-size: 11px; opacity: .78; }
+  .go { display: block; width: 100%; height: 34px; margin-top: 14px; border-radius: 17px; background: #f3f1f2; color: var(--ink); font-size: 13px; font-weight: 600; transition: transform .12s; }
+  .go:active { transform: scale(.98); }
+</style>
+</head>
+<body>
+<main class="card open" id="card" aria-label="Plan a visit">
+  <header><h2>Plan a visit</h2><p>Book a walking tour</p></header>
+  <div class="photos" id="photos" role="button" tabindex="0" aria-label="Book this tour"><img src="_travel/facade.jpg" alt=""><img src="_travel/tram.jpg" alt=""></div>
+  <section class="sheet" id="sheet" role="dialog" aria-label="Booking">
+    <div class="head"><span id="stepLabel">STEP 1 OF 3</span><div class="dots" id="dots"><i class="on"></i><i></i><i></i></div></div>
+    <div class="vp" id="vp">
+      <div class="pane p1 cur"><h3>Who's coming</h3><div class="chips" data-k="who"><button type="button" class="chip">Just me</button><button type="button" class="chip on">Two of us</button><button type="button" class="chip">Group</button></div></div>
+      <div class="pane p2"><h3>Pick a day</h3>
+        <div class="days" data-k="day"></div>
+        <div class="chips" data-k="time"><button type="button" class="chip on">Morning</button><button type="button" class="chip">Afternoon</button><button type="button" class="chip">Evening</button></div></div>
+      <div class="pane p3"><div class="done"><i><svg viewBox="0 0 20 20"><path d="m4.5 10.4 3.7 3.7 7.3-7.6"/></svg></i><div><b>All set</b><small id="summary"></small></div></div></div>
+    </div>
+    <button type="button" class="go" id="go">Next</button>
+  </section>
+</main>
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const card = $("#card"), sheet = $("#sheet"), vp = $("#vp"), panes = $$(".pane"), go = $("#go");
+  const WD = ["M", "T", "W", "T", "F", "S", "S"], WDN = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  $(".days").innerHTML = WD.map((w, i) => `<button type="button" class="day${i === 3 ? " on" : ""}" data-i="${i}"><small>${w}</small><b>${6 + i}</b></button>`).join("");
+  let step = 0;
+  const CHROME = 93;                                   // head + button + paddings, identical on every step
+  const paneH = (p) => p.scrollHeight;
+  function show(n, instant) {
+    const prev = step; step = n;
+    panes.forEach((p, i) => { p.classList.toggle("cur", i === n); p.classList.toggle("gone", i < n); });
+    const h = paneH(panes[n]);
+    vp.style.height = h + "px"; sheet.style.height = h + CHROME + "px";
+    $("#stepLabel").textContent = `STEP ${n + 1} OF 3`;
+    $$("#dots i").forEach((d, i) => d.classList.toggle("on", i === n));
+    go.textContent = n === 2 ? "Done" : "Next";
+    if (n === 2) { const who = $('[data-k="who"] .on').textContent, d = $(".day.on"), t = $('[data-k="time"] .on').textContent; $("#summary").textContent = `${who} · ${WDN[d.dataset.i]} ${d.querySelector("b").textContent} · ${t}`; }
+    if (instant) { sheet.style.transition = vp.style.transition = "none"; void sheet.offsetHeight; sheet.style.transition = vp.style.transition = ""; }
+  }
+  function open() { if (card.classList.contains("open")) return; panes.forEach((p) => p.style.transition = "none"); show(0, true); void sheet.offsetHeight; panes.forEach((p) => p.style.transition = ""); card.classList.add("open"); }
+  function close() { card.classList.remove("open"); }
+  $$(".chips, .days").forEach((g) => g.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; $$("button", g).forEach((x) => x.classList.toggle("on", x === b)); }));
+  go.onclick = () => (step < 2 ? show(step + 1) : close());
+  $("#photos").onclick = open; $("#photos").onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } };
+  show(0, true);
+
+  /* ?demo (recording only): the reference's loop — open, next, next, done, reopen */
+  if (/[?&]demo\b/.test(location.search)) {
+    card.classList.remove("open");
+    const S = [[500, open], [1700, () => go.click()], [3000, () => go.click()], [4400, () => go.click()], [5300, open], [6300, () => go.click()], [7600, () => go.click()]];
+    for (const [ms, fn] of S) setTimeout(fn, ms);
+  }
+})();
+</script>
+</body>
+</html>

@@ -12,6 +12,22 @@
  */
 const blurbs: Record<string, string> = {
   // ── animated icons (Lucide + original motions; trigger model after Lordicon) ──
+  "focus-timer-island":
+    "A focus timer that lives as a small bar above your tasks and grows when you need it: wider when you step away, a full card with pause and end when you tap it, back to a sliver when you leave it alone.",
+  "step-sheet":
+    "A booking sheet that walks through three steps without ever changing screens — each step slides in and the sheet quietly resizes to fit, ending on a clear confirmation.",
+  "dark-mode-reveal":
+    "A dark-mode switch that makes the change feel physical: the new theme spreads out from the switch you touched until it covers the whole card, and draws back into it when you switch off.",
+  "tab-bar-expand":
+    "A bottom navigation bar that keeps things calm by naming only the section you are in, with the highlight gliding and stretching to it as you move between tabs.",
+  "scroll-fab-collapse":
+    "A floating 'new' button that gets out of the way while you read down a list and comes back the moment you scroll up — less covered content, the action always within reach.",
+  "copy-button-flip":
+    "A copy button that answers you: the icon turns over into a check and a small 'Copied' tag appears, so there is never any doubt the code or address was copied.",
+  "form-error-shake":
+    "Form feedback that is hard to miss and quick to forgive: the empty field shakes, turns red and explains itself, and the warning disappears as soon as you type a valid answer.",
+  "select-centered":
+    "A dropdown that opens right where you are looking, with the current choice staying in place and the other options unfolding around it — the way good native menus behave.",
   "pagination-styles":
     "Eight ways to move between the pages of a list — squares, pills, dots, boxes, a sliding track, a compact counter, a progress bar and numbered steps — each one working, with its own small animation when the page changes. A quick way to choose the one that fits a table, a gallery or a checkout.",
   "anim-icon-library":

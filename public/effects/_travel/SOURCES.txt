@@ -1,0 +1,20 @@
+Travel photos for the @叨叨AI episode 12 replicas. All CC0 / public domain (found via Openverse,
+api.openverse.org, filtered license=cc0,pdm) — free for commercial use, no attribution required.
+Resized and re-encoded; thumbnails are square centre crops.
+
+home.jpg      Lisbon yellow tram – WordPress Photo Directory (CC0) · pd.w.org/2022/08/164630c8cd4062679.13462948
+trips.jpg     Santorini Greece – StockSnap (CC0) · SNAOZYETD1
+search.jpg    Boats Ships – StockSnap (CC0) · Q0HFATEZMQ
+profile.jpg   Hiking Hikers – StockSnap (CC0) · 820A2B4E00
+facade.jpg    2019-05-16 12-06-12 PT Lisbon JHe N (54154021439) – Wikimedia Commons (CC0)
+tram.jpg      2019-05-17 16-56-28 PT Lisbon JHe N (54161155657) – Wikimedia Commons (CC0)
+bg.jpg        Country Field – StockSnap (CC0) · XTRAJDQIPV
+bg2.jpg       Sunset Sea – StockSnap (CC0) · DL9RTMU7JI
+n-lisbon.jpg  Lisbon Portugal – StockSnap (CC0) · B9F8B43531
+n-packing.jpg Hiking Climbing – StockSnap (CC0) · LP0YZCWGC5
+n-tram.jpg    = tram.jpg
+n-cafes.jpg   2019-05-16 11-54-16 PT Lisbon JHe N (54154021514) – Wikimedia Commons (CC0)
+n-day2.jpg    2019-05-16 11-54-23 PT Lisbon JHe N (54153695631) – Wikimedia Commons (CC0)
+n-sunset.jpg  = bg2.jpg
+n-books.jpg   2019-05-16 17-45-44 PT Lisbon JHe N (54154314440) – Wikimedia Commons (CC0)
+n-beach.jpg   Sea Stacks – StockSnap (CC0) · ABO2EYCXWU

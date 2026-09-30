@@ -48,7 +48,15 @@ const LONG_SELF = { "slate-card-order": { secs: 17, query: "?clip" }, "receipt-p
   "morph-studio": { secs: 10, vw: 710, trim: 1.2 }, "morph-showcase": { secs: 9, query: "?demo", vw: 710 }, "morph-mask": { secs: 9, vw: 710 }, "morph-trend-chart": { secs: 8, vw: 710 }, "morph-map-pins": { secs: 9, vw: 710 },
   /* 动态图标：三条都带 ?demo 的脚本化演示（只给录像用），按详情画框原尺寸录。 */
   "anim-icon-library": { secs: 9, vw: 710, query: "?demo", trim: 1.0 }, "anim-icon-triggers": { secs: 9, vw: 710, query: "?demo" }, "anim-icon-in-context": { secs: 9, vw: 710, query: "?demo" },
-  "pagination-styles": { secs: 10, vw: 710, query: "?demo" } };
+  "pagination-styles": { secs: 10, vw: 710, query: "?demo" },
+  "focus-timer-island": { secs: 9, vw: 710, query: "?demo" },
+  "step-sheet": { secs: 9, vw: 710, query: "?demo" },
+  "dark-mode-reveal": { secs: 9, vw: 710, query: "?demo" },
+  "tab-bar-expand": { secs: 9, vw: 710, query: "?demo" },
+  "scroll-fab-collapse": { secs: 9, vw: 710, query: "?demo" },
+  "copy-button-flip": { secs: 9, vw: 710, query: "?demo" },
+  "form-error-shake": { secs: 9, vw: 710, query: "?demo" },
+  "select-centered": { secs: 9, vw: 710, query: "?demo" } };
 /** trim：开头剪掉几秒（默认 0.6）。morph-studio 首帧要先生成 250 个图标，0.6 秒时画面还是缩小的灰底。
  *  vh：录像高度另给（默认 = 样板的 height）。六个 Dashboard 是 1280×820 的整页缩放进画框：
  *  按画框 470 高录 = 960×470 的视频里 Dashboard 只有 715 宽，cover 进 710×470 的详情画框要裁掉左右圆角；
@@ -241,6 +249,8 @@ async function drive(page, e) {
       // 自演的：进场动画在开头一两秒就演完了，8 秒录像里剩下的全是终态。
       // 样板带「重播」按钮（#replay / .replay）的话，3.5 秒处点一下，让动画再来一遍；
       // 没有重播按钮的（activity-rings 这类）就整页重载 —— 进场动画自然再来一遍。
+      // 🩸 带 ?demo 的样板自己按时间表演完整一段，中途重载会把表演截断重来 —— 只等不动。
+      if (LONG_SELF[e.slug]?.query === "?demo") { await sleep(secsOf(e.slug) * 1000 + 800); return; }
       await sleep(3500);
       const replay = await page.$("#replay, .replay");
       if (replay) await replay.click().catch(() => {});

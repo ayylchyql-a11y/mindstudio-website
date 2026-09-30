@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Select · the list opens around the current choice</title>
+<link rel="stylesheet" href="_glass/glass.css">
+<style>
+  .card { height: 262px; overflow: visible; }
+  .lbl { display: block; margin-top: 22px; font-size: 9px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
+  .lbl + .sel { margin-top: 7px; }
+  .sel + .lbl { margin-top: 20px; }
+  .sel { display: flex; align-items: center; width: 100%; height: 36px; padding: 0 14px; border-radius: 11px; text-align: left; font-size: 14px; font-weight: 600; transition: background-color .2s, opacity .15s; }
+  .sel:hover { background: rgb(255 255 255 / .22); }
+  .sel svg { margin-left: auto; width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .sel.hide { opacity: 0; }
+
+  /* the list is laid over the field so the chosen row sits exactly on it; it opens from that row outwards */
+  .menu { position: absolute; z-index: 5; left: 18px; right: 18px; padding: 3px; border-radius: 11px; background: #fbf8fb; color: #1c181e;
+    box-shadow: 0 16px 36px -14px rgb(0 0 0 / .55); clip-path: inset(var(--t, 0) 0 var(--b, 0) 0 round 11px); }
+  .menu[hidden] { display: none; }
+  .menu button { display: flex; align-items: center; width: 100%; height: 35px; padding: 0 11px; border-radius: 8px; font-size: 14px; font-weight: 600; text-align: left; transition: background-color .15s; }
+  .menu button:hover, .menu button:focus-visible { background: #f1ecf4; outline: none; }
+  .menu button[aria-selected="true"] { background: #e7ddf1; }
+  .menu button svg { margin-left: auto; width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+  .menu button[aria-selected="true"] svg { opacity: 1; }
+</style>
+</head>
+<body>
+<main class="card" id="card" aria-label="Trip settings">
+  <header><h2>Trip settings</h2><p>Choose one</p></header>
+  <span class="lbl" id="l1">City</span>
+  <button type="button" class="sel glass-row" data-k="city" aria-haspopup="listbox" aria-labelledby="l1"><span></span><svg viewBox="0 0 14 14"><path d="m3.5 5.5 3.5 3.5 3.5-3.5"/></svg></button>
+  <span class="lbl" id="l2">Pace</span>
+  <button type="button" class="sel glass-row" data-k="pace" aria-haspopup="listbox" aria-labelledby="l2"><span></span><svg viewBox="0 0 14 14"><path d="m3.5 5.5 3.5 3.5 3.5-3.5"/></svg></button>
+  <div class="menu" id="menu" role="listbox" hidden></div>
+</main>
+<script>
+(() => {
+  const card = document.getElementById("card"), menu = document.getElementById("menu");
+  const OPT = { city: ["Porto", "Lisbon", "Seville", "Prague", "Vienna"], pace: ["Slow", "Easy", "Active"] };
+  const val = { city: "Lisbon", pace: "Easy" };
+  const CHECK = '<svg viewBox="0 0 14 14"><path d="m3 7.3 2.6 2.6L11 4.4"/></svg>';
+  const reduce = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const sels = [...document.querySelectorAll(".sel")];
+  const paint = () => sels.forEach((s) => (s.querySelector("span").textContent = val[s.dataset.k]));
+  let open = null, anim = null, kbd = false;          // hand focus back to the field only after keyboard use
+  addEventListener("keydown", () => (kbd = true), true); addEventListener("pointerdown", () => (kbd = false), true);
+
+  function tween(fromT, fromB, toT, toB, ms, done) {
+    cancelAnimationFrame(anim); const t0 = performance.now();
+    const ease = (k) => 1 - Math.pow(1 - k, 3);
+    const f = (now) => { const k = reduce() ? 1 : Math.min(1, (now - t0) / ms), e = ease(k);
+      menu.style.setProperty("--t", fromT + (toT - fromT) * e + "px"); menu.style.setProperty("--b", fromB + (toB - fromB) * e + "px");
+      k < 1 ? (anim = requestAnimationFrame(f)) : done && done(); };
+    anim = requestAnimationFrame(f);
+  }
+  function show(sel) {
+    const k = sel.dataset.k, i = OPT[k].indexOf(val[k]);
+    menu.innerHTML = OPT[k].map((o, j) => `<button type="button" role="option" aria-selected="${j === i}" data-v="${o}">${o}${CHECK}</button>`).join("");
+    menu.hidden = false;
+    const H = menu.offsetHeight, rowTop = 3 + i * 35;
+    // centre the chosen row on the field, then keep the whole list inside the card
+    const fieldMid = sel.offsetTop + sel.offsetHeight / 2;
+    let top = fieldMid - (rowTop + 17.5);
+    top = Math.max(8, Math.min(top, card.clientHeight - 8 - H));
+    menu.style.top = top + "px";
+    // start clipped to exactly the field's band, then open outwards from it
+    const bandT = sel.offsetTop - top, bandB = H - (bandT + sel.offsetHeight);
+    open = { sel, bandT, bandB };
+    sel.classList.add("hide"); sel.setAttribute("aria-expanded", "true");
+    tween(bandT, bandB, 0, 0, 300);
+    if (kbd) menu.querySelector('[aria-selected="true"]').focus({ preventScroll: true });
+  }
+  function hide(v) {
+    if (!open) return; const { sel, bandT, bandB } = open; open = null;
+    if (v) { val[sel.dataset.k] = v; menu.querySelectorAll("button").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.v === v))); }
+    // fold back onto the (new) chosen row, then reveal the field underneath with the new value
+    const i = [...menu.children].findIndex((b) => b.getAttribute("aria-selected") === "true");
+    const rowT = 3 + i * 35, H = menu.offsetHeight, top = parseFloat(menu.style.top), fieldT = sel.offsetTop - top;
+    const toT = Math.min(rowT, fieldT), toB = H - Math.max(rowT + 35, fieldT + sel.offsetHeight);
+    setTimeout(() => tween(0, 0, toT, toB, 220, () => { paint(); sel.classList.remove("hide"); menu.hidden = true; sel.setAttribute("aria-expanded", "false"); if (kbd) sel.focus({ preventScroll: true }); }), v ? 140 : 0);
+  }
+  sels.forEach((s) => s.addEventListener("click", (e) => { e.stopPropagation(); open ? hide() : show(s); }));
+  menu.addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { e.stopPropagation(); hide(b.dataset.v); } });
+  menu.addEventListener("keydown", (e) => {
+    const bs = [...menu.children], i = bs.indexOf(document.activeElement);
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); bs[(i + (e.key === "ArrowDown" ? 1 : -1) + bs.length) % bs.length].focus(); }
+    if (e.key === "Escape") hide();
+  });
+  document.addEventListener("click", () => hide());
+  paint();
+
+  /* ?demo (recording only): Lisbon → Prague, then Easy → Active */
+  if (/[?&]demo\b/.test(location.search)) {
+    const [c, p] = sels, pickV = (v) => menu.querySelector(`[data-v="${v}"]`).click();
+    [[600, () => c.click()], [2000, () => pickV("Prague")], [3300, () => c.click()], [4300, () => pickV("Prague")], [5200, () => p.click()], [6500, () => pickV("Active")]].forEach(([ms, fn]) => setTimeout(fn, ms));
+  }
+})();
+</script>
+</body>
+</html>

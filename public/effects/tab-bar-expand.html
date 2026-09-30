@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tab bar · the chosen tab opens its label</title>
+<link rel="stylesheet" href="_glass/glass.css">
+<style>
+  .card { height: 262px; }
+  .hero { position: relative; margin-top: 11px; height: 118px; border-radius: 12px; overflow: hidden; background: #2d2926; }
+  .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .32s var(--ease); -webkit-user-drag: none; }
+  .hero img.on { opacity: 1; }
+  /* two placeholder caption bars, as in the reference */
+  .hero::after, .hero::before { content: ""; position: absolute; left: 13px; z-index: 1; border-radius: 2px; }
+  .hero::after { bottom: 27px; width: 113px; height: 4px; background: rgb(255 255 255 / .92); }
+  .hero::before { bottom: 17px; width: 72px; height: 3px; background: rgb(255 255 255 / .55); }
+  .nav { position: relative; margin-top: 11px; display: flex; justify-content: space-between; align-items: center; height: 50px; padding: 0 7px; border-radius: 25px;
+    background: rgb(44 38 36 / .88); box-shadow: 0 10px 22px -14px rgb(0 0 0 / .6); }
+  .pill { position: absolute; top: 8px; height: 34px; border-radius: 17px; background: #f6f4f5; box-shadow: 0 4px 10px -6px rgb(0 0 0 / .5);
+    transition: left .4s cubic-bezier(.32, .72, 0, 1), width .4s cubic-bezier(.32, .72, 0, 1); }
+  .tab { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; gap: 6px; height: 34px; min-width: 34px; border-radius: 17px; color: rgb(255 255 255 / .82); transition: color .25s; }
+  .tab svg { flex: none; width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .tab span { display: none; font-size: 13px; font-weight: 700; letter-spacing: -.005em; }
+  .tab.on { padding: 0 14px 0 12px; color: #1c181e; }
+  .tab.on span { display: block; animation: lab .28s .16s both var(--ease); }
+  .tab:not(.on):hover { color: #fff; }
+  @keyframes lab { from { opacity: 0; transform: translateX(-4px); } }
+</style>
+</head>
+<body>
+<main class="card" aria-label="Discover">
+  <header><h2>Discover</h2><p>Bottom navigation</p></header>
+  <div class="hero" id="hero"><img src="_travel/home.jpg" alt="" class="on"><img src="_travel/search.jpg" alt=""><img src="_travel/trips.jpg" alt=""><img src="_travel/profile.jpg" alt=""></div>
+  <nav class="nav" id="nav" aria-label="Sections">
+    <i class="pill" id="pill" aria-hidden="true"></i>
+    <button type="button" class="tab on" aria-current="page"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></button>
+    <button type="button" class="tab"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Search</span></button>
+    <button type="button" class="tab"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg><span>Trips</span></button>
+    <button type="button" class="tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Profile</span></button>
+  </nav>
+</main>
+<script>
+(() => {
+  const nav = document.getElementById("nav"), pill = document.getElementById("pill"), tabs = [...nav.querySelectorAll(".tab")], imgs = [...document.querySelectorAll("#hero img")];
+  const reduce = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const place = () => { const on = nav.querySelector(".tab.on"); pill.style.left = on.offsetLeft + "px"; pill.style.width = on.offsetWidth + "px"; };
+  function pick(i) {
+    const cur = tabs.findIndex((t) => t.classList.contains("on")); if (i === cur) return;
+    // FLIP: remember where every icon was, switch the layout, then slide them from there
+    const before = tabs.map((t) => t.querySelector("svg").getBoundingClientRect().left);
+    tabs.forEach((t, k) => { t.classList.toggle("on", k === i); t.toggleAttribute("aria-current", k === i); });
+    place();
+    if (!reduce()) tabs.forEach((t, k) => {
+      const svg = t.querySelector("svg"), dx = before[k] - svg.getBoundingClientRect().left;
+      if (dx) svg.animate([{ transform: `translateX(${dx}px)` }, { transform: "none" }], { duration: 400, easing: "cubic-bezier(.32,.72,0,1)" });
+    });
+    imgs.forEach((im, k) => im.classList.toggle("on", k === i));
+  }
+  tabs.forEach((t, i) => t.addEventListener("click", () => pick(i)));
+  pill.style.transition = "none"; place(); void pill.offsetWidth; pill.style.transition = "";
+  new ResizeObserver(() => { pill.style.transition = "none"; place(); void pill.offsetWidth; pill.style.transition = ""; }).observe(nav);
+
+  /* ?demo (recording only): Home → Trips → Profile → Search → Home */
+  if (/[?&]demo\b/.test(location.search)) [[900, 2], [2400, 3], [3900, 1], [5400, 0], [6900, 2]].forEach(([ms, i]) => setTimeout(() => pick(i), ms));
+})();
+</script>
+</body>
+</html>

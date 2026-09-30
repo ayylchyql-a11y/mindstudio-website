@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Floating button · folds as you scroll</title>
+<link rel="stylesheet" href="_glass/glass.css">
+<style>
+  .card { height: 262px; padding-bottom: 0; }
+  .list { position: absolute; left: 18px; right: 18px; top: 77px; bottom: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; padding-bottom: 12px;
+    mask-image: linear-gradient(#000 calc(100% - 22px), transparent); -webkit-mask-image: linear-gradient(#000 calc(100% - 22px), transparent); }
+  .list::-webkit-scrollbar { display: none; }
+  .note { display: flex; align-items: center; gap: 10px; height: 42px; padding: 0 12px 0 5px; margin-bottom: 7.5px; }
+  .note img { flex: none; width: 32px; height: 32px; border-radius: 8px; object-fit: cover; -webkit-user-drag: none; }
+  .note div { flex: 1; min-width: 0; }
+  .note b { display: block; font-size: 13px; line-height: 16px; font-weight: 600; }
+  .note i { display: block; margin-top: 4px; height: 5px; border-radius: 3px; background: rgb(255 255 255 / .28); }
+  .note span { align-self: flex-start; margin-top: 11px; font-size: 9.5px; font-weight: 600; opacity: .72; }
+
+  /* the button: right edge pinned, width folds from label to circle */
+  .fab { position: absolute; right: 14px; bottom: 14px; z-index: 2; display: flex; align-items: center; gap: 7px; height: 42px; width: 114px; padding: 0 0 0 15px; border-radius: 21px; overflow: hidden;
+    background: #fbf9fa; color: #1c181e; box-shadow: 0 8px 20px -8px rgb(0 0 0 / .45); white-space: nowrap;
+    transition: width .36s cubic-bezier(.32, .72, 0, 1), padding .36s cubic-bezier(.32, .72, 0, 1), transform .15s; }
+  .fab svg { flex: none; width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+  .fab span { font-size: 13px; font-weight: 700; transition: opacity .18s; }
+  .fab.mini { width: 42px; padding-left: 14px; } .fab.mini span { opacity: 0; }
+  .fab:active { transform: scale(.95); }
+  .note.new { animation: slip .38s var(--ease); } @keyframes slip { from { opacity: 0; transform: translateY(-8px); } }
+</style>
+</head>
+<body>
+<main class="card" aria-label="Notes">
+  <header><h2>Notes</h2><p id="count">8 notes · scroll</p></header>
+  <div class="list" id="list" tabindex="0" aria-label="Notes"></div>
+  <button type="button" class="fab" id="fab" aria-label="New note"><svg viewBox="0 0 14 14"><path d="M7 1.5v11M1.5 7h11"/></svg><span>New note</span></button>
+</main>
+<script>
+(() => {
+  const list = document.getElementById("list"), fab = document.getElementById("fab");
+  const N = [["Lisbon notes", "n-lisbon", 12, 78], ["Packing list", "n-packing", 11, 58], ["Tram routes", "n-tram", 10, 42], ["Cafés to try", "n-cafes", 9, 72],
+    ["Day 2 plan", "n-day2", 8, 50], ["Sunset spots", "n-sunset", 7, 44], ["Books for the train", "n-books", 6, 72], ["Beach days", "n-beach", 5, 56]];
+  const row = ([t, img, d, w]) => `<div class="note glass-row"><img src="_travel/${img}.jpg" alt=""><div><b>${t}</b><i style="width:${w}%"></i></div><span>Sep ${d}</span></div>`;
+  list.innerHTML = N.map(row).join("");
+
+  // direction, not position: a few px of travel down folds it, any travel up opens it again
+  let last = 0, acc = 0;
+  list.addEventListener("scroll", () => {
+    const y = list.scrollTop, dy = y - last; last = y;
+    if (Math.sign(dy) !== Math.sign(acc)) acc = 0;
+    acc += dy;
+    if (acc > 6 && y > 8) fab.classList.add("mini");
+    else if (acc < -6 || y <= 8) fab.classList.remove("mini");
+  }, { passive: true });
+  let n = 0;
+  fab.onclick = () => {
+    const el = document.createElement("div"); el.innerHTML = row([`Untitled ${++n}`, "n-lisbon", 13, 30]); const item = el.firstChild; item.classList.add("new");
+    list.prepend(item); list.scrollTo({ top: 0, behavior: "smooth" }); document.getElementById("count").textContent = `${list.children.length} notes · scroll`;
+  };
+
+  /* ?demo (recording only): scroll down, a little up, down again, back to the top */
+  if (/[?&]demo\b/.test(location.search)) {
+    const glide = (to, ms) => new Promise((res) => { const from = list.scrollTop, t0 = performance.now(); const f = (t) => { const k = Math.min(1, (t - t0) / ms), e = k < .5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2; list.scrollTop = from + (to - from) * e; k < 1 ? requestAnimationFrame(f) : res(); }; requestAnimationFrame(f); });
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    (async () => { await wait(700); await glide(150, 1600); await wait(500); await glide(90, 700); await wait(900); await glide(190, 1000); await wait(700); await glide(0, 1500); })();
+  }
+})();
+</script>
+</body>
+</html>
