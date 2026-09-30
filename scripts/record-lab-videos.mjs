@@ -47,7 +47,8 @@ const LONG_SELF = { "slate-card-order": { secs: 17, query: "?clip" }, "receipt-p
      分类页卡片另有 previewHeight 从顶部裁。 */
   "morph-studio": { secs: 10, vw: 710, trim: 1.2 }, "morph-showcase": { secs: 9, query: "?demo", vw: 710 }, "morph-mask": { secs: 9, vw: 710 }, "morph-trend-chart": { secs: 8, vw: 710 }, "morph-map-pins": { secs: 9, vw: 710 },
   /* 动态图标：三条都带 ?demo 的脚本化演示（只给录像用），按详情画框原尺寸录。 */
-  "anim-icon-library": { secs: 9, vw: 710, query: "?demo", trim: 1.0 }, "anim-icon-triggers": { secs: 9, vw: 710, query: "?demo" }, "anim-icon-in-context": { secs: 9, vw: 710, query: "?demo" } };
+  "anim-icon-library": { secs: 9, vw: 710, query: "?demo", trim: 1.0 }, "anim-icon-triggers": { secs: 9, vw: 710, query: "?demo" }, "anim-icon-in-context": { secs: 9, vw: 710, query: "?demo" },
+  "pagination-styles": { secs: 10, vw: 710, query: "?demo" } };
 /** trim：开头剪掉几秒（默认 0.6）。morph-studio 首帧要先生成 250 个图标，0.6 秒时画面还是缩小的灰底。
  *  vh：录像高度另给（默认 = 样板的 height）。六个 Dashboard 是 1280×820 的整页缩放进画框：
  *  按画框 470 高录 = 960×470 的视频里 Dashboard 只有 715 宽，cover 进 710×470 的详情画框要裁掉左右圆角；

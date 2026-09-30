@@ -15,7 +15,7 @@ import { OPEN_SLUGS } from "@/lib/lab-open";
  *    在这里再抄一份 = 两处真相，改了 demo 忘了改展示，页面上给的代码就是错的。
  */
 
-export type CategoryId = "web-effects" | "border-effects" | "icon-morph" | "animated-icons" | "chart-widgets" | "widgets" | "dashboard" | "creative" | "mobile-ui";
+export type CategoryId = "web-effects" | "border-effects" | "icon-morph" | "animated-icons" | "chart-widgets" | "widgets" | "dashboard" | "dashboard-details" | "creative" | "mobile-ui";
 
 export interface Category {
   id: CategoryId;
@@ -138,6 +138,17 @@ export const categories: Category[] = [
       "zh-tw": "同一套餐廳後台，十四種設計。六種只換側邊欄（懸浮島、深色重底、磨砂玻璃、雙層圖示軌、摺疊展開、分組收口），八種整頁語言用設計庫自己的控件拼成：深色指揮台、紙感編輯風、便當格、天空 AI、鍵盤優先、螢光終端、新粗野主義、老闆的手機。內容全是真的——M Desk 線上菜單裡的菜、價格和照片，訂單看板，近 30 天數據（按比例縮放）。",
     },
     accent: "#e07a2f",
+  },
+  {
+    id: "dashboard-details",
+    title: { en: "Dashboard details", zh: "Dashboard 特效细节", "zh-tw": "Dashboard 特效細節", ja: "ダッシュボードの細部", ko: "대시보드 디테일", it: "Dettagli della dashboard" },
+    intro: {
+      en: "The small controls a back office is made of, rebuilt one at a time with their motion intact — what moves, how far, how fast, and what it does at the edges. First: pagination, eight ways, each with its own selection animation, hover state and disabled ends.",
+      zh: "后台是由一个个小控件拼起来的。这里把它们逐个 1:1 复刻，连动效一起——哪里动、动多远、多快、到头了怎么办。第一组：分页器八种样式，每种都有自己的选中动画、悬停状态和两端禁用。",
+      "zh-tw": "後台是由一個個小控件拼起來的。這裡把它們逐個 1:1 復刻，連動效一起——哪裡動、動多遠、多快、到頭了怎麼辦。第一組：分頁器八種樣式，每種都有自己的選中動畫、懸停狀態和兩端禁用。",
+      it: "I piccoli controlli di cui è fatto un gestionale, ricostruiti uno alla volta con il loro movimento — cosa si muove, quanto, quanto in fretta e cosa succede ai bordi. Primo: la paginazione, in otto stili.",
+    },
+    accent: "#7b4ae0",
   },
   {
     id: "creative",
@@ -737,6 +748,47 @@ export const effects: Effect[] = [
       "The nodes orbit a path built from <code>getBoundingClientRect</code>. Inside a container that scales (a zoomed phone shell, a CSS <code>zoom</code>), the rect is in viewport pixels and the canvas is in local pixels; the path has to be divided by the scale or the lamps orbit a frame that is not there.",
     ],
     source: { label: "Douyin @跟着学姐学AI · ep.34 “如何让 AI 生成五种粒子边框动效” · effect 05/05", at: "0:15–0:18 (3× playback)" },
+  },
+  {
+    slug: "pagination-styles",
+    category: "dashboard-details",
+    date: "2026-09-30",
+    plays: "self",
+    title: { en: "Pagination · eight styles", zh: "分页器 · 八种样式", "zh-tw": "分頁器 · 八種樣式" },
+    gist: {
+      en: "Eight ways to move between pages, stacked as cards: classic squares, pills with an ellipsis window, dots that stretch into a bar, bordered boxes, a track with a sliding runner, a compact odometer, a progress bar and numbered steps. Every one of them works — arrows disable at the ends, the selection animates the way the reference does, and hovering a card lights its number.",
+      zh: "八种翻页方式叠成一列卡片：经典方块、带省略号窗口的胶囊、会拉长成条的圆点、描边方框、指示条会滑动的轨道、数字滚动的紧凑式、进度条、编号步骤。每一种都能真的点——到头箭头变灰，选中动画照原作还原，鼠标移到哪张卡片，它的序号就亮起来。",
+      "zh-tw": "八種翻頁方式疊成一列卡片：經典方塊、帶省略號視窗的膠囊、會拉長成條的圓點、描邊方框、指示條會滑動的軌道、數字滾動的緊湊式、進度條、編號步驟。每一種都能真的點——到頭箭頭變灰，選中動畫照原作還原，滑鼠移到哪張卡片，它的序號就亮起來。",
+    },
+    height: 900,
+    previewHeight: 636,
+    accent: "#7b4ae0",
+    anatomy: [
+      "<b>One ramp, two directions.</b> Every selected state uses the same pink → violet → blue ramp sampled from the reference (<code>#c54379 → #a34799 → #5f5ace</code>): at 135° on tiles and circles, flat at 90° on bars and pills, and clipped to text for the odometer figures. Finished steps drop the ramp for a solid <code>#5344c2</code> so the current step still stands out.",
+      "<b>Classic and Pills: the selection jumps, the loser flashes.</b> The gradient is a <code>::before</code> layer whose opacity fades in over 160 ms while the tile scales to 1.14; the tile that just lost the selection gets a one-shot 320 ms animation — white with a 1.5 px ring that fades back to the resting lilac. Hover is the same ring at full strength on white.",
+      "<b>The Pills window.</b> Nine pages: the first page, an ellipsis, then the current page and one either side, with a trailing ellipsis and the last page when they are out of view (<code>1 … 5 [6] 7 … 9</code>, <code>1 2 [3] 4 … 9</code>, <code>1 … 8 [9]</code>). Moving inside the same window only moves the selection; a new window re-renders the row. The opening state is the reference's own, <code>1 … [7] 8 9</code>.",
+      "<b>Dots stretch, they don't slide.</b> The current dot widens from 9 to 34 px while the old one narrows back, both on <code>width</code> over 300 ms; the gradient is an overlay whose opacity follows.",
+      "<b>Track: the runner slides, the figure lifts.</b> A 32 × 8 px gradient runner is positioned with <code>translateX</code> to the centre of the current number (380 ms, cubic-bezier(.4,0,.2,1)); the number turns violet and rises 3 px. A ResizeObserver re-seats the runner without animation when the layout changes.",
+      "<b>Compact and Progress share an odometer.</b> The old figure rolls out upward while the new one rolls in from below (220 ms), reversed when going back. Progress fills to <code>(page − 1) / (pages − 1)</code> — measured off the reference, 3 / 5 is exactly half and 4 / 5 three quarters.",
+      "<b>Steps preview before they commit.</b> Hovering a step ahead turns every dashed circle and connector up to it solid; clicking fills the finished ones violet and the chosen one with the ramp (220 ms opacity on a <code>::before</code>), and the connectors behind it go solid.",
+      "<b>Cards.</b> 72 px rows, 16 px radius, a soft two-layer shadow; hovering a row reveals a 1 px border and fills its number badge with the ramp. Every control is a real <code>&lt;button&gt;</code> with <code>aria-current</code> on the current page; below 600 px the control drops under the name.",
+    ],
+    tokens: [
+      { label: "Ramp", value: "#c54379 → #a34799 → #5f5ace (135° / 90°)" },
+      { label: "Selection", value: "fade 160ms · scale 1.14 · loser flash 320ms" },
+      { label: "Dots", value: "9 → 34px width, 300ms" },
+      { label: "Track runner", value: "32×8px · 380ms cubic-bezier(.4,0,.2,1)" },
+      { label: "Odometer", value: "roll 220ms, direction follows the step" },
+      { label: "Progress", value: "(page − 1) / (pages − 1) · 320ms" },
+      { label: "Type", value: "Poppins 400 / 500 / 600 / 700" },
+    ],
+    prompt:
+      "Build a single HTML page 'Pagination Styles — 8 ways to navigate pages' in Poppins on a pale lilac page (#f3f1f7): a centred header (gradient eyebrow 'AI BUILDER COMPONENTS', 44px bold title with the word 'Styles' filled by linear-gradient(90deg, #c83e78, #9a4aa6, #6256d1), a grey subtitle) and a 660px column of eight white cards (72px tall, radius 16, soft shadow; on hover a 1px #d8d2de border and the 30px number badge fills with linear-gradient(135deg, #c54379, #a34799, #5f5ace) and turns its digit white). Each card: badge, a 16.5px semibold name, and a right-aligned working control with chevron arrows that disable (opacity .22) at the ends. 1 Classic: 38px rounded squares (#f5f0fb, radius 10) for pages 1–5, the current one scale(1.14) with the 135° gradient faded in over 160ms; the square that loses the selection plays a 320ms white-with-1.5px-ring flash back to lilac; hover = white with a dark ring. 2 Pills: the same on circles, 9 pages, window = 1, …, current±1, …, 9 (initial '1 … [7] 8 9'). 3 Dots: « 5 dots » where the current is a 34px gradient bar and the others 9px faint dots, width transition 300ms. 4 Bordered: ← five 38px boxes with 1.5px #dcd6e1 borders, the current one dark (#4a3558) with a dark violet digit, hover darkens the border and tints the fill →. 5 Track: numbers 1–5 above a 1.5px hairline; a 32×8 gradient runner slides under the current number with translateX over 380ms cubic-bezier(.4,0,.2,1) and the current number turns #5b3fae and rises 3px. 6 Compact: two 30px ringed circle buttons around '2 / 5' at 22px where the current figure is gradient text that rolls up/down (220ms) on change. 7 Progress: ‹ a 140×8 bar filled to (page−1)/(pages−1) with a 320ms width transition, the same odometer '3 / 5' ›. 8 Steps: five 32px circles joined by 14px connectors — finished = solid #5344c2, current = the gradient, ahead = 1.5px dashed ring and dashed connector; hovering a step ahead previews it (rings and connectors up to it turn solid dark); clicking commits. Use real buttons with aria-current, and respect prefers-reduced-motion.",
+    caveats: [
+      "Row classes are prefixed (<code>r-track</code>, <code>r-dots</code>): the rows are named after their control, and a bare <code>.track</code> or <code>.dots</code> on the card would pick up the control's own styles — the Track card grew a hairline across its bottom and shifted 4 px before the prefix.",
+      "The Pills opening state (<code>1 … [7] 8 9</code>) is the reference's static markup; its render rule would draw <code>1 … 6 [7] 8 9</code>. The sample keeps the reference's first paint and applies the rule from the first click on.",
+    ],
+    source: { label: "@海归程序员李工 (Douyin) · 「8 种分页风格供你参考」" },
   },
   {
     slug: "cyclone-369",

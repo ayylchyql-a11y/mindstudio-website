@@ -5,3 +5,4 @@ Fonts in this folder are distributed under the SIL Open Font License 1.1
 - JetBrains Mono — Copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono)
 - Instrument Serif — Copyright 2022 The Instrument Serif Project Authors (https://github.com/Instrument/instrument-serif)
 - Archivo Black — Copyright 2017 The Archivo Black Project Authors (https://github.com/Omnibus-Type/ArchivoBlack)
+- Poppins — Copyright 2020 The Poppins Project Authors (https://github.com/itfoundry/Poppins)

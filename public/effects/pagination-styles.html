@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pagination styles · eight ways to navigate pages</title>
+<style>
+  @font-face { font-family: "Poppins"; font-weight: 400; font-display: swap; src: url(_fonts/poppins-400-latin.woff2) format("woff2"); }
+  @font-face { font-family: "Poppins"; font-weight: 500; font-display: swap; src: url(_fonts/poppins-500-latin.woff2) format("woff2"); }
+  @font-face { font-family: "Poppins"; font-weight: 600; font-display: swap; src: url(_fonts/poppins-600-latin.woff2) format("woff2"); }
+  @font-face { font-family: "Poppins"; font-weight: 700; font-display: swap; src: url(_fonts/poppins-700-latin.woff2) format("woff2"); }
+
+  :root {
+    --grad: linear-gradient(135deg, #c54379 0%, #a34799 45%, #5f5ace 100%);   /* sampled from the reference: pink → violet → blue */
+    --grad-x: linear-gradient(90deg, #c83e78 0%, #9a4aa6 50%, #6256d1 100%);  /* the same ramp laid flat, for bars and pills */
+    --done: #5344c2;          /* a finished step */
+    --ink: #17131d; --text: #403b44; --mute: #8d8794; --line: #e3dee8; --chip: #f5f0fb;
+    --page: #f3f1f7; --card: #fffcff;
+    --ease: cubic-bezier(.22, .61, .36, 1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Poppins", system-ui, sans-serif; background: var(--page); color: var(--text); padding: 40px 24px 44px; -webkit-font-smoothing: antialiased; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  button:disabled { cursor: default; }
+  button:focus-visible { outline: 2px solid #7b5bd6; outline-offset: 2px; }
+
+  /* ── header ── */
+  header { text-align: center; margin-bottom: 26px; }
+  .eyebrow { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .24em; background: var(--grad-x); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  h1 { margin-top: 6px; font-size: 44px; line-height: 1.1; font-weight: 700; letter-spacing: -.02em; color: var(--ink); }
+  h1 span { background: var(--grad-x); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  header p { margin-top: 6px; font-size: 15px; color: #57515c; }
+
+  /* ── rows ── */
+  .list { max-width: 660px; margin: 0 auto; display: grid; gap: 12px; }
+  .row { display: flex; align-items: center; gap: 14px; min-height: 72px; padding: 0 20px 0 18px; border-radius: 16px; background: var(--card);
+    border: 1px solid transparent; box-shadow: 0 1px 2px #1c10300d, 0 10px 24px -12px #3a1d6a38; transition: border-color .2s, box-shadow .25s var(--ease); }
+  .row:hover, .row.hov { border-color: #d8d2de; box-shadow: 0 1px 2px #1c10300f, 0 14px 28px -16px #3a1d6a47; }
+  .badge { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: #efebf7; color: #6a5bbf; font-size: 12px; font-weight: 600; position: relative; overflow: hidden; isolation: isolate; }
+  .badge::before { content: ""; position: absolute; inset: 0; background: var(--grad); opacity: 0; transition: opacity .25s; z-index: -1; }
+  .row:hover .badge, .row.hov .badge { color: #fff; } .row:hover .badge::before, .row.hov .badge::before { opacity: 1; }
+  .name { font-size: 16.5px; font-weight: 600; color: var(--ink); min-width: 96px; }
+  .ctl { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+
+  .arrow { display: grid; place-items: center; width: 34px; height: 38px; color: #3b3540; transition: opacity .2s, color .15s; }
+  .arrow svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .arrow:disabled { opacity: .22; }
+  .arrow:not(:disabled):hover { color: #000; }
+
+  /* 1 · classic — rounded squares; the chosen one is the gradient tile, a touch larger */
+  .sq { position: relative; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: var(--chip); font-size: 15px; font-weight: 500; color: var(--text); isolation: isolate;
+    transition: transform .22s var(--ease), color .18s, box-shadow .2s; }
+  .sq::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--grad); opacity: 0; transition: opacity .16s; z-index: -1; }
+  .sq::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1.5px #3b3540; opacity: 0; transition: opacity .15s; }
+  .sq:hover::after { opacity: 1; } .sq:hover { background: #fff; }
+  .sq.on { transform: scale(1.14); color: #fff; box-shadow: 0 6px 14px -6px #7a3fa699; } .sq.on::before { opacity: 1; } .sq.on::after { opacity: 0; } .sq.on:hover { background: var(--chip); }
+  /* the one that just lost the selection flashes white with a ring, then fades back (reference: ~200 ms) */
+  .sq.was { background: #fff; animation: was .32s ease-out forwards; }
+  @keyframes was { 0% { box-shadow: inset 0 0 0 1.5px #d9d2df; background: #fff; } 100% { box-shadow: inset 0 0 0 1.5px #d9d2df00; background: var(--chip); } }
+  .r-classic .ctl { gap: 9px; }
+
+  /* 2 · pills — the same logic on circles, with 1 … and a window around the current page */
+  .pill { border-radius: 50%; }
+  .ell { width: 18px; text-align: center; font-weight: 700; color: var(--text); letter-spacing: .02em; }
+
+  /* 3 · dots — the current page is a gradient bar, every other page a faint dot */
+  .dots { display: flex; align-items: center; gap: 8px; padding: 0 10px; }
+  .dot { width: 9px; height: 9px; border-radius: 99px; background: #ebe6f0; transition: width .3s var(--ease), background-color .3s; position: relative; overflow: hidden; }
+  .dot::before { content: ""; position: absolute; inset: 0; background: var(--grad-x); opacity: 0; transition: opacity .2s; }
+  .dot.on { width: 34px; } .dot.on::before { opacity: 1; }
+  .dot:hover:not(.on) { background: #cfc7da; }
+  .arrow.dbl svg { width: 18px; height: 18px; }
+
+  /* 4 · bordered — squared boxes; the chosen one gets a dark border and a dark violet figure */
+  .bx { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 3px; border: 1.5px solid #dcd6e1; font-size: 15px; color: #6b6570; transition: border-color .2s, background-color .2s, color .2s; }
+  .bx:hover { border-color: #2b2530; background: #f4f2f6; color: var(--ink); }
+  .bx.on { border-color: #4a3558; color: #4a2f63; font-weight: 500; background: #fff; }
+  .r-bordered .ctl { gap: 9px; }
+
+  /* 5 · track — numbers on a hairline; a gradient runner slides under the current one */
+  .track { position: relative; display: grid; grid-template-columns: repeat(5, 46px); height: 46px; margin: 0 4px; }
+  .track::before { content: ""; position: absolute; left: -6px; right: -6px; bottom: 10px; height: 1.5px; border-radius: 2px; background: #d9d4de; }
+  .tn { position: relative; font-size: 15px; font-weight: 500; color: #6d6772; padding-bottom: 14px; transition: color .25s, transform .3s var(--ease); }
+  .tn.on { color: #5b3fae; transform: translateY(-3px); font-weight: 600; }
+  .tn:hover:not(.on) { color: var(--ink); }
+  .runner { position: absolute; left: 0; bottom: 7px; width: 32px; height: 8px; border-radius: 9px; background: var(--grad-x); transition: transform .38s cubic-bezier(.4, 0, .2, 1); box-shadow: 0 3px 8px -3px #7a3fa680; }
+
+  /* 6 · compact — two ringed buttons and an odometer figure */
+  .ring { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 1px solid #e3dde8; background: #fff; color: #3b3540; transition: border-color .2s, opacity .2s, box-shadow .2s; }
+  .ring svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .ring:not(:disabled):hover { border-color: #2e2833; box-shadow: 0 0 0 1px #2e2833 inset; }
+  .ring:disabled { opacity: .35; }
+  .frac { display: flex; align-items: baseline; gap: 7px; padding: 0 8px; font-size: 22px; font-weight: 500; color: var(--ink); line-height: 1; }
+  .frac .sl { font-weight: 400; color: var(--ink); }
+  .odo { position: relative; display: inline-block; height: 1.1em; overflow: hidden; vertical-align: bottom; min-width: .62em; text-align: center; }
+  .odo b { display: block; font-weight: 500; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; transition: transform .22s var(--ease), opacity .22s; }
+  .odo b.out { position: absolute; inset: 0; }
+  .r-compact .ctl { gap: 4px; }
+
+  /* 7 · progress — a filled bar at (page − 1) / (pages − 1) and the same odometer */
+  .bar { width: 140px; height: 8px; border-radius: 9px; background: #dfdbe5; overflow: hidden; margin: 0 10px 0 6px; }
+  .bar i { display: block; height: 100%; border-radius: inherit; background: var(--grad-x); transition: width .32s var(--ease); }
+
+  /* 8 · steps — done = solid violet, current = gradient, ahead = dashed; hovering ahead previews the path */
+  .steps { display: flex; align-items: center; }
+  .st { position: relative; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; font-size: 13px; font-weight: 600; color: #57505d; border: 1.5px dashed #6e6773; background: transparent; isolation: isolate; transition: color .2s, border-color .2s; }
+  .st::before { content: ""; position: absolute; inset: -1.5px; border-radius: 50%; opacity: 0; transition: opacity .22s; z-index: -1; }
+  .st.done, .st.cur { color: #fff; border-color: transparent; }
+  .st.done::before { background: var(--done); opacity: 1; }
+  .st.cur::before { background: var(--grad); opacity: 1; }
+  .st.pre { border-style: solid; border-color: #2e2833; color: var(--ink); }
+  .cn { width: 14px; height: 0; border-top: 1.5px dashed #8a838f; transition: border-color .2s; }
+  .cn.full { border-top-style: solid; border-color: #3b3346; }
+  .cn.pre { border-top-style: solid; border-color: #2e2833; }
+
+  /* narrow cards: the control drops under the name */
+  @media (max-width: 600px) {
+    body { padding: 28px 12px 32px; }
+    h1 { font-size: 34px; }
+    .row { flex-wrap: wrap; padding: 14px 14px; gap: 10px 12px; }
+    .ctl { margin-left: 0; width: 100%; justify-content: center; }
+  }
+  @media (max-width: 380px) {
+    .sq, .bx { width: 32px; height: 32px; font-size: 14px; } .r-classic .ctl, .r-bordered .ctl { gap: 5px; }
+    .track { grid-template-columns: repeat(5, 38px); } .bar { width: 100px; } .arrow { width: 28px; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 1ms !important; animation-duration: 1ms !important; } }
+</style>
+</head>
+<body>
+<header>
+  <span class="eyebrow">AI BUILDER COMPONENTS</span>
+  <h1>Pagination <span>Styles</span></h1>
+  <p>8 ways to navigate pages</p>
+</header>
+<main class="list" id="list"></main>
+
+<script>
+(() => {
+  const CH = { l: '<svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>', r: '<svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>',
+    ll: '<svg viewBox="0 0 24 24"><path d="m11 17-5-5 5-5"/><path d="m18 17-5-5 5-5"/></svg>', rr: '<svg viewBox="0 0 24 24"><path d="m6 17 5-5-5-5"/><path d="m13 17 5-5-5-5"/></svg>',
+    al: '<svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>', ar: '<svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>' };
+  const list = document.getElementById("list");
+  const rows = {};
+  const row = (i, key, name) => {
+    const el = document.createElement("section"); el.className = `row r-${key}`; el.setAttribute("aria-label", `${name} pagination`);
+    el.innerHTML = `<span class="badge">${i}</span><span class="name">${name}</span><nav class="ctl" aria-label="${name}"></nav>`;
+    list.appendChild(el); return (rows[key] = { el, ctl: el.querySelector(".ctl") });
+  };
+  const arrow = (html, label, cls = "arrow") => `<button type="button" class="${cls}" aria-label="${label}">${html}</button>`;
+
+  /* number buttons: re-used by Classic (squares) and Pills (circles). The one that loses the
+     selection gets .was for one beat — a white tile with a fading ring — like the reference. */
+  function numbers(r, pages, total, cur, shape, initial) {
+    const prevOn = r.cur;
+    r.ctl.innerHTML = arrow(CH.l, "Previous page") + pages.map((p) => (p === "…" ? `<span class="ell" aria-hidden="true">…</span>` : `<button type="button" class="sq ${shape}${p === cur ? " on" : ""}${!initial && p === prevOn && p !== cur ? " was" : ""}" data-p="${p}" ${p === cur ? 'aria-current="page"' : ""}>${p}</button>`)).join("") + arrow(CH.r, "Next page");
+    const [pv, nx] = r.ctl.querySelectorAll(".arrow"); pv.disabled = cur <= 1; nx.disabled = cur >= total;
+    r.cur = cur;
+  }
+  /* A re-render that keeps the same buttons would restart transitions, so Classic updates in place. */
+  function classic() {
+    const r = row(1, "classic", "Classic"), total = 5;
+    numbers(r, [1, 2, 3, 4, 5], total, 3, "", true);
+    const go = (p) => {
+      if (p < 1 || p > total || p === r.cur) return;
+      const btns = r.ctl.querySelectorAll(".sq"), old = r.cur;
+      btns.forEach((b) => { const n = +b.dataset.p; b.classList.toggle("on", n === p); b.classList.remove("was"); b.toggleAttribute("aria-current", n === p); });
+      const ob = r.ctl.querySelector(`.sq[data-p="${old}"]`); void ob.offsetWidth; ob.classList.add("was");
+      r.cur = p; const [pv, nx] = r.ctl.querySelectorAll(".arrow"); pv.disabled = p <= 1; nx.disabled = p >= total;
+    };
+    r.ctl.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b || b.disabled) return; if (b.dataset.p) go(+b.dataset.p); else go(r.cur + (b === r.ctl.firstElementChild ? -1 : 1)); });
+    r.go = go;
+  }
+  /* Pills: 9 pages. The window is the first page, an ellipsis, then the current page and its
+     neighbours (7 → "1 … 7 8 9" is the reference's opening state; 8 → "1 … 7 8 9"; 9 → "1 … 8 9"). */
+  function pills() {
+    const r = row(2, "pills", "Pills"), total = 9;
+    const pagesFor = (c, first) => {
+      const lo = first ? c : Math.max(2, c - 1), hi = first ? Math.min(total, c + 2) : Math.min(total, c + 1);
+      const out = [1]; if (lo > 2) out.push("…");
+      for (let p = lo; p <= hi; p++) out.push(p);
+      if (hi < total - 1) out.push("…"); if (hi < total) out.push(total);
+      return out;
+    };
+    let shown = pagesFor(7, true);
+    numbers(r, shown, total, 7, "pill", true);
+    const go = (p) => {
+      if (p < 1 || p > total || p === r.cur) return;
+      const next = pagesFor(p, false);
+      if (next.join() === shown.join()) {          // same window: move the selection in place
+        const old = r.cur;
+        r.ctl.querySelectorAll(".sq").forEach((b) => { const n = +b.dataset.p; b.classList.toggle("on", n === p); b.classList.remove("was"); b.toggleAttribute("aria-current", n === p); });
+        const ob = r.ctl.querySelector(`.sq[data-p="${old}"]`); if (ob) { void ob.offsetWidth; ob.classList.add("was"); }
+        r.cur = p; const [pv, nx] = r.ctl.querySelectorAll(".arrow"); pv.disabled = p <= 1; nx.disabled = p >= total;
+      } else { shown = next; numbers(r, next, total, p, "pill", false); }
+    };
+    r.ctl.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b || b.disabled) return; if (b.dataset.p) go(+b.dataset.p); else go(r.cur + (b === r.ctl.firstElementChild ? -1 : 1)); });
+    r.go = go;
+  }
+  function dots() {
+    const r = row(3, "dots", "Dots"), total = 5; r.cur = 3;
+    r.ctl.innerHTML = arrow(CH.ll, "Previous page", "arrow dbl") + `<div class="dots">${Array.from({ length: total }, (_, i) => `<button type="button" class="dot" data-p="${i + 1}" aria-label="Page ${i + 1}"></button>`).join("")}</div>` + arrow(CH.rr, "Next page", "arrow dbl");
+    const set = (p) => { r.cur = p; r.ctl.querySelectorAll(".dot").forEach((d) => { d.classList.toggle("on", +d.dataset.p === p); d.toggleAttribute("aria-current", +d.dataset.p === p); }); const [pv, nx] = r.ctl.querySelectorAll(".arrow"); pv.disabled = p <= 1; nx.disabled = p >= total; };
+    r.go = (p) => { if (p >= 1 && p <= total) set(p); };
+    r.ctl.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b || b.disabled) return; if (b.dataset.p) r.go(+b.dataset.p); else r.go(r.cur + (b === r.ctl.firstElementChild ? -1 : 1)); });
+    set(3);
+  }
+  function bordered() {
+    const r = row(4, "bordered", "Bordered"), total = 5;
+    r.ctl.innerHTML = arrow(CH.al, "Previous page") + Array.from({ length: total }, (_, i) => `<button type="button" class="bx" data-p="${i + 1}">${i + 1}</button>`).join("") + arrow(CH.ar, "Next page");
+    const set = (p) => { r.cur = p; r.ctl.querySelectorAll(".bx").forEach((d) => { d.classList.toggle("on", +d.dataset.p === p); d.toggleAttribute("aria-current", +d.dataset.p === p); }); const [pv, nx] = r.ctl.querySelectorAll(".arrow"); pv.disabled = p <= 1; nx.disabled = p >= total; };
+    r.go = (p) => { if (p >= 1 && p <= total) set(p); };
+    r.ctl.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b || b.disabled) return; if (b.dataset.p) r.go(+b.dataset.p); else r.go(r.cur + (b === r.ctl.firstElementChild ? -1 : 1)); });
+    set(2);
+  }
+  function track() {
+    const r = row(5, "track", "Track"), total = 5;
+    r.ctl.innerHTML = arrow(CH.l, "Previous page") + `<div class="track">${Array.from({ length: total }, (_, i) => `<button type="button" class="tn" data-p="${i + 1}">${i + 1}</button>`).join("")}<i class="runner" aria-hidden="true"></i></div>` + arrow(CH.r, "Next page");
+    const runner = r.ctl.querySelector(".runner"), trk = r.ctl.querySelector(".track");
+    const set = (p) => {
+      r.cur = p; const t = r.ctl.querySelector(`.tn[data-p="${p}"]`);
+      r.ctl.querySelectorAll(".tn").forEach((d) => { d.classList.toggle("on", d === t); d.toggleAttribute("aria-current", d === t); });
+      runner.style.transform = `translateX(${t.offsetLeft + t.offsetWidth / 2 - runner.offsetWidth / 2}px)`;   // slides; never jumps
+      const [pv, nx] = r.ctl.querySelectorAll(".arrow"); pv.disabled = p <= 1; nx.disabled = p >= total;
+    };
+    r.go = (p) => { if (p >= 1 && p <= total) set(p); };
+    r.ctl.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b || b.disabled) return; if (b.dataset.p) r.go(+b.dataset.p); else r.go(r.cur + (b === r.ctl.firstElementChild ? -1 : 1)); });
+    runner.style.transition = "none"; set(3); void runner.offsetWidth; runner.style.transition = "";
+    new ResizeObserver(() => { runner.style.transition = "none"; set(r.cur); void runner.offsetWidth; runner.style.transition = ""; }).observe(trk);
+  }
+  /* odometer: the old figure rolls up and out while the new one rolls up from below */
+  function odo(el, value, dir) {
+    const old = el.querySelector("b:not(.out)"); if (old && old.textContent === String(value)) return;
+    const nb = document.createElement("b"); nb.textContent = value;
+    if (!old || matchMedia("(prefers-reduced-motion: reduce)").matches) { el.replaceChildren(nb); return; }
+    old.classList.add("out"); nb.style.transform = `translateY(${dir * 100}%)`; nb.style.opacity = "0"; el.appendChild(nb);
+    requestAnimationFrame(() => requestAnimationFrame(() => { old.style.transform = `translateY(${-dir * 100}%)`; old.style.opacity = "0"; nb.style.transform = ""; nb.style.opacity = ""; }));
+    setTimeout(() => old.remove(), 260);
+  }
+  function compact() {
+    const r = row(6, "compact", "Compact"), total = 5;
+    r.ctl.innerHTML = arrow(CH.l, "Previous page", "ring") + `<span class="frac" aria-live="polite"><span class="odo"></span><span class="sl">/</span><span>${total}</span></span>` + arrow(CH.r, "Next page", "ring");
+    const o = r.ctl.querySelector(".odo");
+    const set = (p, dir = 1) => { r.cur = p; odo(o, p, dir); const [pv, nx] = r.ctl.querySelectorAll(".ring"); pv.disabled = p <= 1; nx.disabled = p >= total; };
+    r.go = (p) => { if (p >= 1 && p <= total && p !== r.cur) set(p, p > r.cur ? 1 : -1); };
+    r.ctl.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b || b.disabled) return; r.go(r.cur + (b === r.ctl.firstElementChild ? -1 : 1)); });
+    set(2);
+  }
+  function progress() {
+    const r = row(7, "progress", "Progress"), total = 5;
+    r.ctl.innerHTML = arrow(CH.l, "Previous page") + `<span class="bar" role="progressbar" aria-valuemin="1" aria-valuemax="${total}"><i></i></span><span class="frac" aria-live="polite"><span class="odo"></span><span class="sl">/</span><span>${total}</span></span>` + arrow(CH.r, "Next page");
+    const o = r.ctl.querySelector(".odo"), fill = r.ctl.querySelector(".bar i"), bar = r.ctl.querySelector(".bar");
+    const set = (p, dir = 1) => { r.cur = p; odo(o, p, dir); fill.style.width = `${((p - 1) / (total - 1)) * 100}%`; bar.setAttribute("aria-valuenow", p); const [pv, nx] = r.ctl.querySelectorAll(".arrow"); pv.disabled = p <= 1; nx.disabled = p >= total; };
+    r.go = (p) => { if (p >= 1 && p <= total && p !== r.cur) set(p, p > r.cur ? 1 : -1); };
+    r.ctl.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b || b.disabled) return; r.go(r.cur + (b === r.ctl.firstElementChild ? -1 : 1)); });
+    fill.style.transition = "none"; set(3); void fill.offsetWidth; fill.style.transition = "";
+  }
+  function steps() {
+    const r = row(8, "steps", "Steps"), total = 5;
+    r.ctl.innerHTML = `<div class="steps">${Array.from({ length: total }, (_, i) => (i ? `<i class="cn" data-c="${i + 1}"></i>` : "") + `<button type="button" class="st" data-p="${i + 1}" aria-label="Step ${i + 1}">${i + 1}</button>`).join("")}</div>`;
+    const st = [...r.ctl.querySelectorAll(".st")], cn = [...r.ctl.querySelectorAll(".cn")];
+    const paint = (cur, preview = 0) => {
+      st.forEach((b) => { const n = +b.dataset.p; b.classList.toggle("done", n < cur); b.classList.toggle("cur", n === cur); b.classList.toggle("pre", n > cur && n <= preview); b.toggleAttribute("aria-current", n === cur); });
+      cn.forEach((c) => { const n = +c.dataset.c; c.classList.toggle("full", n <= cur); c.classList.toggle("pre", n > cur && n <= preview); });   // connector n joins step n-1 → n
+    };
+    r.go = (p) => { if (p >= 1 && p <= total) { r.cur = p; paint(p); } };
+    r.preview = (p) => paint(r.cur, p);
+    st.forEach((b) => { b.addEventListener("pointerenter", () => r.preview(+b.dataset.p)); b.addEventListener("pointerleave", () => paint(r.cur)); b.addEventListener("focus", () => r.preview(+b.dataset.p)); b.addEventListener("blur", () => paint(r.cur)); });
+    r.ctl.addEventListener("click", (e) => { const b = e.target.closest(".st"); if (b) { r.go(+b.dataset.p); } });
+    r.cur = 2; paint(2);
+  }
+  classic(); pills(); dots(); bordered(); track(); compact(); progress(); steps();
+
+  /* ?demo (the lab's recording only): the reference's sequence, row by row, with hover shown */
+  if (/[?&]demo\b/.test(location.search)) {
+    const hov = (k, on) => rows[k].el.classList.toggle("hov", on);
+    const S = [
+      [700, () => hov("classic", true)], [1000, () => rows.classic.go(4)], [1500, () => rows.classic.go(5)], [1900, () => hov("classic", false)],
+      [1900, () => hov("pills", true)], [2200, () => rows.pills.go(8)], [2800, () => rows.pills.go(9)], [3200, () => hov("pills", false)],
+      [3200, () => hov("dots", true)], [3500, () => rows.dots.go(4)], [3900, () => rows.dots.go(5)], [4300, () => hov("dots", false)],
+      [4300, () => hov("bordered", true)], [4700, () => rows.bordered.go(3)], [5100, () => hov("bordered", false)],
+      [5100, () => hov("track", true)], [5300, () => rows.track.go(4)], [5800, () => rows.track.go(5)], [6200, () => hov("track", false)],
+      [6200, () => hov("compact", true)], [6500, () => rows.compact.go(3)], [6900, () => hov("compact", false)],
+      [6900, () => hov("progress", true)], [7200, () => rows.progress.go(4)], [7600, () => hov("progress", false)],
+      [7600, () => hov("steps", true)], [7800, () => rows.steps.preview(4)], [8400, () => rows.steps.go(4)], [9200, () => hov("steps", false)],
+    ];
+    for (const [ms, fn] of S) setTimeout(fn, ms);
+  }
+})();
+</script>
+</body>
+</html>
