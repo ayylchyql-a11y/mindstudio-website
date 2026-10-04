@@ -57,7 +57,7 @@
 
 <script src="_morph/morphicons.js"></script>
 <script src="_morph/icons.js"></script>
-<script src="_morph/ripple.js"></script>
+<script src="_morph/save-wave.js"></script>
 <script src="_morph/madrid.js"></script>
 <script>
 (() => {
@@ -70,7 +70,8 @@
      The source runs this inside Mapbox GL (StyleImages + reverse geocoding).
      Here the map is drawn with Canvas 2D from OpenStreetMap data and the
      address is the nearest named street; the pin state machine, sprites,
-     tints, cursor pin, hit test and the ripple are the source's own. */
+     tints, cursor pin and hit test are the source's own; the save wave is our
+     own WebGL ripple (_morph/save-wave.js). */
   const M = window.Morphicons, X = window.MorphIconData.extra;
   const $ = (id) => document.getElementById(id);
   const box = $("box"), mapCanvas = $("map"), mctx = mapCanvas.getContext("2d");
