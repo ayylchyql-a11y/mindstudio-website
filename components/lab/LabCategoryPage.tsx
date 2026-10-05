@@ -4,7 +4,7 @@ import CopyBox from "@/components/CopyBox";
 import EffectFrame from "@/components/EffectFrame";
 import EffectVideo from "@/components/EffectVideo";
 import LabCta, { fullPathFor } from "@/components/lab/LabCta";
-import { categories, categoryById, demoPath, effectsIn, isOpen, labCopy, posterPath, videoPath } from "@/data/effects";
+import { categories, categoryById, demoPath, effectGroups, effectsIn, isOpen, labCopy, posterPath, videoPath, type Effect } from "@/data/effects";
 import { readDemoSource } from "@/lib/effect-source";
 import { ENGLISH_ONLY, altsFor, defaultLocale, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
@@ -48,21 +48,10 @@ export default async function LabCategoryPage({ params, full }: { params: Catego
   const items = effectsIn(cat.id);
   if (items.length === 0) notFound();
 
-  return (
-    <main className="lab-wide">
-      <div className="lab-wide-head">
-        <a className="eyebrow-link" href={`/${lang}/lab`}>
-          {pick(labCopy.title, lang)}
-        </a>
-        <h1>
-          <span className="cat-dot" style={{ background: cat.accent }} aria-hidden="true" />
-          {pick(cat.title, lang)}
-        </h1>
-        <p className="lab-wide-intro">{pick(cat.intro, lang)}</p>
-      </div>
-
-      <div className="fx-grid">
-        {items.map((e) => {
+  const groups = effectGroups(cat.id);
+  // 分了小组时小组标题占 h2，卡片标题降到 h3（样式两者一样）
+  const Title = groups ? "h3" : "h2";
+  const card = (e: Effect) => {
           const showFull = full || isOpen(e);
           return (
             <article className="fx-card" key={e.slug}>
@@ -85,9 +74,9 @@ export default async function LabCategoryPage({ params, full }: { params: Catego
                 />
               )}
               <div className="fx-card-body">
-                <h2>
+                <Title>
                   <a href={`/${lang}/lab/${cat.id}/${e.slug}`}>{pick(e.title, lang)}</a>
-                </h2>
+                </Title>
                 <p>{pick(e.gist, lang)}</p>
                 {showFull ? (
                   <>
@@ -138,8 +127,45 @@ export default async function LabCategoryPage({ params, full }: { params: Catego
               </div>
             </article>
           );
-        })}
+  };
+
+  return (
+    <main className="lab-wide">
+      <div className="lab-wide-head">
+        <a className="eyebrow-link" href={`/${lang}/lab`}>
+          {pick(labCopy.title, lang)}
+        </a>
+        <h1>
+          <span className="cat-dot" style={{ background: cat.accent }} aria-hidden="true" />
+          {pick(cat.title, lang)}
+        </h1>
+        <p className="lab-wide-intro">{pick(cat.intro, lang)}</p>
       </div>
+
+      {groups ? (
+        <>
+          {/* 纯锚点链接：不需要一行 JS 就能跳到对应小组。
+              🩸不能用 <nav>：globals.css 里裸 `nav` 是全站顶栏（position: fixed; top: 0），
+              用了它这排标签会被钉到页面最顶上、盖住顶栏。 */}
+          <div className="fx-groups" role="navigation" aria-label={pick(cat.title, lang)}>
+            {groups.map((g) => (
+              <a key={g.id} href={`#${g.id}`}>
+                {pick(g.title, lang)} <span>{g.items.length}</span>
+              </a>
+            ))}
+          </div>
+          {groups.map((g) => (
+            <section className="fx-group" id={g.id} key={g.id}>
+              <h2 className="fx-group-title">
+                {pick(g.title, lang)} <span>{g.items.length}</span>
+              </h2>
+              <div className="fx-grid">{g.items.map(card)}</div>
+            </section>
+          ))}
+        </>
+      ) : (
+        <div className="fx-grid">{items.map(card)}</div>
+      )}
 
       {full ? null : <LabCta lang={lang} fullPath={fullPathFor(lang, `/${cat.id}`)} />}
 

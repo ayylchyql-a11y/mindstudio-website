@@ -15,7 +15,7 @@ import { OPEN_SLUGS } from "@/lib/lab-open";
  *    在这里再抄一份 = 两处真相，改了 demo 忘了改展示，页面上给的代码就是错的。
  */
 
-export type CategoryId = "web-effects" | "border-effects" | "icon-morph" | "animated-icons" | "chart-widgets" | "widgets" | "dashboard" | "dashboard-details" | "creative" | "mobile-ui";
+export type CategoryId = "web-effects" | "border-effects" | "icon-morph" | "animated-icons" | "widgets" | "dashboard" | "creative" | "mobile-ui";
 
 export interface Category {
   id: CategoryId;
@@ -24,6 +24,12 @@ export interface Category {
   intro: Localized;
   /** 分类的强调色，用在标题的圆点与卡片底 */
   accent: string;
+  /**
+   * 分类页里的小组（按这里的顺序分段显示，顶部一排锚点）。
+   * 给了 groups 的分类，**每一条效果都必须有其中一个 group**，否则构建直接报错
+   * （见 effectGroups）—— 漏分组的卡片会凭空消失在页面上，比报错难发现得多。
+   */
+  groups?: { id: string; title: Localized }[];
 }
 
 /**
@@ -47,24 +53,79 @@ export const categories: Category[] = [
       "zh-tw": "把網頁介面的特效拆開重做一遍：它由什麼構成、精確到多少的數值、以及一句能把它複現出來的提示詞。捲動驅動的轉場、跟著指標走的材質、一個字一個字進場的標題。",
     },
     accent: "#2f6fff",
+    groups: [
+      { id: "pointer", title: { en: "Cursor & hover", zh: "光标与悬停", "zh-tw": "游標與懸停", ja: "カーソルとホバー", ko: "커서와 호버", it: "Cursore e hover" } },
+      { id: "scroll", title: { en: "Scroll-driven", zh: "滚动驱动", "zh-tw": "捲動驅動", ja: "スクロール連動", ko: "스크롤 연동", it: "Guidati dallo scroll" } },
+      { id: "carousel", title: { en: "Carousels", zh: "轮播", "zh-tw": "輪播", ja: "カルーセル", ko: "캐러셀", it: "Caroselli" } },
+      { id: "click", title: { en: "Click & feedback", zh: "点击与反馈", "zh-tw": "點擊與回饋", ja: "クリックとフィードバック", ko: "클릭과 피드백", it: "Clic e feedback" } },
+      { id: "type", title: { en: "Type & backgrounds", zh: "文字与背景", "zh-tw": "文字與背景", ja: "文字と背景", ko: "텍스트와 배경", it: "Testo e sfondi" } },
+    ],
   },
   {
-    id: "border-effects",
+    id: "mobile-ui",
     title: {
-      en: "Border effects",
-      zh: "边框特效",
-      "zh-tw": "邊框特效",
-      ja: "ボーダーエフェクト",
-      ko: "보더 이펙트",
-      it: "Effetti bordo",
+      en: "Mobile UI design",
+      zh: "手机UI设计",
+      "zh-tw": "手機UI設計",
+      ja: "モバイル UI デザイン",
+      ko: "모바일 UI 디자인",
+      it: "UI mobile",
     },
     intro: {
-      en: "Five ways to make the edge of a panel move: a rainbow arc running the perimeter, an outline that breathes to transparent, particles tracing the path and dissipating, gas clouds hugging the frame, and four neon nodes orbiting it. One shared card, five borders, each with the exact period, the path maths and a prompt that rebuilds it.",
-      zh: "让一块面板的边缘动起来的五种做法：沿边环跑的虹彩弧、呼吸到完全透明的描边、沿路径流动并飘散的粒子、贴着框走的气态云团、绕着边框转的四颗霓虹光点。同一张卡片，五种边框，每种都给出精确周期、路径算法和一句能复现它的提示词。",
-      "zh-tw": "讓一塊面板的邊緣動起來的五種做法：沿邊環跑的虹彩弧、呼吸到完全透明的描邊、沿路徑流動並飄散的粒子、貼著框走的氣態雲團、繞著邊框轉的四顆霓虹光點。同一張卡片，五種邊框，每種都給出精確週期、路徑演算法和一句能複現它的提示詞。",
-      it: "Cinque modi per far muovere il bordo di un pannello: un arco iridescente che corre lungo il perimetro, un contorno che respira fino a sparire, particelle che tracciano il percorso e si dissolvono, nubi gassose attaccate alla cornice e quattro nodi neon in orbita.",
+      en: "Whole phone interfaces rebuilt as working replicas \u2014 the design language read off a video and put back together screen by screen, with the numbers it runs on, the source file, and a prompt that reproduces it. Tap through them; they are not pictures.",
+      zh: "把整套手机界面按视频复刻成能用的样板：从视频里读出它的设计语言，一屏一屏装回去，附上它赖以成立的数值、完整源文件、以及一句能把它复现出来的提示词。可以点进去玩，不是截图。",
+      "zh-tw": "把整套手機介面按影片複刻成能用的樣板：從影片裡讀出它的設計語言，一屏一屏裝回去，附上它賴以成立的數值、完整原始檔、以及一句能把它複現出來的提示詞。可以點進去玩，不是截圖。",
     },
-    accent: "#22d3c5",
+    accent: "#5b3fd6",
+  },  {
+    id: "dashboard",
+    title: { en: "Dashboard", zh: "Dashboard", "zh-tw": "Dashboard", ja: "ダッシュボード", ko: "대시보드", it: "Dashboard" },
+    intro: {
+      en: "One restaurant back office, fourteen designs. Six sidebar systems on a shared content column — floating panel, dark rail, glass rail, rail + panel, hover expand, grouped nav — and eight whole-page languages built from the library’s own widgets: a dark command center, an editorial page, a bento grid, an ambient AI sky, a keyboard-first tracker, a phosphor terminal, a neo-brutalist board and the owner’s phone. The content is real everywhere: dishes, prices and photos from M Desk’s live menu, the order board, the last 30 days (scaled). Plus six interaction patterns, each on its own dashboard: a draggable bento grid, a module that expands in place, a global filter with rolling numbers, linked hover across chart and calendar, metrics that stick into the header on scroll, and a master–detail drawer.",
+      zh: "同一套餐厅后台，十四种设计。六种只换侧边栏（悬浮岛、深色重底、磨砂玻璃、双层图标轨、折叠展开、分组收口），八种整页语言用设计库自己的控件拼成：深色指挥台、纸感编辑风、便当格、天空 AI、键盘优先、荧光终端、新粗野主义、老板的手机。内容全是真的——M Desk 线上菜单里的菜、价格和照片，订单看板，近 30 天数据（按比例缩放）。另有六种交互，各配一整套看板：可拖动的模块网格、模块就地放大、顶部筛选全局联动（数字滚动）、图表悬停联动、指标区滚动吸顶、列表加右侧详情抽屉。",
+      "zh-tw": "同一套餐廳後台，十四種設計。六種只換側邊欄（懸浮島、深色重底、磨砂玻璃、雙層圖示軌、摺疊展開、分組收口），八種整頁語言用設計庫自己的控件拼成：深色指揮台、紙感編輯風、便當格、天空 AI、鍵盤優先、螢光終端、新粗野主義、老闆的手機。內容全是真的——M Desk 線上菜單裡的菜、價格和照片，訂單看板，近 30 天數據（按比例縮放）。",
+    },
+    accent: "#e07a2f",
+    groups: [
+      { id: "pages", title: { en: "Whole-page styles", zh: "整页风格", "zh-tw": "整頁風格", ja: "ページ全体のスタイル", ko: "페이지 전체 스타일", it: "Stili di pagina" } },
+      { id: "interactions", title: { en: "Interactions", zh: "交互", "zh-tw": "互動", ja: "インタラクション", ko: "인터랙션", it: "Interazioni" } },
+      { id: "sidebars", title: { en: "Sidebars", zh: "侧边栏", "zh-tw": "側邊欄", ja: "サイドバー", ko: "사이드바", it: "Barre laterali" } },
+    ],
+  },
+  {
+    id: "creative",
+    title: {
+      en: "Creative work",
+      zh: "创意设计",
+      "zh-tw": "創意設計",
+      ja: "クリエイティブ",
+      ko: "크리에이티브",
+      it: "Lavori creativi",
+    },
+    intro: {
+      en: "Finished pieces rather than parts \u2014 visual work you can just look at. Each one still carries the same three things as next door: what it is made of, the exact numbers, and a prompt that rebuilds it.",
+      zh: "\u8fd9\u91cc\u653e\u7684\u662f\u6210\u54c1\u800c\u4e0d\u662f\u96f6\u4ef6\u2014\u2014\u505a\u5b8c\u5c31\u80fd\u76f4\u63a5\u770b\u7684\u89c6\u89c9\u4f5c\u54c1\u3002\u4f46\u548c\u9694\u58c1\u4e00\u6837\uff0c\u6bcf\u4e00\u4ef6\u4ecd\u7136\u5199\u6e05\u695a\u5b83\u7531\u4ec0\u4e48\u6784\u6210\u3001\u7cbe\u786e\u5230\u591a\u5c11\u7684\u6570\u503c\u3001\u4ee5\u53ca\u4e00\u53e5\u80fd\u628a\u5b83\u91cd\u505a\u4e00\u904d\u7684\u63d0\u793a\u8bcd\u3002",
+      "zh-tw": "\u9019\u88e1\u653e\u7684\u662f\u6210\u54c1\u800c\u4e0d\u662f\u96f6\u4ef6\u2014\u2014\u505a\u5b8c\u5c31\u80fd\u76f4\u63a5\u770b\u7684\u8996\u89ba\u4f5c\u54c1\u3002\u4f46\u548c\u9694\u58c1\u4e00\u6a23\uff0c\u6bcf\u4e00\u4ef6\u4ecd\u7136\u5beb\u6e05\u695a\u5b83\u7531\u4ec0\u9ebc\u69cb\u6210\u3001\u7cbe\u78ba\u5230\u591a\u5c11\u7684\u6578\u503c\u3001\u4ee5\u53ca\u4e00\u53e5\u80fd\u628a\u5b83\u91cd\u505a\u4e00\u904d\u7684\u63d0\u793a\u8a5e\u3002",
+    },
+    accent: "#c9922e",
+  },
+  {
+    id: "widgets",
+    /* 2026-10-05：原来的「交互细节 · 图表控件」(chart-widgets)、「小组件」(widgets)、
+       「Dashboard 特效细节」(dashboard-details) 是同一种东西，并成一个分类，按小组分段。
+       旧网址在 next.config.ts 里 301 到这里。 */
+    title: { en: "UI components", zh: "界面组件", "zh-tw": "介面組件", ja: "UI コンポーネント", ko: "UI 컴포넌트", it: "Componenti UI" },
+    intro: {
+      en: "The small controls an interface is built from, each rebuilt with its motion intact. Chart controls — rings that draw from zero, bars that morph instead of redrawing, a goal line you drag — and interactive controls, most with a bench of switches and levels so you can tune them while they run, plus pagination in eight styles. The bench controls are rebuilt from the MIT-licensed block logic Lorenzo Cabra published on bencho.dev.",
+      zh: "界面是由一个个小控件拼起来的，这里把它们连同动效一起逐个重做。图表控件——从零画起的圆环、切换时变形而不重画的柱子、能拖的目标线；交互控件——大多自带开关和滑杆，边跑边调；还有八种样式的分页器。带调参面板的那批，基于 Lorenzo Cabra 在 bencho.dev 公开的 MIT 块逻辑重做。",
+      "zh-tw": "介面是由一個個小控件拼起來的，這裡把它們連同動效一起逐個重做。圖表控件——從零畫起的圓環、切換時變形而不重畫的柱子、能拖的目標線；互動控件——大多自帶開關和滑桿，邊跑邊調；還有八種樣式的分頁器。帶調參面板的那批，基於 Lorenzo Cabra 在 bencho.dev 公開的 MIT 塊邏輯重做。",
+      it: "I piccoli controlli di cui è fatta un'interfaccia, ognuno ricostruito con il suo movimento. Controlli per grafici — anelli che si disegnano da zero, barre che cambiano forma invece di ridisegnarsi, una linea obiettivo da trascinare — e controlli interattivi, quasi tutti con un pannello di interruttori e livelli per regolarli mentre girano, più la paginazione in otto stili. I controlli con pannello sono ricostruiti dalla logica dei blocchi, con licenza MIT, pubblicata da Lorenzo Cabra su bencho.dev.",
+    },
+    accent: "#ff3d8a",
+    groups: [
+      { id: "charts", title: { en: "Chart controls", zh: "图表控件", "zh-tw": "圖表控件", ja: "チャート部品", ko: "차트 위젯", it: "Controlli per grafici" } },
+      { id: "controls", title: { en: "Interactive controls", zh: "交互控件", "zh-tw": "互動控件", ja: "インタラクティブ部品", ko: "인터랙티브 컨트롤", it: "Controlli interattivi" } },
+    ],
   },
   {
     id: "icon-morph",
@@ -103,92 +164,36 @@ export const categories: Category[] = [
     accent: "#0070f3",
   },
   {
-    id: "chart-widgets",
+    id: "border-effects",
     title: {
-      en: "Interaction details · Chart widgets",
-      zh: "交互细节 · 图表控件",
-      "zh-tw": "互動細節 · 圖表控件",
-      ja: "インタラクション · チャート部品",
-      ko: "인터랙션 · 차트 위젯",
-      it: "Dettagli di interazione · Widget grafici",
+      en: "Border effects",
+      zh: "边框特效",
+      "zh-tw": "邊框特效",
+      ja: "ボーダーエフェクト",
+      ko: "보더 이펙트",
+      it: "Effetti bordo",
     },
     intro: {
-      en: "The small chart controls inside an app, rebuilt one interaction at a time: rings that draw from zero, bars that morph instead of redrawing, a goal line you drag, slices that push out under the pointer. Each one runs live, with the numbers it was built from and a prompt that reproduces it.",
-      zh: "App 里那些小图表控件，一条交互一条交互地重做：从零画起的圆环、切换时变形而不重画的柱子、能拖的目标线、指针一到就弹出的扇区。每一条都在页面里真的跑着，附它赖以成立的数值和一句能复现它的提示词。",
-      "zh-tw": "App 裡那些小圖表控件，一條互動一條互動地重做：從零畫起的圓環、切換時變形而不重畫的柱子、能拖的目標線、指標一到就彈出的扇區。每一條都在頁面裡真的跑著，附它賴以成立的數值和一句能複現它的提示詞。",
+      en: "Five ways to make the edge of a panel move: a rainbow arc running the perimeter, an outline that breathes to transparent, particles tracing the path and dissipating, gas clouds hugging the frame, and four neon nodes orbiting it. One shared card, five borders, each with the exact period, the path maths and a prompt that rebuilds it.",
+      zh: "让一块面板的边缘动起来的五种做法：沿边环跑的虹彩弧、呼吸到完全透明的描边、沿路径流动并飘散的粒子、贴着框走的气态云团、绕着边框转的四颗霓虹光点。同一张卡片，五种边框，每种都给出精确周期、路径算法和一句能复现它的提示词。",
+      "zh-tw": "讓一塊面板的邊緣動起來的五種做法：沿邊環跑的虹彩弧、呼吸到完全透明的描邊、沿路徑流動並飄散的粒子、貼著框走的氣態雲團、繞著邊框轉的四顆霓虹光點。同一張卡片，五種邊框，每種都給出精確週期、路徑演算法和一句能複現它的提示詞。",
+      it: "Cinque modi per far muovere il bordo di un pannello: un arco iridescente che corre lungo il perimetro, un contorno che respira fino a sparire, particelle che tracciano il percorso e si dissolvono, nubi gassose attaccate alla cornice e quattro nodi neon in orbita.",
     },
-    accent: "#e8a33a",
-  },
-  {
-    id: "widgets",
-    title: { en: "Widgets", zh: "小组件", "zh-tw": "小組件", ja: "ウィジェット", ko: "위젯", it: "Widget" },
-    intro: {
-      en: "Small interactive controls with a bench: every sample carries its own panel of switches and levels — pull, bounce, viscosity, arc, gravity — so you can tune the behaviour while it runs. Rebuilt 1:1 from the MIT-licensed block logic published by Lorenzo Cabra at bencho.dev, in plain HTML/CSS/JS with no framework.",
-      zh: "带调参面板的小控件：每条样板自带开关和滑杆——pull、bounce、粘度、扇形角、重力——边跑边调。按 Lorenzo Cabra 在 bencho.dev 公开的 MIT 块逻辑 1:1 重做，纯 HTML/CSS/JS、不依赖框架。",
-      "zh-tw": "帶調參面板的小控件：每條樣板自帶開關和滑桿——pull、bounce、黏度、扇形角、重力——邊跑邊調。按 Lorenzo Cabra 在 bencho.dev 公開的 MIT 塊邏輯 1:1 重做，純 HTML/CSS/JS、不依賴框架。",
-    },
-    accent: "#ff3d8a",
-  },
-  {
-    id: "dashboard",
-    title: { en: "Dashboard", zh: "Dashboard", "zh-tw": "Dashboard", ja: "ダッシュボード", ko: "대시보드", it: "Dashboard" },
-    intro: {
-      en: "One restaurant back office, fourteen designs. Six sidebar systems on a shared content column — floating panel, dark rail, glass rail, rail + panel, hover expand, grouped nav — and eight whole-page languages built from the library’s own widgets: a dark command center, an editorial page, a bento grid, an ambient AI sky, a keyboard-first tracker, a phosphor terminal, a neo-brutalist board and the owner’s phone. The content is real everywhere: dishes, prices and photos from M Desk’s live menu, the order board, the last 30 days (scaled). Plus six interaction patterns, each on its own dashboard: a draggable bento grid, a module that expands in place, a global filter with rolling numbers, linked hover across chart and calendar, metrics that stick into the header on scroll, and a master–detail drawer.",
-      zh: "同一套餐厅后台，十四种设计。六种只换侧边栏（悬浮岛、深色重底、磨砂玻璃、双层图标轨、折叠展开、分组收口），八种整页语言用设计库自己的控件拼成：深色指挥台、纸感编辑风、便当格、天空 AI、键盘优先、荧光终端、新粗野主义、老板的手机。内容全是真的——M Desk 线上菜单里的菜、价格和照片，订单看板，近 30 天数据（按比例缩放）。另有六种交互，各配一整套看板：可拖动的模块网格、模块就地放大、顶部筛选全局联动（数字滚动）、图表悬停联动、指标区滚动吸顶、列表加右侧详情抽屉。",
-      "zh-tw": "同一套餐廳後台，十四種設計。六種只換側邊欄（懸浮島、深色重底、磨砂玻璃、雙層圖示軌、摺疊展開、分組收口），八種整頁語言用設計庫自己的控件拼成：深色指揮台、紙感編輯風、便當格、天空 AI、鍵盤優先、螢光終端、新粗野主義、老闆的手機。內容全是真的——M Desk 線上菜單裡的菜、價格和照片，訂單看板，近 30 天數據（按比例縮放）。",
-    },
-    accent: "#e07a2f",
-  },
-  {
-    id: "dashboard-details",
-    title: { en: "Dashboard details", zh: "Dashboard 特效细节", "zh-tw": "Dashboard 特效細節", ja: "ダッシュボードの細部", ko: "대시보드 디테일", it: "Dettagli della dashboard" },
-    intro: {
-      en: "The small controls a back office is made of, rebuilt one at a time with their motion intact — what moves, how far, how fast, and what it does at the edges. First: pagination, eight ways, each with its own selection animation, hover state and disabled ends.",
-      zh: "后台是由一个个小控件拼起来的。这里把它们逐个 1:1 复刻，连动效一起——哪里动、动多远、多快、到头了怎么办。第一组：分页器八种样式，每种都有自己的选中动画、悬停状态和两端禁用。",
-      "zh-tw": "後台是由一個個小控件拼起來的。這裡把它們逐個 1:1 復刻，連動效一起——哪裡動、動多遠、多快、到頭了怎麼辦。第一組：分頁器八種樣式，每種都有自己的選中動畫、懸停狀態和兩端禁用。",
-      it: "I piccoli controlli di cui è fatto un gestionale, ricostruiti uno alla volta con il loro movimento — cosa si muove, quanto, quanto in fretta e cosa succede ai bordi. Primo: la paginazione, in otto stili.",
-    },
-    accent: "#7b4ae0",
-  },
-  {
-    id: "creative",
-    title: {
-      en: "Creative work",
-      zh: "创意设计",
-      "zh-tw": "創意設計",
-      ja: "クリエイティブ",
-      ko: "크리에이티브",
-      it: "Lavori creativi",
-    },
-    intro: {
-      en: "Finished pieces rather than parts \u2014 visual work you can just look at. Each one still carries the same three things as next door: what it is made of, the exact numbers, and a prompt that rebuilds it.",
-      zh: "\u8fd9\u91cc\u653e\u7684\u662f\u6210\u54c1\u800c\u4e0d\u662f\u96f6\u4ef6\u2014\u2014\u505a\u5b8c\u5c31\u80fd\u76f4\u63a5\u770b\u7684\u89c6\u89c9\u4f5c\u54c1\u3002\u4f46\u548c\u9694\u58c1\u4e00\u6837\uff0c\u6bcf\u4e00\u4ef6\u4ecd\u7136\u5199\u6e05\u695a\u5b83\u7531\u4ec0\u4e48\u6784\u6210\u3001\u7cbe\u786e\u5230\u591a\u5c11\u7684\u6570\u503c\u3001\u4ee5\u53ca\u4e00\u53e5\u80fd\u628a\u5b83\u91cd\u505a\u4e00\u904d\u7684\u63d0\u793a\u8bcd\u3002",
-      "zh-tw": "\u9019\u88e1\u653e\u7684\u662f\u6210\u54c1\u800c\u4e0d\u662f\u96f6\u4ef6\u2014\u2014\u505a\u5b8c\u5c31\u80fd\u76f4\u63a5\u770b\u7684\u8996\u89ba\u4f5c\u54c1\u3002\u4f46\u548c\u9694\u58c1\u4e00\u6a23\uff0c\u6bcf\u4e00\u4ef6\u4ecd\u7136\u5beb\u6e05\u695a\u5b83\u7531\u4ec0\u9ebc\u69cb\u6210\u3001\u7cbe\u78ba\u5230\u591a\u5c11\u7684\u6578\u503c\u3001\u4ee5\u53ca\u4e00\u53e5\u80fd\u628a\u5b83\u91cd\u505a\u4e00\u904d\u7684\u63d0\u793a\u8a5e\u3002",
-    },
-    accent: "#c9922e",
-  },
-  {
-    id: "mobile-ui",
-    title: {
-      en: "Mobile UI design",
-      zh: "手机UI设计",
-      "zh-tw": "手機UI設計",
-      ja: "モバイル UI デザイン",
-      ko: "모바일 UI 디자인",
-      it: "UI mobile",
-    },
-    intro: {
-      en: "Whole phone interfaces rebuilt as working replicas \u2014 the design language read off a video and put back together screen by screen, with the numbers it runs on, the source file, and a prompt that reproduces it. Tap through them; they are not pictures.",
-      zh: "把整套手机界面按视频复刻成能用的样板：从视频里读出它的设计语言，一屏一屏装回去，附上它赖以成立的数值、完整源文件、以及一句能把它复现出来的提示词。可以点进去玩，不是截图。",
-      "zh-tw": "把整套手機介面按影片複刻成能用的樣板：從影片裡讀出它的設計語言，一屏一屏裝回去，附上它賴以成立的數值、完整原始檔、以及一句能把它複現出來的提示詞。可以點進去玩，不是截圖。",
-    },
-    accent: "#5b3fd6",
+    accent: "#22d3c5",
   },
 ];
 
 export interface Effect {
   slug: string;
   category: CategoryId;
+  /** 所属小组（分类的 groups 里的 id）。分类没有 groups 就别填。 */
+  group?: string;
+  /**
+   * 置顶顺序（1 最前）。不填的按日期倒序排在置顶的后面。
+   * 分类里第一条也是 /lab 总览卡片轮播的第一张 —— 封面就是靠它定的。
+   * 2026-10-05 按访客浏览量挑的（非中文页，09-05 起）。
+   */
+  pin?: number;
   /** ISO date，进 sitemap 的 lastModified */
   date: string;
   title: Localized;
@@ -751,7 +756,9 @@ export const effects: Effect[] = [
   },
   {
     slug: "pagination-styles",
-    category: "dashboard-details",
+    category: "widgets",
+    group: "controls",
+    pin: 3,
     date: "2026-09-30",
     plays: "self",
     title: { en: "Pagination · eight styles", zh: "分页器 · 八种样式", "zh-tw": "分頁器 · 八種樣式" },
@@ -839,6 +846,7 @@ export const effects: Effect[] = [
   {
     slug: "holo-card",
     category: "creative",
+    pin: 1,
     date: "2026-09-08",
     plays: "self",
     bundleDir: true,
@@ -888,6 +896,7 @@ export const effects: Effect[] = [
   {
     slug: "slate-card-order",
     category: "mobile-ui",
+    pin: 2,
     date: "2026-09-26",
     plays: "self",
     title: { en: "Slate: metal card order flow", zh: "Slate：金属卡订购流程", "zh-tw": "Slate：金屬卡訂購流程", it: "Slate: ordine carta in metallo" },
@@ -936,6 +945,7 @@ export const effects: Effect[] = [
   {
     slug: "receipt-print-stamp",
     category: "web-effects",
+    group: "click",
     date: "2026-09-26",
     plays: "self",
     title: { en: "Receipt print + PAID stamp", zh: "打印小票 + PAID 盖章", "zh-tw": "列印小票 + PAID 蓋章", it: "Stampa scontrino + timbro PAID" },
@@ -977,6 +987,7 @@ export const effects: Effect[] = [
   {
     slug: "gooey-loader-button",
     category: "web-effects",
+    group: "click",
     date: "2026-09-26",
     plays: "self",
     title: { en: "Button → gooey loader", zh: "按钮收缩成黏液加载点", "zh-tw": "按鈕收縮成黏液載入點", it: "Pulsante → loader gommoso" },
@@ -1013,6 +1024,7 @@ export const effects: Effect[] = [
   {
     slug: "flip-card-carousel",
     category: "web-effects",
+    group: "carousel",
     date: "2026-09-26",
     plays: "self",
     title: { en: "Flip-in card carousel", zh: "3D 翻入卡片轮播", "zh-tw": "3D 翻入卡片輪播", it: "Carosello di carte che si girano" },
@@ -1165,6 +1177,8 @@ export const effects: Effect[] = [
   {
     slug: "cursor-gaze-tracking",
     category: "web-effects",
+    group: "pointer",
+    pin: 1,
     date: "2026-09-12",
     plays: "hover",
     title: { en: "Cursor-driven gaze tracking", zh: "鼠标驱动的视线跟随", "zh-tw": "滑鼠驅動的視線跟隨" },
@@ -1205,6 +1219,7 @@ export const effects: Effect[] = [
   {
     slug: "scroll-pinned-hero-recomposition",
     category: "web-effects",
+    group: "scroll",
     date: "2026-09-12",
     plays: "scroll",
     title: { en: "Scroll-driven pinned hero recomposition", zh: "滚动驱动的固定主视觉重组", "zh-tw": "捲動驅動的固定主視覺重組" },
@@ -1243,6 +1258,7 @@ export const effects: Effect[] = [
   {
     slug: "cursor-miniature-parallax",
     category: "web-effects",
+    group: "pointer",
     date: "2026-09-12",
     plays: "hover",
     title: { en: "Cursor-driven miniature scene parallax", zh: "光标驱动的微缩景观视差", "zh-tw": "游標驅動的微縮景觀視差" },
@@ -1280,6 +1296,8 @@ export const effects: Effect[] = [
   {
     slug: "scroll-orbit-turntable",
     category: "web-effects",
+    group: "scroll",
+    pin: 4,
     date: "2026-09-12",
     plays: "scroll",
     title: { en: "Scroll-driven character orbit", zh: "滚动驱动的角色环绕旋转", "zh-tw": "捲動驅動的角色環繞旋轉" },
@@ -1317,6 +1335,7 @@ export const effects: Effect[] = [
   {
     slug: "hover-door-bloom",
     category: "web-effects",
+    group: "pointer",
     date: "2026-09-11",
     plays: "hover",
     title: { en: "Hover-triggered door bloom", zh: "悬停触发的车门绽放", "zh-tw": "懸停觸發的車門綻放" },
@@ -1356,6 +1375,7 @@ export const effects: Effect[] = [
   {
     slug: "hover-tinted-service-list",
     category: "web-effects",
+    group: "pointer",
     date: "2026-09-11",
     plays: "hover",
     title: { en: "Hover-tinted service list", zh: "悬停换色的服务清单", "zh-tw": "懸停換色的服務清單" },
@@ -1394,6 +1414,7 @@ export const effects: Effect[] = [
   {
     slug: "scroll-vortex-transit",
     category: "web-effects",
+    group: "scroll",
     date: "2026-09-11",
     plays: "scroll",
     title: { en: "Scroll-driven vortex transit", zh: "滚动驱动的漩涡穿隧", "zh-tw": "捲動驅動的漩渦穿隧" },
@@ -1433,6 +1454,7 @@ export const effects: Effect[] = [
   {
     slug: "click-drop-overgrowth",
     category: "web-effects",
+    group: "click",
     date: "2026-09-11",
     plays: "click",
     title: { en: "Immersive float: drop and overgrow", zh: "沉浸式漂浮：落球与蔓生", "zh-tw": "沉浸式漂浮：落球與蔓生" },
@@ -1472,6 +1494,7 @@ export const effects: Effect[] = [
   {
     slug: "scroll-helix-flythrough",
     category: "web-effects",
+    group: "scroll",
     date: "2026-09-11",
     plays: "scroll",
     title: { en: "Scroll-driven helix flow", zh: "滚动驱动的旋流光", "zh-tw": "捲動驅動的旋流光" },
@@ -1513,6 +1536,7 @@ export const effects: Effect[] = [
   {
     slug: "cursor-luminous-gateway",
     category: "web-effects",
+    group: "pointer",
     date: "2026-09-11",
     /* 一加载就推轨+起雾+标题入场，光标只是加层视差 —— 轮播里是活的 */
     plays: "self",
@@ -1554,6 +1578,7 @@ export const effects: Effect[] = [
   {
     slug: "bin-eats-label",
     category: "web-effects",
+    group: "click",
     date: "2026-09-08",
     plays: "hover",
     title: {
@@ -1608,6 +1633,7 @@ export const effects: Effect[] = [
   {
     slug: "scroll-scrubbed-sequence",
     category: "web-effects",
+    group: "scroll",
     date: "2026-09-06",
     plays: "scroll",
     title: { en: "Scroll-scrubbed frame sequence", zh: "滚动擦洗的帧序列", "zh-tw": "捲動擦洗的影格序列" },
@@ -1648,6 +1674,7 @@ export const effects: Effect[] = [
   {
     slug: "chapter-headline-roller",
     category: "web-effects",
+    group: "type",
     date: "2026-09-06",
     plays: "scroll",
     title: { en: "Chapter headline roller", zh: "章节标题的行遮罩换行", "zh-tw": "章節標題的行遮罩換行" },
@@ -1688,6 +1715,7 @@ export const effects: Effect[] = [
   {
     slug: "scroll-word-brighten",
     category: "web-effects",
+    group: "type",
     date: "2026-09-06",
     plays: "scroll",
     title: { en: "Scroll-brightened paragraph", zh: "随滚动逐词点亮的段落", "zh-tw": "隨捲動逐詞點亮的段落" },
@@ -1726,6 +1754,8 @@ export const effects: Effect[] = [
   {
     slug: "interactive-liquid-distortion",
     category: "web-effects",
+    group: "pointer",
+    pin: 3,
     date: "2026-09-05",
     plays: "hover",
     title: { en: "Interactive liquid distortion", zh: "交互式流体扭曲", "zh-tw": "互動式流體扭曲" },
@@ -1764,6 +1794,7 @@ export const effects: Effect[] = [
   {
     slug: "fullscreen-expansion-transition",
     category: "web-effects",
+    group: "scroll",
     date: "2026-09-05",
     plays: "scroll",
     title: { en: "Fullscreen expansion transition", zh: "全屏扩展转场", "zh-tw": "全螢幕擴展轉場" },
@@ -1803,6 +1834,7 @@ export const effects: Effect[] = [
   {
     slug: "scroll-driven-scene-transition",
     category: "web-effects",
+    group: "scroll",
     date: "2026-09-05",
     plays: "scroll",
     title: { en: "Scroll-driven scene transition", zh: "滚动驱动的场景切换", "zh-tw": "捲動驅動的場景切換" },
@@ -1841,6 +1873,8 @@ export const effects: Effect[] = [
   {
     slug: "scroll-3d-carousel",
     category: "web-effects",
+    group: "carousel",
+    pin: 2,
     date: "2026-09-05",
     plays: "scroll",
     title: { en: "Scroll-driven 3D carousel", zh: "滚动驱动的 3D 环形轮播", "zh-tw": "捲動驅動的 3D 環形輪播" },
@@ -1878,6 +1912,7 @@ export const effects: Effect[] = [
   {
     slug: "scroll-snap-gallery",
     category: "web-effects",
+    group: "carousel",
     date: "2026-09-05",
     plays: "scroll",
     title: { en: "Scroll snap", zh: "滚动吸附", "zh-tw": "捲動吸附" },
@@ -1916,6 +1951,7 @@ export const effects: Effect[] = [
   {
     slug: "staggered-character-reveal",
     category: "web-effects",
+    group: "type",
     date: "2026-09-05",
     plays: "self",
     title: { en: "Staggered character reveal", zh: "逐字错峰入场", "zh-tw": "逐字錯峰入場" },
@@ -1955,6 +1991,7 @@ export const effects: Effect[] = [
   {
     slug: "section-stacking-transition",
     category: "web-effects",
+    group: "scroll",
     date: "2026-09-05",
     plays: "scroll",
     title: { en: "Section stacking transition", zh: "滚动叠层转场", "zh-tw": "捲動疊層轉場" },
@@ -1993,6 +2030,7 @@ export const effects: Effect[] = [
   {
     slug: "magnetic-button",
     category: "web-effects",
+    group: "pointer",
     date: "2026-09-05",
     plays: "hover",
     title: {
@@ -2032,6 +2070,7 @@ export const effects: Effect[] = [
   {
     slug: "aurora-drift",
     category: "web-effects",
+    group: "type",
     date: "2026-09-05",
     plays: "self",
     title: {
@@ -2068,6 +2107,7 @@ export const effects: Effect[] = [
   {
     slug: "shimmer-headline",
     category: "web-effects",
+    group: "type",
     date: "2026-09-05",
     plays: "self",
     title: {
@@ -2105,7 +2145,9 @@ export const effects: Effect[] = [
      源视频是渲染稿；这里全部按视频里的说明重建，数值是量出来或按视频节奏定的。 */
   {
     slug: "activity-rings",
-    category: "chart-widgets",
+    category: "widgets",
+    group: "charts",
+    pin: 1,
     date: "2026-09-19",
     plays: "self",
     title: { en: "Activity rings", zh: "活动圆环", "zh-tw": "活動圓環" },
@@ -2134,7 +2176,8 @@ export const effects: Effect[] = [
   },
   {
     slug: "streak-heatmap",
-    category: "chart-widgets",
+    category: "widgets",
+    group: "charts",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Streak heatmap", zh: "打卡热力格", "zh-tw": "打卡熱力格" },
@@ -2164,7 +2207,8 @@ export const effects: Effect[] = [
   },
   {
     slug: "score-gauge",
-    category: "chart-widgets",
+    category: "widgets",
+    group: "charts",
     date: "2026-09-19",
     plays: "self",
     title: { en: "Score gauge", zh: "仪表盘", "zh-tw": "儀表盤" },
@@ -2193,7 +2237,8 @@ export const effects: Effect[] = [
   },
   {
     slug: "bar-chart-period-switch",
-    category: "chart-widgets",
+    category: "widgets",
+    group: "charts",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Bar chart with period switch", zh: "切换周期的柱状图", "zh-tw": "切換週期的柱狀圖" },
@@ -2223,7 +2268,8 @@ export const effects: Effect[] = [
   },
   {
     slug: "focus-blocks-timeline",
-    category: "chart-widgets",
+    category: "widgets",
+    group: "charts",
     date: "2026-09-19",
     plays: "hover",
     title: { en: "Focus blocks timeline", zh: "专注分段图", "zh-tw": "專注分段圖" },
@@ -2253,7 +2299,8 @@ export const effects: Effect[] = [
   },
   {
     slug: "range-line-morph",
-    category: "chart-widgets",
+    category: "widgets",
+    group: "charts",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Range line morph", zh: "范围折线图", "zh-tw": "範圍折線圖" },
@@ -2283,7 +2330,8 @@ export const effects: Effect[] = [
   },
   {
     slug: "draggable-goal-line",
-    category: "chart-widgets",
+    category: "widgets",
+    group: "charts",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Draggable goal line", zh: "可拖动的目标线", "zh-tw": "可拖動的目標線" },
@@ -2313,7 +2361,8 @@ export const effects: Effect[] = [
   },
   {
     slug: "stacked-share-bar",
-    category: "chart-widgets",
+    category: "widgets",
+    group: "charts",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Stacked share bar", zh: "分段占比条", "zh-tw": "分段佔比條" },
@@ -2343,7 +2392,8 @@ export const effects: Effect[] = [
   },
   {
     slug: "share-ring",
-    category: "chart-widgets",
+    category: "widgets",
+    group: "charts",
     date: "2026-09-19",
     plays: "hover",
     title: { en: "Share ring", zh: "环形占比图", "zh-tw": "環形佔比圖" },
@@ -2376,7 +2426,8 @@ export const effects: Effect[] = [
   },
   {
     slug: "bubble-chart-nudge",
-    category: "chart-widgets",
+    category: "widgets",
+    group: "charts",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Bubble chart with nudge", zh: "气泡图", "zh-tw": "氣泡圖" },
@@ -2410,6 +2461,7 @@ export const effects: Effect[] = [
   {
     slug: "flip-stack-carousel",
     category: "web-effects",
+    group: "carousel",
     date: "2026-09-19",
     plays: "self",
     title: { en: "Flip-stack card carousel", zh: "3D 卡片轮播", "zh-tw": "3D 卡片輪播" },
@@ -2440,6 +2492,7 @@ export const effects: Effect[] = [
   {
     slug: "particle-sphere-dissolve",
     category: "web-effects",
+    group: "click",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Particle sphere dissolve", zh: "粒子过渡转场", "zh-tw": "粒子過渡轉場" },
@@ -2471,6 +2524,7 @@ export const effects: Effect[] = [
   {
     slug: "floating-parallax-field",
     category: "web-effects",
+    group: "pointer",
     date: "2026-09-19",
     plays: "hover",
     title: { en: "Floating parallax field", zh: "漂浮视差", "zh-tw": "漂浮視差" },
@@ -2501,6 +2555,7 @@ export const effects: Effect[] = [
   {
     slug: "logo-bloom-transition",
     category: "web-effects",
+    group: "click",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Logo-mask bloom transition", zh: "Logo 光晕转场", "zh-tw": "Logo 光暈轉場" },
@@ -2532,6 +2587,7 @@ export const effects: Effect[] = [
   {
     slug: "dash-bento-drag",
     category: "dashboard",
+    group: "interactions",
     date: "2026-09-28",
     plays: "self",
     title: { en: "Dashboard interaction · Bento drag", zh: "Dashboard 交互 · 可拖动的模块网格", "zh-tw": "Dashboard 互動 · 可拖動的模組網格" },
@@ -2568,6 +2624,7 @@ export const effects: Effect[] = [
   {
     slug: "dash-expand-in-place",
     category: "dashboard",
+    group: "interactions",
     date: "2026-09-28",
     plays: "self",
     title: { en: "Dashboard interaction · Expand in place", zh: "Dashboard 交互 · 模块就地放大", "zh-tw": "Dashboard 互動 · 模組就地放大" },
@@ -2603,6 +2660,7 @@ export const effects: Effect[] = [
   {
     slug: "dash-global-filter",
     category: "dashboard",
+    group: "interactions",
     date: "2026-09-28",
     plays: "self",
     title: { en: "Dashboard interaction · Global filter", zh: "Dashboard 交互 · 顶部筛选全局联动", "zh-tw": "Dashboard 互動 · 頂部篩選全局聯動" },
@@ -2637,6 +2695,7 @@ export const effects: Effect[] = [
   {
     slug: "dash-linked-hover",
     category: "dashboard",
+    group: "interactions",
     date: "2026-09-28",
     plays: "self",
     title: { en: "Dashboard interaction · Linked hover", zh: "Dashboard 交互 · 图表悬停联动", "zh-tw": "Dashboard 互動 · 圖表懸停聯動" },
@@ -2671,6 +2730,7 @@ export const effects: Effect[] = [
   {
     slug: "dash-sticky-metrics",
     category: "dashboard",
+    group: "interactions",
     date: "2026-09-28",
     plays: "self",
     title: { en: "Dashboard interaction · Sticky metrics", zh: "Dashboard 交互 · 指标区滚动吸顶", "zh-tw": "Dashboard 互動 · 指標區捲動吸頂" },
@@ -2707,6 +2767,7 @@ export const effects: Effect[] = [
   {
     slug: "dash-master-detail",
     category: "dashboard",
+    group: "interactions",
     date: "2026-09-28",
     plays: "self",
     title: { en: "Dashboard interaction · Master–detail drawer", zh: "Dashboard 交互 · 列表加右侧详情抽屉", "zh-tw": "Dashboard 互動 · 列表加右側詳情抽屜" },
@@ -2741,6 +2802,7 @@ export const effects: Effect[] = [
   {
     slug: "dashboard-floating-panel",
     category: "dashboard",
+    group: "sidebars",
     date: "2026-09-19",
     plays: "click",
     bundleDir: true,
@@ -2772,6 +2834,7 @@ export const effects: Effect[] = [
   {
     slug: "dashboard-dark-rail",
     category: "dashboard",
+    group: "sidebars",
     date: "2026-09-19",
     plays: "click",
     bundleDir: true,
@@ -2803,6 +2866,7 @@ export const effects: Effect[] = [
   {
     slug: "dashboard-glass-rail",
     category: "dashboard",
+    group: "sidebars",
     date: "2026-09-19",
     plays: "click",
     bundleDir: true,
@@ -2834,6 +2898,7 @@ export const effects: Effect[] = [
   {
     slug: "dashboard-rail-panel",
     category: "dashboard",
+    group: "sidebars",
     date: "2026-09-19",
     plays: "click",
     bundleDir: true,
@@ -2866,6 +2931,7 @@ export const effects: Effect[] = [
   {
     slug: "dashboard-hover-expand",
     category: "dashboard",
+    group: "sidebars",
     date: "2026-09-19",
     plays: "hover",
     bundleDir: true,
@@ -2898,6 +2964,7 @@ export const effects: Effect[] = [
   {
     slug: "dashboard-grouped-nav",
     category: "dashboard",
+    group: "sidebars",
     date: "2026-09-19",
     plays: "click",
     bundleDir: true,
@@ -2931,6 +2998,7 @@ export const effects: Effect[] = [
   {
     slug: "dashboard-command-center",
     category: "dashboard",
+    group: "pages",
     date: "2026-09-20",
     plays: "click",
     bundleDir: true,
@@ -2966,6 +3034,7 @@ export const effects: Effect[] = [
   {
     slug: "dashboard-editorial",
     category: "dashboard",
+    group: "pages",
     date: "2026-09-20",
     plays: "hover",
     bundleDir: true,
@@ -3001,6 +3070,8 @@ export const effects: Effect[] = [
   {
     slug: "dashboard-bento",
     category: "dashboard",
+    group: "pages",
+    pin: 1,
     date: "2026-09-20",
     plays: "click",
     bundleDir: true,
@@ -3036,6 +3107,7 @@ export const effects: Effect[] = [
   {
     slug: "dashboard-ambient-ai",
     category: "dashboard",
+    group: "pages",
     date: "2026-09-20",
     plays: "click",
     bundleDir: true,
@@ -3071,6 +3143,8 @@ export const effects: Effect[] = [
   {
     slug: "dashboard-keyboard",
     category: "dashboard",
+    group: "pages",
+    pin: 2,
     date: "2026-09-20",
     plays: "click",
     bundleDir: true,
@@ -3105,6 +3179,7 @@ export const effects: Effect[] = [
   {
     slug: "dashboard-terminal",
     category: "dashboard",
+    group: "pages",
     date: "2026-09-20",
     plays: "click",
     bundleDir: true,
@@ -3139,6 +3214,7 @@ export const effects: Effect[] = [
   {
     slug: "dashboard-brutal",
     category: "dashboard",
+    group: "pages",
     date: "2026-09-20",
     plays: "click",
     bundleDir: true,
@@ -3174,6 +3250,7 @@ export const effects: Effect[] = [
   {
     slug: "dashboard-mobile-glass",
     category: "dashboard",
+    group: "pages",
     date: "2026-09-20",
     plays: "click",
     bundleDir: true,
@@ -3209,6 +3286,7 @@ export const effects: Effect[] = [
   {
     slug: "pinch-density",
     category: "mobile-ui",
+    pin: 1,
     date: "2026-09-21",
     plays: "self",
     title: { en: "Pinch density", zh: "捏合改密度", "zh-tw": "捏合改密度" },
@@ -3871,6 +3949,7 @@ export const effects: Effect[] = [
   {
     slug: "magnetic-select",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Magnetic select", zh: "磁性选择", "zh-tw": "磁性選擇" },
@@ -3905,6 +3984,7 @@ export const effects: Effect[] = [
   {
     slug: "liquid-toggle",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Liquid toggle", zh: "液态开关", "zh-tw": "液態開關" },
@@ -3935,6 +4015,7 @@ export const effects: Effect[] = [
   {
     slug: "slide-to-confirm",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Slide to confirm", zh: "滑动确认", "zh-tw": "滑動確認" },
@@ -3966,6 +4047,7 @@ export const effects: Effect[] = [
   {
     slug: "drag-stepper",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Drag stepper", zh: "按住扫动的步进器", "zh-tw": "按住掃動的步進器" },
@@ -3995,6 +4077,7 @@ export const effects: Effect[] = [
   {
     slug: "slosh-slider",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Slosh slider", zh: "晃荡滑杆", "zh-tw": "晃盪滑桿" },
@@ -4027,6 +4110,7 @@ export const effects: Effect[] = [
   {
     slug: "radial-menu",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Radial menu", zh: "径向菜单", "zh-tw": "徑向選單" },
@@ -4060,6 +4144,7 @@ export const effects: Effect[] = [
   {
     slug: "todo-tower",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Todo tower", zh: "待办塔", "zh-tw": "待辦塔" },
@@ -4095,6 +4180,7 @@ export const effects: Effect[] = [
   {
     slug: "range-dial",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Range dial", zh: "范围转盘", "zh-tw": "範圍轉盤" },
@@ -4126,6 +4212,7 @@ export const effects: Effect[] = [
   {
     slug: "escape-button",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "hover",
     title: { en: "Escape button", zh: "逃跑按钮", "zh-tw": "逃跑按鈕" },
@@ -4160,6 +4247,7 @@ export const effects: Effect[] = [
   {
     slug: "reorder-list",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Reorder list", zh: "液态重排列表", "zh-tw": "液態重排清單" },
@@ -4192,6 +4280,7 @@ export const effects: Effect[] = [
   {
     slug: "wheel-gauge",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Wheel", zh: "波动仪表环", "zh-tw": "波動儀表環" },
@@ -4221,6 +4310,7 @@ export const effects: Effect[] = [
   {
     slug: "checklist",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Checklist", zh: "一根弹簧的清单", "zh-tw": "一根彈簧的清單" },
@@ -4252,6 +4342,7 @@ export const effects: Effect[] = [
   {
     slug: "inline-confirm",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Inline confirm", zh: "原地确认", "zh-tw": "原地確認" },
@@ -4280,6 +4371,7 @@ export const effects: Effect[] = [
   {
     slug: "progress-ticks",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "hover",
     title: { en: "Progress ticks", zh: "进度刻度条", "zh-tw": "進度刻度條" },
@@ -4308,6 +4400,7 @@ export const effects: Effect[] = [
   {
     slug: "tilt-card",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "hover",
     title: { en: "Tilt card", zh: "下陷的倾斜卡", "zh-tw": "下陷的傾斜卡" },
@@ -4339,6 +4432,7 @@ export const effects: Effect[] = [
   {
     slug: "pull-to-refresh",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Pull to refresh", zh: "下拉刷新", "zh-tw": "下拉刷新" },
@@ -4371,6 +4465,8 @@ export const effects: Effect[] = [
   {
     slug: "ring-carousel",
     category: "widgets",
+    group: "controls",
+    pin: 2,
     date: "2026-09-19",
     plays: "click",
     title: { en: "Ring carousel", zh: "环形轮播", "zh-tw": "環形輪播" },
@@ -4402,6 +4498,7 @@ export const effects: Effect[] = [
   {
     slug: "canvas-toolbar",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Canvas toolbar", zh: "画布工具栏", "zh-tw": "畫布工具列" },
@@ -4431,6 +4528,7 @@ export const effects: Effect[] = [
   {
     slug: "notify-me",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Notify me", zh: "通知我", "zh-tw": "通知我" },
@@ -4460,6 +4558,7 @@ export const effects: Effect[] = [
   {
     slug: "selection-list",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Selection list", zh: "多选名单", "zh-tw": "多選名單" },
@@ -4488,6 +4587,7 @@ export const effects: Effect[] = [
   {
     slug: "assignees",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Assignees", zh: "指派人胶囊", "zh-tw": "指派人膠囊" },
@@ -4517,6 +4617,7 @@ export const effects: Effect[] = [
   {
     slug: "oklch-palette",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "OKLCH palette", zh: "OKLCH 调色板", "zh-tw": "OKLCH 調色盤" },
@@ -4548,6 +4649,7 @@ export const effects: Effect[] = [
   {
     slug: "command-bar",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Command bar", zh: "液态命令栏", "zh-tw": "液態命令列" },
@@ -4578,6 +4680,7 @@ export const effects: Effect[] = [
   {
     slug: "dragging-ball",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Dragging ball", zh: "拖拽的球", "zh-tw": "拖曳的球" },
@@ -4608,6 +4711,7 @@ export const effects: Effect[] = [
   {
     slug: "create-menu",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Create menu", zh: "一个形状的创建菜单", "zh-tw": "一個形狀的建立選單" },
@@ -4639,6 +4743,7 @@ export const effects: Effect[] = [
   {
     slug: "aspect-ratio",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Aspect ratio", zh: "等面积的裁切", "zh-tw": "等面積的裁切" },
@@ -4669,6 +4774,7 @@ export const effects: Effect[] = [
   {
     slug: "now-playing",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Now playing", zh: "展开的播放条", "zh-tw": "展開的播放列" },
@@ -4700,6 +4806,7 @@ export const effects: Effect[] = [
   {
     slug: "icon-bar",
     category: "widgets",
+    group: "controls",
     date: "2026-09-19",
     plays: "click",
     title: { en: "Icon bar", zh: "两段式指示条", "zh-tw": "兩段式指示條" },
@@ -4769,8 +4876,32 @@ export const effects: Effect[] = [
 export function effectsIn(category: CategoryId): Effect[] {
   return effects
     .filter((e) => e.category === category)
-    // 同一天的按数组顺序：主样板写在前面就排在前面（之前平局返回 -1，同日会整批倒序）
-    .sort((a, b) => (a.date === b.date ? 0 : a.date < b.date ? 1 : -1));
+    .sort((a, b) => {
+      // 置顶的在前（pin 小的更前），其余按日期倒序
+      const pa = a.pin ?? Infinity, pb = b.pin ?? Infinity;
+      if (pa !== pb) return pa - pb;
+      // 同一天的按数组顺序：主样板写在前面就排在前面（之前平局返回 -1，同日会整批倒序）
+      return a.date === b.date ? 0 : a.date < b.date ? 1 : -1;
+    });
+}
+
+/**
+ * 分类页按小组分段。分类没给 groups 就返回 null（整页一个网格）。
+ * 🩸有 groups 时每条都必须落进某一组：落不进的直接抛错让构建红，
+ * 而不是悄悄从页面上消失。
+ */
+export function effectGroups(category: CategoryId): { id: string; title: Localized; items: Effect[] }[] | null {
+  const cat = categoryById(category);
+  if (!cat?.groups) return null;
+  const items = effectsIn(category);
+  const ids = new Set(cat.groups.map((g) => g.id));
+  const stray = items.filter((e) => !e.group || !ids.has(e.group));
+  if (stray.length) {
+    throw new Error(`[lab] ${category}: no valid group for ${stray.map((e) => e.slug).join(", ")}`);
+  }
+  return cat.groups
+    .map((g) => ({ id: g.id, title: g.title, items: items.filter((e) => e.group === g.id) }))
+    .filter((g) => g.items.length > 0);
 }
 
 /** 没有效果的分类不出现在 /lab 上 —— 空分类页比没有分类页更伤。 */
@@ -4831,6 +4962,8 @@ export const labCopy = {
     "zh-tw": "拆解與提示詞是英文的 —— 提示詞本來就該用英文餵給模型。",
   },
   count: { en: "effects", zh: "条效果", "zh-tw": "條效果", it: "effetti" },
+  /** 只有一条时英语/意语要单数（之前写着「1 effects」）。中文不分单复数。 */
+  countOne: { en: "effect", zh: "条效果", "zh-tw": "條效果", it: "effetto" },
   replay: { en: "Replay", zh: "重播", "zh-tw": "重播", ja: "リプレイ", ko: "다시", it: "Riavvia" },
   copy: { en: "Copy", zh: "复制", "zh-tw": "複製", ja: "コピー", ko: "복사", it: "Copia" },
   copied: { en: "Copied", zh: "已复制", "zh-tw": "已複製", ja: "コピー済み", ko: "복사됨", it: "Copiato" },

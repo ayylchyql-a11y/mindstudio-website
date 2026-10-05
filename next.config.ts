@@ -11,6 +11,13 @@ import type { NextConfig } from "next";
  */
 const OLD_CATEGORIES = "motion|scroll|background|text|surface|feedback";
 
+/**
+ * 2026-10-05：「交互细节 · 图表控件」(chart-widgets) 和「Dashboard 特效细节」
+ * (dashboard-details) 并进了 widgets（界面组件）。这两批地址 09-19 / 09-30 起就在
+ * sitemap 里、公开页可索引，所以必须永久跳转，效果的 slug 都没变。
+ */
+const MERGED_INTO_WIDGETS = "chart-widgets|dashboard-details";
+
 const nextConfig: NextConfig = {
   /**
    * 🩸 /lab 的样板跑在 `sandbox="allow-scripts"` 的 iframe 里，**故意不给
@@ -34,6 +41,16 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      {
+        source: `/:lang/:tree(lab|lab-unlocked)/:cat(${MERGED_INTO_WIDGETS})/:slug`,
+        destination: "/:lang/:tree/widgets/:slug",
+        permanent: true,
+      },
+      {
+        source: `/:lang/:tree(lab|lab-unlocked)/:cat(${MERGED_INTO_WIDGETS})`,
+        destination: "/:lang/:tree/widgets",
+        permanent: true,
+      },
       {
         source: `/:lang/lab/:cat(${OLD_CATEGORIES})/:slug`,
         destination: "/:lang/lab/web-effects/:slug",

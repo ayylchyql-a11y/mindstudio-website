@@ -67,7 +67,7 @@ export default async function LabIndexPage({ params }: { params: IndexParams }) 
                   <span className="cat-dot" style={{ background: c.accent }} aria-hidden="true" />
                   <span className="cat-name">{pick(c.title, lang)}</span>
                   <span className="cat-count">
-                    {items.length} {pick(labCopy.count, lang)}
+                    {items.length} {pick(items.length === 1 ? labCopy.countOne : labCopy.count, lang)}
                   </span>
                 </span>
                 <span className="cat-intro">{pick(c.intro, lang)}</span>
