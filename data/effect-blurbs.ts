@@ -12,6 +12,18 @@
  */
 const blurbs: Record<string, string> = {
   // ── animated icons (Lucide + original motions; trigger model after Lordicon) ──
+  "frosted-glass-sheet":
+    "A pass that floats up as frosted glass while the page behind goes soft, with twelve month cells that fill in turn to show how much of the year has gone. A calm way to show 'where am I in this plan' without leaving the screen.",
+  "ring-count-sheet":
+    "A pass that rises from the bottom and then draws a ring around the days left, the number counting up in step. The one figure that matters arrives last and is the first thing you read.",
+  "tick-ruler-sheet":
+    "A year shown as 53 weekly ticks that sweep from left to right and stop on today, with a hidden number that fills in one character at a time when you ask for it.",
+  "photo-drawer-sheet":
+    "A panel that opens in three beats: the photo first, then a drawer that slides up over its edge, then a progress bar. Big imagery and dense details in the same small sheet.",
+  "flip-to-reveal":
+    "A pass that turns over in place to show the code you need at the gate, and turns back when you're done — no new screen, nothing to find your way back from.",
+  "pull-down-reveal":
+    "A ticket with a tear-off stub: pull the handle and the bottom half comes away to show the code, or let go early and it snaps back. Information that's there when you need it and out of the way when you don't.",
   "focus-timer-island":
     "A focus timer that lives as a small bar above your tasks and grows when you need it: wider when you step away, a full card with pause and end when you tap it, back to a sliver when you leave it alone.",
   "step-sheet":

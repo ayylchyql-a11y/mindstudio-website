@@ -56,7 +56,13 @@ const LONG_SELF = { "slate-card-order": { secs: 17, query: "?clip" }, "receipt-p
   "scroll-fab-collapse": { secs: 9, vw: 710, query: "?demo" },
   "copy-button-flip": { secs: 9, vw: 710, query: "?demo" },
   "form-error-shake": { secs: 9, vw: 710, query: "?demo" },
-  "select-centered": { secs: 9, vw: 710, query: "?demo" } };
+  "select-centered": { secs: 9, vw: 710, query: "?demo" },
+  "frosted-glass-sheet": { secs: 9, vw: 710, query: "?demo" },
+  "ring-count-sheet": { secs: 9, vw: 710, query: "?demo" },
+  "tick-ruler-sheet": { secs: 9, vw: 710, query: "?demo" },
+  "photo-drawer-sheet": { secs: 9, vw: 710, query: "?demo" },
+  "flip-to-reveal": { secs: 9, vw: 710, query: "?demo" },
+  "pull-down-reveal": { secs: 9, vw: 710, query: "?demo" } };
 /** trim：开头剪掉几秒（默认 0.6）。morph-studio 首帧要先生成 250 个图标，0.6 秒时画面还是缩小的灰底。
  *  vh：录像高度另给（默认 = 样板的 height）。六个 Dashboard 是 1280×820 的整页缩放进画框：
  *  按画框 470 高录 = 960×470 的视频里 Dashboard 只有 715 宽，cover 进 710×470 的详情画框要裁掉左右圆角；

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>照片抽屉弹出 · Photo Drawer Sheet</title>
+<link rel="stylesheet" href="_popup/popup.css">
+<style>
+  body::before { background-image: url(_popup/bowl.jpg); }
+  .screen { --screen: #efebe6; --red: #e3532f; }
+  .host { padding: 0 11px; }
+  .top { display: flex; align-items: center; gap: 9px; margin: 4px 2px 10px; }
+  .logo { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--red); color: #fff; }
+  .logo svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+  .top div { flex: 1; } .top b { font-size: 13px; font-weight: 800; } .top small { display: block; font-size: 8.5px; color: #8b857c; }
+  .top > svg { width: 14px; height: 14px; fill: none; stroke: #1c1a19; stroke-width: 2; stroke-linecap: round; }
+  .cover { position: relative; display: block; width: 100%; height: 150px; border-radius: 18px; overflow: hidden; text-align: left; background: #222 url(_popup/bowl.jpg) center / cover; transition: transform .2s; }
+  .cover:active { transform: scale(.985); }
+  .cover::after { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 90% at 30% 70%, transparent 35%, rgb(0 0 0 / .55)); }
+  .cover span { position: absolute; z-index: 1; color: #fff; }
+  .lbl { left: 12px; top: 11px; font-size: 8px; font-weight: 700; letter-spacing: .24em; }
+  .tag { right: 10px; top: 9px; padding: 3px 7px; border-radius: 8px; background: rgb(0 0 0 / .35); font-size: 7.5px; }
+  .ttl { left: 12px; bottom: 10px; font-size: 22px; font-weight: 800; font-family: "Songti SC", "Noto Serif SC", serif; line-height: 24px; } .ttl small { display: block; font: 600 7px var(--ui); letter-spacing: .2em; opacity: .85; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 56px; gap: 8px; margin-top: 8px; }
+  .g { position: relative; border-radius: 14px; overflow: hidden; background: center / cover; color: #fff; }
+  .g.t2 { grid-row: span 2; } .g::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 50%, rgb(0 0 0 / .55)); }
+  .g span { position: absolute; z-index: 1; left: 7px; bottom: 6px; font-size: 8.5px; font-weight: 700; }
+  .g em { position: absolute; z-index: 1; left: 6px; top: 6px; padding: 2px 5px; border-radius: 6px; background: rgb(0 0 0 / .45); font: normal 600 7px var(--ui); }
+  .txt.t2 { grid-row: span 2; display: flex; flex-direction: column; justify-content: center; }
+  .txt { padding: 9px 10px; border-radius: 14px; background: #e3ddd4; color: #1c1a19; font-size: 13px; font-weight: 800; line-height: 15px; } .txt b { color: var(--red); } .txt small { display: block; margin-top: 3px; font: 600 7px var(--ui); color: #8b857c; }
+  .dark { padding: 10px; border-radius: 14px; background: #1f1c1b; color: #fff; font-size: 12px; font-weight: 800; } .dark b { display: block; color: var(--red); } .dark small { display: block; margin-top: 3px; font: 500 7px var(--ui); color: #8b857c; }
+  .tabs { position: absolute; left: 14px; right: 14px; bottom: 16px; display: flex; justify-content: space-around; align-items: center; height: 46px; border-radius: 23px; background: rgb(255 255 255 / .9); box-shadow: 0 8px 20px -10px rgb(0 0 0 / .3); }
+  .tabs i { width: 16px; height: 16px; border-radius: 5px; background: #c9c3ba; } .tabs i.on { width: 36px; height: 36px; border-radius: 50%; background: var(--red); }
+
+  /* step 1: the photo comes up first and settles from 1.08 to 1; step 2: the drawer is pushed up under it */
+  .sheet { bottom: 16px; left: 11px; right: 11px; pointer-events: none; }
+  .open .sheet { pointer-events: auto; }
+  .photo { position: relative; height: 196px; border-radius: 26px 26px 0 0; overflow: hidden; opacity: 0; transform: translateY(40px); transition: opacity .35s var(--out), transform .6s var(--out); }
+  .photo img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); transition: transform .9s var(--out); }
+  .photo::after { content: ""; position: absolute; inset: 0; background: radial-gradient(130% 100% at 30% 60%, transparent 38%, rgb(0 0 0 / .6)); }   /* the dark corner that holds the white title */
+  .photo span { position: absolute; z-index: 1; color: #fff; }
+  .open .photo { opacity: 1; transform: none; } .open .photo img { transform: scale(1); }
+  .drawer { position: relative; z-index: 1; margin-top: -22px; padding: 14px 15px 13px; border-radius: 24px; background: #e7e3de; color: #1c1a19; box-shadow: 0 -8px 20px -10px rgb(0 0 0 / .35);
+    transform: translateY(calc(100% + 40px)); transition: transform .6s var(--out); }
+  .open .drawer { transform: none; transition-delay: .32s; }
+  .drawer > small { font-size: 8.5px; color: #8b857c; }
+  .num { display: flex; align-items: baseline; gap: 4px; margin-top: 2px; } .num b { font-size: 44px; line-height: 46px; font-weight: 500; letter-spacing: -.03em; } .num small { font-size: 10px; }
+  .bar { position: relative; height: 3px; margin-top: 8px; border-radius: 2px; background: #d3cdc5; overflow: hidden; }
+  .bar i { position: absolute; inset: 0; background: var(--red); transform-origin: left; transform: scaleX(0); }
+  .scale { display: flex; justify-content: space-between; margin-top: 5px; font-size: 7.5px; color: #8b857c; }
+  .kv { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; margin-top: 12px; }
+  .kv small { display: block; font-size: 7.5px; color: #8b857c; } .kv b { display: block; margin-top: 2px; font-size: 10px; font-weight: 600; } .kv b.mono { font: 500 9.5px var(--mono); }
+  .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 12px; }
+  .acts button { height: 34px; border-radius: 10px; font-size: 10.5px; font-weight: 600; transition: transform .15s; } .acts button:active { transform: scale(.97); }
+  .acts .a { background: #fff; } .acts .b { background: #1c1a19; color: #fff; }
+</style>
+</head>
+<body>
+<div class="phone"><div class="screen" id="screen">
+  <div class="notch"></div>
+  <div class="host">
+    <div class="status"><span>8:47</span><i><svg viewBox="0 0 17 10"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="4.5" y="4" width="3" height="6" rx="1"/><rect x="9" y="2" width="3" height="8" rx="1"/><rect x="13.5" y="0" width="3" height="10" rx="1"/></svg><svg viewBox="0 0 24 10"><rect x=".5" y=".5" width="20" height="9" rx="2.5" fill="none" stroke="currentColor"/><rect x="2" y="2" width="15" height="6" rx="1.5"/></svg></i></div>
+    <div class="top"><span class="logo"><svg viewBox="0 0 16 16"><path d="M3 7h10a5 5 0 0 1-10 0zM8 7V3"/></svg></span><div><b>拾味 FORAGE</b><small>食谱 · 采买 · 一起做饭</small></div><svg viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg></div>
+    <button type="button" class="cover" id="open" aria-label="打开食谱年册"><span class="lbl">FORAGE</span><span class="tag">● 有效中</span><span class="ttl">拾味<small>RECIPE BOOK</small></span></button>
+    <div class="grid">
+      <div class="txt t2">Learn.<br>Cook.<br><b>Share.</b><small>每天一道，做完打卡</small></div>
+      <div class="g" style="background-image:url(_popup/pasta.jpg)"><em>18 分钟</em><span>罗勒青酱蝴蝶面</span></div>
+      <div class="g t2" style="background-image:url(_popup/pizza.jpg)"><em>90 分钟</em><span>薄底玛格丽特披萨</span></div>
+      <div class="dark">1000+<b>独家食谱</b><small>厨师与家常作者共建</small></div>
+      <div class="g" style="background-image:url(_popup/shrimp.jpg)"><em>22 分钟</em></div>
+      <div class="g" style="background-image:url(_popup/avobowl.jpg)"><em>15 分钟</em></div>
+    </div>
+    <div class="tabs"><i></i><i></i><i class="on"></i><i></i><i></i></div>
+  </div>
+  <div class="scrim" id="scrim" style="--scrim: .45"></div>
+  <section class="sheet" role="dialog" aria-label="拾味食谱年册">
+    <div class="photo"><img src="_popup/bowl.jpg" alt=""><span class="lbl" style="left:16px;top:14px">FORAGE</span><span class="tag" style="right:14px;top:12px">● 有效中</span><span class="ttl" style="left:16px;bottom:34px;font-size:26px;line-height:28px">拾味<small>RECIPE BOOK</small></span></div>
+    <div class="drawer">
+      <small>剩余天数</small>
+      <div class="num"><b class="tnum" id="days">163</b><small>天</small></div>
+      <div class="bar"><i id="bar"></i></div>
+      <div class="scale"><span>已用 202 天</span><span>共 365 天</span></div>
+      <div class="kv"><div><small>有效期至</small><b class="mono">2027.03.10</b></div><div><small>常做</small><b>三文鱼谷物碗</b></div><div><small>开册日期</small><b class="mono">2026.03.10</b></div><div><small>年限</small><b>1 年</b></div></div>
+      <div class="acts"><button type="button" class="a" id="next">换一道</button><button type="button" class="b">开始做</button></div>
+    </div>
+  </section>
+  <div class="homebar"></div>
+</div></div>
+<script src="_popup/kit.js"></script>
+<script>
+(() => {
+  const { $, tween, count } = Kit;
+  const screen = $("#screen"), bar = $("#bar"), LEFT = 163, TOTAL = 365;
+  let stop = [];
+  function open() {
+    stop.forEach((f) => f()); stop = [];
+    bar.style.transform = "scaleX(0)";
+    screen.classList.add("open");
+    stop.push(count($("#days"), 0, LEFT, 900, { delay: 320 }));                           // counts while the drawer is pushed in
+    stop.push(tween(800, (e) => (bar.style.transform = `scaleX(${(LEFT / TOTAL) * e})`), { delay: 950 }));   // then the bar
+  }
+  function close() { stop.forEach((f) => f()); stop = []; screen.classList.remove("open"); }
+  $("#open").onclick = open; $("#scrim").onclick = close; $("#next").onclick = close;
+  Kit.demo([[700, open], [5400, close], [6600, open]]);
+})();
+</script>
+</body>
+</html>

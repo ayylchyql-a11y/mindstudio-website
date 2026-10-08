@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>圆环计数弹出 · Ring Count Sheet</title>
+<link rel="stylesheet" href="_popup/popup.css">
+<style>
+  body::before { background-image: url(_popup/dawn.jpg); }
+  .screen { --screen: #121110; color: #f3efe8; --amber: #f2a93b; }
+  .host { padding: 0 12px; }
+  .top { display: flex; align-items: center; gap: 9px; margin: 6px 2px 10px; }
+  .me { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--amber); color: #1a1408; font-size: 13px; font-weight: 700; }
+  .top div { flex: 1; } .top small { display: block; font-size: 9px; color: #8b857c; } .top b { font-size: 13px; font-weight: 700; }
+  .ic { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: #23211f; }
+  .ic svg { width: 13px; height: 13px; fill: none; stroke: #d8d2c8; stroke-width: 2; stroke-linecap: round; }
+  .hero { position: relative; height: 196px; border-radius: 20px; overflow: hidden; background: #333 url(_popup/dawn.jpg) center 30% / cover; }
+  .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(rgb(0 0 0 / 0) 30%, rgb(10 9 8 / .9)); }
+  .hero div { position: absolute; z-index: 1; left: 13px; right: 13px; bottom: 12px; }
+  .issue { display: inline-block; padding: 2px 7px; border-radius: 8px; background: #f3efe8; color: #1a1714; font-size: 8px; font-weight: 700; letter-spacing: .08em; }
+  .hero b { display: block; margin-top: 6px; font-size: 16px; line-height: 21px; font-weight: 700; font-family: "Songti SC", "Noto Serif SC", serif; }
+  .hero small { display: block; margin-top: 5px; font-size: 9px; color: #c9c2b7; }
+  .dots { margin: 7px 0 10px; text-align: center; font-size: 9px; color: #6f6a62; letter-spacing: .04em; }
+  .cont { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 11px; border-radius: 18px; background: #1d1b1a; text-align: left; box-shadow: inset 0 0 0 1px #2b2826; transition: transform .15s; }
+  .cont:active { transform: scale(.98); }
+  .cont svg.r { flex: none; width: 34px; height: 34px; transform: rotate(-90deg); }
+  .cont div { flex: 1; min-width: 0; } .cont em { font-style: normal; display: block; font-size: 8px; color: var(--amber); font-weight: 700; }
+  .cont b { display: block; font-size: 11.5px; } .cont small { display: block; font-size: 8.5px; color: #8b857c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cont .go { flex: none; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--amber); color: #1a1408; }
+  .chips { display: flex; gap: 6px; margin: 12px 0 10px; font-size: 10px; color: #a9a299; }
+  .chips span { padding: 5px 10px; border-radius: 12px; background: #1d1b1a; } .chips span:first-child { background: var(--amber); color: #1a1408; font-weight: 700; }
+  .h2 { display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 700; margin: 0 2px 7px; } .h2 small { font-size: 9px; color: #6f6a62; font-weight: 500; }
+  .item { display: flex; gap: 9px; align-items: center; padding: 8px; border-radius: 14px; background: #1d1b1a; margin-bottom: 6px; }
+  .item i { flex: none; width: 34px; height: 34px; border-radius: 9px; background: center / cover; }
+  .item b { display: block; font-size: 10.5px; } .item small { font-size: 8px; color: var(--amber); font-weight: 700; }
+  .item u { display: block; height: 2px; margin-top: 6px; border-radius: 1px; background: linear-gradient(90deg, var(--amber) var(--p), #3a3633 0); text-decoration: none; }
+
+  /* the panel: off-screen → in place in .5 s on cubic-bezier(.2,.7,.2,1); the page darkens to 40% */
+  .sheet { bottom: 18px; transform: translateY(calc(100% + 30px)); transition: transform .5s var(--out); pointer-events: none; }
+  .open .sheet { transform: none; pointer-events: auto; }
+  .pass { padding: 16px 16px 0; border-radius: 26px; background: #2a2826; box-shadow: inset 0 0 0 1px #3a3734, 0 -10px 40px -10px rgb(0 0 0 / .6); overflow: hidden; }
+  .ph { display: flex; justify-content: space-between; }
+  .ph b { font-size: 11px; font-weight: 700; letter-spacing: .3em; } .ph small { display: block; margin-top: 3px; font-size: 7.5px; color: #8b857c; letter-spacing: .14em; }
+  .ok { display: flex; align-items: center; gap: 4px; font-size: 9px; color: #d9d3c9; } .ok::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--amber); }
+  .mid { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
+  .ring { position: relative; flex: none; width: 116px; height: 116px; }
+  .ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-width: 3; }
+  .ring .tr { stroke: #3d3a37; } .ring .fg { stroke: var(--amber); stroke-linecap: round; }
+  .ring .tk { stroke: #6c6762; stroke-width: 1.2; }
+  .ring div { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+  .ring b { font-size: 34px; line-height: 36px; font-weight: 600; letter-spacing: -.03em; } .ring small { font-size: 8px; color: #8b857c; }
+  .info { flex: 1; min-width: 0; }
+  .info small { display: block; font-size: 8px; color: #8b857c; } .info .exp { display: block; margin-top: 3px; font-size: 19px; font-weight: 500; letter-spacing: -.01em; }
+  .kv { display: flex; justify-content: space-between; margin-top: 9px; padding-top: 7px; border-top: 1px solid #3a3734; font-size: 9.5px; }
+  .kv span { color: #8b857c; } .kv b { font-weight: 600; } .kv b.mono { font: 500 9px var(--mono); }
+  .foot { display: grid; grid-template-columns: 1.3fr 1fr .5fr; margin: 14px -16px 0; border-top: 1px solid #3a3734; }
+  .foot div { padding: 9px 12px 12px; } .foot div + div { border-left: 1px solid #3a3734; }
+  .foot small { display: flex; justify-content: space-between; font-size: 8px; color: #8b857c; } .foot b { display: block; margin-top: 4px; font: 500 9.5px var(--mono); }
+  .reveal { color: var(--amber); font-weight: 700; font-size: 8px; }
+  .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 9px; }
+  .acts button { height: 38px; border-radius: 14px; font-size: 11.5px; font-weight: 600; transition: transform .15s; }
+  .acts button:active { transform: scale(.97); }
+  .acts .a { background: #2a2826; color: #e5e0d8; box-shadow: inset 0 0 0 1px #3a3734; } .acts .b { background: #f3efe8; color: #1a1714; }
+</style>
+</head>
+<body>
+<div class="phone"><div class="screen" id="screen">
+  <div class="notch"></div>
+  <div class="host">
+    <div class="status"><span>8:47</span><i><svg viewBox="0 0 17 10"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="4.5" y="4" width="3" height="6" rx="1"/><rect x="9" y="2" width="3" height="8" rx="1"/><rect x="13.5" y="0" width="3" height="10" rx="1"/></svg><svg viewBox="0 0 24 10"><rect x=".5" y=".5" width="20" height="9" rx="2.5" fill="none" stroke="currentColor"/><rect x="2" y="2" width="15" height="6" rx="1.5"/></svg></i></div>
+    <div class="top"><span class="me">默</span><div><small>周日 · 已读 18 分钟</small><b>今天想看点什么</b></div>
+      <span class="ic"><svg viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg></span><span class="ic"><svg viewBox="0 0 16 16"><path d="M4 2.5h8v11l-4-3-4 3z"/></svg></span></div>
+    <div class="hero"><div><span class="issue">ISSUE 013</span><b>克制不是少放东西<br>而是知道谁该说话</b><small>设计手记 · 8min · 2,140 字</small></div></div>
+    <p class="dots">点到圆环下一期 •••</p>
+    <button type="button" class="cont" id="open"><svg class="r" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="#3a3633" stroke-width="3"/><circle cx="18" cy="18" r="15" fill="none" stroke="#f2a93b" stroke-width="3" stroke-linecap="round" stroke-dasharray="39.6 94.2"/><text x="18" y="21" transform="rotate(90 18 18)" text-anchor="middle" fill="#f3efe8" font-size="8" font-weight="700">42%</text></svg>
+      <div><em>继续阅读</em><b>克制不是少放东西</b><small>还剩约 5 分钟 · 上次读到「三、留白是有方向的」</small></div><span class="go"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5h6M5.5 2.5 8 5 5.5 7.5"/></svg></span></button>
+    <div class="chips"><span>全部</span><span>设计</span><span>影像</span><span>城市</span><span>科技</span></div>
+    <p class="h2">本期精选<small>6 篇</small></p>
+    <div class="item"><i style="background-image:url(_popup/fog.jpg)"></i><div style="flex:1"><small>设计</small><b>把中性灰往品牌色偏几度</b><u style="--p:100%"></u></div></div>
+    <div class="item"><i style="background-image:url(_popup/cove.jpg)"></i><div style="flex:1"><small>影像</small><b>长曝光是一种耐心练习</b><u style="--p:35%"></u></div></div>
+  </div>
+  <div class="scrim" id="scrim"></div>
+  <section class="sheet" role="dialog" aria-label="QUILL 阅读通行证">
+    <div class="pass">
+      <div class="ph"><div><b>QUILL</b><small>读物 · READING PASS</small></div><span class="ok">有效中</span></div>
+      <div class="mid">
+        <div class="ring" id="ring"><svg viewBox="0 0 116 116"><circle class="tr" cx="58" cy="58" r="52"/><circle class="fg" id="arc" cx="58" cy="58" r="52"/></svg>
+          <div><b class="tnum" id="days">0</b><small>剩余天数</small></div></div>
+        <div class="info"><small>有效期至</small><span class="exp tnum">2027.03.10</span>
+          <div class="kv"><span>在读</span><b>百年孤独</b></div><div class="kv"><span>编号</span><b class="mono">N°0417</b></div></div>
+      </div>
+      <div class="foot">
+        <div><small>借阅编号 <button type="button" class="reveal" id="reveal">显示</button></small><b id="code">LF•••••••</b></div>
+        <div><small>开卡日期</small><b>2026.03.10</b></div><div><small>年限</small><b>1 年</b></div>
+      </div>
+    </div>
+    <div class="acts"><button type="button" class="a" id="shelf">我的书架</button><button type="button" class="b">继续阅读</button></div>
+  </section>
+  <div class="homebar"></div>
+</div></div>
+<script src="_popup/kit.js"></script>
+<script>
+(() => {
+  const { $, tween, count } = Kit;
+  const screen = $("#screen"), arc = $("#arc"), C = 2 * Math.PI * 52, LEFT = 163, TOTAL = 365;
+  // four short ticks at 12/3/6/9 o'clock, outside the ring
+  const svg = $("#ring svg");
+  [0, 90, 180, 270].forEach((a) => { const r = (a * Math.PI) / 180, l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    l.setAttribute("x1", 58 + 55.5 * Math.cos(r)); l.setAttribute("y1", 58 + 55.5 * Math.sin(r)); l.setAttribute("x2", 58 + 58.5 * Math.cos(r)); l.setAttribute("y2", 58 + 58.5 * Math.sin(r)); l.setAttribute("class", "tk"); svg.appendChild(l); });
+  arc.style.strokeDasharray = `${C} ${C}`;
+  let stop = [];
+  const setArc = (f) => (arc.style.strokeDashoffset = C * (1 - f));
+  function open() {
+    stop.forEach((f) => f()); stop = [];
+    setArc(0); $("#days").textContent = "0";
+    screen.classList.add("open");
+    // once the sheet has landed (.5 s), ring and number run 1.2 s on the same curve
+    stop.push(tween(1200, (e) => setArc((LEFT / TOTAL) * e), { delay: 500 }));
+    stop.push(count($("#days"), 0, LEFT, 1200, { delay: 500 }));
+  }
+  function close() { stop.forEach((f) => f()); stop = []; screen.classList.remove("open"); }
+  let shown = false;
+  $("#reveal").onclick = () => { shown = !shown; $("#code").textContent = shown ? "LF7K-2QXP" : "LF•••••••"; $("#reveal").textContent = shown ? "隐藏" : "显示"; };
+  $("#open").onclick = open; $("#scrim").onclick = close; $("#shelf").onclick = close;
+  setArc(0);
+  Kit.demo([[700, open], [3600, () => $("#reveal").click()], [5600, close], [6800, open]]);
+})();
+</script>
+</body>
+</html>

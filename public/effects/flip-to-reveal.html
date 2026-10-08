@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>原地翻面面板 · Flip to Reveal</title>
+<link rel="stylesheet" href="_popup/popup.css">
+<style>
+  body::before { background-image: url(_popup/road.jpg); }
+  .screen { --screen: #121212; color: #f2eee8; }
+  .host { padding: 0 14px; background: linear-gradient(rgb(18 18 18 / .15) 0, rgb(18 18 18 / .55) 170px, #121212 290px), url(_popup/van.jpg) center top / auto 300px no-repeat #121212; }
+  .top { display: flex; justify-content: space-between; align-items: baseline; margin: 6px 2px 0; }
+  .top b { font-size: 12px; font-weight: 800; letter-spacing: .3em; } .top small { font-size: 8px; color: #c9c2b7; }
+  .stage { position: relative; height: 352px; margin-top: 18px; perspective: 1200px; }
+  /* one card, two faces; the whole card turns 180° about Y — the faces trade places at 90° */
+  .card { position: absolute; inset: 0; transform-style: preserve-3d; transition: transform .8s cubic-bezier(.3, .7, .2, 1); }
+  .flipped .card { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; border-radius: 24px; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden; box-shadow: 0 24px 50px -24px rgb(0 0 0 / .8), inset 0 0 0 1px rgb(255 255 255 / .08); }
+  .front { background: linear-gradient(rgb(20 14 10 / .25), rgb(20 14 10 / .1) 50%, rgb(10 8 6 / .7)), url(_popup/road.jpg) center / cover; }
+  .back { transform: rotateY(180deg); background: #262422; padding: 16px; }
+  .fh { display: flex; justify-content: space-between; padding: 16px 16px 0; }
+  .fh b, .back .bh b { font-size: 11px; font-weight: 800; letter-spacing: .26em; } .fh small, .bh small { display: block; margin-top: 3px; font-size: 7.5px; letter-spacing: .18em; color: #c9c2b7; }
+  .ok { display: flex; align-items: center; gap: 4px; font-size: 8.5px; } .ok::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: #ef6b4a; }
+  .glass { margin: 14px 12px 0; padding: 14px 14px 12px; border-radius: 16px; background: rgb(40 34 30 / .45); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .1); }
+  .glass .n { display: flex; align-items: baseline; gap: 6px; } .glass .n b { font-size: 42px; line-height: 44px; font-weight: 300; letter-spacing: -.02em; } .glass .n small { font-size: 9px; color: #ddd5ca; }
+  .glass .ln { height: 2px; margin: 8px 0 10px; border-radius: 1px; background: linear-gradient(90deg, #ef8a4a 45%, rgb(255 255 255 / .18) 45%); }
+  .glass .kv { display: grid; grid-template-columns: 1fr 1fr; } .glass small { display: block; font-size: 7.5px; color: #c9c2b7; } .glass .kv b { display: block; margin-top: 3px; font-size: 10.5px; font-weight: 600; } .glass .kv b.mono { font: 500 10px var(--mono); }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 6px; height: 32px; padding: 0 16px; border-radius: 16px; font-size: 10.5px; font-weight: 600; color: #fff; background: rgb(30 26 24 / .55); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .22); transition: transform .15s; }
+  .btn:active { transform: scale(.96); }
+  .btn svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .front .btn { position: absolute; left: 50%; bottom: 16px; translate: -50% 0; }
+  .bh { margin-bottom: 14px; }
+  .codebox { padding: 14px 10px 16px; border-radius: 14px; background: #2f2c2a; box-shadow: inset 0 0 0 1px #3d3a37; text-align: center; }
+  .codebox small { font-size: 7.5px; color: #8b857c; letter-spacing: .1em; } .codebox b { display: block; margin-top: 6px; font: 600 22px var(--mono); letter-spacing: .12em; }
+  .hint { margin: 9px 0 10px; text-align: center; font-size: 8px; color: #8b857c; }
+  .back .kv { display: flex; justify-content: space-between; height: 27px; align-items: center; border-top: 1px solid #36332f; font-size: 9.5px; }
+  .back .kv span { color: #8b857c; } .back .kv b { font-weight: 600; } .back .kv b.mono { font: 500 9px var(--mono); }
+  .back .btn { width: 100%; margin-top: 10px; border-radius: 10px; background: #34312e; box-shadow: inset 0 0 0 1px #45413d; }
+  .slide { display: flex; align-items: center; gap: 10px; height: 46px; margin-top: 16px; padding: 0 6px; border-radius: 23px; background: #1e1d1c; box-shadow: inset 0 0 0 1px #2c2a28; font-size: 10px; color: #a9a299; }
+  .slide i { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #ef6b4a; color: #fff; font-style: normal; }
+  .slide span { flex: 1; text-align: center; padding-right: 30px; letter-spacing: .02em; }
+  .tabs { display: flex; justify-content: space-around; margin-top: 18px; font-size: 7.5px; color: #77716a; text-align: center; }
+  .tabs i { display: block; width: 18px; height: 18px; margin: 0 auto 4px; border-radius: 6px; box-shadow: inset 0 0 0 1.5px #57524c; }
+</style>
+</head>
+<body>
+<div class="phone"><div class="screen" id="screen">
+  <div class="notch"></div>
+  <div class="host">
+    <div class="status"><span>8:47</span><i><svg viewBox="0 0 17 10"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="4.5" y="4" width="3" height="6" rx="1"/><rect x="9" y="2" width="3" height="8" rx="1"/><rect x="13.5" y="0" width="3" height="10" rx="1"/></svg><svg viewBox="0 0 24 10"><rect x=".5" y=".5" width="20" height="9" rx="2.5" fill="none" stroke="currentColor"/><rect x="2" y="2" width="15" height="6" rx="1.5"/></svg></i></div>
+    <div class="top"><b>NOMAD</b><small>128 vans parked tonight</small></div>
+    <div class="stage" id="stage">
+      <div class="card">
+        <section class="face front" aria-label="NOMAD 路途通行证">
+          <div class="fh"><div><b>NOMAD</b><small>ROAD PASS</small></div><span class="ok">有效中</span></div>
+          <div class="glass"><div class="n"><b class="tnum">163</b><small>天 · 剩余天数</small></div><div class="ln"></div>
+            <div class="kv"><div><small>有效期至</small><b class="mono">2027.03.10</b></div><div><small>上一站</small><b>松林营地</b></div></div></div>
+          <button type="button" class="btn" id="flip">查看凭证 <svg viewBox="0 0 12 12"><path d="M10 6a4 4 0 1 1-1.2-2.8M10 1.8v2.4H7.6"/></svg></button>
+        </section>
+        <section class="face back" aria-label="到场出示凭证" aria-hidden="true">
+          <div class="bh"><b>NOMAD</b><small>到场出示凭证</small></div>
+          <div class="codebox"><small>入营编号</small><b>LF7K-2QXP</b></div>
+          <p class="hint">到营地出示这一栏，直接入场</p>
+          <div class="kv"><span>车型</span><b>双人房车</b></div><div class="kv"><span>生效日期</span><b class="mono">2026.03.10</b></div>
+          <div class="kv"><span>上一站</span><b>松林营地</b></div><div class="kv"><span>年限</span><b>1 年</b></div>
+          <button type="button" class="btn" id="back">返回 <svg viewBox="0 0 12 12"><path d="M10 6a4 4 0 1 1-1.2-2.8M10 1.8v2.4H7.6"/></svg></button>
+        </section>
+      </div>
+    </div>
+    <div class="slide"><i>→</i><span>Slide to start the road</span></div>
+    <div class="tabs"><span><i></i>Pop-top roof</span><span><i></i>Solar power</span><span><i></i>Park off-grid</span></div>
+  </div>
+  <div class="homebar"></div>
+</div></div>
+<script src="_popup/kit.js"></script>
+<script>
+(() => {
+  const stage = document.getElementById("stage"), front = stage.querySelector(".front"), back = stage.querySelector(".back");
+  // with cubic-bezier(.3,.7,.2,1) the card passes 90° well before half of the 800 ms — find that moment
+  const ease = Kit.bezier(.3, .7, .2, 1); let x = 0; while (ease(x) < .5) x += .002; const HALF = Math.round(x * 800);
+  function flip(on) {
+    stage.classList.toggle("flipped", on);
+    // the visible side swaps at 90°, i.e. halfway through the turn — keep focus and the a11y tree in step with that moment
+    setTimeout(() => { front.setAttribute("aria-hidden", String(on)); back.setAttribute("aria-hidden", String(!on)); front.inert = on; back.inert = !on; }, Kit.reduce() ? 0 : HALF);
+  }
+  document.getElementById("flip").onclick = () => flip(true);
+  document.getElementById("back").onclick = () => flip(false);
+  back.inert = true;
+  Kit.demo([[900, () => flip(true)], [4200, () => flip(false)], [6400, () => flip(true)]]);
+})();
+</script>
+</body>
+</html>

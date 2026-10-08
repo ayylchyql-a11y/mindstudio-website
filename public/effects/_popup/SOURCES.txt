@@ -1,0 +1,27 @@
+Photos for the @西瓜同学 popup-panel replicas. All CC0 / public domain, found through Openverse
+(api.openverse.org, license=cc0,pdm), free for commercial use, no attribution required.
+Resized and re-encoded; small ones are square centre crops.
+
+lisbon.jpg     stocksnap  City Architecture                                https://cdn.stocksnap.io/img-thumbs/960w/AFJ2YJAZUK.jpg
+street.jpg     stocksnap  Street City                                      https://cdn.stocksnap.io/img-thumbs/960w/VD2OUBNZVD.jpg
+coast.jpg      stocksnap  Ocean Sea                                        https://cdn.stocksnap.io/img-thumbs/960w/8P8FMRCOSZ.jpg
+dawn.jpg       stocksnap  Nature Landscape                                 https://cdn.stocksnap.io/img-thumbs/960w/O4DWC2WG2U.jpg
+fog.jpg        stocksnap  Fog Trees                                        https://cdn.stocksnap.io/img-thumbs/960w/F0Q7LBX1VP.jpg
+cove.jpg       stocksnap  Beach Shore                                      https://cdn.stocksnap.io/img-thumbs/960w/ISJPOX8JCR.jpg
+t1.jpg         stocksnap  Mountain Water                                   https://cdn.stocksnap.io/img-thumbs/960w/4RH8BGXSVJ.jpg
+t2.jpg         stocksnap  Landscape Coast                                  https://cdn.stocksnap.io/img-thumbs/960w/0FHCIVZ5A0.jpg
+t3.jpg         stocksnap  City Architecture                                https://cdn.stocksnap.io/img-thumbs/960w/AFJ2YJAZUK.jpg
+t4.jpg         stocksnap  Snowy Mountains                                  https://cdn.stocksnap.io/img-thumbs/960w/X0MZ2TYH1B.jpg
+t5.jpg         wordpress  Aerial view of a dark alpine lake set in pale ro https://pd.w.org/2026/08/5286a6db4f7826ea2.05539443-2048x1536.jpg
+lake.jpg       stocksnap  Snowy Mountains                                  https://cdn.stocksnap.io/img-thumbs/960w/KN8PAB7LO6.jpg
+bowl.jpg       stocksnap                                                   https://cdn.stocksnap.io/img-thumbs/960w/Z0133GNPXT.jpg
+pasta.jpg      stocksnap                                                   https://cdn.stocksnap.io/img-thumbs/960w/0SKW4T9BAC.jpg
+pizza.jpg      stocksnap                                                   https://cdn.stocksnap.io/img-thumbs/960w/R0YJRQ45E0.jpg
+shrimp.jpg     stocksnap                                                   https://cdn.stocksnap.io/img-thumbs/960w/30DIV2QY3M.jpg
+avobowl.jpg    stocksnap                                                   https://cdn.stocksnap.io/img-thumbs/960w/NQNFUT9KD7.jpg
+fruit.jpg      stocksnap                                                   https://cdn.stocksnap.io/img-thumbs/960w/V9AOG26R2W.jpg
+van.jpg        wordpress  Boondocking camper in desert. Black truck and fi https://pd.w.org/2022/06/42262b3227e190623.32457150-2048x1536.jpg
+road.jpg       stocksnap  White Van                                        https://cdn.stocksnap.io/img-thumbs/960w/55240ACCE8.jpg
+plate.jpg      stocksnap                                                   https://cdn.stocksnap.io/img-thumbs/960w/KZBZEHFM2W.jpg
+eggtoast.jpg   stocksnap                                                   https://cdn.stocksnap.io/img-thumbs/960w/7TZ228CGEN.jpg
+yogurt.jpg     stocksnap                                                   https://cdn.stocksnap.io/img-thumbs/960w/V9AOG26R2W.jpg

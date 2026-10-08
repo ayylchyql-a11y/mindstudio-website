@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>下拉展开面板 · Pull Down Reveal</title>
+<link rel="stylesheet" href="_popup/popup.css">
+<style>
+  body::before { background-image: url(_popup/plate.jpg); }
+  .screen { --screen: #f1ece6; --red: #df4f36; }
+  .host { padding: 0 12px; }
+  .top { display: flex; align-items: center; justify-content: space-between; margin: 4px 2px 6px; }
+  .top div { text-align: center; } .top b { font-size: 13px; font-weight: 700; } .top small { display: block; font-size: 8px; color: #8b857c; }
+  .ic { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: #fff; }
+  .ic svg { width: 12px; height: 12px; fill: none; stroke: #1c1a19; stroke-width: 1.8; stroke-linecap: round; }
+  .kcal { position: relative; height: 128px; }
+  .kcal svg { position: absolute; left: 50%; top: 4px; margin-left: -95px; width: 190px; height: 120px; }
+  .kcal div { position: absolute; left: 0; right: 0; top: 50px; text-align: center; }
+  .kcal small { font-size: 8px; color: #6f6a63; } .kcal b { display: block; font-size: 24px; font-weight: 800; letter-spacing: -.02em; } .kcal b span { font-size: 10px; font-weight: 600; color: #6f6a63; } .kcal em { font-style: normal; font-size: 8.5px; color: var(--red); font-weight: 600; }
+  .macros { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+  .mac { padding: 8px 9px; border-radius: 12px; background: #fff; } .mac small { display: block; font-size: 7.5px; color: #8b857c; } .mac b { font-size: 13px; font-weight: 800; } .mac b span { font-size: 7.5px; color: #8b857c; font-weight: 500; }
+  .mac i { display: block; height: 3px; margin-top: 5px; border-radius: 2px; background: linear-gradient(90deg, #1c1a19 var(--p), #e7e2db 0); }
+  .meals { display: flex; gap: 6px; margin: 10px 0 8px; font-size: 9px; }
+  .meals span { padding: 6px 9px; border-radius: 13px; background: #fff; white-space: nowrap; } .meals span:first-child { background: #1c1a19; color: #fff; } .meals em { font-style: normal; color: var(--red); margin-left: 3px; }
+  .note { padding: 8px 10px; border-radius: 11px; background: #e7e1d9; font-size: 8.5px; line-height: 13px; color: #4f4a44; }
+  .meal { display: flex; gap: 9px; align-items: center; margin-top: 7px; padding: 8px; border-radius: 14px; background: #fff; }
+  .meal i { flex: none; width: 40px; height: 40px; border-radius: 10px; background: center / cover; }
+  .meal div { flex: 1; } .meal b { font-size: 10.5px; } .meal small { display: block; font-size: 7.5px; color: #8b857c; } .meal strong { font-size: 12px; }
+  .tabbar { position: absolute; left: 12px; right: 12px; bottom: 14px; display: flex; justify-content: space-around; align-items: center; height: 46px; border-radius: 23px; background: #1c1a19; }
+  .tabbar i { width: 15px; height: 15px; border-radius: 5px; box-shadow: inset 0 0 0 1.5px #77716a; } .tabbar button { display: grid; place-items: center; width: 40px; height: 32px; border-radius: 16px; background: var(--red); }
+  .tabbar button svg { width: 15px; height: 15px; fill: none; stroke: #fff; stroke-width: 1.8; }
+
+  /* the panel springs in from the bottom and settles; its bottom stub hangs on a dashed tear line */
+  .sheet { top: 52px; bottom: auto; transform: translateY(640px); transition: transform .6s cubic-bezier(.3, 1.25, .5, 1); pointer-events: none; }
+  .open .sheet { transform: none; pointer-events: auto; }
+  .ticket { position: relative; border-radius: 24px; background: #2b2826; color: #f2eee8; box-shadow: 0 24px 50px -20px rgb(0 0 0 / .7);
+    /* two half-circle notches at the tear line; the shorthand comes first, the composite after it (the shorthand resets it) */
+    -webkit-mask: radial-gradient(circle 7px at 0 var(--cut), transparent 98%, #000), radial-gradient(circle 7px at 100% var(--cut), transparent 98%, #000);
+    mask: radial-gradient(circle 7px at 0 var(--cut), transparent 98%, #000), radial-gradient(circle 7px at 100% var(--cut), transparent 98%, #000);
+    -webkit-mask-composite: source-in; mask-composite: intersect; }
+  .main { padding: 13px 14px 12px; }
+  .th { display: flex; justify-content: space-between; align-items: center; font-size: 10px; }
+  .th b { display: flex; align-items: center; gap: 5px; font-weight: 700; letter-spacing: .16em; font-size: 10px; }
+  .th b i { width: 11px; height: 11px; border-radius: 50%; background: linear-gradient(90deg, #f2eee8 50%, transparent 50%); box-shadow: inset 0 0 0 1.5px #f2eee8; }
+  .th small { text-align: right; font-size: 9px; font-weight: 700; line-height: 11px; } .th small span { display: block; font-size: 6.5px; letter-spacing: .1em; color: #8b857c; font-weight: 500; }
+  .photo { height: 116px; margin: 10px -14px 0; background: url(_popup/plate.jpg) center / cover; }
+  .row1 { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 10px; }
+  .lbl { display: block; font-size: 7.5px; color: #8b857c; }
+  .days { font-size: 34px; line-height: 36px; font-weight: 300; letter-spacing: -.01em; } .days small { font-size: 10px; font-weight: 500; margin-left: 3px; }
+  .ok { display: flex; align-items: center; gap: 4px; padding-bottom: 6px; font-size: 8.5px; } .ok::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--red); }
+  .kvs { display: grid; grid-template-columns: 1.2fr 1fr .7fr; gap: 9px 8px; margin-top: 9px; }
+  .kvs b { display: block; margin-top: 2px; font-size: 10px; font-weight: 600; }
+  .tear { position: relative; height: 1px; margin: 0 12px; border-top: 1.5px dashed #6d4a40; }
+  /* the stub: a clipped column anchored to its bottom — growing it shows the hint and handle first, then the code */
+  .stub { position: relative; height: var(--h, 26px); overflow: hidden; margin-top: var(--gap, 0px); transform-origin: 100% 0; transform: rotate(var(--tilt, 0deg)); border-radius: 0 0 24px 24px; background: #2b2826; touch-action: none; cursor: grab; }
+  .stub.anim { transition: height .5s cubic-bezier(.3, 1.2, .5, 1), transform .5s cubic-bezier(.3, 1.2, .5, 1), margin-top .5s cubic-bezier(.3, 1.2, .5, 1); }
+  .stub:active { cursor: grabbing; }
+  .stub .col { position: absolute; left: 0; right: 0; bottom: 0; display: grid; justify-items: center; padding: 0 14px 8px; }
+  .stub .lbl { margin-bottom: 2px; letter-spacing: .1em; }
+  .code { font: 600 19px var(--mono); letter-spacing: .1em; min-height: 26px; }
+  .hint { margin-top: 2px; font-size: 7.5px; color: #8b857c; }
+  .knob { margin-top: 7px; width: 12px; height: 12px; border-radius: 50%; background: #f2eee8; box-shadow: 0 0 0 3px rgb(242 238 232 / .18); }
+  .knob:focus-visible { outline: 2px solid #8d7cf6; outline-offset: 3px; }
+</style>
+</head>
+<body>
+<div class="phone"><div class="screen" id="screen">
+  <div class="notch"></div>
+  <div class="host">
+    <div class="status"><span>8:47</span><i><svg viewBox="0 0 17 10"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="4.5" y="4" width="3" height="6" rx="1"/><rect x="9" y="2" width="3" height="8" rx="1"/><rect x="13.5" y="0" width="3" height="10" rx="1"/></svg><svg viewBox="0 0 24 10"><rect x=".5" y=".5" width="20" height="9" rx="2.5" fill="none" stroke="currentColor"/><rect x="2" y="2" width="15" height="6" rx="1.5"/></svg></i></div>
+    <div class="top"><span class="ic"><svg viewBox="0 0 12 12"><rect x="1.5" y="2" width="9" height="8.5" rx="1.5"/><path d="M1.5 5h9M4 1v2M8 1v2"/></svg></span><div><b>今日食记</b><small>7 月 30 日 · 今天吃得还不错</small></div><span class="ic"><svg viewBox="0 0 12 12"><path d="M3 8.5V5.5a3 3 0 0 1 6 0v3l1 1H2zM5 10.5h2"/></svg></span></div>
+    <div class="kcal"><svg viewBox="0 0 190 120" id="arcs"></svg><div><small>⚡ 今日摄入</small><b>1000<span> / 1800 kcal</span></b><em>还可以吃 800 kcal</em></div></div>
+    <div class="macros">
+      <div class="mac"><small>蛋白质</small><b>56<span> /95g</span></b><i style="--p:59%"></i></div>
+      <div class="mac"><small>碳水</small><b>96<span> /210g</span></b><i style="--p:46%"></i></div>
+      <div class="mac"><small>脂肪</small><b>41<span> /58g</span></b><i style="--p:71%"></i></div>
+    </div>
+    <div class="meals"><span>早餐<em>08:20</em></span><span>午餐 12:30</span><span>晚餐 19:00</span><span>加餐</span></div>
+    <p class="note">早餐把蛋白质吃够，上午不容易饿 —— 你最近三天的早餐都只有碳水。</p>
+    <div class="meal"><i style="background-image:url(_popup/eggtoast.jpg)"></i><div><b>牛油果水波蛋吐司</b><small>08:20 · 蛋白 22g · 碳水 38g</small></div><strong>420</strong></div>
+    <div class="meal"><i style="background-image:url(_popup/yogurt.jpg)"></i><div><b>希腊酸奶莓果杯</b><small>08:25 · 蛋白 12g · 碳水 26g</small></div><strong>210</strong></div>
+    <div class="tabbar"><i></i><i></i><button type="button" id="open" aria-label="打开餐桌年册"><svg viewBox="0 0 16 16"><rect x="2" y="4" width="12" height="9" rx="2"/><circle cx="8" cy="8.5" r="2.3"/><path d="M6 4l1-1.5h2L10 4"/></svg></button><i></i><i></i></div>
+  </div>
+  <div class="scrim" id="scrim" style="--scrim: .5"></div>
+  <section class="sheet" role="dialog" aria-label="FERN TABLE 餐桌年册">
+    <div class="ticket" id="ticket">
+      <div class="main">
+        <div class="th"><b><i></i>FERN TABLE</b><small>餐桌年册<span>TABLE PASS</span></small></div>
+        <div class="photo"></div>
+        <div class="row1"><div><span class="lbl">剩余天数</span><span class="days tnum">163<small>天</small></span></div><span class="ok">有效中</span></div>
+        <div class="kvs"><div><span class="lbl">有效期至</span><b>2027.03.10</b></div><div><span class="lbl">常吃</span><b>早餐</b></div><div><span class="lbl">年限</span><b>1 年</b></div>
+          <div><span class="lbl">开册日期</span><b>2026.03.10</b></div><div></div><div></div><div><span class="lbl">每周</span><b>一份新食单</b></div></div>
+      </div>
+      <div class="tear"></div>
+      <div class="stub" id="stub">
+        <div class="col"><span class="lbl">食单编号</span><span class="code" id="code"></span><span class="hint">需要时出示这一栏</span>
+          <button type="button" class="knob" id="knob" aria-label="下拉显示食单编号" aria-expanded="false"></button></div>
+      </div>
+    </div>
+  </section>
+  <div class="homebar"></div>
+</div></div>
+<script src="_popup/kit.js"></script>
+<script>
+(() => {
+  const { $ } = Kit;
+  const screen = $("#screen"), stub = $("#stub"), ticket = $("#ticket"), knob = $("#knob"), code = $("#code");
+  // calorie arc: 14 rounded segments on a half circle, 8 lit
+  const arcs = $("#arcs"), N = 14, LIT = Math.round((1000 / 1800) * N);
+  for (let i = 0; i < N; i++) {
+    const a = Math.PI + (i + .5) * (Math.PI / N), x = 95 + 78 * Math.cos(a), y = 92 + 78 * Math.sin(a);
+    const r = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    Object.entries({ x: x - 5, y: y - 9, width: 10, height: 18, rx: 5, fill: i < LIT ? "#df4f36" : "#e4ddd4", transform: `rotate(${(a * 180) / Math.PI + 90} ${x} ${y})` }).forEach(([k, v]) => r.setAttribute(k, v));
+    arcs.appendChild(r);
+  }
+  const SHUT = 26, FULL = 104, CODE = "LF7K-2QXP";
+  let open = false, h = SHUT, drag = null, typing = [];
+  const cut = () => ticket.style.setProperty("--cut", ticket.offsetHeight - stub.offsetHeight + "px");   // notch the ticket at the tear line
+  function set(height, animate) {
+    h = height;
+    stub.classList.toggle("anim", !!animate);
+    const k = (h - SHUT) / (FULL - SHUT);                 // 0 … 1 of the way open
+    stub.style.setProperty("--h", h + "px");
+    // while it's being pulled the stub sits a little apart from the line and swings up to 2°
+    stub.style.setProperty("--gap", drag ? Math.min(6, k * 14) + "px" : "0px");
+    stub.style.setProperty("--tilt", drag ? Math.min(2, k * 4) * (drag.sway || 1) + "deg" : "0deg");
+    requestAnimationFrame(cut);
+  }
+  function type(on) {
+    typing.forEach(clearTimeout); typing = [];
+    if (!on) { code.textContent = ""; return; }
+    code.textContent = "";
+    [...CODE].forEach((c, i) => typing.push(setTimeout(() => (code.textContent += c), Kit.reduce() ? 0 : 60 + i * 35)));
+  }
+  function settle(toOpen) {
+    open = toOpen; drag = null; set(toOpen ? FULL : SHUT, true);
+    knob.setAttribute("aria-expanded", String(toOpen)); knob.setAttribute("aria-label", toOpen ? "收起食单编号" : "下拉显示食单编号");
+    if (toOpen && !code.textContent) type(true); if (!toOpen) setTimeout(() => !open && type(false), 500);
+  }
+  stub.addEventListener("pointerdown", (e) => {
+    drag = { y: e.clientY, h0: h, moved: false, sway: 1 }; stub.setPointerCapture(e.pointerId); stub.classList.remove("anim");
+  });
+  stub.addEventListener("pointermove", (e) => {
+    if (!drag) return; const dy = e.clientY - drag.y; if (Math.abs(dy) > 3) drag.moved = true;
+    drag.sway = Math.sign(e.movementX || 1);
+    // follows the finger; past full it stretches with resistance
+    let nh = drag.h0 + dy; if (nh > FULL) nh = FULL + (nh - FULL) * .25; if (nh < SHUT) nh = SHUT - (SHUT - nh) * .25;
+    set(nh);
+  });
+  const end = () => {
+    if (!drag) return; const moved = drag.moved, k = (h - SHUT) / (FULL - SHUT);
+    if (!moved) return settle(!open);                     // a plain tap toggles
+    settle(open ? k > .6 : k > .4);                       // past 40 % it opens; anything less springs back
+  };
+  stub.addEventListener("pointerup", end); stub.addEventListener("pointercancel", end);
+  knob.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); settle(!open); } });
+  knob.addEventListener("click", (e) => { if (e.detail === 0) settle(!open); });     // keyboard "click" only; pointer taps go through end()
+  function show() { settle(false); type(false); screen.classList.add("open"); }
+  function hide() { screen.classList.remove("open"); }
+  $("#open").onclick = show; $("#scrim").onclick = hide;
+  set(SHUT); requestAnimationFrame(cut);
+
+  /* ?demo (recording only): bring the panel up, a timid pull that springs back, then a real one */
+  function fakePull(to, ms, release) {
+    return new Promise((res) => { drag = { y: 0, h0: h, moved: true, sway: 1 }; const from = h, t0 = performance.now();
+      const f = (t) => { const k = Math.min(1, (t - t0) / ms), e = 1 - (1 - k) * (1 - k); set(from + (to - from) * e); if (k < 1) requestAnimationFrame(f); else { if (release) end(); res(); } }; requestAnimationFrame(f); });
+  }
+  Kit.demo([[600, show], [1800, () => fakePull(48, 500, true)], [3000, () => fakePull(70, 650, true)], [6000, () => settle(false)], [7200, () => fakePull(84, 600, true)]]);
+})();
+</script>
+</body>
+</html>

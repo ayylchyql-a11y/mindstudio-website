@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>刻度尺进度弹出 · Tick Ruler Sheet</title>
+<link rel="stylesheet" href="_popup/popup.css">
+<style>
+  body::before { background-image: url(_popup/lake.jpg); }
+  .screen { --screen: #f2efe9; --green: #2a8f84; }
+  .host { padding: 0 12px; }
+  .top { display: flex; align-items: center; gap: 9px; margin: 4px 2px 10px; }
+  .av { width: 34px; height: 34px; border-radius: 50%; background: url(_popup/coast.jpg) center / cover; box-shadow: 0 0 0 2px #fff; }
+  .top div { flex: 1; } .top small { display: block; font-size: 9px; color: #8b857c; } .top b { font-size: 13px; font-weight: 700; }
+  .ic { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: #fff; }
+  .ic svg { width: 12px; height: 12px; fill: #1c1a19; }
+  .thumbs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .thumbs i { aspect-ratio: 1.15; border-radius: 9px; background: center / cover; }
+  .search { display: flex; align-items: center; gap: 6px; height: 38px; margin-top: 10px; padding: 0 5px 0 12px; border-radius: 19px; background: #fff; font-size: 10px; color: #9a948b; }
+  .search svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .search b { margin-left: auto; display: flex; align-items: center; height: 28px; padding: 0 11px; border-radius: 14px; background: #1c1a19; color: #fff; font-size: 10px; }
+  .chips { display: flex; gap: 6px; margin: 11px 0; font-size: 10px; }
+  .chips span { padding: 6px 12px; border-radius: 14px; background: #fff; } .chips span:first-child { background: #1c1a19; color: #fff; font-weight: 700; }
+  .h2 { display: flex; justify-content: space-between; align-items: baseline; margin: 0 2px 8px; font-size: 12px; font-weight: 700; } .h2 small { font-size: 9px; text-decoration: underline; font-weight: 500; }
+  .pol { position: relative; display: block; width: 100%; padding: 8px 8px 30px; border-radius: 6px; background: #fbfaf7; box-shadow: 0 10px 24px -14px rgb(0 0 0 / .35); text-align: left; transition: transform .2s; }
+  .pol:active { transform: scale(.985); }
+  .pol .ph { position: relative; height: 150px; border-radius: 3px; background: url(_popup/lake.jpg) center / cover; }
+  .stamp { position: absolute; right: 8px; top: 8px; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgb(255 255 255 / .85); color: #fff; font: 600 9px var(--mono); }
+  .pol .meta { position: absolute; left: 8px; right: 8px; bottom: 6px; display: flex; justify-content: space-between; color: #fff; font-size: 8.5px; }
+  .pol .meta span { padding: 3px 6px; border-radius: 6px; background: rgb(0 0 0 / .35); }
+  .pol em { position: absolute; left: 10px; bottom: 7px; font: italic 17px "Instrument Serif", Georgia, serif; } .pol em small { font: 8px var(--ui); color: #8b857c; margin-left: 6px; }
+  .pin { position: absolute; right: 10px; bottom: 8px; width: 18px; height: 18px; border-radius: 50%; background: var(--green); }
+  .tl { position: relative; display: flex; justify-content: space-between; margin: 12px 8px 0; font-size: 7.5px; color: #8b857c; }
+  .tl::before { content: ""; position: absolute; left: 3px; right: 3px; top: 3px; height: 1.5px; background: var(--green); }
+  .tl span { position: relative; padding-top: 10px; } .tl span::before { content: ""; position: absolute; top: 0; left: 50%; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%; background: #f2efe9; box-shadow: inset 0 0 0 1.5px var(--green); }
+
+  /* the panel slides up; then 53 weekly ticks darken left → right, one frame apart */
+  .sheet { bottom: 14px; padding: 15px 16px 14px; border-radius: 28px; background: #e9e7e3; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .7), 0 -16px 40px -16px rgb(0 0 0 / .35);
+    transform: translateY(calc(100% + 30px)); transition: transform .55s var(--out); pointer-events: none; }
+  .open .sheet { transform: none; pointer-events: auto; }
+  .hd { display: flex; justify-content: space-between; align-items: center; font-size: 9px; }
+  .hd b { display: flex; align-items: center; gap: 5px; font-size: 11px; letter-spacing: .2em; }
+  .hd b i { width: 11px; height: 11px; border-radius: 50%; background: linear-gradient(90deg, #1c1a19 50%, transparent 50%); box-shadow: inset 0 0 0 1.5px #1c1a19; }
+  .hd span { display: flex; align-items: center; gap: 4px; color: #4f4a44; } .hd span::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
+  .no { margin-top: 8px; font: 500 8.5px var(--mono); color: #8b857c; }
+  .bigrow { display: flex; align-items: flex-end; gap: 6px; margin-top: 2px; }
+  .big { font-size: 58px; line-height: 56px; font-weight: 700; letter-spacing: -.045em; }
+  .bigrow small { padding-bottom: 6px; font-size: 9px; color: #6f6a63; line-height: 13px; } .bigrow small b { display: block; font-size: 12px; color: #1c1a19; }
+  .ruler { position: relative; display: flex; justify-content: space-between; align-items: flex-end; height: 34px; margin-top: 10px; }
+  .tick { width: 1.5px; height: 9px; border-radius: 1px; background: #c9c5be; transition: background-color .25s; }
+  .tick.l { height: 14px; }
+  .tick.on { background: #3c3833; }
+  .tick.now { height: 22px; width: 2px; background: var(--green); }
+  .nowlb { position: absolute; top: -1px; font-size: 8px; color: var(--green); font-weight: 600; transform: translateX(-50%); opacity: 0; transition: opacity .25s; }
+  .nowlb.on { opacity: 1; }
+  .ends { display: flex; justify-content: space-between; margin-top: 4px; font: 500 8px var(--mono); color: #8b857c; }
+  .kv { display: flex; justify-content: space-between; align-items: center; height: 29px; border-top: 1px solid #d8d4cd; font-size: 10px; }
+  .kv:first-of-type { margin-top: 10px; }
+  .kv span { color: #6f6a63; } .kv b { font-weight: 600; }
+  /* the hidden code expands in place, character by character; the row never changes height */
+  .code { display: flex; align-items: center; gap: 8px; font: 500 9.5px var(--mono); }
+  .code u { text-decoration: none; display: inline-block; min-width: 9ch; text-align: right; }
+  .code u i { font-style: normal; display: inline-block; }
+  .code u i.new { animation: in .18s var(--out) both; }
+  @keyframes in { from { opacity: 0; transform: translateY(4px); } }
+  .code button { font: 600 9px var(--ui); text-decoration: underline; text-underline-offset: 2px; }
+  .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .acts button { height: 36px; border-radius: 11px; font-size: 11px; font-weight: 600; transition: transform .15s; }
+  .acts button:active { transform: scale(.97); }
+  .acts .a { background: #d9d6d0; } .acts .b { background: #1c1a19; color: #fff; }
+</style>
+</head>
+<body>
+<div class="phone"><div class="screen" id="screen">
+  <div class="notch"></div>
+  <div class="host">
+    <div class="status"><span>9:41</span><i><svg viewBox="0 0 17 10"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="4.5" y="4" width="3" height="6" rx="1"/><rect x="9" y="2" width="3" height="8" rx="1"/><rect x="13.5" y="0" width="3" height="10" rx="1"/></svg><svg viewBox="0 0 24 10"><rect x=".5" y=".5" width="20" height="9" rx="2.5" fill="none" stroke="currentColor"/><rect x="2" y="2" width="15" height="6" rx="1.5"/></svg></i></div>
+    <div class="top"><span class="av"></span><div><small>已经去过</small><b>5 个国家 · 5 段旅程</b></div>
+      <span class="ic"><svg viewBox="0 0 12 12"><path d="M1 2.5 4 1.5l4 1.5 3-1v8.5l-3 1-4-1.5-3 1z"/></svg></span><span class="ic"><svg viewBox="0 0 12 12"><path d="M3 1h6v10L6 8.6 3 11z"/></svg></span></div>
+    <div class="thumbs"><i style="background-image:url(_popup/t1.jpg)"></i><i style="background-image:url(_popup/t2.jpg)"></i><i style="background-image:url(_popup/t3.jpg)"></i><i style="background-image:url(_popup/t4.jpg)"></i><i style="background-image:url(_popup/t5.jpg)"></i></div>
+    <div class="search"><svg viewBox="0 0 12 12"><circle cx="5" cy="5" r="3.6"/><path d="m8 8 2.5 2.5"/></svg>搜地名、站点或年份<b>随便翻翻</b></div>
+    <div class="chips"><span>全部</span><span>山野</span><span>海岛</span><span>城市</span></div>
+    <p class="h2">旅行手账<small>下一段</small></p>
+    <button type="button" class="pol" id="open" aria-label="打开这段手账">
+      <div class="ph"><span class="stamp">07.02</span><div class="meta"><span>9 天 · 4 站</span><span>640 km</span></div></div>
+      <em>Lago di Braies, Italy<small>2025 · 七月初二</small></em><i class="pin"></i></button>
+    <div class="tl"><span>奥蒂塞伊</span><span>布莱埃斯湖</span><span>三峰山</span><span>科尔蒂纳</span></div>
+  </div>
+  <div class="scrim" id="scrim" style="--scrim: .35"></div>
+  <section class="sheet" role="dialog" aria-label="ROAM 手账年册">
+    <div class="hd"><b><i></i>ROAM</b><span>记录中 · 布拉耶斯湖</span></div>
+    <p class="no">手账年册 · N°0417</p>
+    <div class="bigrow"><span class="big tnum">163</span><small><b>天</b>剩余天数</small></div>
+    <div class="ruler" id="ruler"><span class="nowlb" id="nowlb">今天</span></div>
+    <div class="ends"><span>2026.03.10</span><span>2027.03.10</span></div>
+    <div class="kv"><span>有效期至</span><b>2027 年 3 月 10 日</b></div>
+    <div class="kv"><span>上一站</span><b>布拉耶斯湖</b></div>
+    <div class="kv"><span>已记</span><b>5 段旅程</b></div>
+    <div class="kv"><span>手账编号</span><span class="code"><u id="code"></u><button type="button" id="reveal">显示</button></span></div>
+    <div class="acts"><button type="button" class="a" id="close">随便翻翻</button><button type="button" class="b">写一篇</button></div>
+  </section>
+  <div class="homebar"></div>
+</div></div>
+<script src="_popup/kit.js"></script>
+<script>
+(() => {
+  const { $, $$ } = Kit;
+  const screen = $("#screen"), ruler = $("#ruler");
+  // 53 weekly ticks across the year; today (2026-09-28) is day 202 → week 28.9 → tick 29
+  const N = 53, NOW = Math.round(202 / 7), FRAME = 1000 / 60;
+  ruler.insertAdjacentHTML("beforeend", Array.from({ length: N }, (_, i) => `<i class="tick${i % 4 === 0 ? " l" : ""}"></i>`).join(""));
+  const ticks = $$(".tick", ruler);
+  let timers = [];
+  const clear = () => { timers.forEach(clearTimeout); timers = []; };
+  function sweep() {
+    ticks.forEach((t) => t.classList.remove("on", "now")); $("#nowlb").classList.remove("on");
+    const lead = 560;                                     // after the sheet has slid in
+    ticks.slice(0, NOW + 1).forEach((t, i) => timers.push(setTimeout(() => {
+      if (i === NOW) { t.classList.add("now"); const lb = $("#nowlb"); lb.style.left = t.offsetLeft + 1 + "px"; lb.classList.add("on"); }
+      else t.classList.add("on");
+    }, Kit.reduce() ? 0 : lead + i * FRAME)));
+  }
+  const CODE = "LF7K-2QXP", HIDDEN = "LF7K-••••";
+  let shown = false;
+  function paintCode(s) { $("#code").innerHTML = [...s].map((c) => `<i>${c}</i>`).join(""); }
+  function reveal() {
+    clear(); shown = !shown; $("#reveal").textContent = shown ? "隐藏" : "显示";
+    if (!shown) return paintCode(HIDDEN);
+    // in place: each hidden dot turns into its character, one after another
+        [...CODE].forEach((c, i) => { if (HIDDEN[i] === c) return; timers.push(setTimeout(() => { const el = $("#code").children[i]; el.textContent = c; el.classList.remove("new"); void el.offsetWidth; el.classList.add("new"); }, Kit.reduce() ? 0 : (i - 4) * 70)); });
+  }
+  function open() { clear(); shown = false; $("#reveal").textContent = "显示"; paintCode(HIDDEN); screen.classList.add("open"); sweep(); }
+  function close() { clear(); screen.classList.remove("open"); }
+  $("#open").onclick = open; $("#scrim").onclick = close; $("#close").onclick = close; $("#reveal").onclick = reveal;
+  paintCode(HIDDEN);
+  Kit.demo([[700, open], [3200, reveal], [5600, close], [6800, open]]);
+})();
+</script>
+</body>
+</html>

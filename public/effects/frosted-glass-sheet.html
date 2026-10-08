@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>毛玻璃浮层 · Frosted Glass Sheet</title>
+<link rel="stylesheet" href="_popup/popup.css">
+<style>
+  body::before { background-image: url(_popup/lisbon.jpg); }
+  .screen { --screen: #f1eee9; }
+  /* host: a light travel app */
+  .host { padding: 0 14px; transition: filter .9s var(--out), transform .9s var(--out); }
+  .open .host { filter: blur(26px) saturate(1.15); transform: scale(1.04); }          /* the page behind slowly goes soft */
+  .top { display: flex; align-items: center; justify-content: space-between; margin: 8px 2px 12px; }
+  .top b { font-size: 19px; font-weight: 700; letter-spacing: -.02em; } .top small { display: block; font-size: 10px; color: #8a847c; margin-top: 1px; }
+  .av { width: 32px; height: 32px; border-radius: 50%; background: url(_popup/coast.jpg) center / cover; }
+  .hero { position: relative; height: 196px; border-radius: 22px; overflow: hidden; background: #ccc url(_popup/lisbon.jpg) center / cover; }
+  .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 40%, rgb(0 0 0 / .55)); }
+  .hero div { position: absolute; z-index: 1; left: 14px; bottom: 12px; color: #fff; }
+  .hero b { display: block; font-size: 17px; font-weight: 700; } .hero small { font-size: 10px; opacity: .85; }
+  .pass { position: absolute; z-index: 1; right: 12px; bottom: 12px; display: flex; align-items: center; gap: 5px; height: 30px; padding: 0 12px; border-radius: 15px; background: #fff; color: #1c1a19; font-size: 11.5px; font-weight: 600; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .tile { height: 132px; border-radius: 18px; background: center / cover; position: relative; overflow: hidden; }
+  .tile span { position: absolute; left: 10px; bottom: 9px; color: #fff; font-size: 11px; font-weight: 600; text-shadow: 0 1px 6px rgb(0 0 0 / .5); }
+  .h2 { margin: 16px 2px 8px; font-size: 13px; font-weight: 700; }
+  .line { display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 12px; border-radius: 16px; background: #fff; }
+  .line i { width: 30px; height: 30px; border-radius: 9px; background: #ece6dc; } .line b { font-size: 12px; } .line small { display: block; font-size: 10px; color: #8a847c; }
+
+  /* the panel: 42% white glass, from .94 to 1 */
+  .sheet { bottom: 12px; left: 12px; right: 12px; padding: 16px 16px 14px; border-radius: 28px; color: #1c1a19;
+    background: rgb(255 255 255 / .42); -webkit-backdrop-filter: blur(22px) saturate(1.4); backdrop-filter: blur(22px) saturate(1.4);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / .55), 0 30px 60px -30px rgb(0 0 0 / .45);
+    opacity: 0; transform: translateY(26px) scale(.94); transform-origin: 50% 100%; pointer-events: none;
+    transition: opacity .45s var(--out), transform .8s var(--out); }
+  .open .sheet { opacity: 1; transform: none; pointer-events: auto; }
+  .hd { display: flex; justify-content: space-between; align-items: flex-start; }
+  .hd b { font-size: 11px; font-weight: 700; letter-spacing: .16em; } .hd small { display: block; margin-top: 2px; font-size: 9px; color: #7d7870; }
+  .badge { display: flex; align-items: center; gap: 4px; height: 22px; padding: 0 9px; border-radius: 11px; background: #1c1a19; color: #fff; font-size: 10px; font-weight: 600; }
+  .badge svg { width: 9px; height: 9px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+  .big { margin-top: 12px; font-size: 54px; line-height: 54px; font-weight: 600; letter-spacing: -.035em; }
+  .sub { margin-top: 3px; font-size: 10px; color: #6f6a63; }
+  /* twelve month cells, filled from the bottom by the share of each month already used */
+  .months { position: relative; display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; margin-top: 12px; }
+  .m { position: relative; height: 22px; border-radius: 8px; background: rgb(255 255 255 / .78); overflow: hidden; }
+  .m i { position: absolute; left: 0; right: 0; bottom: 0; height: 100%; background: #d9772e; transform: scaleY(0); transform-origin: bottom; }
+  .m.today { box-shadow: inset 0 0 0 1.5px #1c1a19; }
+  .today-lb { position: absolute; top: 27px; font: 500 9px var(--mono); color: #4a453f; white-space: nowrap; transform: translateX(-50%); opacity: 0; transition: opacity .3s; }
+  .today-lb.on { opacity: 1; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 30px; }
+  .cell { padding: 8px 10px; border-radius: 12px; background: rgb(255 255 255 / .62); }
+  .cell small { display: block; font-size: 9px; color: #7d7870; } .cell b { display: block; margin-top: 3px; font-size: 12px; font-weight: 600; }
+  .cell b.mono { font: 500 11px var(--mono); }
+  .go { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; height: 40px; margin-top: 10px; border-radius: 20px; background: #1c1a19; color: #fff; font-size: 12.5px; font-weight: 600; }
+  .go:active, .pass:active { transform: scale(.97); }
+</style>
+</head>
+<body>
+<div class="phone"><div class="screen" id="screen">
+  <div class="notch"></div>
+  <div class="host">
+    <div class="status"><span>9:41</span><i><svg viewBox="0 0 17 10"><rect x="0" y="6" width="3" height="4" rx="1"/><rect x="4.5" y="4" width="3" height="6" rx="1"/><rect x="9" y="2" width="3" height="8" rx="1"/><rect x="13.5" y="0" width="3" height="10" rx="1"/></svg><svg viewBox="0 0 24 10"><rect x=".5" y=".5" width="20" height="9" rx="2.5" fill="none" stroke="currentColor"/><rect x="2" y="2" width="15" height="6" rx="1.5"/></svg></i></div>
+    <div class="top"><div><b>旅行 2026</b><small>年度计划 · 里斯本</small></div><span class="av"></span></div>
+    <div class="hero"><div><b>Lisbon, Portugal</b><small>九月 · 第 4 站</small></div>
+      <button type="button" class="pass" id="open">点开凭证<svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 5h6M5.5 2.5 8 5 5.5 7.5"/></svg></button></div>
+    <div class="row"><div class="tile" style="background-image:url(_popup/street.jpg)"><span>Alfama</span></div><div class="tile" style="background-image:url(_popup/coast.jpg)"><span>Cascais</span></div></div>
+    <p class="h2">下一程</p>
+    <div class="line"><i></i><div><b>里斯本 → 波尔图</b><small>10 月 02 日 · 火车 3h</small></div></div>
+  </div>
+  <div class="scrim" id="scrim" style="--scrim: .06"></div>
+  <section class="sheet" id="sheet" role="dialog" aria-label="里斯本年度旅行计划">
+    <div class="hd"><div><b>LISBON</b><small>里斯本 · 年度旅行计划</small></div><span class="badge"><svg viewBox="0 0 10 10"><path d="m2 5.2 2 2L8 3"/></svg>进行中</span></div>
+    <div class="big tnum" id="days">163</div>
+    <p class="sub">剩余天数 · 2027 年 3 月 10 日到期</p>
+    <div class="months" id="months"><span class="today-lb" id="todayLb">09.28 今天</span></div>
+    <div class="grid">
+      <div class="cell"><small>下一站</small><b>里斯本</b></div><div class="cell"><small>年限</small><b>1 年</b></div>
+      <div class="cell"><small>起始日期</small><b class="mono">2026.03.10</b></div><div class="cell"><small>有效期至</small><b class="mono">2027.03.10</b></div>
+    </div>
+    <button type="button" class="go">查看行程 <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 5h6M5.5 2.5 8 5 5.5 7.5"/></svg></button>
+  </section>
+  <div class="homebar"></div>
+</div></div>
+<script src="_popup/kit.js"></script>
+<script>
+(() => {
+  const { $, $$, tween, count, reduce } = Kit;
+  const screen = $("#screen"), months = $("#months");
+  // the pass runs 2026-03-10 → 2027-03-10; "today" is 2026-09-28 → 202 days used, 163 left
+  const START = Date.UTC(2026, 2, 10), TODAY = Date.UTC(2026, 8, 28), DAY = 864e5;
+  const used = (TODAY - START) / DAY, left = 365 - used;
+  const fills = Array.from({ length: 12 }, (_, i) => {
+    const a = Date.UTC(2026, 2 + i, 10), b = Date.UTC(2026, 3 + i, 10);
+    return Math.max(0, Math.min(1, (TODAY - a) / (b - a)));
+  });
+  const todayIdx = fills.findIndex((f) => f < 1);
+  months.insertAdjacentHTML("afterbegin", fills.map((_, i) => `<span class="m${i === todayIdx ? " today" : ""}"><i></i></span>`).join(""));
+  const bars = $$(".m i", months);
+  let stop = [];
+  const STAGGER = 1000 / 60 * 4, CELL = 1000 - STAGGER * 11;     // 4 frames apart, the whole row inside one second
+  function open() {
+    stop.forEach((f) => f()); stop = [];
+    screen.classList.add("open");
+    bars.forEach((b) => (b.style.transform = "scaleY(0)"));
+    $("#todayLb").classList.remove("on");
+    stop.push(count($("#days"), 0, left, 800));
+    bars.forEach((b, i) => stop.push(tween(CELL, (e) => (b.style.transform = `scaleY(${fills[i] * e})`), { delay: 700 + i * STAGGER })));
+    const cell = months.children[todayIdx];
+    $("#todayLb").style.left = cell.offsetLeft + cell.offsetWidth / 2 + "px";
+    stop.push(tween(1, () => $("#todayLb").classList.add("on"), { delay: 700 + 1000 }));
+  }
+  function close() { stop.forEach((f) => f()); stop = []; screen.classList.remove("open"); }
+  $("#open").onclick = open; $("#scrim").onclick = close;
+  Kit.demo([[700, open], [5600, close], [6800, open]]);
+})();
+</script>
+</body>
+</html>
