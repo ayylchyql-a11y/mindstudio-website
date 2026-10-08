@@ -19,7 +19,7 @@ const blurbs: Record<string, string> = {
   "tick-ruler-sheet":
     "A year shown as 53 weekly ticks that sweep from left to right and stop on today, with a hidden number that fills in one character at a time when you ask for it.",
   "photo-drawer-sheet":
-    "A panel that opens in three beats: the photo first, then a drawer that slides up over its edge, then a progress bar. Big imagery and dense details in the same small sheet.",
+    "Tap a dish and its photo grows out of the card into a panel, then a drawer slides up over its edge and the numbers fill in — three beats that keep the picture, the details and the place you came from all in view.",
   "flip-to-reveal":
     "A pass that turns over in place to show the code you need at the gate, and turns back when you're done — no new screen, nothing to find your way back from.",
   "pull-down-reveal":

@@ -25,3 +25,5 @@ road.jpg       stocksnap  White Van                                        https
 plate.jpg      stocksnap                                                   https://cdn.stocksnap.io/img-thumbs/960w/KZBZEHFM2W.jpg
 eggtoast.jpg   stocksnap                                                   https://cdn.stocksnap.io/img-thumbs/960w/7TZ228CGEN.jpg
 yogurt.jpg     stocksnap                                                   https://cdn.stocksnap.io/img-thumbs/960w/V9AOG26R2W.jpg
+pancake.jpg    stocksnap  Pancakes Syrup                                   https://cdn.stocksnap.io/img-thumbs/960w/VD2NUQHVJS.jpg
+greens.jpg     stocksnap  Salad Food                                       https://cdn.stocksnap.io/img-thumbs/960w/9431F27821.jpg
