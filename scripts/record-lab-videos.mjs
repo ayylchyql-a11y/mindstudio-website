@@ -49,6 +49,7 @@ const LONG_SELF = { "slate-card-order": { secs: 17, query: "?clip" }, "receipt-p
   /* 动态图标：三条都带 ?demo 的脚本化演示（只给录像用），按详情画框原尺寸录。 */
   "anim-icon-library": { secs: 9, vw: 710, query: "?demo", trim: 1.0 }, "anim-icon-triggers": { secs: 9, vw: 710, query: "?demo" }, "anim-icon-in-context": { secs: 9, vw: 710, query: "?demo" },
   "pagination-styles": { secs: 10, vw: 710, query: "?demo" },
+  "neumorphic-io-switch": { secs: 10, vw: 710, query: "?demo" },
   "focus-timer-island": { secs: 9, vw: 710, query: "?demo" },
   "step-sheet": { secs: 9, vw: 710, query: "?demo" },
   "dark-mode-reveal": { secs: 9, vw: 710, query: "?demo" },

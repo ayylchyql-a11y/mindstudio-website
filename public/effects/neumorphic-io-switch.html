@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neumorphic I/O switch</title>
+<style>
+  /* Every number below is either read off the reference's own code panels or measured from its frames:
+     the whole switch is 174 × 90, the knob 84, so the knob's translateX(100%) is the reference's 85 px belt. */
+  :root {
+    --ease: cubic-bezier(.46, .03, .52, .96);  /* the reference's transition curve */
+    --dur: .35s;
+    --orange: #ff7707;                          /* sampled: 255 119 7 */
+    --lamp: #d56750;                            /* the ON indicator, from the keyframes */
+    --idle: #808080;                            /* both labels at rest */
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    display: grid; place-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", Arial, sans-serif;
+    background: linear-gradient(180deg, #f3eff3 0%, #cfcbcf 100%);   /* sampled: 243 → 208, a faint lilac cast */
+    -webkit-tap-highlight-color: transparent;
+  }
+  .stack { display: grid; gap: 64px; }
+
+  /* outer rim: the first layer — a gradient that is light at the bottom and dark at the top, so the track reads as sunk in */
+  .btn-wrapper {
+    position: relative; display: block; width: 174px; height: 90px; padding: 2px;
+    border-radius: 999px;
+    background-image: linear-gradient(0deg, #ededed, #9a9a9a);
+    cursor: pointer;
+  }
+  .state-on, .state-off { position: absolute; top: 50%; translate: 0 -50%; color: var(--idle); font-size: 13px; letter-spacing: .02em; pointer-events: none; }
+  .state-on { right: -22%; }
+  .state-off { left: -22%; }
+
+  /* the track: solid grey under everything */
+  .btn-content {
+    position: relative; z-index: 1; display: block; overflow: hidden; width: 100%; height: 100%; padding: 1px;
+    border-radius: 999px; background: #6b676b;   /* the code says #727272; the reference renders it at 107 103 107 */
+  }
+  .slider { position: relative; width: 100%; height: 100%; border-radius: 999px; }
+  /* between the grey and the shadow: the "on" background, invisible and parked one track-width to the left */
+  .slider::before {
+    content: ""; position: absolute; inset: -1px; border-radius: 999px; background: var(--orange);
+    opacity: 0; transform: translateX(-100%);
+    transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
+  }
+  /* the shadow gets its own layer on top of both backgrounds, so the orange sinks into the same well as the grey */
+  .slider::after {
+    content: ""; position: absolute; z-index: 3; inset: -1px; border-radius: 999px; pointer-events: none;
+    box-shadow: inset 0 14px 24px rgba(0, 0, 0, .6);
+  }
+
+  /* I / O marks ride the same 85 px belt as the knob; the track's overflow hides whichever is off-stage */
+  .tag-on, .tag-off { position: absolute; z-index: 2; top: 50%; }
+  .tag-on {   /* O: a raised ring with a sunken centre */
+    left: 132px; width: 21px; height: 21px; margin: -10.5px 0 0 -10.5px; border-radius: 50%;
+    display: grid; place-items: center;
+    box-shadow: 0 -1px 1px #919191, 0 1px 1px #4a4a4a;
+    transition: transform var(--dur) var(--ease);
+  }
+  .tag-on i { width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 1px 1px #919191, 0 -1px 1px #4a4a4a; }
+  .tag-off {  /* I: a short bar with a highlight on top and a shade at the foot */
+    left: 25px; width: 4px; height: 22px; margin: -11px 0 0 -2px; border-radius: 999px;
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, .32) 0, transparent 15%, transparent 92%, rgba(60, 60, 60, .3) 100%);
+    box-shadow: 0 0 1px rgba(0, 0, 0, .3);
+    transform: translateX(-85px);
+    transition: transform 0s .1s;   /* on the way back it only snaps out once the orange has moved off it */
+  }
+
+  /* the knob: a half-width cell that slides by its own width */
+  .btn { position: relative; z-index: 4; width: 50%; height: 100%; transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease); }
+  .btn::before {   /* lower disc: light-to-dark gradient and a heavy drop shadow */
+    content: ""; position: absolute; inset: 0; border-radius: 50%;
+    background-image: linear-gradient(0deg, #acacac, #f3f3f3);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, .66);
+  }
+  .bg {            /* upper disc: a conic gradient tiled at 4 px — every tile is a tiny pyramid lit from the top-left */
+    position: absolute; inset: 7px; border-radius: 50%;
+    background-image: conic-gradient(from 0deg at 50% 50%,
+      #dfdfdf 0deg 45deg, #cbcbcb 45deg 90deg, #cbcbcb 90deg 135deg, #b5b5b5 135deg 225deg,
+      #cbcbcb 225deg 270deg, #cbcbcb 270deg 315deg, #dfdfdf 315deg 360deg);
+    background-size: 4px 4px;
+    box-shadow: inset 0 4px 10px rgba(0, 0, 0, .1), inset 0 -4px 10px rgba(255, 255, 255, .25);
+  }
+  /* the reference puts the checkbox on the knob; the whole label is the hit area here */
+  .toggle { position: absolute; inset: 0; z-index: 5; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+  .btn-wrapper:has(.toggle:focus-visible) { outline: 2px solid var(--lamp); outline-offset: 4px; }
+
+  /* checked: everything is driven from the wrapper with :has() */
+  .btn-wrapper:has(.toggle:checked) .slider::before { opacity: 1; transform: translateX(0); }
+  .btn-wrapper:has(.toggle:checked) .btn { transform: translateX(100%); opacity: .93; }   /* .93 lets the orange warm the knob */
+  .btn-wrapper:has(.toggle:checked) .tag-on { transform: translateX(85px); }
+  .btn-wrapper:has(.toggle:checked) .tag-off { transition: transform var(--dur) var(--ease); transform: translateX(0); }
+  /* the ON lamp waits for the slide to finish, then flickers on; switching off it flickers out.
+     .ready keeps the off-flicker from playing on page load. */
+  .btn-wrapper:has(.toggle:checked) .state-on { animation: state-on .55s .35s both; }
+  .btn-wrapper.ready:not(:has(.toggle:checked)) .state-on { animation: state-on-off .6s .1s both;   /* both: the lamp holds red through the delay, as in the reference */ }
+  .btn-wrapper.instant .state-on { animation-delay: 0s; animation-duration: 0s; }
+
+  @keyframes state-on {
+    0% { color: var(--idle); }
+    25% { color: var(--lamp); }
+    50% { color: var(--idle); }
+    75% { color: var(--lamp); }
+    100% { color: var(--lamp); text-shadow: 0 0 3px rgba(213, 103, 80, .4); }
+  }
+  @keyframes state-on-off {
+    0% { color: var(--lamp); text-shadow: 0 0 3px rgba(213, 103, 80, .4); }
+    25% { color: var(--idle); text-shadow: none; }
+    50% { color: var(--lamp); }
+    100% { color: var(--idle); }
+  }
+  .btn-wrapper.instant * , .btn-wrapper.instant *::before { transition: none !important; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slider::before, .btn, .tag-on, .tag-off { transition-duration: 1ms !important; transition-delay: 0s !important; }
+    .state-on { animation: none !important; }
+    .btn-wrapper:has(.toggle:checked) .state-on { color: var(--lamp); text-shadow: 0 0 3px rgba(213, 103, 80, .4); }
+  }
+</style>
+</head>
+<body>
+<main class="stack">
+  <label class="btn-wrapper">
+    <span class="btn-content"><span class="slider" style="display:block">
+      <span class="btn" style="display:block"><input type="checkbox" class="toggle" role="switch" aria-label="Switch one"><span class="bg"></span></span>
+      <span class="tag-on"><i></i></span>
+      <span class="tag-off"></span>
+    </span></span>
+    <span class="state-on" aria-hidden="true">ON</span>
+    <span class="state-off" aria-hidden="true">OFF</span>
+  </label>
+  <label class="btn-wrapper">
+    <span class="btn-content"><span class="slider" style="display:block">
+      <span class="btn" style="display:block"><input type="checkbox" class="toggle" role="switch" aria-label="Switch two" checked><span class="bg"></span></span>
+      <span class="tag-on"><i></i></span>
+      <span class="tag-off"></span>
+    </span></span>
+    <span class="state-on" aria-hidden="true">ON</span>
+    <span class="state-off" aria-hidden="true">OFF</span>
+  </label>
+</main>
+<script>
+(() => {
+  const wraps = [...document.querySelectorAll(".btn-wrapper")];
+  // a switch that starts on shows its lamp lit, without the flicker; arm the off-flicker only after the first change
+  wraps.forEach(w => {
+    const t = w.querySelector(".toggle");
+    if (t.checked) w.classList.add("instant");
+    t.addEventListener("change", () => { w.classList.remove("instant"); w.classList.add("ready"); });
+  });
+  /* ?demo (the lab's recording only): the reference's own sequence, at real speed */
+  if (/[?&]demo\b/.test(location.search)) {
+    const flip = i => wraps[i].querySelector(".toggle").click();
+    const seq = [[900, 0], [2400, 1], [3500, 1], [5100, 0], [6600, 1], [7900, 1], [9500, 0]];
+    let timers = seq.map(([at, i]) => setTimeout(() => flip(i), at));
+    addEventListener("pointerdown", e => { if (e.isTrusted) { timers.forEach(clearTimeout); timers = []; } }, { capture: true, once: true });
+  }
+})();
+</script>
+</body>
+</html>

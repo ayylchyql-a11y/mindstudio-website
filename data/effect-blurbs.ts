@@ -42,6 +42,8 @@ const blurbs: Record<string, string> = {
     "A dropdown that opens right where you are looking, with the current choice staying in place and the other options unfolding around it — the way good native menus behave.",
   "pagination-styles":
     "Eight ways to move between the pages of a list — squares, pills, dots, boxes, a sliding track, a compact counter, a progress bar and numbered steps — each one working, with its own small animation when the page changes. A quick way to choose the one that fits a table, a gallery or a checkout.",
+  "neumorphic-io-switch":
+    "A toggle switch that feels like a piece of hardware: a studded metal knob slides across a recessed track, an orange backing follows it in, and a small ON lamp flickers to life once the switch has landed. Built entirely in CSS, it suits product pages, settings screens and dashboards that want a tactile, premium feel instead of a flat checkbox.",
   "anim-icon-library":
     "Over seventeen hundred everyday icons that move, a hundred of them acting out what they mean — a bell that rings, a bin that opens, scissors that snip — with search and an editor to choose how each one plays, how thick it is drawn and which colours it uses. Small motion that makes an interface feel alive and helps people notice the thing that matters.",
   "anim-icon-triggers":
