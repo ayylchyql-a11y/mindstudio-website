@@ -1,0 +1,3 @@
+three.min.js — a tree-shaken, minified build of three.js r186 (MIT, © 2010-2026 three.js authors), see LICENSE-three.txt.
+Includes RoomEnvironment from three/examples (same licence). Bundled with esbuild from the npm package "three".
+flower.js — the glass chrysanthemum used by crystal-bloom-hero.html; written for this lab, no external model or video.

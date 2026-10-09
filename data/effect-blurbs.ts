@@ -42,6 +42,8 @@ const blurbs: Record<string, string> = {
     "A dropdown that opens right where you are looking, with the current choice staying in place and the other options unfolding around it — the way good native menus behave.",
   "pagination-styles":
     "Eight ways to move between the pages of a list — squares, pills, dots, boxes, a sliding track, a compact counter, a progress bar and numbered steps — each one working, with its own small animation when the page changes. A quick way to choose the one that fits a table, a gallery or a checkout.",
+  "crystal-bloom-hero":
+    "A landing page for a flower brand where a glass chrysanthemum slowly opens behind the headline, and the rest of the page — menu, title, figures and cards — drifts into focus piece by piece as it blooms. Pick one of three varieties and the figures count to their new values while the matching photo lights up. Made for brands that sell something beautiful and want the first screen to feel like an exhibition rather than a website.",
   "neumorphic-io-switch":
     "A toggle switch that feels like a piece of hardware: a studded metal knob slides across a recessed track, an orange backing follows it in, and a small ON lamp flickers to life once the switch has landed. Built entirely in CSS, it suits product pages, settings screens and dashboards that want a tactile, premium feel instead of a flat checkbox.",
   "anim-icon-library":

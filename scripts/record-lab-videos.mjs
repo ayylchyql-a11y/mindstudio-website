@@ -50,6 +50,7 @@ const LONG_SELF = { "slate-card-order": { secs: 17, query: "?clip" }, "receipt-p
   "anim-icon-library": { secs: 9, vw: 710, query: "?demo", trim: 1.0 }, "anim-icon-triggers": { secs: 9, vw: 710, query: "?demo" }, "anim-icon-in-context": { secs: 9, vw: 710, query: "?demo" },
   "pagination-styles": { secs: 10, vw: 710, query: "?demo" },
   "neumorphic-io-switch": { secs: 10, vw: 710, query: "?demo" },
+  "crystal-bloom-hero": { secs: 13, vw: 710, query: "?demo", trim: 1.5 },
   "focus-timer-island": { secs: 9, vw: 710, query: "?demo" },
   "step-sheet": { secs: 9, vw: 710, query: "?demo" },
   "dark-mode-reveal": { secs: 9, vw: 710, query: "?demo" },

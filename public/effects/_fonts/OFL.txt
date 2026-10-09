@@ -7,3 +7,5 @@ Fonts in this folder are distributed under the SIL Open Font License 1.1
 - Archivo Black — Copyright 2017 The Archivo Black Project Authors (https://github.com/Omnibus-Type/ArchivoBlack)
 - Poppins — Copyright 2020 The Poppins Project Authors (https://github.com/itfoundry/Poppins)
 - Inter — Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter)
+- Italiana — Copyright 2011 Santiago Orozco (https://github.com/googlefonts/italiana)
+- Syncopate — Copyright 2011 Astigmatic (AOETI) (https://fonts.google.com/specimen/Syncopate)
