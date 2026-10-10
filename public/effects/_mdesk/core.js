@@ -106,17 +106,30 @@
     // small block rather than a negative dash (a negative stroke-dasharray is invalid and paints the whole circle).
     const GAP = C * 0.015, MIN = 6;
     const arcs = ringArcs(D.stats.channels.map(([, n]) => n / total), C - GAP * D.stats.channels.length, MIN);
+    // each slice is a plain arc path computed here (no CSS rotate / transform-origin on SVG — engines disagree)
     let at = GAP / 2; const slices = D.stats.channels.map(([name, n], i) => {
       const pct = n / total * 100, col = CH.find((c) => c[0] === name)?.[1] || '#999', len = arcs[i], start = at;
-      const el = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      el.setAttribute('cx', 65); el.setAttribute('cy', 65); el.setAttribute('r', R); el.setAttribute('stroke', col); el.setAttribute('transform-origin', '65 65'); el.setAttribute('class', 'slice');
-      el.style.rotate = `${-90 + start / C * 360}deg`; el.style.strokeDasharray = `${len} ${C}`;
-      const mid = len / 2 / R; el.style.setProperty('--dx', `${5 * Math.cos(mid)}px`); el.style.setProperty('--dy', `${5 * Math.sin(mid)}px`);
+      const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      el.setAttribute('stroke', col); el.setAttribute('class', 'slice');
+      const a0 = start / R, a1 = (start + len) / R, mid = (a0 + a1) / 2;
+      el.setAttribute('d', arcD(65, 65, R, a0, a1));
       at += len + GAP; g.appendChild(el);
       const l = document.createElement('div'); l.style.setProperty('--c', col); l.innerHTML = `<i></i>${name}<b>${Math.round(pct)}%</b>`; legend.appendChild(l);
       l.addEventListener('pointerenter', () => sel(i)); l.addEventListener('pointerleave', () => sel(-1));
-      return { el, l, name, pct, start, len };
+      return { el, l, name, pct, start, len, dx: 5 * Math.sin(mid), dy: -5 * Math.cos(mid), k: 0, want: 0 };
     });
+    // push-out eased in JS onto the SVG transform attribute
+    let pushing = 0;
+    const push = () => {
+      if (pushing) return;
+      let last = performance.now();
+      const step = (now) => {
+        const f = reduce ? 1 : 1 - Math.exp(-(now - last) / 50); last = now; let moving = false;
+        slices.forEach((s) => { s.k += (s.want - s.k) * f; if (Math.abs(s.want - s.k) < .002) s.k = s.want; else moving = true; s.el.setAttribute('transform', `translate(${(s.dx * s.k).toFixed(3)} ${(s.dy * s.k).toFixed(3)})`); });
+        pushing = moving ? requestAnimationFrame(step) : 0;
+      };
+      pushing = requestAnimationFrame(step);
+    };
     // one invisible hit ring: each slice owns at least 14px of ring around its middle, so the small ones can be aimed at
     const hit = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     hit.setAttribute('cx', 65); hit.setAttribute('cy', 65); hit.setAttribute('r', R); hit.setAttribute('class', 'hit'); g.appendChild(hit);
@@ -130,7 +143,13 @@
       if (i !== over) { over = i; sel(i); }
     });
     hit.addEventListener('pointerleave', () => { over = -1; sel(-1); });
-    const sel = (i) => { slices.forEach((s, k) => { s.el.classList.toggle('out', k === i); s.l.classList.toggle('on', k === i); }); donut.classList.toggle('pick', i >= 0); legend.classList.toggle('pick', i >= 0); c1.textContent = i < 0 ? orders : Math.round(slices[i].pct) + '%'; c2.textContent = i < 0 ? '30 GIORNI' : slices[i].name.toUpperCase(); };
+    const sel = (i) => { slices.forEach((s, k) => { s.want = k === i ? 1 : 0; s.el.classList.toggle('out', k === i); s.l.classList.toggle('on', k === i); }); push(); donut.classList.toggle('pick', i >= 0); legend.classList.toggle('pick', i >= 0); c1.textContent = i < 0 ? orders : Math.round(slices[i].pct) + '%'; c2.textContent = i < 0 ? '30 GIORNI' : slices[i].name.toUpperCase(); };
+  }
+
+  /* an arc of a circle as path data; radians, 0 at 12 o'clock, clockwise */
+  function arcD(cx, cy, r, a0, a1) {
+    const sweep = Math.max(1e-4, a1 - a0), b = a0 + sweep, f = (v) => v.toFixed(3);
+    return `M${f(cx + r * Math.sin(a0))} ${f(cy - r * Math.cos(a0))}A${r} ${r} 0 ${sweep > Math.PI ? 1 : 0} 1 ${f(cx + r * Math.sin(b))} ${f(cy - r * Math.cos(b))}`;
   }
 
   /* arc lengths proportional to the shares, none shorter than min (pinned slices are paid for by the rest) */

@@ -15,10 +15,9 @@
 
   .body { display: grid; grid-template-columns: 180px 1fr; gap: 24px; align-items: center; margin-top: 6px; }
   svg { width: 180px; height: 180px; display: block; overflow: visible; }
-  /* each slice is a stroked arc; dashoffset draws it in, a translate along
-     its own mid-angle pulls it out on hover */
-  .slice { fill: none; stroke-width: 26; cursor: pointer; transition: transform 260ms cubic-bezier(.22,.61,.36,1), opacity 200ms, stroke-dashoffset 600ms cubic-bezier(.22,.61,.36,1); transform: translate(0, 0); }
-  .slice.out { transform: translate(var(--dx), var(--dy)); }
+  /* each slice is an arc path computed in JS; the draw-in sweeps its end angle and the hover
+     push-out moves it along its own mid-angle through the SVG transform attribute */
+  .slice { fill: none; stroke-width: 26; cursor: pointer; transition: opacity 200ms; }   /* geometry + push-out drawn in JS, no CSS transforms on SVG */
   svg.pick .slice:not(.out) { opacity: .45; }
   .c1 { text-anchor: middle; fill: #fff; font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
   .c2 { text-anchor: middle; fill: #8a8a90; font-size: 7.5px; letter-spacing: .16em; text-transform: uppercase; }
@@ -65,32 +64,48 @@
   const arcs = ringArcs(PARTS.map(([, pct]) => pct / 100), C - GAP * PARTS.length, MIN);
   const svg = document.getElementById('svg'), g = document.getElementById('slices'), legend = document.getElementById('legend');
   const centre = document.getElementById('centre'), c1 = document.getElementById('c1'), c2 = document.getElementById('c2');
+  // each slice is a plain arc path computed here: no CSS rotate / transform-origin / translate on SVG,
+  // which browsers do not agree on — the same ring can explode outward in one engine and be fine in another
+  function arcD(cx, cy, r, a0, a1) {           // radians, 0 at 12 o'clock, clockwise
+    const sweep = Math.max(1e-4, a1 - a0), b = a0 + sweep, f = (v) => v.toFixed(3);
+    return `M${f(cx + r * Math.sin(a0))} ${f(cy - r * Math.cos(a0))}A${r} ${r} 0 ${sweep > Math.PI ? 1 : 0} 1 ${f(cx + r * Math.sin(b))} ${f(cy - r * Math.cos(b))}`;
+  }
+  function tween(ms, fn) {                      // ease-out, ≈ the old cubic-bezier(.22,.61,.36,1) stroke transition
+    const t0 = performance.now();
+    const step = (now) => { const t = Math.min(1, (now - t0) / ms); fn(1 - Math.pow(1 - t, 3)); if (t < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
   let at = GAP / 2, delay = 0;
   const slices = PARTS.map(([name, pct, col], i) => {
-    const el = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    el.setAttribute('cx', 90); el.setAttribute('cy', 90); el.setAttribute('r', R); el.setAttribute('stroke', col); el.setAttribute('class', 'slice');
-    const len = arcs[i];
-    // rotate so this slice starts one seam after the previous one ended (12 o'clock origin)
-    el.setAttribute('transform-origin', '90 90');
-    el.style.rotate = `${-90 + at / C * 360}deg`;
-    el.style.strokeDasharray = `${len} ${C}`;
-    el.style.strokeDashoffset = reduce ? 0 : len;             // drawn in from 0
-    // the translate happens after the rotate, so the outward push is expressed in the slice's own
-    // rotated frame: toward its middle, len / 2 along the arc
-    el.style.setProperty('--dx', `${6 * Math.cos(len / 2 / R)}px`);
-    el.style.setProperty('--dy', `${6 * Math.sin(len / 2 / R)}px`);
+    const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    el.setAttribute('stroke', col); el.setAttribute('class', 'slice');
+    const len = arcs[i], a0 = at / R, a1 = (at + len) / R, mid = (a0 + a1) / 2;
     at += len + GAP;
     el.addEventListener('pointerenter', () => pick(i)); el.addEventListener('pointerleave', () => pick(-1));
     g.appendChild(el);
-    // sequential draw: each slice starts when the previous one finishes
-    setTimeout(() => el.style.strokeDashoffset = 0, delay); delay += 600 * len / C + 60;
+    // sequential draw-in: the end angle sweeps out, each slice starting when the previous one finishes
+    if (reduce) el.setAttribute('d', arcD(90, 90, R, a0, a1));
+    else { el.setAttribute('d', arcD(90, 90, R, a0, a0)); setTimeout(() => tween(600, (e) => el.setAttribute('d', arcD(90, 90, R, a0, a0 + (a1 - a0) * e))), delay); }
+    delay += 600 * len / C + 60;
     const l = document.createElement('div'); l.style.setProperty('--c', col); l.innerHTML = `<i></i>${name}<b>${pct}%</b>`;
     l.addEventListener('pointerenter', () => pick(i)); l.addEventListener('pointerleave', () => pick(-1)); legend.appendChild(l);
-    return el;
+    return { el, dx: 6 * Math.sin(mid), dy: -6 * Math.cos(mid), k: 0, want: 0 };
   });
+  // push-out: 6 units along the slice's middle, eased in JS onto the SVG transform attribute
+  let pushing = 0;
+  function push() {
+    if (pushing) return;
+    let last = performance.now();
+    const step = (now) => {
+      const f = reduce ? 1 : 1 - Math.exp(-(now - last) / 55); last = now; let moving = false;
+      slices.forEach((s) => { s.k += (s.want - s.k) * f; if (Math.abs(s.want - s.k) < .002) s.k = s.want; else moving = true; s.el.setAttribute('transform', `translate(${(s.dx * s.k).toFixed(3)} ${(s.dy * s.k).toFixed(3)})`); });
+      pushing = moving ? requestAnimationFrame(step) : 0;
+    };
+    pushing = requestAnimationFrame(step);
+  }
   let timer = 0;
   function pick(i) {
-    slices.forEach((s, k) => s.classList.toggle('out', k === i));
+    slices.forEach((s, k) => { s.want = k === i ? 1 : 0; s.el.classList.toggle('out', k === i); }); push();
     [...legend.children].forEach((l, k) => l.classList.toggle('on', k === i));
     svg.classList.toggle('pick', i >= 0); legend.classList.toggle('pick', i >= 0);
     // swap the centre text out → in rather than cross-fading two numbers

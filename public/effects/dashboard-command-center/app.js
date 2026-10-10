@@ -101,20 +101,37 @@ function wireOverview(root) {
   // Labels and the centre figure keep the true percentages.
   const GAP = 3, MIN = 7;
   const arcs = ringArcs(parts.map(([, n]) => n / tot), C - GAP * parts.length, MIN);
+  // Each slice is a plain SVG arc path whose end points are computed here — no CSS rotate / transform-origin /
+  // translate on SVG, which engines disagree about (a ring that is fine in one browser explodes in another).
   let at = GAP / 2, delay = 0;                    // half a seam before the first slice keeps 12 o'clock centred on a seam
   const slices = parts.map(([name, n], i) => {
     const pct = n / tot * 100, col = B.CH[name][0], len = arcs[i], start = at;
-    const el = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    el.setAttribute('cx', 75); el.setAttribute('cy', 75); el.setAttribute('r', R); el.setAttribute('stroke', col); el.setAttribute('class', 'slice'); el.setAttribute('transform-origin', '75 75');
-    el.style.rotate = `${-90 + start / C * 360}deg`; el.style.strokeDasharray = `${len} ${C}`; el.style.strokeDashoffset = reduce ? 0 : len;
-    const local = len / 2 / R;                     // push direction: the slice's middle, in its own rotated frame
-    el.style.setProperty('--dx', `${6 * Math.cos(local)}px`); el.style.setProperty('--dy', `${6 * Math.sin(local)}px`);
+    const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    el.setAttribute('stroke', col); el.setAttribute('class', 'slice');
+    const a0 = start / R, a1 = (start + len) / R, mid = (a0 + a1) / 2;
+    const s = { el, name, pct, start, len, a0, a1, dx: 6 * Math.sin(mid), dy: -6 * Math.cos(mid), k: 0, want: 0 };
     at += len + GAP; g.appendChild(el);
-    setTimeout(() => el.style.strokeDashoffset = 0, delay); delay += 600 * len / C + 60;
+    // draw-in: the end angle sweeps from the start, one slice after another (600ms × share)
+    if (reduce) el.setAttribute('d', arcD(75, 75, R, a0, a1));
+    else { el.setAttribute('d', arcD(75, 75, R, a0, a0)); setTimeout(() => tween(600, (e) => el.setAttribute('d', arcD(75, 75, R, a0, a0 + (a1 - a0) * e))), delay); }
+    delay += 600 * len / C + 60;
     const l = document.createElement('div'); l.style.setProperty('--c', col); l.innerHTML = `<i></i>${name}<b>${Math.round(pct)}%</b>`; legend.appendChild(l);
     l.addEventListener('pointerenter', () => pick(i)); l.addEventListener('pointerleave', () => pick(-1));
-    return { el, l, name, pct, start, len };
+    s.l = l; return s;
   });
+  // push-out: 6 units along the slice's middle, eased in JS and written to the SVG transform attribute
+  let pushing = 0;
+  function push() {
+    if (pushing) return;
+    let last = performance.now();
+    const step = (now) => {
+      const f = reduce ? 1 : 1 - Math.exp(-(now - last) / 55); last = now;
+      let moving = false;
+      slices.forEach((s) => { s.k += (s.want - s.k) * f; if (Math.abs(s.want - s.k) < .002) s.k = s.want; else moving = true; s.el.setAttribute('transform', `translate(${(s.dx * s.k).toFixed(3)} ${(s.dy * s.k).toFixed(3)})`); });
+      pushing = moving ? requestAnimationFrame(step) : 0;
+    };
+    pushing = requestAnimationFrame(step);
+  }
   // One invisible hit ring instead of hovering the arcs themselves: a 7px slice is too thin to aim at,
   // so each slice owns at least 16px of ring around its middle (and every seam belongs to a neighbour).
   const hit = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -131,11 +148,23 @@ function wireOverview(root) {
   hit.addEventListener('pointerleave', () => { over = -1; pick(-1); });
   let timer = 0;
   function pick(i) {
-    slices.forEach((s, k) => { s.el.classList.toggle('out', k === i); s.l.classList.toggle('on', k === i); });
+    slices.forEach((s, k) => { s.want = k === i ? 1 : 0; s.el.classList.toggle('out', k === i); s.l.classList.toggle('on', k === i); }); push();
     ring.classList.toggle('pick', i >= 0); legend.classList.toggle('pick', i >= 0);
     clearTimeout(timer); centre.classList.add('swap');
     timer = setTimeout(() => { c1.textContent = i < 0 ? orders : Math.round(slices[i].pct) + '%'; c2.textContent = i < 0 ? 'ordini · 30 gg' : slices[i].name; centre.classList.remove('swap'); }, reduce ? 0 : 160);
   }
+}
+
+/* An arc of a circle as path data. Angles in radians, 0 at 12 o'clock, clockwise. */
+function arcD(cx, cy, r, a0, a1) {
+  const sweep = Math.max(1e-4, a1 - a0), b = a0 + sweep, f = (v) => v.toFixed(3);
+  return `M${f(cx + r * Math.sin(a0))} ${f(cy - r * Math.cos(a0))}A${r} ${r} 0 ${sweep > Math.PI ? 1 : 0} 1 ${f(cx + r * Math.sin(b))} ${f(cy - r * Math.cos(b))}`;
+}
+/* fn(eased progress) over ms, ease-out like the old stroke transition (cubic-bezier(.22,.61,.36,1) ≈ 1 − (1 − t)³) */
+function tween(ms, fn) {
+  const t0 = performance.now();
+  const step = (now) => { const t = Math.min(1, (now - t0) / ms); fn(1 - Math.pow(1 - t, 3)); if (t < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
 }
 
 /* Arc lengths for a share ring: proportional to the shares, but no slice shorter than min.
