@@ -94,33 +94,63 @@ function wireOverview(root) {
 
   // share ring
   const g = $('#slices', root), legend = $('#legend', root), ring = $('#ring', root), centre = $('#centre', root), c1 = $('#c1', root), c2 = $('#c2', root);
-  const parts = D.stats.channels, tot = parts.reduce((a, [, n]) => a + n, 0), R = 52, C = 2 * Math.PI * R;
-  // One gap for every slice, in arc length: 2.5% of the circle at most, but never more than
-  // 45% of the smallest slice — a 1% channel still gets drawn instead of being eaten by its gap.
-  const GAP = Math.max(1.2, Math.min(C * 0.025, 0.45 * C * Math.min(...parts.map(([, n]) => n / tot))));
-  let acc = 0, delay = 0;
+  // channels are stored as percentages (they sum to 100); the centre's resting figure is the order count
+  const parts = D.stats.channels, tot = parts.reduce((a, [, n]) => a + n, 0), orders = c1.textContent, R = 52, C = 2 * Math.PI * R;
+  // Layout in arc length. Every seam is the same 3px; every slice gets at least MIN px of ring so a 1%
+  // channel reads as a small block, not a hairline — the difference comes out of the bigger slices pro rata.
+  // Labels and the centre figure keep the true percentages.
+  const GAP = 3, MIN = 7;
+  const arcs = ringArcs(parts.map(([, n]) => n / tot), C - GAP * parts.length, MIN);
+  let at = GAP / 2, delay = 0;                    // half a seam before the first slice keeps 12 o'clock centred on a seam
   const slices = parts.map(([name, n], i) => {
-    const pct = n / tot * 100, col = B.CH[name][0];
+    const pct = n / tot * 100, col = B.CH[name][0], len = arcs[i], start = at;
     const el = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     el.setAttribute('cx', 75); el.setAttribute('cy', 75); el.setAttribute('r', R); el.setAttribute('stroke', col); el.setAttribute('class', 'slice'); el.setAttribute('transform-origin', '75 75');
-    const len = Math.max(0.6, C * pct / 100 - GAP);
-    el.style.rotate = `${-90 + acc * 3.6}deg`; el.style.strokeDasharray = `${len} ${C}`; el.style.strokeDashoffset = reduce ? 0 : len;
-    const local = (pct / 2) * 3.6 * Math.PI / 180;   // push direction in the slice's own rotated frame
+    el.style.rotate = `${-90 + start / C * 360}deg`; el.style.strokeDasharray = `${len} ${C}`; el.style.strokeDashoffset = reduce ? 0 : len;
+    const local = len / 2 / R;                     // push direction: the slice's middle, in its own rotated frame
     el.style.setProperty('--dx', `${6 * Math.cos(local)}px`); el.style.setProperty('--dy', `${6 * Math.sin(local)}px`);
-    acc += pct; g.appendChild(el);
-    setTimeout(() => el.style.strokeDashoffset = 0, delay); delay += 600 * pct / 100 + 60;
+    at += len + GAP; g.appendChild(el);
+    setTimeout(() => el.style.strokeDashoffset = 0, delay); delay += 600 * len / C + 60;
     const l = document.createElement('div'); l.style.setProperty('--c', col); l.innerHTML = `<i></i>${name}<b>${Math.round(pct)}%</b>`; legend.appendChild(l);
-    el.addEventListener('pointerenter', () => pick(i)); el.addEventListener('pointerleave', () => pick(-1));
     l.addEventListener('pointerenter', () => pick(i)); l.addEventListener('pointerleave', () => pick(-1));
-    return { el, l, name, pct };
+    return { el, l, name, pct, start, len };
   });
+  // One invisible hit ring instead of hovering the arcs themselves: a 7px slice is too thin to aim at,
+  // so each slice owns at least 16px of ring around its middle (and every seam belongs to a neighbour).
+  const hit = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  hit.setAttribute('cx', 75); hit.setAttribute('cy', 75); hit.setAttribute('r', R); hit.setAttribute('class', 'hit'); g.appendChild(hit);
+  const zones = slices.map((s) => { const pad = Math.max(GAP / 2, (16 - s.len) / 2); return [s.start - pad, s.start + s.len + pad]; });
+  let over = -1;
+  hit.addEventListener('pointermove', (e) => {
+    const r = ring.getBoundingClientRect(), x = e.clientX - r.left - r.width / 2, y = e.clientY - r.top - r.height / 2;
+    const pos = ((Math.atan2(y, x) + Math.PI / 2 + 2 * Math.PI) % (2 * Math.PI)) * R;   // arc length clockwise from 12 o'clock
+    let i = zones.findIndex(([a, b]) => (pos >= a && pos <= b) || (pos + C >= a && pos + C <= b) || (pos - C >= a && pos - C <= b));
+    if (i < 0) i = over;
+    if (i !== over) { over = i; pick(i); }
+  });
+  hit.addEventListener('pointerleave', () => { over = -1; pick(-1); });
   let timer = 0;
   function pick(i) {
     slices.forEach((s, k) => { s.el.classList.toggle('out', k === i); s.l.classList.toggle('on', k === i); });
     ring.classList.toggle('pick', i >= 0); legend.classList.toggle('pick', i >= 0);
     clearTimeout(timer); centre.classList.add('swap');
-    timer = setTimeout(() => { c1.textContent = i < 0 ? tot : Math.round(slices[i].pct) + '%'; c2.textContent = i < 0 ? 'ordini · 30 gg' : slices[i].name; centre.classList.remove('swap'); }, reduce ? 0 : 160);
+    timer = setTimeout(() => { c1.textContent = i < 0 ? orders : Math.round(slices[i].pct) + '%'; c2.textContent = i < 0 ? 'ordini · 30 gg' : slices[i].name; centre.classList.remove('swap'); }, reduce ? 0 : 160);
   }
+}
+
+/* Arc lengths for a share ring: proportional to the shares, but no slice shorter than min.
+   Slices that would fall under the floor are pinned to it and the rest share what is left, repeated
+   until nothing new drops under (two passes in practice). */
+function ringArcs(shares, total, min) {
+  const pinned = new Set();
+  for (let pass = 0; pass < shares.length; pass++) {
+    const free = shares.reduce((a, s, i) => a + (pinned.has(i) ? 0 : s), 0);
+    const left = total - pinned.size * min;
+    const next = shares.findIndex((s, i) => !pinned.has(i) && s / free * left < min);
+    if (next < 0) return shares.map((s, i) => (pinned.has(i) ? min : s / free * left));
+    shares.forEach((s, i) => { if (!pinned.has(i) && s / free * left < min) pinned.add(i); });
+  }
+  return shares.map(() => total / shares.length);
 }
 
 /* ── board: four columns, a card advances one column per click ── */

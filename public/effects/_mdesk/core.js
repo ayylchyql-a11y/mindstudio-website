@@ -100,20 +100,48 @@
     }));
     // donut
     const g = $('#slices', root), legend = $('#legend', root), donut = $('#donut', root), c1 = $('#dc1', root), c2 = $('#dc2', root);
-    const total = D.stats.channels.reduce((a, [, n]) => a + n, 0), R = 45, C = 2 * Math.PI * R;
-    let acc = 0; const slices = D.stats.channels.map(([name, n], i) => {
-      const pct = n / total * 100, col = CH.find((c) => c[0] === name)?.[1] || '#999';
+    // channels are stored as percentages, so their sum is 100 — the centre's resting figure is the order count
+    const total = D.stats.channels.reduce((a, [, n]) => a + n, 0), orders = c1.textContent, R = 45, C = 2 * Math.PI * R;
+    // Layout in arc length: one fixed seam between slices and a floor of MIN px per slice, so a 1% channel is a
+    // small block rather than a negative dash (a negative stroke-dasharray is invalid and paints the whole circle).
+    const GAP = C * 0.015, MIN = 6;
+    const arcs = ringArcs(D.stats.channels.map(([, n]) => n / total), C - GAP * D.stats.channels.length, MIN);
+    let at = GAP / 2; const slices = D.stats.channels.map(([name, n], i) => {
+      const pct = n / total * 100, col = CH.find((c) => c[0] === name)?.[1] || '#999', len = arcs[i], start = at;
       const el = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      el.setAttribute('cx', 65); el.setAttribute('cy', 65); el.setAttribute('r', R); el.setAttribute('stroke', col); el.setAttribute('transform-origin', '65 65');
-      el.style.rotate = `${-90 + acc * 3.6}deg`; el.style.strokeDasharray = `${C * (pct - 1.5) / 100} ${C}`;
-      const mid = (pct / 2) * 3.6 * Math.PI / 180; el.style.setProperty('--dx', `${5 * Math.cos(mid)}px`); el.style.setProperty('--dy', `${5 * Math.sin(mid)}px`);
-      acc += pct; g.appendChild(el);
+      el.setAttribute('cx', 65); el.setAttribute('cy', 65); el.setAttribute('r', R); el.setAttribute('stroke', col); el.setAttribute('transform-origin', '65 65'); el.setAttribute('class', 'slice');
+      el.style.rotate = `${-90 + start / C * 360}deg`; el.style.strokeDasharray = `${len} ${C}`;
+      const mid = len / 2 / R; el.style.setProperty('--dx', `${5 * Math.cos(mid)}px`); el.style.setProperty('--dy', `${5 * Math.sin(mid)}px`);
+      at += len + GAP; g.appendChild(el);
       const l = document.createElement('div'); l.style.setProperty('--c', col); l.innerHTML = `<i></i>${name}<b>${Math.round(pct)}%</b>`; legend.appendChild(l);
-      const on = () => sel(i), off = () => sel(-1);
-      el.addEventListener('pointerenter', on); el.addEventListener('pointerleave', off); l.addEventListener('pointerenter', on); l.addEventListener('pointerleave', off);
-      return { el, l, name, pct };
+      l.addEventListener('pointerenter', () => sel(i)); l.addEventListener('pointerleave', () => sel(-1));
+      return { el, l, name, pct, start, len };
     });
-    const sel = (i) => { slices.forEach((s, k) => { s.el.classList.toggle('out', k === i); s.l.classList.toggle('on', k === i); }); donut.classList.toggle('pick', i >= 0); legend.classList.toggle('pick', i >= 0); c1.textContent = i < 0 ? total : Math.round(slices[i].pct) + '%'; c2.textContent = i < 0 ? '30 GIORNI' : slices[i].name.toUpperCase(); };
+    // one invisible hit ring: each slice owns at least 14px of ring around its middle, so the small ones can be aimed at
+    const hit = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    hit.setAttribute('cx', 65); hit.setAttribute('cy', 65); hit.setAttribute('r', R); hit.setAttribute('class', 'hit'); g.appendChild(hit);
+    const zones = slices.map((s) => { const pad = Math.max(GAP / 2, (14 - s.len) / 2); return [s.start - pad, s.start + s.len + pad]; });
+    let over = -1;
+    hit.addEventListener('pointermove', (e) => {
+      const r = donut.getBoundingClientRect(), x = e.clientX - r.left - r.width / 2, y = e.clientY - r.top - r.height / 2;
+      const pos = ((Math.atan2(y, x) + Math.PI / 2 + 2 * Math.PI) % (2 * Math.PI)) * R;
+      let i = zones.findIndex(([a, b]) => [pos, pos + C, pos - C].some((q) => q >= a && q <= b));
+      if (i < 0) i = over;
+      if (i !== over) { over = i; sel(i); }
+    });
+    hit.addEventListener('pointerleave', () => { over = -1; sel(-1); });
+    const sel = (i) => { slices.forEach((s, k) => { s.el.classList.toggle('out', k === i); s.l.classList.toggle('on', k === i); }); donut.classList.toggle('pick', i >= 0); legend.classList.toggle('pick', i >= 0); c1.textContent = i < 0 ? orders : Math.round(slices[i].pct) + '%'; c2.textContent = i < 0 ? '30 GIORNI' : slices[i].name.toUpperCase(); };
+  }
+
+  /* arc lengths proportional to the shares, none shorter than min (pinned slices are paid for by the rest) */
+  function ringArcs(shares, total, min) {
+    const pinned = new Set();
+    for (let pass = 0; pass < shares.length; pass++) {
+      const free = shares.reduce((a, s, i) => a + (pinned.has(i) ? 0 : s), 0), left = total - pinned.size * min;
+      if (!shares.some((s, i) => !pinned.has(i) && s / free * left < min)) return shares.map((s, i) => (pinned.has(i) ? min : s / free * left));
+      shares.forEach((s, i) => { if (!pinned.has(i) && s / free * left < min) pinned.add(i); });
+    }
+    return shares.map(() => total / shares.length);
   }
 
   function board() {

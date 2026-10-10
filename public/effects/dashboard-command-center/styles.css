@@ -117,8 +117,9 @@ img { display: block; }
 /* ── share ring: each slice a stroked arc drawn in sequentially, pushed 6px along its mid-angle on hover ── */
 .ring-wrap { display: grid; grid-template-columns: 150px 1fr; gap: 16px; align-items: center; margin-top: 10px; }
 .ring { width: 150px; height: 150px; overflow: visible; }
-.ring .slice { fill: none; stroke-width: 22; cursor: pointer; transition: transform 260ms cubic-bezier(.22,.61,.36,1), opacity 200ms, stroke-dashoffset 600ms cubic-bezier(.22,.61,.36,1); transform: translate(0, 0); }
+.ring .slice { fill: none; stroke-width: 22; pointer-events: none; transition: transform 260ms cubic-bezier(.22,.61,.36,1), opacity 200ms, stroke-dashoffset 600ms cubic-bezier(.22,.61,.36,1); transform: translate(0, 0); }
 .ring .slice.out { transform: translate(var(--dx), var(--dy)); }
+.ring .hit { fill: none; stroke: transparent; stroke-width: 30; pointer-events: stroke; cursor: pointer; }
 .ring.pick .slice:not(.out) { opacity: .4; }
 .ring .c1 { text-anchor: middle; fill: var(--ink); font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
 .ring .c2 { text-anchor: middle; fill: var(--muted); font-size: 7.5px; letter-spacing: .16em; text-transform: uppercase; }
