@@ -84,6 +84,8 @@ const blurbs: Record<string, string> = {
     "The voice orb: a sphere of liquid glass that idles, thinks and breathes with sound, rendered in WebGPU. This is the visual language of AI assistants — the thing on screen while the model is listening — and it ships with a full bench of presets so the same orb can be tuned to a brand. It runs in M Translate's voice mode; on the web it suits assistant landing pages, voice-product demos and any interface that needs a face without drawing one.",
 
   // ── mobile-ui ──
+  "m-alpha-relax":
+    "My own relaxation app, rebuilt as a working replica of all five screens in light and dark: a calm, soft-light design where every card and button is pressed out of or into one grey-blue surface, with a single indigo colour for anything active. It really plays: binaural beats and isochronic tones sound in the browser, the ambient-sound dials turn under your finger, and the statistics are worked out from months of sample listening. A reference for wellness, meditation and sleep products that want to feel quiet rather than flat.",
   "slate-card-order":
     "A complete payment flow for ordering a premium metal card, rebuilt as a working replica: pick a finish from a carousel of cards that flip in, confirm the order, watch the card tap a payment terminal, and get a printed receipt stamped PAID. One card travels through every screen without a cut. A reference for fintech apps, membership upgrades and any checkout that should feel like handling a physical object rather than filling in a form.",
   "mind-space-ai-os":

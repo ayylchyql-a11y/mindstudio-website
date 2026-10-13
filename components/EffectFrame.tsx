@@ -49,7 +49,8 @@ export default function EffectFrame({
       </div>
       <iframe
         key={run}
-        src={src}
+        /* 沙箱 iframe 读不到父页面的 <html lang>，语言只能从地址带进去（会跟语言走的 demo 读 ?lang=） */
+        src={`${src}${src.includes("?") ? "&" : "?"}lang=${lang}`}
         title={title}
         loading="lazy"
         /* allow-scripts 是必须的(demo 带 JS)；不给 allow-same-origin，
