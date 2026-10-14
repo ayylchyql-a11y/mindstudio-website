@@ -1,4 +1,4 @@
-Photos for the @西瓜同学 popup-panel replicas. All CC0 / public domain, found through Openverse
+Photos for the popup-panel replicas. All CC0 / public domain, found through Openverse
 (api.openverse.org, license=cc0,pdm), free for commercial use, no attribution required.
 Resized and re-encoded; small ones are square centre crops.
 

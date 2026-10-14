@@ -244,7 +244,7 @@ export interface Effect {
   prompt: string;
   /** 什么情况下会不生效、会退化成什么样。没有就别硬凑。 */
   caveats?: string[];
-  /** 出处。从别人视频里扒来的一定要填，这是能挂出去的前提。 */
+  /** 出处：只给许可证要求署名的素材填（ShaderToy、MIT 库等）。转载类视频（抖音等）不写——那些多半不是原作者。 */
   source?: { label: string; url?: string; at?: string };
 }
 
@@ -578,7 +578,6 @@ export const effects: Effect[] = [
       "The two radii have to stay 1.5px apart. Give the inner element the same 18px and a sliver of gradient shows through inside each corner; it reads as a rendering bug rather than a design choice.",
       "The blurred <code>::before</code> is repainted whenever the gradient angle changes, so this costs a real filter pass per frame. At 384×145 that is nothing; the same technique on a full-bleed hero is not.",
     ],
-    source: { label: "Douyin @跟着学姐学AI · ep.34 “如何让 AI 生成五种粒子边框动效” · effect 01/05", at: "0:04–0:06 (3× playback)" },
   },
   {
     slug: "breathing-halo-border",
@@ -619,7 +618,6 @@ export const effects: Effect[] = [
       "A blurred <code>box-shadow</code> whose radius changes cannot be composited — it repaints every frame. One card is free; a list of thirty breathing rows is not, and there the honest fix is to animate <code>opacity</code> on a pre-blurred pseudo-element instead.",
       "On a light background this reads as a dirty smudge rather than a glow. The effect needs a dark surface behind it; there is no alpha that rescues it on white.",
     ],
-    source: { label: "Douyin @跟着学姐学AI · ep.34 “如何让 AI 生成五种粒子边框动效” · effect 02/05", at: "0:07–0:09 (3× playback)" },
   },
   {
     slug: "particle-trace-border",
@@ -663,7 +661,6 @@ export const effects: Effect[] = [
       "The canvas is inset only 40px. Raise the outward drift much above 15px and particles are clipped at the edge of the canvas, which looks like they hit an invisible wall.",
       "Under reduced motion this draws a single still frame of the ring. That is a fair static representation, but it is a genuinely different picture from the animated one — a still cannot show that the sparks travel.",
     ],
-    source: { label: "Douyin @跟着学姐学AI · ep.34 “如何让 AI 生成五种粒子边框动效” · effect 03/05", at: "0:09–0:12 (3× playback)" },
   },
   {
     slug: "nebula-flow-border",
@@ -707,7 +704,6 @@ export const effects: Effect[] = [
       "Dashed borders on a rounded rectangle are drawn differently by every engine — dash phase at the corners is not specified. It never looks broken, but it does not look identical across browsers.",
       "The periods are chosen, not measured: the source clip is 2.4 s at 3× playback, which cannot contain a 30 s cycle. What is measured is the character — slow, non-repeating, hugging the frame.",
     ],
-    source: { label: "Douyin @跟着学姐学AI · ep.34 “如何让 AI 生成五种粒子边框动效” · effect 04/05", at: "0:12–0:15 (3× playback)" },
   },
   {
     slug: "neon-node-border",
@@ -752,7 +748,6 @@ export const effects: Effect[] = [
       "A 37 s lap means a viewer who looks for five seconds sees almost nothing happen. That is correct for an ambient frame and wrong for anything that is meant to signal activity — for a loading state the same code wants 150–250 px/s.",
       "The nodes orbit a path built from <code>getBoundingClientRect</code>. Inside a container that scales (a zoomed phone shell, a CSS <code>zoom</code>), the rect is in viewport pixels and the canvas is in local pixels; the path has to be divided by the scale or the lamps orbit a frame that is not there.",
     ],
-    source: { label: "Douyin @跟着学姐学AI · ep.34 “如何让 AI 生成五种粒子边框动效” · effect 05/05", at: "0:15–0:18 (3× playback)" },
   },
   {
     slug: "pagination-styles",
@@ -795,7 +790,6 @@ export const effects: Effect[] = [
       "Row classes are prefixed (<code>r-track</code>, <code>r-dots</code>): the rows are named after their control, and a bare <code>.track</code> or <code>.dots</code> on the card would pick up the control's own styles — the Track card grew a hairline across its bottom and shifted 4 px before the prefix.",
       "The Pills opening state (<code>1 … [7] 8 9</code>) is the reference's static markup; its render rule would draw <code>1 … 6 [7] 8 9</code>. The sample keeps the reference's first paint and applies the rule from the first click on.",
     ],
-    source: { label: "@海归程序员李工 (Douyin) · 「8 种分页风格供你参考」" },
   },
   {
     slug: "neumorphic-io-switch",
@@ -837,7 +831,38 @@ export const effects: Effect[] = [
       "The reference starts the off-flicker on any unchecked switch, which would blink every OFF switch on page load. The sample arms it only after the first change (a <code>.ready</code> class), and a switch that starts on shows its lamp lit without the on-flicker.",
       "In the reference the checkbox sits on the knob; here the whole label is the hit area, and a 2 px focus ring in the lamp colour appears for keyboard focus.",
     ],
-    source: { label: "@原子软糖At (Douyin) · 「第 10 集：30s 教你做一个好看的拟态开关」" },
+  },
+  {
+    slug: "potion-dispenser",
+    category: "widgets",
+    group: "controls",
+    date: "2026-10-15",
+    plays: "click",
+    title: { en: "Potion dispenser", zh: "药剂切换器", "zh-tw": "藥劑切換器" },
+    gist: {
+      en: "A game-style potion picker made of three moulded plastic keys sitting in a recessed track — what, how much, what form — and a round dispense button in its own socket. Each key cycles its options with a quick press and a flash, and turns red on its last option. Press dispense and the capsule breaks into pills that fly off while the track resets, key by key, to the start.",
+      zh: "游戏风的药剂选择器：凹槽里嵌着三颗模压塑料键——选什么、多少剂量、什么形态——旁边是一颗嵌在圆槽里的发放按钮。每颗键按一下切到下一个选项，带一下按压和闪光；切到最后一个选项时整颗变红。按发放，胶囊碎成几颗药丸飞出去，三颗键从左到右依次复位。",
+      "zh-tw": "遊戲風的藥劑選擇器：凹槽裡嵌著三顆模壓塑膠鍵——選什麼、多少劑量、什麼形態——旁邊是一顆嵌在圓槽裡的發放按鈕。每顆鍵按一下切到下一個選項，帶一下按壓和閃光；切到最後一個選項時整顆變紅。按發放，膠囊碎成幾顆藥丸飛出去，三顆鍵從左到右依次復位。",
+    },
+    height: 420,
+    previewHeight: 297,
+    accent: "#ee2a22",
+    anatomy: [
+      "<b>Three keys, three option lists.</b> Name cycles Health → Stamina → Mana, dose 10 → 15 → 20 mg, form tablet → capsule. The last option of each list lights the key red, so a fully red capsule reads as \u201cthe strongest dose of the rare potion\u201d without a word of explanation.",
+      "<b>A press in three beats</b>, read frame by frame: the key sinks 1.5 px and becomes a glossy cylinder (value hidden) for about 170 ms — black, or already red if this press is the one that lights it; the new value slides in from the left with motion blur while the old one leaves to the right; then a flash (grey on dark, pale pink on red) holds for about 100 ms and settles over 300 ms.",
+      "<b>Dispense</b> flashes white for a frame, turns every key dark red and then into a black cylinder, drops a red pill into the button and throws three large pills off the screen with motion blur in under half a second. The keys come back to Health · 10 mg · tablet one after another at 300, 480 and 600 ms. Input is ignored until the last one lands.",
+      "<b>The plastic.</b> Each key is a vertical gradient (a dark rim at the top, the base colour, a lighter lip at the bottom) plus five inset shadows — a top highlight, a soft shadow under it, a bottom bevel, a side highlight and a side shade. Light comes from the upper right, so each key is a step lighter than the one to its left. The track and the socket are near-black with an inner shadow, so the keys look set into the surface.",
+      "Accessible as three ordinary buttons whose labels read \u201cPotion: Mana\u201d, \u201cDose: 20 mg\u201d, \u201cForm: capsule\u201d; Enter and Space cycle them. With reduced motion the values change in place and nothing flies.",
+    ],
+    tokens: [
+      { label: "Red", value: "#ee2a22 · #fb3d2e · #ff5846" },
+      { label: "Dark", value: "#38383c · #3c3e44 · #45474b" },
+      { label: "Press", value: "170 ms sink · 230 ms slide · 500 ms flash" },
+      { label: "Dispense", value: "pills 360–460 ms · reset 300 / 480 / 600 ms" },
+      { label: "Keys", value: "177 / 82 / 94 × 98 · track 390 × 124" },
+    ],
+    prompt:
+      "Build a game-UI potion picker on a charcoal background lit from the upper right. A recessed near-black track (390×124, fully rounded, inner shadow) holds three buttons styled as moulded plastic keys, 98px tall with 6px gaps: a 177px name key (rounded on the left), an 82px dose key ('10' over 'mg') and a 94px form key (rounded on the right, a tablet or capsule glyph). Next to it a 103px round red dispense button with a down arrow, set in a 130px black socket. Each key cycles its own list on click — Health/Stamina/Mana, 10/15/20 mg, tablet/capsule — and turns red (#ee2a22, #fb3d2e, #ff5846; dark #38383c, #3c3e44, #45474b otherwise) on its last option. A press: sink 1.5px and show a glossy cylinder gradient over the key for 170ms (red if the press lights it), slide the new value in from the left with blur while the old one exits right (230ms), then flash pale pink or grey for 500ms. Dispense: flash white, cover all keys with a dark-red then black glossy cylinder, drop a red pill into the button, fling three large red pills off-screen with blur (360–460ms), and reset the keys to Health · 10 mg · tablet at 300, 480 and 600ms, ignoring input until done. Use real buttons with descriptive labels; honour prefers-reduced-motion.",
   },
   {
     slug: "crystal-bloom-hero",
@@ -880,7 +905,6 @@ export const effects: Effect[] = [
       "<code>backdrop-filter: url()</code> only renders in Chromium. Other browsers get the same card with a frosted <code>blur(10px)</code> instead — detected up front, the same way the reference gates it behind a <code>liquid-ok</code> class.",
       "The circle that follows the cursor in the reference recording is the screen recorder's click highlight, not part of the site, so it isn't reproduced.",
     ],
-    source: { label: "@青柠智信 (Douyin) · 「把水晶花的艺术融入自己的网站」" },
   },
   {
     slug: "cyclone-369",
@@ -923,9 +947,8 @@ export const effects: Effect[] = [
       "Ninety steps at full-bleed on a phone GPU throttles within a minute. The 0.7× backing store and the visibility pause are the minimum; a real page should also drop <code>uSteps</code> on small viewports.",
     ],
     source: {
-      label: "Shader: “Cyclone [369]” by @XorDev · ShaderToy N3dGRM · CC BY-NC-SA 3.0 · breakdown via @MasterYeeeee (Douyin)",
+      label: "Shader: “Cyclone [369]” by @XorDev · ShaderToy N3dGRM · CC BY-NC-SA 3.0",
       url: "https://www.shadertoy.com/view/N3dGRM",
-      at: "0:00–1:25",
     },
   },
   {
@@ -1025,7 +1048,6 @@ export const effects: Effect[] = [
       "The whole flow is one choreography of absolute timestamps. Tapping mid-transition is ignored (a busy lock) rather than interrupted; making every step interruptible would need each tween to start from the element's current computed pose.",
       "Timings were matched against the source recording at 30 fps: the carousel flip, the order button and the receipt land within a frame or two; the picker → confirm flight is 320 ms against roughly 280 ms in the source.",
     ],
-    source: { label: "Flutter UI demo (DailyFlutterUI), via Douyin screen recording · rebuilt neutral", at: "0:00–0:19" },
   },
   {
     slug: "receipt-print-stamp",
@@ -1067,7 +1089,6 @@ export const effects: Effect[] = [
       "mix-blend-mode multiply on the stamp only reads on light paper. On a dark surface it disappears; use normal blending with opacity there.",
       "The barcode is correct Code 128-B, but set at 256 px wide for ~150 modules it is below the resolution a phone camera needs from a normal distance on a low-DPI screen.",
     ],
-    source: { label: "Part of “Slate: metal card order flow” (Flutter UI demo, via Douyin) · rebuilt neutral", at: "0:13–0:19" },
   },
   {
     slug: "gooey-loader-button",
@@ -1104,7 +1125,6 @@ export const effects: Effect[] = [
       "The goo only works on a solid fill against a known background: the alpha threshold turns anti-aliasing into hard edges, so the blobs look slightly aliased at small sizes. Keep them at least ~8 px radius.",
       "SVG filters on a transformed or scaled ancestor are re-rasterised every frame in some engines; keep the loader out of large scaled containers.",
     ],
-    source: { label: "Part of “Slate: metal card order flow” (Flutter UI demo, via Douyin) · rebuilt neutral", at: "0:06.5–0:09" },
   },
   {
     slug: "flip-card-carousel",
@@ -1142,7 +1162,6 @@ export const effects: Effect[] = [
       "The decay runs on frame time, so a janky frame makes the settle jump. Clamp dt (here to 50 ms) or the card can snap flat after a stall.",
       "backface-visibility: hidden hides the card for the instant it passes exactly 90° — intended here, but it means the edge-on frame shows nothing rather than a thin edge; add a 1-px side element if you need the edge visible.",
     ],
-    source: { label: "Part of “Slate: metal card order flow” (Flutter UI demo, via Douyin) · rebuilt neutral", at: "0:03.5–0:05" },
   },
   {
     slug: "mind-space-ai-os",
@@ -1187,7 +1206,6 @@ export const effects: Effect[] = [
       "The re-sort is measured against the phone's own coordinates, so the FLIP delta is divided by the shell's scale; forget that and the cards fly twice as far as they should on a shrunken device.",
       "This is a replica of a concept render, not of a shipped product. Text and data are ours; the layout, colour behaviour and interaction model are the source's.",
     ],
-    source: { label: "@海森堡 (Douyin) · “自然人工智能设计探索的思维空间”", at: "0:00–0:19" },
   },
   {
     slug: "ambient-hue-follows-focus",
@@ -1221,7 +1239,6 @@ export const effects: Effect[] = [
       "Hue interpolation goes the short way round the wheel: 275 → 190 passes through blue (fine), but 350 → 20 would pass through red at full saturation. If two contexts sit across the wheel, interpolate in OKLCH or step through a neutral.",
       "Text on the sky must be checked at <b>every</b> hue, not the one you designed with. Lightness is pinned per stop here so contrast is stable; the moment saturation or lightness varies per context that guarantee is gone.",
     ],
-    source: { label: "@海森堡 (Douyin) · “自然人工智能设计探索的思维空间”", at: "0:03–0:11" },
   },
   {
     slug: "glass-stack-flip-reorder",
@@ -1257,7 +1274,6 @@ export const effects: Effect[] = [
       "Measure in the same coordinate space you transform in. Inside a scaled parent (a phone shell with <code>transform: scale(.9)</code>) the rect delta is in viewport pixels but the transform is in local pixels — divide by the scale or the cards overshoot.",
       "Rapid re-sorts interrupt the transition mid-flight, which FLIP handles correctly (it measures the <i>current</i> rendered position) — but only if the measurement happens before the DOM move, never after.",
     ],
-    source: { label: "@海森堡 (Douyin) · “自然人工智能设计探索的思维空间”", at: "0:03–0:11" },
   },
   {
     slug: "cursor-gaze-tracking",
@@ -1299,7 +1315,6 @@ export const effects: Effect[] = [
       "A filter on a large element is rasterised at its full size once. Animating anything <b>inside</b> a filtered element re-runs the filter; here the eyes sit beside the filtered shapes, not inside them, and that is deliberate.",
       "On touch there is no hover: the eyes only move on a tap. Either accept a still face on phones, or drive the gaze from device orientation instead.",
     ],
-    source: { label: "@优卓UX上岸社 (Douyin) · 「UI交互动效描述」第 4 集 · Logoipsum", at: "0:00" },
   },
   {
     slug: "scroll-pinned-hero-recomposition",
@@ -1338,7 +1353,6 @@ export const effects: Effect[] = [
       "Text that <i>arrives</i> on scroll is unreachable for someone who stopped scrolling early. All four fragments are always in the DOM and readable by assistive tech regardless of <code>--p2</code>; do not use <code>visibility</code> or <code>display</code> for the fade.",
       "Under reduced motion the composition should still resolve — set <code>--p*</code> from progress with no smoothing and drop the hand roll, rather than freezing the hero on the touch frame.",
     ],
-    source: { label: "@优卓UX上岸社 (Douyin) · 「UI交互动效描述」第 4 集 · NeuralKinetics", at: "0:05" },
   },
   {
     slug: "cursor-miniature-parallax",
@@ -1376,7 +1390,6 @@ export const effects: Effect[] = [
       "Speed from two consecutive events is noisy on a trackpad (events arrive in bursts). The 80ms gap cut and the cooldown are what make the hop feel intentional rather than twitchy; without them a slow drag fires it.",
       "A flick on touch is a scroll gesture. The hop is pointer-only by construction; on phones it never fires, and the parallax collapses to a still — acceptable, but do not promise the hop in copy.",
     ],
-    source: { label: "@优卓UX上岸社 (Douyin) · 「UI交互动效描述」第 4 集 · Measured", at: "0:18" },
   },
   {
     slug: "scroll-orbit-turntable",
@@ -1415,7 +1428,6 @@ export const effects: Effect[] = [
       "<code>preserve-3d</code> with <code>overflow: hidden</code> or a <code>filter</code> on any ancestor flattens the scene silently. The sticky stage has <code>overflow: hidden</code> — that is fine because the 3D context starts <i>inside</i> it at <code>.cam</code>; put a filter on <code>.cam</code> and the orbit becomes a 2D squash.",
       "A full 360° over four viewport heights is comfortable on a trackpad and slow on a mouse wheel (about 40 notches). If the audience is mouse-heavy, shorten the track rather than easing the orbit.",
     ],
-    source: { label: "@优卓UX上岸社 (Douyin) · 「UI交互动效描述」第 4 集 · Obsidian", at: "0:25" },
   },
   {
     slug: "hover-door-bloom",
@@ -1455,7 +1467,6 @@ export const effects: Effect[] = [
       "The hover target must be the <b>resting</b> car, not the animated parts: a bloom that scales out past the pointer and then shrinks back under it fires enter/leave in a loop. Here the blooms have <code>pointer-events: none</code>.",
       "The stylised car is illustration, not the rendered asset in the source. The point of the sample is the reversible clock and the slicing; swap the SVG for a clip or frame sequence and nothing else changes.",
     ],
-    source: { label: "@优卓UX上岸社 (Douyin) · 「动效描述」第 3 集 · Art.Car", at: "0:00" },
   },
   {
     slug: "hover-tinted-service-list",
@@ -1494,7 +1505,6 @@ export const effects: Effect[] = [
       "Eight saturated tints and dark text: check contrast for every one. #e0a12a (the amber row) is the borderline case here at 21px serif; below ~18px it would fail.",
       "Row hover on a list this dense means the tint changes on every pass of the pointer across it, which is a lot of colour when someone is just moving to the right column. A 60–80ms enter delay before committing the select is the usual fix on a real page; the sample leaves it instant so the mechanism is visible.",
     ],
-    source: { label: "@优卓UX上岸社 (Douyin) · 「动效描述」第 3 集 · Art.Car services", at: "0:04" },
   },
   {
     slug: "scroll-vortex-transit",
@@ -1534,7 +1544,6 @@ export const effects: Effect[] = [
       "~1100 arcs × 3 strokes per frame is fine at 760×400, and fine at 1440×900 on a laptop. On a 4K canvas at DPR 2 it is not; cap the backing store at DPR 2 (done here) and consider dropping the ring count on large stages.",
       "The eye is opaque black by 0.9, so the next chapter must sit on the same black — a lighter chapter background would flash through the eye's soft edge.",
     ],
-    source: { label: "@优卓UX上岸社 (Douyin) · 「动效描述」第 3 集 · Void Atlas", at: "0:06" },
   },
   {
     slug: "click-drop-overgrowth",
@@ -1574,7 +1583,6 @@ export const effects: Effect[] = [
       "Everything is redrawn every frame, including the pre-generated speckles once the clip is open. At 760×400 that is trivial; on a full-viewport hero at DPR 2 with more speckles, move the fur to an offscreen canvas rendered once and only redraw the clip.",
       "The 'click anywhere' affordance is a hint label, not a control. Keyboard users have no way in — add a real button that calls the same handler on a production page.",
     ],
-    source: { label: "@优卓UX上岸社 (Douyin) · 「动效描述」第 3 集 · Visions So", at: "0:12" },
   },
   {
     slug: "scroll-helix-flythrough",
@@ -1616,7 +1624,6 @@ export const effects: Effect[] = [
       "The copy bands and the camera stations are tuned together (station 2 at 0.38, block 2 in at 0.32–0.40). Moving one without the other leaves text arriving before the camera does.",
       "Under reduced motion the scene still scrubs with scroll — there is no autonomous motion to remove — but a page that wants to be gentle should pin the camera at station 1 and let the copy fade only.",
     ],
-    source: { label: "@优卓UX上岸社 (Douyin) · 「动效描述」第 3 集 · GeneTrace", at: "0:20" },
   },
   {
     slug: "cursor-luminous-gateway",
@@ -1658,7 +1665,6 @@ export const effects: Effect[] = [
       "Mist over the water dims the reflection. The sheets here are lowered and capped at .55 opacity for that reason; push them up and the door's reflection disappears, which was the first version of this sample.",
       "The sky's saturated orange band does not meet contrast for the small paragraph if the copy is moved down; keep text on the dark upper third.",
     ],
-    source: { label: "@优卓UX上岸社 (Douyin) · 「动效描述」第 3 集 · Gateway", at: "0:26" },
   },
   {
     slug: "bin-eats-label",
@@ -1710,10 +1716,6 @@ export const effects: Effect[] = [
       "The <code>.slot</code> keeps the pill's full width while the button inside it is a circle. Without that, the flex row reflows on every click and the <i>other</i> button slides 85px sideways: collapsing one button is supposed to be a local event, not a layout event.",
       "<b>Yes, this animates <code>width</code>, and that is a layout-animating property.</b> The usual advice — use <code>transform</code> — does not apply here: <code>scaleX</code> would squash the bin icon and stretch the border-radius into an ellipse, and the whole point of the collapse is that neither moves. The cost is real but bounded: two elements, one 330ms run per click, nothing scroll-driven. Reach for <code>transform</code> the moment this pattern lands in a list where several can collapse at once.",
     ],
-    source: {
-      label: "抖音 @程序员八阿哥 · Delete Button — The Bin Eats The Label",
-      at: "2026-09-08",
-    },
   },
   {
     slug: "scroll-scrubbed-sequence",
@@ -1754,7 +1756,6 @@ export const effects: Effect[] = [
       "Scroll-scrubbed media has no state a reduced-motion user can opt out of — there is no animation to disable, only content that will not appear. Under <code>prefers-reduced-motion: reduce</code>, pin it to a representative frame and let the section scroll past normally.",
       "460% of viewport height buys about four thumb-flicks on a phone with nothing else on screen. On small viewports cut the track, not the frame count — a short sequence over a long track just makes each frame linger.",
     ],
-    source: { label: "@派大鑫 (Douyin) · “这是我 Vibe Coding 的个人站”", at: "0:00 & 1:09" },
   },
   {
     slug: "chapter-headline-roller",
@@ -1795,7 +1796,6 @@ export const effects: Effect[] = [
       "Four chapters that only advance on scroll means the last three are unreachable by keyboard alone unless the page still scrolls normally. Do not add <code>preventDefault</code> to the wheel handler to \"smooth\" it; that is what breaks Home, End, Page Down and find-in-page.",
       "Under <code>prefers-reduced-motion: reduce</code> the roll should become a cross-fade, not disappear. Removing the transition entirely makes the headline change instantly with no relationship to the scroll, which reads as a glitch rather than as calm.",
     ],
-    source: { label: "@派大鑫 (Douyin) · “这是我 Vibe Coding 的个人站”", at: "0:06" },
   },
   {
     slug: "scroll-word-brighten",
@@ -1834,7 +1834,6 @@ export const effects: Effect[] = [
       "One span per word on a long article is thousands of style writes per scroll event. Past a few hundred words, update only the words currently in view, or move the whole thing to a CSS scroll-driven animation with a <code>view()</code> timeline and no JS at all.",
       "Chinese and Japanese have no spaces, so the word split degrades to one span for the entire sentence and the effect vanishes with no error. Segment with <code>Intl.Segmenter</code> and <code>granularity: \"word\"</code> for those languages.",
     ],
-    source: { label: "@派大鑫 (Douyin) · “这是我 Vibe Coding 的个人站”", at: "0:10" },
   },
   {
     slug: "interactive-liquid-distortion",
@@ -1874,7 +1873,6 @@ export const effects: Effect[] = [
       "The copy must be <b>identical</b>, including fonts and any animation phase. A web font that swaps in a moment later, or a duplicated CSS animation started at a different time, produces a band where the content does not line up — and it looks like a rendering bug rather than an authoring one.",
       "<code>mix-blend-mode</code> forces the band onto its own compositing layer. On a page that already has many layers this is one more, and it is the first thing to profile if scrolling gets choppy.",
     ],
-    source: { label: "@菜心视觉设计 (Douyin) · effects catalogued from a screen recording of alche.jp", at: "0:07" },
   },
   {
     slug: "fullscreen-expansion-transition",
@@ -1914,7 +1912,6 @@ export const effects: Effect[] = [
       "Sticky positioning fails silently if any ancestor has <code>overflow: hidden</code>. The stage stops sticking, the transition never scrubs, and nothing anywhere reports an error.",
       "Driving this from a scroll handler is universal but not free. <code>animation-timeline: scroll()</code> does the same thing off the main thread where it is supported — worth it if the page has several of these.",
     ],
-    source: { label: "@菜心视觉设计 (Douyin) · effects catalogued from a screen recording of alche.jp", at: "0:15" },
   },
   {
     slug: "scroll-driven-scene-transition",
@@ -1953,7 +1950,6 @@ export const effects: Effect[] = [
       "<code>rotateY</code> on a large panel renders through the GPU's texture sampler; on low-DPI external displays the artwork edges can shimmer during the scrub. A 1px inset border on the panel hides it.",
       "This eats 420% of viewport height in scroll for three panels. On a phone, where that is several thumb-flicks with nothing else on screen, cut the distance or the count — the effect that felt cinematic on a laptop reads as a page that will not end.",
     ],
-    source: { label: "@菜心视觉设计 (Douyin) · effects catalogued from a screen recording of alche.jp", at: "0:24" },
   },
   {
     slug: "scroll-3d-carousel",
@@ -1992,7 +1988,6 @@ export const effects: Effect[] = [
       "Perspective plus <code>preserve-3d</code> promotes every panel to its own layer. Five is comfortable; twenty is a memory problem on mobile Safari long before it is a frame-rate problem.",
       "The ring rotates about the viewport centre, so on a short viewport the top and bottom of the panels clip against the stage. Size the panel from the smaller of the two axes rather than from width alone.",
     ],
-    source: { label: "@菜心视觉设计 (Douyin) · effects catalogued from a screen recording of alche.jp", at: "0:34" },
   },
   {
     slug: "scroll-snap-gallery",
@@ -2031,7 +2026,6 @@ export const effects: Effect[] = [
       "<code>mandatory</code> can trap a user: if a slide is taller than the viewport on a cross-axis snap, they can never rest between items to read it. That is what <code>proximity</code> is genuinely for.",
       "<code>scroll-snap-stop: always</code> is unsupported in older Safari — it degrades to skipping, not to breaking, which is the right way round but is worth knowing before you rely on one-at-a-time.",
     ],
-    source: { label: "@菜心视觉设计 (Douyin) · effects catalogued from a screen recording of alche.jp", at: "0:42" },
   },
   {
     slug: "staggered-character-reveal",
@@ -2071,7 +2065,6 @@ export const effects: Effect[] = [
       "The split runs on <code>textContent</code>, so any inline markup inside the heading (a link, a <code>&lt;br&gt;</code>, an <code>&lt;em&gt;</code>) is destroyed. Walk text nodes instead if the copy is authored by anyone but you.",
       "If a web font swaps in after the split, every word mask was measured against the fallback metrics and the glyphs jump. Split after <code>document.fonts.ready</code> when the headline uses a custom face.",
     ],
-    source: { label: "@菜心视觉设计 (Douyin) · effects catalogued from a screen recording of alche.jp", at: "0:47" },
   },
   {
     slug: "section-stacking-transition",
@@ -2110,7 +2103,6 @@ export const effects: Effect[] = [
       "A stack of N sections costs N × 100vh of scrolling to get through. Four is a section; ten is a hostage situation.",
       "Sticky elements are repainted on every scroll frame. Keep what is inside them cheap — a stack of four sections each containing a video is a very different proposition from four gradients.",
     ],
-    source: { label: "@菜心视觉设计 (Douyin) · title card only, the recording ends before the demo", at: "0:55" },
   },
   {
     slug: "magnetic-button",
@@ -2225,7 +2217,7 @@ export const effects: Effect[] = [
       "Gradient text has no reliable contrast ratio. Keep it for display type that is decorative; never run body copy or anything a screen reader user needs to find visually through this.",
     ],
   },
-  /* ── 交互细节 · 图表控件（2026-09-19，抖音 @叨叨AI 第 6 集「10 个图表交互控件」）──
+  /* ── 交互细节 · 图表控件（2026-09-19，第 6 集「10 个图表交互控件」）──
      十条各一个自包含 HTML，共用同一套「Insights 窗口 + 网格面板」外壳。
      源视频是渲染稿；这里全部按视频里的说明重建，数值是量出来或按视频节奏定的。 */
   {
@@ -2257,7 +2249,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build three concentric activity rings in vanilla HTML/CSS/JS on a dark card. SVG viewBox 0 0 170 170, radii 70/54/38, stroke-width 13, round line caps, group rotated -90deg so rings start at 12 o'clock. Track circles at #ffffff12 under each ring. Ring colours #e8a33a, #ffffff, #b5c4b0 with targets 1.24, 0.78, 0.58. Set stroke-dasharray to each circumference and animate stroke-dashoffset from the circumference to circumference*(1-min(value,1)) with a single requestAnimationFrame clock, 1400ms, ease-out cubic; in the same tick write the three percentages (Math.round(value*100)+'%') into a right-hand stat column and the centre total (620 kcal) into the middle of the SVG. For the ring that exceeds 1, add a second circle on the same radius in #a8701a drawn on top whose dashoffset covers max(0,value-1), and show an 'OVER GOAL' pill (fade + translateX -6px→0, 300ms) as soon as that extra lap is > 0. Under prefers-reduced-motion render the final state immediately.",
-    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 01 活动圆环", at: "0:03" },
   },
   {
     slug: "streak-heatmap",
@@ -2288,7 +2279,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a streak heatmap in vanilla HTML/CSS/JS on a dark card. 18 columns × 7 rows as a CSS grid with grid-auto-flow: column, 4px gaps, cells aspect-ratio 1, grid width min(100%, 340px). Five flat level colours #2a2a2e, #4a4a50, #8b8b83, #d8cfb9, #6fc7b8; the last five columns use levels 3–4 (the current streak), one cell in column 12 is level 0 (the missed day). At load animate each cell from scale(0) to 1 over 360ms cubic-bezier(.22,.61,.36,1) with animation-delay = column index × 28ms. Under the missed column place a 14×2px teal tick with the word MISSED (7px, letter-spaced) positioned from that cell's offsetLeft. On cell click, show a 128px detail card (date, big session count in teal, four tiny bars) positioned beside the cell using getBoundingClientRect — right of it when the cell is in the left half of the viewport, left otherwise — animating opacity and translateY(6px) scale(.96) → none over 220ms; clicking the same cell closes it. Hover scales a cell to 1.18. Under prefers-reduced-motion skip the pop-in.",
-    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 02 打卡热力格", at: "0:09" },
   },
   {
     slug: "score-gauge",
@@ -2318,7 +2308,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a semicircle score gauge in vanilla HTML/CSS/JS on a dark card. SVG viewBox 0 0 300 175, pivot at (150,140), radius 110, stroke-width 22. Draw three arc paths for bands 0–35 (#5c5c62), 35–70 (#e8564a), 70–100 (#8a8a90), mapping value v to angle π·(1−v/100) and trimming 2.5° from each shared edge so there are visible gaps. Labels LOW / NORMAL / HIGH in 8px letter-spaced caps, NORMAL in the red. A needle group (3px white line from the pivot to y=48 plus a 7px white pivot dot) with transform-origin 150px 140px rotated by -90deg + v*1.8deg. Animate v from 0 to 64 over 1500ms with ease-out cubic plus an overshoot term sin(t*2.2*π)*(1−t)^2.2*9, snapping to 64 on the last frame; every frame also write Math.round(v) as a 30px number under the pivot and the band name as a coloured verdict label. Add a Replay button that resets to 0 and sweeps again. Under prefers-reduced-motion show 64 immediately.",
-    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 03 仪表盘", at: "0:18" },
   },
   {
     slug: "bar-chart-period-switch",
@@ -2349,7 +2338,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a bar chart with a week/month segmented control in vanilla HTML/CSS/JS on a dark card. Chart is a 150px-tall flex row (align-items flex-end, gap 6px) of bar divs with height: var(--h) and transition: height 520ms cubic-bezier(.22,.61,.36,1), flex-basis 520ms, background-color 220ms, opacity 220ms. Data: week = [52,71,38,44,66,57,30]; month = the same seven followed by 23 more values 20–75; max 80. On switch do NOT rebuild: for bars that exist in both, set the new --h; for new bars insert them with a .new class (height 0) and a transition-delay of index×12ms, then remove .new on the second animation frame so they grow; for bars that no longer exist add .new and remove them after 540ms. Recompute the 'daily avg' label. Clicking a bar toggles .on (background #5aa3e0), adds .sel to the chart which sets every other bar to opacity .45, and positions a white tooltip showing the value above the bar with a 300ms left transition. Segmented control: white pill on the active option, 200ms. Under prefers-reduced-motion drop the transitions.",
-    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 04 柱状图", at: "0:27" },
   },
   {
     slug: "focus-blocks-timeline",
@@ -2380,7 +2368,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a focus-blocks timeline in vanilla HTML/CSS/JS on a dark card. Three lanes labelled BREAK / NORMAL / DEEP, each 40px tall, spanning 09:00–17:00 (480 minutes). Data is an ordered list of [level, startMin, endMin]; render each as a 20px-tall absolutely positioned block with left = start/480, width = (end−start)/480, top = laneIndex×40+10, coloured #9a9aa2 / #b5c4b0 / #c9d54a by level, 4px radius. Between consecutive blocks on different lanes draw a 1px vertical hairline at the midpoint x from one lane centre to the other. At load animate blocks from scaleX(0) (transform-origin left) over 500ms with a 70ms stagger in order. On pointermove over the lane area convert x to minutes, move a 1px white cursor line and a 9px white knob (knob top transitions 160ms to the current block's lane), write the time as HH:MM and the level name into a header pill coloured by level, and set filter: brightness(.55) on every block except the one under the cursor. Show DEEP / NORMAL / BREAK totals under the axis. On pointerleave hide the cursor and un-dim. Land the cursor on 16:20 one second after load.",
-    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 05 专注分段图", at: "0:36" },
   },
   {
     slug: "range-line-morph",
@@ -2411,7 +2398,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a range line chart with a 1W / 1M / 1Y segmented control in vanilla HTML/CSS/JS on a dark card. Generate three series that each have exactly 24 points (resample if needed), values 4–11. SVG viewBox 0 0 500 150 with preserveAspectRatio none; the line path uses vector-effect non-scaling-stroke, stroke #c9a6e6 2.5px; the area path is the same path plus L lastX 150 L firstX 150 Z, filled with a vertical gradient from #b48ad6 at 45% opacity to 0. Convert the points to a Catmull-Rom curve (control points at ±1/6 of the neighbour deltas) when building the d string. On switch, interpolate every point from its current y to the target y over 650ms with ease-out cubic in requestAnimationFrame, rebuilding both d strings each frame, and interpolate the headline number (e.g. 7.9K → 8.8K, one decimal) on the same clock; swap the four x-axis labels immediately. Keep an end-point dot at the last vertex. Under prefers-reduced-motion jump to the target.",
-    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 06 范围折线图", at: "0:43" },
   },
   {
     slug: "draggable-goal-line",
@@ -2442,7 +2428,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a bar chart with a draggable goal line in vanilla HTML/CSS/JS on a dark card. Seven bars (M–S) with values [5.6,7.2,4.9,8.4,6.4,8.9,5.1] on a 0–10 scale in a 150px flex row, resting colour #3a3a40, 40px right padding. Add a .goal row absolutely positioned with bottom: var(--y), containing a 2px white dashed line (::before), a white pill 'GOAL 7.0K' at the left, and a 24px white round handle at the right; cursor ns-resize, touch-action none. On pointerdown call setPointerCapture; on pointermove convert clientY to a goal value via the chart's bounding rect, round to 0.1, clamp 1–9.5, and call apply(): set --y = goal/10*100%, update the pill text, toggle a .hit class (background #f07b3f, 200ms) on every bar whose value ≥ goal, and write the number of hits into a 'DAYS ON GOAL n / 7' header. Scale the handle to 1.15 while hovering or dragging. After load run a scripted drag from 7.0 down to 5.5 and back over 800ms so the effect is visible.",
-    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 07 目标线", at: "0:50" },
   },
   {
     slug: "stacked-share-bar",
@@ -2473,7 +2458,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a stacked share bar in vanilla HTML/CSS/JS on a dark card. Parts: Focus 38% #e9c93a, Meetings 22% #b5c4b0, Learning 16% #9a9068, Rest 24% #e0ddd2. Render a 44px-tall flex row with gap 3px; each segment has flex: P 1 0 (grow by its value into the width left after the gaps) and min-width 6px so a 1% part stays visible, border-radius 7px, its colour, and an entry animation from scaleX(0) (transform-origin left) over 480ms cubic-bezier(.22,.61,.36,1) with animation-delay index×110ms. Clicking a segment (or its legend row) toggles .on = transform translateY(-8px) with a 260ms transition, adds .pick to the bar so the other segments get filter brightness(.6), and shows one white tooltip 'Name P%' above the segment whose left transitions 260ms and which has a 1px white stem down to the bar. Legend below as a 2-column grid with colour dots and right-aligned percentages; headline '9h 40m'. Under prefers-reduced-motion skip the grow-in and transitions.",
-    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 08 分段占比条", at: "0:56" },
   },
   {
     slug: "share-ring",
@@ -2507,7 +2491,6 @@ export const effects: Effect[] = [
     caveats: [
       "An earlier version placed each slice with the CSS <code>rotate</code> property, a <code>transform-origin</code> attribute and a CSS <code>translate</code> for the push-out. It rendered correctly in the engines it was tested in and came apart in a real browser (every slice pushed off the ring). Drawing the arcs as computed paths and moving them through the SVG <code>transform</code> attribute removes every engine difference.",
     ],
-    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 09 环形占比图", at: "1:01" },
   },
   {
     slug: "bubble-chart-nudge",
@@ -2538,9 +2521,8 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a bubble chart in vanilla HTML/CSS/JS on a dark card. Items [name, minutes, colour, cx%, cy%]: Yoga 64 #a8a06e (50,50), Walk 180 #9a9be0 (22,50), Run 38 #b5c4b0 (78,30), Swim 20 #f0efe9 (40,16), Bike 26 #8a8a90 (36,84), Gym 15 #f0efe9 (82,78) in a 210px-tall field. Each bubble is an absolutely positioned circle with diameter √minutes×7px, left/top at its centre, and transform: translate(-50%,-50%) translate(var(--dx,0), var(--dy,0)) scale(var(--s,1)) with a 520ms cubic-bezier(.22,.61,.36,1) transition; name in bold, minutes line hidden (max-height 0, opacity 0). Entry: animate from translate(-50%,-50%) scale(0) over 600ms cubic-bezier(.34,1.4,.64,1) with a 60ms stagger. On click set the picked bubble's --s to 1.35 and reveal its minutes; for every other bubble compute the centre-to-centre vector in pixels, push = max(0, pickedRadius×1.35 + otherRadius + 10 − distance), and set --dx/--dy to that push along the vector (0 if no overlap); set filter brightness(.7) on the others. Clicking the picked bubble again resets everything; recompute on resize. Pick Yoga automatically 900ms after load.",
-    source: { label: "@叨叨AI (Douyin) · 第 6 集「10 个图表交互控件」· 10 气泡图", at: "1:05" },
   },
-  /* ── 2026-09-19，抖音 @风间 AI 产品设计师「别再让 AI 做“高级网站”了，先学会拆解高级动效」──
+  /* ── 2026-09-19，AI 产品设计师「别再让 AI 做“高级网站”了，先学会拆解高级动效」──
      录屏只有 15 秒且一半是 3 倍速，时长曲线量不出来，这四条的数值是按录屏节奏定的、不是量的。
      视频里五个命名效果，「覆盖式轮播」并进了 logo-bloom-transition（同一次转场的前半段）。 */
   {
@@ -2572,7 +2554,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a flip-stack card carousel in vanilla HTML/CSS/JS. White page, a 34px marquee line behind everything (one span containing the phrase list twice, animated translateX(0 → -50%) over 16s linear, pointer-events none). Centre a 168×262 stack with perspective 1100px and transform-style preserve-3d; four absolutely positioned cards (14px radius, gradient faces, backface-visibility hidden, transform-origin 0% 50%) each with a custom property --i = its index, positioned by transform: translateZ(calc(var(--i) * -40px)) translateX(calc(var(--i) * 26px)) rotateY(calc(var(--i) * -12deg)) with transition transform 900ms cubic-bezier(.6,.02,.2,1). Every 2400ms (and on click) add .open to the front card = transform rotateY(-108deg) translateZ(20px); after 620ms add a .reset class that disables the transition, remove .open, move the card to the end of the order array, rewrite every card's --i, set its opacity to 0, and on the second animation frame remove .reset and restore opacity so it fades in at the back while the others slide forward one slot. Under prefers-reduced-motion disable the interval and the marquee.",
-    source: { label: "@风间 AI 产品设计师 (Douyin) · 「别再让 AI 做“高级网站”了」· 3D 卡片轮播" },
   },
   {
     slug: "particle-sphere-dissolve",
@@ -2604,7 +2585,6 @@ export const effects: Effect[] = [
     prompt:
       "Build a particle-sphere dissolve in vanilla HTML/JS on a #040406 page with a full-size canvas. Generate 2600 points on a Fibonacci sphere (y = 1 − 2i/(N−1), r = sqrt(1−y²), θ = i×2.399963) with ±0.03 random jitter, each with a size 0.6–2.0, a random 2D jitter vector, and a hue 270–310. Every frame rotate each point about Y by a slow spin (0.00018 rad/ms) plus pointer x, then about X by pointer y × 0.35, project orthographically with radius = 33% of the shorter side, and draw a fillRect whose size = (0.6 + depth×1.3)×size and colour hsla(hue,70%,55+depth×30%,alpha) where depth = (z+1)/2 and alpha = 0.18 + depth×0.7. Keep a scalar d (0 = sphere, 1 = dissolved) that lerps toward a target with factor 1 − 0.001^(dt/1800); at d, place each point at normal × (1 + d×(1.9 + 0.8×size)) + jitter × d × 2, grow its rect by (1 + 0.6d) and multiply alpha by (1 − 0.78d). Toggle the target on click. When d > 0.5 add a class that fades in an HTML headline ('Beyond' top-left, 'all limits' bottom-right, 54px) and a paragraph with 300ms delay. Run one dissolve/re-form cycle automatically at 2.6s and 6.4s.",
     caveats: ["Orthographic projection with no depth sort means a dense sphere looks flat-ish when it stops spinning; the alpha-by-depth ramp is what carries the volume, so keep the spin or the pointer tilt alive.", "Rendering in CSS pixels × devicePixelRatio (capped at 2): on a 3× phone this is 2600 rects at 2× — fine, but do not cap higher."],
-    source: { label: "@风间 AI 产品设计师 (Douyin) · 「别再让 AI 做“高级网站”了」· 粒子过渡转场" },
   },
   {
     slug: "floating-parallax-field",
@@ -2635,7 +2615,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a floating parallax field in vanilla HTML/CSS/JS on a #050507 page. A full-size .field with perspective 900px, a blurred purple radial glow (60% wide, blur 30px) at the lower right, a small nav top-left. Eight absolutely positioned cards each with custom properties --x/--y (percent), --z (depth 0–1) and --ar; width calc(44px + var(--z) * 92px), aspect-ratio var(--ar), 6px radius, gradient artwork, a tiny caption; filter brightness(calc(.45 + var(--z) * .7)); transform translate(calc(var(--px) * var(--z) * -28px + var(--dx)), calc(var(--py) * var(--z) * -18px + var(--dy))) with transition transform 900ms cubic-bezier(.16,.84,.3,1). On pointermove set --px/--py on the field to the pointer position mapped to −1…1; on pointerleave set 0,0. In requestAnimationFrame set each card's --dx = sin(t×.35 + i×1.7)×6×(.4+z) px and --dy = cos(t×.28 + i×2.1)×8×(.4+z) px. Depths from .18 to .95, spread across the frame. Under prefers-reduced-motion skip the drift and the transition.",
-    source: { label: "@风间 AI 产品设计师 (Douyin) · 「别再让 AI 做“高级网站”了」· 漂浮视差" },
   },
   {
     slug: "logo-bloom-transition",
@@ -2667,7 +2646,6 @@ export const effects: Effect[] = [
     prompt:
       "Build a logo-mask bloom page transition in vanilla HTML/CSS/JS. Two absolutely positioned full-size pages (A: 'Build beyond all limits' with a CSS metallic four-point star made of a conic gradient in a clip-path; B: 'Prompts that think ahead' with a purple gradient card), each with a white button; page B starts at opacity 0 and scale(1.04). A .mask overlay (inset 0, pointer-events none, opacity 0) contains one 220×220 element positioned at --ox/--oy with a radial gradient (#f1e9ff, #b78cff 30%, #6a3ddb 55%, #3a1f7a 78%, transparent) cut by clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%), initial transform scale(.04) rotate(-20deg). On button click set --ox/--oy to the button's centre, add .run to the mask (opacity 1) which plays a 1400ms cubic-bezier(.5,0,.15,1) keyframe: 0% scale(.04) rotate(-20deg) blur 0; 35% scale(1.6) rotate(6deg) blur 10px; 60% scale(4.5) rotate(20deg) blur 34px opacity 1; 100% scale(6) rotate(28deg) blur 48px opacity 0 (fill forwards). At 640ms fade the current page out (opacity 0, scale .98, 500ms) and the other in (opacity 1, scale 1, 700ms); at 1450ms remove .run. Trigger it once automatically 1.8s after load. Under prefers-reduced-motion swap instantly.",
     caveats: ["Blurring an element scaled 6× is a large GPU surface for ~0.5s; on a page that is already compositing video or heavy shadows expect a dropped frame at the 60% mark. Capping the final scale at what actually covers the viewport (measure it) is the fix."],
-    source: { label: "@风间 AI 产品设计师 (Douyin) · 「别再让 AI 做“高级网站”了」· 覆盖式轮播 + 前后页面衔接" },
   },
   {
     slug: "dash-bento-drag",
@@ -2704,7 +2682,6 @@ export const effects: Effect[] = [
       "grid-auto-flow: dense fills holes but does not preserve reading order; screen-reader order is the DOM order, which changes with every drop. Fine for a personal dashboard; announce the new order if it matters.",
       "FLIP on six tiles is cheap. On a board of 40 tiles, measure once per insertion, not once per pointermove — the insertion only changes when the hovered tile changes.",
     ],
-    source: { label: "@西瓜同学 (Douyin) · 第 5 集「6 种高端 Dashboard 交互」· 01 可以拖动的模块网格", at: "0:07–0:14 (3× playback)" },
   },
   {
     slug: "dash-expand-in-place",
@@ -2740,7 +2717,6 @@ export const effects: Effect[] = [
       "Animating width/height relayouts the chart card every frame. It is one card with 24 flex children, which is fine; for a heavier module, animate a clip-path or a scale on a pre-rendered expanded view instead.",
       "Scaled thumbnails keep their full DOM and are still in the tab order. If they are only decoration in the expanded state, set inert on them while open.",
     ],
-    source: { label: "@西瓜同学 (Douyin) · 第 5 集「6 种高端 Dashboard 交互」· 02 模块就地放大", at: "0:15–0:21 (3× playback)" },
   },
   {
     slug: "dash-global-filter",
@@ -2775,7 +2751,6 @@ export const effects: Effect[] = [
       "Odometer columns are eleven glyphs each; a 10-digit figure is 110 text nodes. Past about eight digits, animate a formatted count-up instead.",
       "Rolling numbers are hard to read mid-flight. Keep the real value available (aria-live on a hidden text copy) — screen readers should not hear the intermediate digits.",
     ],
-    source: { label: "@西瓜同学 (Douyin) · 第 5 集「6 种高端 Dashboard 交互」· 03 顶部筛选全局联动", at: "0:21–0:29 (3× playback)" },
   },
   {
     slug: "dash-linked-hover",
@@ -2810,7 +2785,6 @@ export const effects: Effect[] = [
       "The link only works because both views are on the same x-scale. If the calendar can scroll horizontally or the chart shows a different range, map index → x per view rather than sharing one guide.",
       "Hover-only linking does nothing on touch. Make a tap set the link and a second tap clear it.",
     ],
-    source: { label: "@西瓜同学 (Douyin) · 第 5 集「6 种高端 Dashboard 交互」· 04 图表悬停联动", at: "0:29–0:36 (3× playback)" },
   },
   {
     slug: "dash-sticky-metrics",
@@ -2847,7 +2821,6 @@ export const effects: Effect[] = [
       "Scroll events fire at the display rate on desktop but can be throttled on iOS during momentum scrolling; if the pill lags there, drive it from a CSS scroll-timeline where supported and keep this as the fallback.",
       "Numbers that move into the header must stay readable at 20 px: the error-rate colour and the icon survive the shrink, decorative labels ('Requests (24h)') do not and are left behind in the row.",
     ],
-    source: { label: "@西瓜同学 (Douyin) · 第 5 集「6 种高端 Dashboard 交互」· 05 指标区滚动吸顶", at: "0:36–0:44 (3× playback)" },
   },
   {
     slug: "dash-master-detail",
@@ -2882,7 +2855,6 @@ export const effects: Effect[] = [
       "grid-template-columns only interpolates when both lists have the same number of tracks and compatible units; keep collapsed columns as 0px tracks rather than removing them.",
       "Collapsed columns are hidden visually but their cells remain in the accessibility tree. Pair the fold with aria-hidden on those cells while the drawer is open.",
     ],
-    source: { label: "@西瓜同学 (Douyin) · 第 5 集「6 种高端 Dashboard 交互」· 06 列表加右侧详情抽屉", at: "0:44–0:51 (3× playback)" },
   },
   {
     slug: "dashboard-floating-panel",
@@ -2914,7 +2886,6 @@ export const effects: Effect[] = [
       { label: "Drawer", value: "< 600px · translateX(calc(−100% − 24px)) · 320ms" },
     ],
     prompt: "Content system (shared by every design): a token set on :root (--bg, --card, --ink, --muted, --line, --accent #e07a2f), a topbar with status chips (Normale, Auto-conferma ON, clock-in code, Pausa ordini), and three screens rendered from a data object: an overview with 4 KPI cards, an SVG revenue line resampled to 30 points that morphs between 30 and 7 days over 650ms, a donut whose slices push out 5px on hover, an orders-per-hour bar row, a top-dishes list with photos, a latest-orders table; an order board of cards (left border in the channel colour, status tag, type, channel badge with the platform code, item list, total, a primary button that advances the status); a menu grid with search, category chips and an 'Esaurito' toggle that greys the photo. Sidebar for THIS design: a 248px column that is sticky at top:16px with height calc(100vh - 32px), margin 16px 0 16px 16px, border-radius 20px, white background and the two-layer shadow 0 1px 2px #0000000d, 0 24px 48px -28px #00000040; brand block, a vertical list of 15 items (20px inline SVG icon + label, 9px 12px padding, 12px radius, muted colour, active = accent background with white text), a user row with a 32px avatar, and a back link. Under 600px make it a fixed drawer translated off-screen with a scrim and a burger button in the topbar.",
-    source: { label: "@西瓜同学 (Douyin) · 「6 个高级 Dashboard 侧边栏设计」· 01 悬浮岛式侧边栏" },
   },
   {
     slug: "dashboard-dark-rail",
@@ -2946,7 +2917,6 @@ export const effects: Effect[] = [
       { label: "Hover", value: "#ffffff0a wash · 160ms" },
     ],
     prompt: "Content system (shared by every design): a token set on :root (--bg, --card, --ink, --muted, --line, --accent #e07a2f), a topbar with status chips (Normale, Auto-conferma ON, clock-in code, Pausa ordini), and three screens rendered from a data object: an overview with 4 KPI cards, an SVG revenue line resampled to 30 points that morphs between 30 and 7 days over 650ms, a donut whose slices push out 5px on hover, an orders-per-hour bar row, a top-dishes list with photos, a latest-orders table; an order board of cards (left border in the channel colour, status tag, type, channel badge with the platform code, item list, total, a primary button that advances the status); a menu grid with search, category chips and an 'Esaurito' toggle that greys the photo. Sidebar for THIS design: a 240px sticky full-height column in #17181c with no radius or shadow; brand block (accent logo, white name, #8d9099 subtitle); 15 items at 13.5px in #8d9099 with 20px icons, hover = #d8d9de text on #ffffff0a, active = white bold text on #ffffff10 plus a ::before 3px accent bar at left:0 from 10px to 10px; a user row above a #ffffff14 hairline with a white avatar; content stays light (#f4f4f6 page, white cards). Under 600px it becomes a fixed drawer with a scrim.",
-    source: { label: "@西瓜同学 (Douyin) · 「6 个高级 Dashboard 侧边栏设计」· 02 深色重底侧边栏" },
   },
   {
     slug: "dashboard-glass-rail",
@@ -2978,7 +2948,6 @@ export const effects: Effect[] = [
       { label: "Cards", value: "#ffffffcc · backdrop blur 14px" },
     ],
     prompt: "Content system (shared by every design): a token set on :root (--bg, --card, --ink, --muted, --line, --accent #e07a2f), a topbar with status chips (Normale, Auto-conferma ON, clock-in code, Pausa ordini), and three screens rendered from a data object: an overview with 4 KPI cards, an SVG revenue line resampled to 30 points that morphs between 30 and 7 days over 650ms, a donut whose slices push out 5px on hover, an orders-per-hour bar row, a top-dishes list with photos, a latest-orders table; an order board of cards (left border in the channel colour, status tag, type, channel badge with the platform code, item list, total, a primary button that advances the status); a menu grid with search, category chips and an 'Esaurito' toggle that greys the photo. Sidebar for THIS design: a 244px sticky full-height column with background #ffffff70, backdrop-filter blur(24px) saturate(1.2), border-right 1px solid #ffffffb3 and box-shadow inset -1px 0 0 #ffffff66; the page has body::before as a fixed, inset -40px cover photo of food with filter blur(22px) saturate(1.25) and body::after a fixed linear-gradient(160deg, #ffffff66, #ffffff10 45%, #00000022); items in #6d655e with hover #ffffff66 and active #ffffffd9 with a 1px white border and a soft shadow; cards are #ffffffcc with backdrop-filter blur(14px), chips #ffffffb3. Under 600px it becomes a fixed drawer with a scrim.",
-    source: { label: "@西瓜同学 (Douyin) · 「6 个高级 Dashboard 侧边栏设计」· 03 磨砂玻璃侧边栏" },
   },
   {
     slug: "dashboard-rail-panel",
@@ -3011,7 +2980,6 @@ export const effects: Effect[] = [
       { label: "Collapse", value: "panel drawer < 760px · rail drawer < 520px" },
     ],
     prompt: "Content system (shared by every design): a token set on :root (--bg, --card, --ink, --muted, --line, --accent #e07a2f), a topbar with status chips (Normale, Auto-conferma ON, clock-in code, Pausa ordini), and three screens rendered from a data object: an overview with 4 KPI cards, an SVG revenue line resampled to 30 points that morphs between 30 and 7 days over 650ms, a donut whose slices push out 5px on hover, an orders-per-hour bar row, a top-dishes list with photos, a latest-orders table; an order board of cards (left border in the channel colour, status tag, type, channel badge with the platform code, item list, total, a primary button that advances the status); a menu grid with search, category chips and an 'Esaurito' toggle that greys the photo. Sidebar for THIS design: two columns: a 72px sticky dark (#17181c) rail with a 36px accent logo, a vertical list of 44×44 icon tiles (one per module, title attribute for the label, active = accent background), and a 34px avatar at the bottom; next to it a 240px sticky panel in #fbfbfc with a 15px bold module title and a list of section links (13.5px, active = accent text on a 12% accent wash). On rail click, add .swap to the section list (opacity 0, translateX(-4px), 140ms), replace the list with that module's sections after 140ms, remove .swap, and render the module; on section click filter the screen (orders by status name, menu by category). Under 760px the panel becomes a fixed drawer beside the rail; under 520px the rail hides behind a burger.",
-    source: { label: "@西瓜同学 (Douyin) · 「6 个高级 Dashboard 侧边栏设计」· 04 双层图标轨" },
   },
   {
     slug: "dashboard-hover-expand",
@@ -3044,7 +3012,6 @@ export const effects: Effect[] = [
       { label: "Touch", value: "burger pins open · scrim closes" },
     ],
     prompt: "Content system (shared by every design): a token set on :root (--bg, --card, --ink, --muted, --line, --accent #e07a2f), a topbar with status chips (Normale, Auto-conferma ON, clock-in code, Pausa ordini), and three screens rendered from a data object: an overview with 4 KPI cards, an SVG revenue line resampled to 30 points that morphs between 30 and 7 days over 650ms, a donut whose slices push out 5px on hover, an orders-per-hour bar row, a top-dishes list with photos, a latest-orders table; an order board of cards (left border in the channel colour, status tag, type, channel badge with the platform code, item list, total, a primary button that advances the status); a menu grid with search, category chips and an 'Esaurito' toggle that greys the photo. Sidebar for THIS design: a sticky full-height rail that is 72px in the grid but whose own width transitions 72px → 240px over 240ms cubic-bezier(.22,.61,.36,1) on pointerenter (only when (hover: hover) and (pointer: fine)), overflow hidden, dark #131418 with a 24px right shadow when open; rows are 44px tall with a 20px icon at a fixed 14px inset and a label span that is always rendered but opacity 0 with transition opacity 160ms, and transition-delay 80ms only while the rail is open; active row = accent background; a burger button on touch adds .open and .pinned with a scrim. Whole page dark: #0f1013 background, #17181c cards, #26272c hairlines, #f2f2f4 text.",
-    source: { label: "@西瓜同学 (Douyin) · 「6 个高级 Dashboard 侧边栏设计」· 05 折叠展开式" },
   },
   {
     slug: "dashboard-grouped-nav",
@@ -3077,7 +3044,6 @@ export const effects: Effect[] = [
       { label: "Active", value: "accent text · 12% accent wash" },
     ],
     prompt: "Content system (shared by every design): a token set on :root (--bg, --card, --ink, --muted, --line, --accent #e07a2f), a topbar with status chips (Normale, Auto-conferma ON, clock-in code, Pausa ordini), and three screens rendered from a data object: an overview with 4 KPI cards, an SVG revenue line resampled to 30 points that morphs between 30 and 7 days over 650ms, a donut whose slices push out 5px on hover, an orders-per-hour bar row, a top-dishes list with photos, a latest-orders table; an order board of cards (left border in the channel colour, status tag, type, channel badge with the platform code, item list, total, a primary button that advances the status); a menu grid with search, category chips and an 'Esaurito' toggle that greys the photo. Sidebar for THIS design: a 250px sticky full-height column in #fbfbfc with a 1px right hairline, laid out as a grid with rows auto 1fr auto auto: a brand block, a nav with overflow auto containing three groups (Sala: Panoramica, Ordini, Cucina, Cassa, Prenotazioni · Gestione: Menu, Opzioni, Piattaforme, Consegne, Rider, Fedeltà, Clienti · Sistema: Report, Stampa, Impostazioni) separated by a 32px gap, each with a 10.5px uppercase letter-spaced #9a9ea6 label; items 13.5px with 20px icons, active = accent text on color-mix(accent 12%); a pinned user row (32px avatar, name, shift) above a back link, both with the rail background so the scrolling list slides under a clean edge. Under 600px it becomes a fixed drawer with a scrim.",
-    source: { label: "@西瓜同学 (Douyin) · 「6 个高级 Dashboard 侧边栏设计」· 06 分组留白加底部收口" },
   },
   /* ── Dashboard · 整页风格 · 2026-09-20：同一套 M Desk 真数据（_mdesk/data.js + base.js），四种完全不同的页面语言，每种把设计库里的控件装进去当真工具 ── */
   {
@@ -3367,7 +3333,7 @@ export const effects: Effect[] = [
     caveats: ["CSS zoom scales layout but not pointer deltas: every drag (pull, summary) must divide clientY differences by the current zoom or the card moves twice as far as the finger at half scale."],
     source: { label: "Composed from the library: pull-to-refresh (Bencho, MIT) · card-tray · accordion-row · progress-fill · pull-summary · overlap-row" },
   },
-  /* ── 手机 UI 第三批 · 2026-09-21，抖音 @叨叨AI 第 8 集「8 个高级交互提升 App 和小程序的质感差别」：59s 三倍速录屏，每段一张标题卡 + 段尾一句「跟 AI 说」；照片换成 Mumi 店内实拍（_plates/），黑卡壳同第 7 集 ── */
+  /* ── 手机 UI 第三批 · 2026-09-21，第 8 集「8 个高级交互提升 App 和小程序的质感差别」：59s 三倍速录屏，每段一张标题卡 + 段尾一句「跟 AI 说」；照片换成 Mumi 店内实拍（_plates/），黑卡壳同第 7 集 ── */
   {
     slug: "pinch-density",
     category: "mobile-ui",
@@ -3396,7 +3362,6 @@ export const effects: Effect[] = [
       { label: "Wheel", value: "60px per level" },
     ],
     prompt: "Dark 320px card (#0f0f11, radius 28) on a light grid background with a 9px uppercase eyebrow (ARCHIVE · 26 PLATES) and a footer of three level markers (FULL, 3 COLS, ROWS — a 10px dash that turns amber and widens to 16px when active). A 292×330 stage holds 9 absolutely positioned photo tiles. Define three layout functions from index to [x, y, width, height]: full = tile 0 covers the stage and the others sit at y = stage height + 40 at 40px size; cols = three columns with 6px gaps at 1.25 aspect; rows = full-width 32px lines every 36px where the tile background is transparent, the image shrinks to a 32px rounded thumbnail and a label plus a hairline fade in over 200ms. On level change, FLIP every tile: measure its rect, apply the new size and translate, set an inverse transform (translate by the old-minus-new delta divided by the size ratio, then scale by the ratio), force a reflow, then transition transform, width and height over 320ms cubic-bezier(.22,.9,.3,1) to the new rect. Pinch: track two pointers by id; when the second lands store the distance; while both are down, current/start < 0.8 steps one level denser and > 1.25 one level sparser, once per pinch. Also step on wheel every 60px of accumulated deltaY (preventDefault). Show a white pill with the level name at the top of the stage for 900ms after each change. Demo: step denser at 1.1s and 2.6s, sparser at 4.2s and 5.4s.",
-    source: { label: "@叨叨AI (Douyin) · 第 8 集「8 个高级交互提升 App 和小程序的质感差别」· 01 捏合改密度 Pinch Density" },
   },
   {
     slug: "scroll-progress-rail",
@@ -3424,7 +3389,6 @@ export const effects: Effect[] = [
       { label: "Rail", value: "2px track · 12px thumb · 8px nodes" },
     ],
     prompt: "Dark 320px card (#0f0f11, radius 28) with an eyebrow (SPEC · 24 PAGES on the left, the current section name on the right) and a footer with a READ label, an 80px progress bar and a percentage. Inside, a 330px scrollable document (hidden scrollbar, 30px right padding) of six sections — Site & Massing, Structure, Facade System, Daylight, Materials, Detailing — each a 12px heading with a 2px left rule and four to seven grey 4px placeholder lines of random width. On the right a 14px rail: a 2px #2a2a2e track, a blue (#7fb0ff) fill whose height is --p, an 8px node per section placed at that section's offsetTop divided by the scrollable range, a 12px white thumb at --p with a 3px card-coloured ring, and a white pill to its left showing the percentage. On every scroll event compute p = scrollTop / (scrollHeight − clientHeight) and write it to --p, the READ bar and the number; find the current section (the last one whose offsetTop ≤ scrollTop + 40), give its heading the blue rule, mark nodes at or before it done (blue), and put its name in the eyebrow. Show the pill by adding a class and remove it 700ms after the last scroll event. Demo: after 1s auto-scroll to 65% over 2.4s, then back to 35% over 1.6s.",
-    source: { label: "@叨叨AI (Douyin) · 第 8 集「8 个高级交互提升 App 和小程序的质感差别」· 02 滚动带着进度走 Scroll Driven" },
   },
   {
     slug: "velocity-motion-blur",
@@ -3453,7 +3417,6 @@ export const effects: Effect[] = [
     ],
     prompt: "Dark 320px card (#0f0f11, radius 28) with an eyebrow (PLATES · a state word that reads IDLE in grey or SCROLLING in red) and a footer (VELOCITY · N PX/S). A 330px viewport (overflow hidden, touch-action none, grab cursor) containing a two-column track (8px gap) of 14 photo tiles at 0.78 aspect with 12px radius and overflow hidden; images have user-drag none and pointer-events none. Define an SVG filter id=smear (x 0, y −50%, width 100%, height 200%) with feGaussianBlur stdDeviation \"0 0\" and edgeMode duplicate, applied to the images only while a smear class is on the viewport. Own the scroll: keep y and v; on pointerdown capture and record the start; on pointermove set y from the drag and v = −Δy/Δt × 1000; on pointerup keep v (zero it if the last move was over 60ms ago); on wheel add deltaY × 18 to v. Each frame: if not held, y += v·dt and v *= 0.95^(dt·60), stop below 20px/s; clamp y to [0, trackHeight − 330] and zero v at the ends; translate the track by −y; smooth shown += (|v| − shown) × 0.3; set stdDeviation to \"0 \" + min(16, shown/60) and toggle the smear class above 0.3; print round(shown) and set the state word at 60px/s. Demo: at 1s dispatch a synthetic 200px fling upward over 180ms and release; at 3.8s one downward.",
     caveats: ["Filtering every tile is a GPU surface per tile; on a long list apply the filter only to tiles inside the viewport (IntersectionObserver) — the smear on off-screen tiles is invisible anyway."],
-    source: { label: "@叨叨AI (Douyin) · 第 8 集「8 个高级交互提升 App 和小程序的质感差别」· 03 甩起来的拖影 Motion Blur" },
   },
   {
     slug: "stretch-header",
@@ -3482,7 +3445,6 @@ export const effects: Effect[] = [
       { label: "Settle", value: "380ms cubic-bezier(.22,1.1,.36,1)" },
     ],
     prompt: "Dark 320px card (#0f0f11, radius 28, no padding) holding a 380px scrollable column (hidden scrollbar). At the top a 200px header with overflow hidden: a cover photo (transform-origin 50% 0, scale var(--s)), a bottom gradient to the card colour, a title block bottom-left (8px uppercase kicker BRUTALIST · 1967, 20px bold Concrete Hall) at opacity var(--o), and a white pill centred at the top showing +N. Below, a list of eight rows (34px thumbnail, two grey placeholder lines, a mint dot) in #1a1a1d tiles. The header has touch-action none and its image has -webkit-user-drag none and pointer-events none. On pointerdown on the header while scrollTop is 0, capture the pointer and remember clientY; on pointermove set d = clientY − start, drawn = 700·d/(700+d), --s = 1 + drawn/600, --o = max(0, 1 − drawn/150), pill text +round(drawn), pill visible past 4px. On pointerup add a settle class that transitions transform and opacity over 380ms cubic-bezier(.22,1.1,.36,1) and set d to 0; remove the class on the next pointerdown. Demo: after 1.1s run a scripted pull to 190px and back over 900ms, then settle.",
-    source: { label: "@叨叨AI (Douyin) · 第 8 集「8 个高级交互提升 App 和小程序的质感差别」· 04 下拉把顶图拉大 Stretch Header" },
   },
   {
     slug: "snap-to-guide",
@@ -3510,7 +3472,6 @@ export const effects: Effect[] = [
       { label: "Readout", value: "OFFSET = nearest distance, live" },
     ],
     prompt: "Dark 320px card (#0f0f11, radius 28) with an eyebrow (CANVAS · state FREE or SNAPPED) and a footer (OFFSET N px · THRESHOLD 12PX, which becomes SNAP · CENTER while snapped). A 292×330 canvas (#131316, radius 14) holds three fixed blocks (#1e1e22, radius 10, 128px wide: two in a top row at x 10 and 154, one below-left) with grey placeholder lines and a small bar chart with one violet bar, plus one draggable block at the bottom. Guides are the two column centres, x = 74 and 218. On pointerdown capture the pointer and store the offset; on pointermove compute the block centre, the distance to the nearest guide, print it; if under 12px set x so the centre sits on the guide, show a 1px violet (#c9a3ff) vertical line at that x and a violet ALIGN tag just above the block, set the state to Snapped — and on the first frame of a new snap apply translateX(2px toward the line) and clear it after 90ms with a 90ms transform transition. Outside the threshold follow the pointer, hide the line and tag, state Free. Clamp the block inside the canvas. While held give the block a violet 1px ring and a deep shadow. Demo: after 1s dispatch a synthetic drag from the block 130px right and 120px up over 1.6s, hold, release.",
-    source: { label: "@叨叨AI (Douyin) · 第 8 集「8 个高级交互提升 App 和小程序的质感差别」· 05 拖动自动吸到线上 Snap To Guide" },
   },
   {
     slug: "arc-reflow",
@@ -3539,7 +3500,6 @@ export const effects: Effect[] = [
     ],
     prompt: "Dark 320px card (#0f0f11, radius 28) with an eyebrow (TOOLS · N COLS) and a footer of two markers (2 COLS, 3 COLS — a 10px dash that turns lime #c9e04a when active) plus the words ARC PATH. A 292×330 stage holds nine absolutely positioned tiles (#1a1a1d, radius 12, padding 10px 12px, overflow hidden, transform-origin 0 0): a 24px lime-tinted icon box top-left and a 10px name with a short hairline bottom-left — Plans, Schedule, Notes, Files, Timeline, Sketch, Threads, Flags, Power. Layout function for c columns with 8px gaps: width = (292 − 8(c−1))/c, rows = ceil(9/c), height = (330 − 8(rows−1))/rows, x = (i mod c)(w+8), y = floor(i/c)(h+8). On switch compute the from and to rect for every tile, then run one requestAnimationFrame clock for 520ms plus index × 24ms of stagger: per tile take t = clamp((now − t0 − i·24)/520), ease it on cubic-bezier(.22,.9,.3,1) to e, and set transform: translate(x, y) with x = (1−e)²x0 + 2(1−e)e·cx + e²x1 (same for y) where cx, cy is the chord midpoint with cy lifted 40px, and width/height = from + (to − from)·e. Cancel any running clock on a new switch. Do not use offset-path: its coordinate space is the element box and the tiles will land off by their own position. Clicking a marker switches; demo: to 3 columns at 1.1s, back to 2 at 3.2s, to 3 at 5s.",
     caveats: ["Nine tiles × three properties written every frame is cheap; at fifty tiles switch the size interpolation to a CSS transition on width/height and keep only the transform in the loop."],
-    source: { label: "@叨叨AI (Douyin) · 第 8 集「8 个高级交互提升 App 和小程序的质感差别」· 06 换列数走弧线 Arc Reflow" },
   },
   {
     slug: "auto-contrast-overlay",
@@ -3568,7 +3528,6 @@ export const effects: Effect[] = [
       { label: "Bar", value: "sticky top · pill border color-mix(currentColor 40%)" },
     ],
     prompt: "Dark 320px card (#0f0f11, radius 28, no padding) with a 380px scrollable column of five full-width photos stacked (hidden scrollbar). Sticky at the top a bar: ← Concrete Hall on the left (13px semibold), a PLATE 07 pill on the right (9px uppercase, 1px border in color-mix(in srgb, currentColor 40%, transparent), an orange dot). Register @property --ink as a <color> (inherits, initial #ffffff); the bar has --ink: #fff, transition: --ink 300ms, color: var(--ink). Keep a 16×4 offscreen canvas with willReadFrequently. On scroll (throttled to one requestAnimationFrame) find the image whose rect contains the bar's vertical centre, drawImage the slice behind the bar (source y = (barTop − imgTop)/imgHeight × naturalHeight, height = barHeight/imgHeight × naturalHeight) into the canvas, read getImageData and average luma = 0.2126R + 0.7152G + 0.0722B over 255; set --ink to #0f0f11 if luma > 0.5 else #ffffff; write luma to a small BACKDROP LUMA meter fixed at the bottom-left (60px bar, two-decimal number) drawn with mix-blend-mode difference. Demo: after 1s scroll to the end over 4.2s then back to half over 1.8s.",
-    source: { label: "@叨叨AI (Douyin) · 第 8 集「8 个高级交互提升 App 和小程序的质感差别」· 07 跟着背景换黑白 Auto Contrast" },
   },
   {
     slug: "focus-mode-grid",
@@ -3595,9 +3554,8 @@ export const effects: Effect[] = [
       { label: "Caption", value: "300ms · delay 200ms" },
     ],
     prompt: "Dark 320px card (#0f0f11, radius 28) with an eyebrow (LIBRARY · 6 ITEMS, which becomes 1 SELECTED) and a footer (FOCUS · ONE AT A TIME · the chosen name). A three-column grid (8px gap) of six photo tiles at 0.78 aspect, radius 12, each with a hidden 8px uppercase caption bottom-left. Every tile transitions transform and filter over 420ms cubic-bezier(.22,.9,.3,1). Clicking a tile toggles a pick class on the grid and an on class on that tile: with pick, every tile gets filter saturate(.3) brightness(.7) blur(2px) and transform scale(.96); the on tile instead gets brightness(1.1), scale(1.08), z-index 2, box-shadow 0 16px 40px −16px black plus a 1.5px violet (#b4a7ff) ring, and its caption fades in over 300ms after a 200ms delay. Clicking the on tile again clears both classes. Demo: pick the fourth tile at 1s, release at 3.2s, pick the second at 4.2s.",
-    source: { label: "@叨叨AI (Douyin) · 第 8 集「8 个高级交互提升 App 和小程序的质感差别」· 08 选中一张 Focus Mode" },
   },
-  /* ── 手机 UI · 2026-09-19，抖音 @叨叨AI 第 7 集「6 种组件交互提升 App 和小程序质感」：六个组件卡片，录屏 3 倍速按 6fps 抽帧（真实 2fps）量的时长 ── */
+  /* ── 手机 UI · 2026-09-19，第 7 集「6 种组件交互提升 App 和小程序质感」：六个组件卡片，录屏 3 倍速按 6fps 抽帧（真实 2fps）量的时长 ── */
   {
     slug: "overlap-row",
     category: "mobile-ui",
@@ -3625,7 +3583,6 @@ export const effects: Effect[] = [
       { label: "Open pitch", value: "40px per avatar" },
     ],
     prompt: "Dark 320px card (#0f0f11, radius 28) on a light grid background, 9px letter-spaced uppercase eyebrow with a pill on the right, a three-cell stats row at the bottom (#1a1a1d tiles, 18px bold numbers, tiny caption). Build an overlap-row avatar group in vanilla HTML/CSS/JS. Inside the card: eyebrow 'REVIEW · THIS WEEK' with a pill, h2 'Launch Review', a sub line, then a 62px row containing an avatar strip and a white 'Join' button. Five 34px circles (2px border in the card colour, coloured backgrounds, initials) absolutely positioned with left: calc(var(--i) * 22px) and transition left 360ms cubic-bezier(.22,.61,.36,1) with transition-delay calc(var(--i) * 40ms); each has a name span under it at opacity 0 / translateY(4px). A '+3' pill sits after them. Clicking the strip toggles .open: avatars go to left: calc(var(--i) * 40px), names to opacity 1 with delay calc(var(--i) * 40ms + 120ms), the pill to the end with a 200ms delay. Below: an amber (#f5a623) 'PEOPLE 8 people · 5 confirmed · 3 pending' panel with seven tiny bars, then the stats row Agenda 4 / Docs 12 / Time 45 min. Open it automatically at 1.2s and close at 3.6s.",
-    source: { label: "@叨叨AI (Douyin) · 第 7 集「6 种组件交互提升 App 和小程序质感」· 01 重叠排列 Overlap Row" },
   },
   {
     slug: "progress-fill",
@@ -3654,7 +3611,6 @@ export const effects: Effect[] = [
       { label: "Done", value: "scale(1.025) · cubic-bezier(.34,1.4,.64,1) 260ms · ring 6px" },
     ],
     prompt: "Dark 320px card (#0f0f11, radius 28) on a light grid background, 9px letter-spaced uppercase eyebrow with a pill on the right, a three-cell stats row at the bottom (#1a1a1d tiles, 18px bold numbers, tiny caption). Build a progress-fill checklist card in vanilla HTML/CSS/JS. Add an absolutely positioned .fill layer (inset 0, width var(--p), background #1e5c4a, transition width 600ms cubic-bezier(.22,.61,.36,1), a 1px #6ee7c866 line on its right edge) under a position:relative content wrapper. Content: eyebrow 'TODAY' with a 'n / 5 done' pill, a 44px bold percentage, a sub line, five checklist rows (18px rounded checkbox, label, time) and the stats row Streak 12 days / Focus 3.5 h / Left n. Clicking a row toggles .on (check filled #6ee7c8, label struck through); apply() sets --p to round(done/5*100)% and counts the displayed number from its current value to the target over 600ms with ease-out cubic in requestAnimationFrame; when all five are done add .done to the card = transform scale(1.025) with transition 260ms cubic-bezier(.34,1.4,.64,1) and a 6px #1f7a5a33 outer ring in box-shadow. Auto-tick the five items 800ms apart starting at 900ms.",
-    source: { label: "@叨叨AI (Douyin) · 第 7 集「6 种组件交互提升 App 和小程序质感」· 02 进度就是底色 Progress Fill" },
   },
   {
     slug: "accordion-row",
@@ -3683,7 +3639,6 @@ export const effects: Effect[] = [
       { label: "Colours", value: "#f5b73a · #e8573f · #8ec5ff · #a99cff" },
     ],
     prompt: "Dark 320px card (#0f0f11, radius 28) on a light grid background, 9px letter-spaced uppercase eyebrow with a pill on the right, a three-cell stats row at the bottom (#1a1a1d tiles, 18px bold numbers, tiny caption). Build a horizontal accordion of four boards in vanilla HTML/CSS/JS. A 236px-tall flex row with 8px gaps; each strip is flex: 1 1 0, min-width 44px, radius 14px, its own colour (#f5b73a Focus 3.5, #e8573f Tasks 12, #8ec5ff Notes 28, #a99cff Files 46), transition flex-grow 500ms cubic-bezier(.22,.61,.36,1); the active strip gets flex-grow 4.2. Each strip contains a 20px icon tile absolutely positioned at top (centred when collapsed, left 22px when open, transitioned), a vertical label at the bottom (writing-mode vertical-rl rotated 180deg, hidden when open) and a .detail block fixed at 180px wide (eyebrow, 30px number with unit, three list lines with times, a small bar chart in a 30% black rounded box) at opacity 0 that fades in with a 220ms delay when open. Clicking a strip toggles it; a dots indicator under the row tracks the active index. Auto-open strip 2 at 1s and strip 4 at 3.2s.",
-    source: { label: "@叨叨AI (Douyin) · 第 7 集「6 种组件交互提升 App 和小程序质感」· 03 横向手风琴 Accordion Row" },
   },
   {
     slug: "card-tray",
@@ -3712,7 +3667,6 @@ export const effects: Effect[] = [
       { label: "Chevron", value: "rotate(180deg) · 300ms" },
     ],
     prompt: "Dark 320px card (#0f0f11, radius 28) on a light grid background, 9px letter-spaced uppercase eyebrow with a pill on the right, a three-cell stats row at the bottom (#1a1a1d tiles, 18px bold numbers, tiny caption). Build a card-tray widget in vanilla HTML/CSS/JS: card padding 10px. A main tile (#8ec5ff, radius 20, z-index 2) with eyebrow 'DEEP WORK' + 'Logged' pill, a 40px bold '2 hr 40 min', a sub line and 18 tiny bars. Below it a .tray (background #1c1c1f, z-index 1, margin -18px 4px 0, padding 26px 12px 10px, bottom radius 18px, overflow hidden, max-height 78px, transition max-height 420ms cubic-bezier(.22,.61,.36,1)) containing a header row '3 SESSIONS TODAY' with a chevron and a list of three rows (label, 3px progress track with a white fill of 45/80/38%, duration) at opacity 0 translateY(-6px). Clicking the tray toggles .open: max-height 200px, rows to opacity 1 with transition-delay calc(var(--i) * 60ms + 120ms), chevron rotated 180deg. Then the stats row Best 1h10 m / Breaks 4 / Week 14 h in normal flow so it is pushed down. Auto-open at 1.1s, close at 3.6s.",
-    source: { label: "@叨叨AI (Douyin) · 第 7 集「6 种组件交互提升 App 和小程序质感」· 04 组件托盘 Card Tray" },
   },
   {
     slug: "magnify-row",
@@ -3741,7 +3695,6 @@ export const effects: Effect[] = [
       { label: "Gesture", value: "pointerdown + capture · touch-action none" },
     ],
     prompt: "Dark 320px card (#0f0f11, radius 28) on a light grid background, 9px letter-spaced uppercase eyebrow with a pill on the right, a three-cell stats row at the bottom (#1a1a1d tiles, 18px bold numbers, tiny caption). Build a magnify dock in vanilla HTML/CSS/JS. Card: eyebrow 'SHORTCUTS' with a state pill, a 30px bold title (default 'Pick one'), a sub line with 'Shortcut n of 6' and 'nn / 06', a 'DOCK' label, then a 64px-tall flex row (space-between, align-items flex-end, touch-action none) of six 40px rounded tiles (#1e1e22, glyph) with transform: scale(var(--s,1)), transform-origin 50% 100%, transition transform 160ms cubic-bezier(.22,.61,.36,1), plus a white tag positioned at --x above the dock. On pointerdown call setPointerCapture; on every move compute for each tile d = |pointerX − tileCentreX| and set --s = 1 + 0.6·exp(−(d/38)²) − (d > 80 ? 0.06 : 0), mark the nearest tile .hot, write its app name into the title and tag and its index into the counters. On pointerup reset every --s to 1, give the nearest tile .sel (#b4a7ff background), set the pill to 'Selected'. Stats row Opened 38 / Top #2 / New 2. Run a scripted slide across and back between 0.9s and 2.7s.",
-    source: { label: "@叨叨AI (Douyin) · 第 7 集「6 种组件交互提升 App 和小程序质感」· 05 跟手放大的图标排 Magnify Row" },
   },
   {
     slug: "pull-summary",
@@ -3770,7 +3723,6 @@ export const effects: Effect[] = [
       { label: "Tap", value: "< 6px movement toggles" },
     ],
     prompt: "Dark 320px card (#0f0f11, radius 28) on a light grid background, 9px letter-spaced uppercase eyebrow with a pill on the right, a three-cell stats row at the bottom (#1a1a1d tiles, 18px bold numbers, tiny caption). Build a pull-to-expand summary in vanilla HTML/CSS/JS: card padding 10px. A .sum block (radius 18, background #1c1c1f, overflow hidden, height var(--h), transition height 420ms cubic-bezier(.22,.61,.36,1) and background-color 300ms, touch-action none) containing a 40px strip of three coloured-dot numbers ('8420 steps · 3.5h focus · 5 done') and an absolutely positioned orange panel (eyebrow 'TODAY · OVERVIEW' + 'Weekly goal' pill, 44px '94%', seven bars, a sub line, three stat tiles Steps 8420 / Focus 3.5 h / Done 5/6, a grip bar) at opacity 0. Below it in normal flow an 'AGENDA · TODAY' list of five rows with coloured icon tiles and times. On pointerdown remember the start Y and current height, add .drag (transition none), capture the pointer; on move set --h = clamp(40, start + dy, 208) and toggle .open (background #f2733f, strip opacity 0, panel opacity 1 with 120ms delay) when h > 90; on release remove .drag and settle to 184px if h > 90 else 40px — or, if the pointer moved < 6px, toggle. Auto-open at 1.1s and close at 3.8s.",
-    source: { label: "@叨叨AI (Douyin) · 第 7 集「6 种组件交互提升 App 和小程序质感」· 06 下拉展开摘要 Pull Summary" },
   },
   {
     slug: "focus-timer-island",
@@ -3804,7 +3756,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a frosted glass card (391px wide, radius 22, teal/peach/lilac radial gradients over a blurred landscape) titled 'Today · 3 TASKS · FOCUS' with three 35px task rows (glass, 10px radius; the first done with a teal check and strikethrough, the active one outlined teal). Above them a dark timer island (#2c2624 at 90%) positioned absolutely: compact 128×32 centred with a small ring and '24:15'; wide = full width × 46 with a 22px ring, the task name, the time and a round pause button (shown when the pointer leaves the card or the tab is hidden); expanded = full width × 146 with a teal-dot uppercase task label, a 36px bold countdown, a 3px teal progress bar and Pause / End buttons (tap to open). Animate left/width/height/border-radius together over 420ms cubic-bezier(.32,.72,0,1); crossfade each state's content with a 120ms delay; fold back to compact after 2.2s without pointer movement. Drive ring, number and bar from one per-second countdown. Tapping another task restarts the timer for it; End hides the island.",
-    source: { label: "@叨叨AI (Douyin) · 第 12 集「8 个让 App 和小程序变高级的组件交互」 · 01 计时小条 Focus Timer" },
   },
   {
     slug: "step-sheet",
@@ -3838,7 +3789,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a frosted glass card 'Plan a visit · BOOK A WALKING TOUR' with two rounded photos, and a dark bottom sheet (#38312e, radius 18) pinned to the card's bottom with a grabber, 'STEP n OF 3' and three dots (current one 18px wide, white). Step 1: 'Who's coming' with chips Just me / Two of us / Group. Step 2: 'Pick a day' — seven 39px day tiles M6…S12 (Thu 9 selected, white) and Morning / Afternoon / Evening chips. Step 3: a 42px orange (#ee7b3b) check that springs in, 'All set' and a summary built from the choices. A full-width white Next / Done button. Panes are absolutely positioned; on each step set the sheet height to pane scrollHeight + chrome and transition height 380ms cubic-bezier(.32,.72,0,1); the new pane slides in from +56px, the old one out to −56px with fades. The sheet rises with 560ms cubic-bezier(.34,1.25,.64,1) and falls on Done (340ms ease-in); tapping the photos reopens it at step 1.",
-    source: { label: "@叨叨AI (Douyin) · 第 12 集「8 个让 App 和小程序变高级的组件交互」 · 02 分步弹窗 Steps" },
   },
   {
     slug: "dark-mode-reveal",
@@ -3870,7 +3820,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a 'Settings · APPEARANCE' frosted card with three 44px white rows (moon icon + Dark mode + switch, Aa + Text size + 'Medium ›', speaker + Sounds + switch; switches 42×24, on = #9183f5). Stack an identical dark copy (#161218 card, #231f25 rows, violet icons) on top, clipped with clip-path: circle(var(--r) at var(--x) var(--y)). On toggling Dark mode, set the centre to the switch knob and animate --r from 0 to the distance to the farthest card corner over 1250ms (cubic in-out, 120ms delay after the knob moves); toggling off animates back to 0 in 700ms. Both copies share one state object and the hidden one becomes inert.",
-    source: { label: "@叨叨AI (Douyin) · 第 12 集「8 个让 App 和小程序变高级的组件交互」 · 03 深色模式切换 Dark" },
   },
   {
     slug: "tab-bar-expand",
@@ -3902,7 +3851,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a 'Discover · BOTTOM NAVIGATION' frosted card with a 118px rounded hero photo and a floating dark tab bar (50px, radius 25) holding Home / Search / Trips / Profile icon buttons spaced between. The chosen tab shows its label next to the icon (13px bold) over a white 34px pill; the others are icon-only. The pill is a separate element positioned behind with left/width taken from the chosen tab and transitioned 400ms cubic-bezier(.32,.72,0,1). Use FLIP so the other icons glide to their new positions, fade the label in 160ms late with a 4px slide, and crossfade the hero photo to the tab's image.",
-    source: { label: "@叨叨AI (Douyin) · 第 12 集「8 个让 App 和小程序变高级的组件交互」 · 04 底部导航展开文字 Tabs" },
   },
   {
     slug: "scroll-fab-collapse",
@@ -3933,7 +3881,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a 'Notes · 8 NOTES · SCROLL' frosted card with a scrollable list of 42px glass rows (32px rounded thumbnail, title, a thin placeholder bar, 'Sep n' on the right), masked to fade at the bottom. Float a white '+ New note' pill (114×42, radius 21) at the bottom right, anchored by right. On scroll, accumulate travel per direction: 6px down folds it to a 42×42 circle (width transition 360ms cubic-bezier(.32,.72,0,1), label fades out), 6px up or near the top opens it. Tapping it prepends a note and scrolls to top.",
-    source: { label: "@叨叨AI (Douyin) · 第 12 集「8 个让 App 和小程序变高级的组件交互」 · 05 悬浮按钮随滚动收起 Scroll" },
   },
   {
     slug: "copy-button-flip",
@@ -3964,7 +3911,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a 'Tour details · TAP TO COPY' frosted card with two 52px glass fields: 'TRIP CODE' LIS-TRAM-28 (monospace, wide tracking) and 'MEETING POINT' Rossio Square, north side, each with a 38px outlined copy button. Clicking copies the value, flips the button (two faces, backface hidden, rotateY 0→180 / −180→0, perspective 160px, 420ms cubic-bezier(.34,1.3,.64,1)) to a white check, and raises a dark 'Copied' tag with a check and a pointer above the button (rise 6px, scale from .9). Revert after 2.3s; tint the whole field blue while pressed.",
-    source: { label: "@叨叨AI (Douyin) · 第 12 集「8 个让 App 和小程序变高级的组件交互」 · 06 复制按钮反馈 Copy" },
   },
   {
     slug: "form-error-shake",
@@ -3996,7 +3942,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a 'Join the tour · YOUR DETAILS' frosted card with two 40px glass inputs using floating labels (Name = Mia, Group size empty) and a white Submit button at the bottom. On submit, every invalid field gets a red border (#e8765f), a circled-! icon on the right, a 420ms decaying horizontal shake (−6, 5, −4, 3, −1.5, 0px), and a message 'Tell us how many people are coming' that slides out underneath (height 0→21px, text up 8px, 260ms) pushing the button down. While typing, re-validate and clear the error as soon as the value is valid; focused fields get a warm #e7c27a border. Use aria-invalid and aria-describedby.",
-    source: { label: "@叨叨AI (Douyin) · 第 12 集「8 个让 App 和小程序变高级的组件交互」 · 07 输入错误提示 Error" },
   },
   {
     slug: "select-centered",
@@ -4028,7 +3973,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a 'Trip settings · CHOOSE ONE' frosted card with two 36px glass select fields (CITY Lisbon with Porto/Lisbon/Seville/Prague/Vienna, PACE Easy with Slow/Easy/Active). On click, show a white list (#fbf8fb, radius 11, 35px rows, the current one #e7ddf1 with a check) positioned so the selected row is centred on the field, clamped inside the card. Animate clip-path: inset(t 0 b 0 round 11px) from the field's band to fully open (300ms ease-out). On pick, move the highlight, then after 140ms fold the clip back onto the chosen row/field (220ms) and show the field with the new value. Support arrow keys and Escape.",
-    source: { label: "@叨叨AI (Douyin) · 第 12 集「8 个让 App 和小程序变高级的组件交互」 · 08 下拉选择框 Select" },
   },
   {
     slug: "frosted-glass-sheet",
@@ -4061,7 +4005,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a phone mock (300×640, radius 48) of a light travel app (header '旅行 2026', a Lisbon hero photo with a white '点开凭证' pill, two photo tiles, a 'next leg' row). Tapping the pill blurs the page behind from 0 to 26px over 900ms (cubic-bezier(.2,.7,.2,1)) and floats up a glass sheet: rgba(255,255,255,.42) with backdrop-filter blur(22px) saturate(1.4), radius 28, rising 26px and scaling .94→1 over 800ms. Content: 'LISBON · 里斯本 · 年度旅行计划' with a black '✓ 进行中' badge, a 54px number counting 0→163, '剩余天数 · 2027 年 3 月 10 日到期', a row of 12 capsule month cells filled from the bottom (orange #d9772e) by the share of each month used between 2026-03-10 and today 2026-09-28, staggered 4 frames apart and finishing within 1s, the current month outlined with '09.28 今天' beneath, a 2×2 grid (下一站 里斯本 / 年限 1年 / 起始日期 / 有效期至) and a black '查看行程 →' button. Tap outside to close.",
-    source: { label: "@西瓜同学 (Douyin) · 「6 种 App/小程序高级弹窗交互 Popup Panels」 · 01 毛玻璃浮层 Frosted Glass Sheet", at: "0:08–0:12 (3× playback)" },
   },
   {
     slug: "ring-count-sheet",
@@ -4093,7 +4036,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a phone mock of a dark reading app (#121110; avatar '默', '今天想看点什么', a hero issue card with a dawn photo, a 'continue reading' row with a 42% mini ring, chips, a short list). Tapping the continue row slides a dark pass sheet (#2a2826, radius 26) up from below the screen in 500ms with cubic-bezier(.2,.7,.2,1) and dims the page to 40% black. Content: 'QUILL · 读物 · READING PASS' with an amber '● 有效中', a 116px ring (r 52, 3px, track #3d3a37, amber #f2a93b arc, four outside ticks) whose stroke-dashoffset animates over 1.2s with the same curve to 163/365 once the sheet has landed, a centre number counting 0→163 in step (JS cubic-bezier solver), and on the right '有效期至 2027.03.10', 在读 百年孤独, 编号 N°0417; a footer row with 借阅编号 LF••••••• and a '显示' toggle, 开卡日期, 年限; below the card two buttons 我的书架 / 继续阅读.",
-    source: { label: "@西瓜同学 (Douyin) · 「6 种 App/小程序高级弹窗交互 Popup Panels」 · 02 圆环计数弹出 Ring Count Sheet", at: "0:12–0:17 (3× playback)" },
   },
   {
     slug: "tick-ruler-sheet",
@@ -4125,7 +4067,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a phone mock of a light travel-journal app (avatar, '已经去过 5 个国家 · 5 段旅程', five photo thumbs, a search pill with a black '随便翻翻', chips, a polaroid of Lago di Braies with a date stamp and an italic handwritten caption, a four-stop timeline). Tapping the polaroid slides up a light sheet (#e9e7e3, radius 28): '◑ ROAM' with a green '记录中 · 布拉耶斯湖', '手账年册 · N°0417', a 58px bold 163 with '天 / 剩余天数', then a ruler of 53 weekly ticks between 2026.03.10 and 2027.03.10 (every 4th taller) that darken left to right one frame (16.7ms) apart after the slide and stop on tick 29 (today), which turns teal #2a8f84, grows and gets a '今天' label; rows 有效期至 / 上一站 / 已记 / 手账编号 'LF7K-••••' with a '显示' link that replaces the dots in place one character at a time (70ms) without changing the row height; buttons 随便翻翻 / 写一篇.",
-    source: { label: "@西瓜同学 (Douyin) · 「6 种 App/小程序高级弹窗交互 Popup Panels」 · 03 刻度尺进度弹出 Tick Ruler Sheet", at: "0:17–0:22 (3× playback)" },
   },
   {
     slug: "photo-drawer-sheet",
@@ -4158,7 +4099,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a phone mock of a light recipe app: header (red round logo, '拾味 FORAGE', '食谱 · 采买 · 一起做饭', search) and a two-column grid of dish cards with white minute badges — left: 香煎三文鱼谷物碗 25 分钟, a pink 'Learn. Cook. Share.' card, a tall pizza, a noodle dish; right: a tall pancake with syrup, pesto farfalle, a dark '1000+ 独家食谱' card, a salad — and a floating tab bar. Tapping the first card opens a panel in three beats: (1) a photo layer placed over that card animates top/left/width/height/radius to a 266×160 slot right under the header (500ms, cubic-bezier(.2,.7,.2,1)) while its image scales 1.08→1 over 900ms, a radial vignette in the lower-left holding white serif '拾味 / RECIPE BOOK', 'FORAGE' and '● 有效中'; (2) after 420ms a light drawer (#e9e5e0, radius 20) is pushed up from below the screen so its top overlaps the photo's bottom by 22px; (3) once it lands (≈1.05s) '剩余天数' counts 0→163 and a 3px red bar fills to 163/365 (from 1.25s), with '已用 202 天 / 共 365 天', then 有效期至 / 常做 三文鱼谷物碗 / 开册日期 / 年限 and buttons 换一道 / 开始做. Dim the page only 16% with a 1.5px blur. Closing reverses it: drawer drops first, then the photo shrinks back into its card.",
-    source: { label: "@西瓜同学 (Douyin) · 「6 种 App/小程序高级弹窗交互 Popup Panels」 · 04 照片抽屉弹出 Photo Drawer Sheet", at: "0:22–0:27 (3× playback)" },
   },
   {
     slug: "flip-to-reveal",
@@ -4190,7 +4130,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a phone mock of a dark camper-van app (NOMAD, '128 vans parked tonight', a van photo fading into #121212, a 'Slide to start the road' bar, three feature tabs). In the middle place a 352px pass card inside a container with perspective: 1200px; the card has transform-style: preserve-3d and two faces with backface-visibility hidden. Front: a dusk-road photo with 'NOMAD · ROAD PASS · ● 有效中', a frosted inset (backdrop blur 14px) with '163 天 · 剩余天数', a progress line, 有效期至 2027.03.10 / 上一站 松林营地, and a '查看凭证 ↻' pill. Back (pre-rotated 180°): 'NOMAD · 到场出示凭证', a box with '入营编号' and LF7K-2QXP in 22px mono, '到营地出示这一栏，直接入场', rows 车型 双人房车 / 生效日期 / 上一站 / 年限 and a full-width '返回 ↻'. Clicking flips the card 180° about Y over 800ms with cubic-bezier(.3,.7,.2,1); '返回' flips it back; swap aria-hidden/inert at the moment the curve passes 90°.",
-    source: { label: "@西瓜同学 (Douyin) · 「6 种 App/小程序高级弹窗交互 Popup Panels」 · 05 原地翻面面板 Flip to Reveal", at: "0:27–0:33 (3× playback)" },
   },
   {
     slug: "pull-down-reveal",
@@ -4223,7 +4162,6 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a phone mock of a light meal-log app (today's intake as 14 rounded segments on a half circle with '1000 / 1800 kcal', three macro cards, meal chips, a note, two meal rows, a dark tab bar with a red camera button). The camera button springs up a dark ticket (#2b2826, radius 24) from the bottom (cubic-bezier(.3,1.25,.5,1)): '◑ FERN TABLE · 餐桌年册 TABLE PASS', a food photo, '剩余天数 163 天' with a red '● 有效中', 有效期至 / 常吃 早餐 / 年限 / 开册日期 / 每周 一份新食单, then a dashed tear line with two 7px half-circle notches (radial-gradient masks intersected) and under it a 26px stub showing only a handle. The stub is a clipped box whose content is anchored to its bottom (食单编号, LF7K-2QXP in 19px mono, '需要时出示这一栏', the handle); dragging the handle grows the stub with the pointer up to 104px (25% resistance beyond), adds up to 6px gap under the tear line and up to 2° rotation about the top-right corner; release past 40% opens it with a spring and types the code 35ms per character, otherwise it springs back. A tap or Enter toggles.",
-    source: { label: "@西瓜同学 (Douyin) · 「6 种 App/小程序高级弹窗交互 Popup Panels」 · 06 下拉展开面板 Pull Down Reveal", at: "0:33–0:38 (3× playback)" },
   },
   {
     slug: "m-alpha-relax",
@@ -4270,7 +4208,7 @@ export const effects: Effect[] = [
     ],
     source: { label: "M Alpha Relax — my own app on the App Store (SwiftUI source: NeuTheme, NeuComponents, HomeView, SessionView, MixerView, StatsView, SettingsView)", url: "https://apps.apple.com/app/id6787405665" },
   },
-  /* ── 手机UI · 2026-10-14 @西瓜同学 第 14 集，六个交互共用一个小 App（_xg14/）── */
+  /* ── 手机UI · 2026-10-14，六个交互共用一个小 App（_xg14/）── */
   {
     slug: "done-burst-button",
     category: "mobile-ui",
@@ -4303,7 +4241,6 @@ export const effects: Effect[] = [
     caveats: [
       "The book-stack illustration on the Focus page is redrawn by hand in SVG; the reference's own artwork is not reused. The tap circles in the recording are the author's touch indicator, not part of the app, so they are not reproduced.",
     ],
-    source: { label: "@西瓜同学 (Douyin) · 第 14 集「6 个高级交互和控件 Six Touches, One Small App」 · 01 完成反馈按钮 Done Button", at: "0:09–0:14 (3× playback)" },
   },
   {
     slug: "check-linked-ring",
@@ -4336,7 +4273,6 @@ export const effects: Effect[] = [
     caveats: [
       "The book-stack illustration on the Focus page is redrawn by hand in SVG; the reference's own artwork is not reused. The tap circles in the recording are the author's touch indicator, not part of the app, so they are not reproduced.",
     ],
-    source: { label: "@西瓜同学 (Douyin) · 第 14 集「6 个高级交互和控件 Six Touches, One Small App」 · 02 勾选联动 Linked Check", at: "0:14–0:18 (3× playback)" },
   },
   {
     slug: "stacked-lists-fan",
@@ -4370,7 +4306,6 @@ export const effects: Effect[] = [
     caveats: [
       "The book-stack illustration on the Focus page is redrawn by hand in SVG; the reference's own artwork is not reused. The tap circles in the recording are the author's touch indicator, not part of the app, so they are not reproduced.",
     ],
-    source: { label: "@西瓜同学 (Douyin) · 第 14 集「6 个高级交互和控件 Six Touches, One Small App」 · 03 叠卡展开 Stack Fan", at: "0:18–0:22 (3× playback)" },
   },
   {
     slug: "snap-cards-timeline",
@@ -4404,7 +4339,6 @@ export const effects: Effect[] = [
     caveats: [
       "The book-stack illustration on the Focus page is redrawn by hand in SVG; the reference's own artwork is not reused. The tap circles in the recording are the author's touch indicator, not part of the app, so they are not reproduced.",
     ],
-    source: { label: "@西瓜同学 (Douyin) · 第 14 集「6 个高级交互和控件 Six Touches, One Small App」 · 04 吸附卡加画线 Snap Cards", at: "0:22–0:27 (3× playback)" },
   },
   {
     slug: "inertia-wheel-picker",
@@ -4438,7 +4372,6 @@ export const effects: Effect[] = [
     caveats: [
       "The book-stack illustration on the Focus page is redrawn by hand in SVG; the reference's own artwork is not reused. The tap circles in the recording are the author's touch indicator, not part of the app, so they are not reproduced.",
     ],
-    source: { label: "@西瓜同学 (Douyin) · 第 14 集「6 个高级交互和控件 Six Touches, One Small App」 · 05 惯性滚轮 Inertia Wheel", at: "0:27–0:31 (3× playback)" },
   },
   {
     slug: "circle-reveal-tabs",
@@ -4471,7 +4404,6 @@ export const effects: Effect[] = [
     caveats: [
       "The book-stack illustration on the Focus page is redrawn by hand in SVG; the reference's own artwork is not reused. The tap circles in the recording are the author's touch indicator, not part of the app, so they are not reproduced.",
     ],
-    source: { label: "@西瓜同学 (Douyin) · 第 14 集「6 个高级交互和控件 Six Touches, One Small App」 · 06 圆形扩散转场 Circle Reveal", at: "0:31–0:35 (3× playback)" },
   },
   /* ── 小组件 · 2026-09-19 第一批 8 条，按 bencho.dev（Lorenzo Cabra，块逻辑 MIT）的 Usage/CSS 面板 1:1 重做，带调参面板 ── */
   {

@@ -1,4 +1,4 @@
-/* Shared shell for the @西瓜同学 popup-panel replicas: a phone on a blurred room, one App inside,
+/* Shared shell for the popup-panel replicas: a phone on a blurred room, one App inside,
    one panel on top. Sizes are CSS px; the phone is 300 × 640 (the reference phone scaled to fit the lab frame). */
 @font-face { font-family: "Inter"; font-weight: 400; font-display: swap; src: url(../_fonts/inter-400-latin.woff2) format("woff2"); }
 @font-face { font-family: "Inter"; font-weight: 500; font-display: swap; src: url(../_fonts/inter-500-latin.woff2) format("woff2"); }

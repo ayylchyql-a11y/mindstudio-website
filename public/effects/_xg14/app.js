@@ -1,4 +1,4 @@
-/* @西瓜同学 ep.14 — one small app, six touches. Every entry boots the same app; only the first screen differs.
+/* One small app, six touches. Every entry boots the same app; only the first screen differs.
    Timings: measured on the recording (3× playback, 60 fps → one frame = 50 ms of real time) and multiplied by 3. */
 window.XG14 = (() => {
   const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];

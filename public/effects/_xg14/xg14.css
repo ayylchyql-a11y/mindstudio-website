@@ -1,4 +1,4 @@
-/* Shared shell for the @西瓜同学 ep.14 replicas — "six touches, one small app".
+/* Shared shell for the "six touches, one small app" replicas.
    Every size is CSS px on a 288 × 628 screen, measured off the 1290 × 2796 recording (×0.5434).
    Timings are the recording's (3× playback) multiplied by 3. */
 @font-face { font-family: "Inter"; font-weight: 400; font-display: swap; src: url(../_fonts/inter-400-latin.woff2) format("woff2"); }

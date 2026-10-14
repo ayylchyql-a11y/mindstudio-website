@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Potion dispenser · 药剂切换器</title>
+<style>
+  /* A game-UI potion picker: three moulded plastic keys in a recessed track (what, how much, what form)
+     and a round dispense button in its own socket. Each key cycles its options; the last option of each
+     lights it red. Dispense breaks the capsule into pills and resets the track left to right.
+     Sizes are the reference frame × 0.6; timings read frame by frame off the recording. */
+  @font-face { font-family: "Inter"; font-weight: 400; font-display: swap; src: url(_fonts/inter-400-latin.woff2) format("woff2"); }
+  @font-face { font-family: "Inter"; font-weight: 500; font-display: swap; src: url(_fonts/inter-500-latin.woff2) format("woff2"); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { overflow: hidden; display: grid; place-items: center; font-family: "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+    /* a single key light up and to the right, falling off into charcoal */
+    background: radial-gradient(70% 85% at 88% 4%, #7d8883 0%, #5a625f 22%, #3a3f3f 46%, #26292b 70%, #1b1d20 100%); }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  button:focus-visible { outline: 2px solid #ffd2c9; outline-offset: 3px; }
+
+  .fit { transform: scale(var(--s, 1)); }
+  .rig { position: relative; display: flex; align-items: center; gap: 24px; filter: drop-shadow(0 22px 30px rgb(0 0 0 / .45)); }
+
+  /* the recessed track */
+  .track { position: relative; display: flex; gap: 6px; width: 390px; height: 124px; padding: 13px 11px 13px 15px; border-radius: 62px;
+    background: linear-gradient(#030103, #0d090b 60%, #120d0f);
+    box-shadow: inset 0 3px 8px rgb(0 0 0 / .9), inset 0 -1px 0 rgb(255 255 255 / .06), 0 1px 0 rgb(255 255 255 / .09), 0 0 0 1px #000; }
+
+  /* a moulded key. --base is its colour; light comes from the right, so each key sits a step lighter */
+  .key { position: relative; height: 98px; border-radius: 8px; overflow: hidden; color: var(--ink); isolation: isolate;
+    background: linear-gradient(180deg, var(--rim) 0, var(--base) 9%, var(--base) 72%, var(--lip) 100%);
+    box-shadow: inset 0 1.5px 0 rgb(255 255 255 / var(--shine)), inset 0 5px 6px -3px rgb(0 0 0 / .35), inset 0 -2px 0 rgb(255 255 255 / calc(var(--shine) * .5)), inset 0 -6px 8px rgb(0 0 0 / .22), inset 1px 0 0 rgb(255 255 255 / .06), inset -1px 0 0 rgb(0 0 0 / .3);
+    transition: transform .12s ease-out, box-shadow .12s ease-out; }
+  .key.type { width: 177px; border-radius: 49px 8px 8px 49px; }
+  .key.dose { width: 82px; }
+  .key.form { width: 94px; border-radius: 8px 49px 49px 8px; }
+  .key { --ink: #141317; --rim: #232327; --lip: #46464b; --shine: .16; --emboss: rgb(255 255 255 / .1); }
+  .key.type { --base: #38383c; } .key.dose { --base: #3c3e44; --lip: #4a4c52; } .key.form { --base: #45474b; --lip: #53555a; }
+  .key[data-lit] { --ink: #2b1418; --rim: #b8180e; --shine: .34; --emboss: rgb(255 255 255 / .22); }
+  .key.type[data-lit] { --base: #ee2a22; --lip: #f7463a; } .key.dose[data-lit] { --base: #fb3d2e; --lip: #ff5a48; } .key.form[data-lit] { --base: #ff5846; --lip: #ff7461; }
+  /* press: the key sinks and goes glossy-dark for ~170 ms */
+  .key.down { transform: translateY(1.5px); box-shadow: inset 0 6px 12px rgb(0 0 0 / .55), inset 0 -2px 3px rgb(255 255 255 / .12); }
+  /* while pressed the key reads as a glossy cylinder (value hidden): black, or red if this press lights it */
+  .key .shade { position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: 0;
+    background: linear-gradient(180deg, #040405 0%, #19191c 16%, #a3a3a8 29%, #3a3a3f 38%, #121214 70%, #000 100%); }
+  .key[data-lit]:not(.crush) .shade { background: linear-gradient(180deg, #7c0904 0%, #d9241a 15%, #fff1ec 28%, #f4473a 38%, #cf1d12 72%, #6e0803 100%); }
+  /* flash: grey on a dark key, pale pink on a lit one */
+  .key .glow { position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0; background: #8f9496; }
+  .key[data-lit] .glow { background: #ffd6cf; }
+  .key .val { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; text-shadow: 0 1px 0 var(--emboss); }
+  .type .val { font-size: 33px; font-weight: 400; letter-spacing: .005em; padding-left: 6px; }
+  .dose .val { line-height: 1; text-align: center; } .dose .val b { display: block; font-size: 32px; font-weight: 400; } .dose .val small { display: block; font-size: 17px; margin-top: 2px; }
+  .form .val { padding-right: 6px; } .form svg { width: 30px; height: 30px; }
+
+  /* the dispense button in its socket */
+  .socket { position: relative; width: 130px; height: 130px; border-radius: 50%; display: grid; place-items: center;
+    background: radial-gradient(circle at 50% 40%, #07090c, #000 70%); box-shadow: inset 0 3px 8px rgb(0 0 0 / .9), 0 1px 0 rgb(255 255 255 / .1), 0 0 0 1px #000; }
+  .go { position: relative; width: 103px; height: 103px; border-radius: 50%; display: grid; place-items: center; overflow: hidden;
+    background: radial-gradient(circle at 50% 36%, #ffb0a5 0, #ff8e80 32%, #ff6e5e 58%, #ea3a2c 82%, #b81c12 100%);
+    box-shadow: inset 0 2px 1px rgb(255 255 255 / .35), inset 0 -6px 10px rgb(120 0 0 / .45), 0 3px 6px rgb(0 0 0 / .6); transition: transform .1s ease-out, filter .1s ease-out; }
+  .go svg { width: 40px; height: 40px; fill: none; stroke: #2a0f10; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .go.down { transform: translateY(1.5px) scale(.97); filter: brightness(.82) saturate(1.15); }
+  .go .drop { position: absolute; left: 50%; top: 50%; width: 76px; height: 30px; margin: -15px 0 0 -38px; border-radius: 15px; opacity: 0;
+    background: linear-gradient(#ff7b6c, #e52a1c 55%, #a8150c); box-shadow: inset 0 2px 1px rgb(255 255 255 / .4); }
+
+  /* flying pills */
+  .fx { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+  .pill { position: absolute; width: 64px; height: 28px; border-radius: 14px; background: linear-gradient(#ff8070, #ec2e20 50%, #a8150c); box-shadow: inset 0 2px 1px rgb(255 255 255 / .45); }
+  .pill::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 50%; border-radius: 0 14px 14px 0; background: linear-gradient(#ff8070, #ec2e20 50%, #a8150c); filter: brightness(.82); }
+
+  @media (prefers-reduced-motion: reduce) { .key, .go { transition: none; } }
+</style>
+</head>
+<body>
+<div class="fit" id="fit">
+  <div class="rig">
+    <div class="track" role="group" aria-label="Potion">
+      <button type="button" class="key type" data-k="type"><span class="shade"></span><span class="glow"></span><span class="val"></span></button>
+      <button type="button" class="key dose" data-k="dose"><span class="shade"></span><span class="glow"></span><span class="val"></span></button>
+      <button type="button" class="key form" data-k="form"><span class="shade"></span><span class="glow"></span><span class="val"></span></button>
+    </div>
+    <div class="socket"><button type="button" class="go" aria-label="Dispense"><span class="drop"></span><svg viewBox="0 0 24 24"><path d="M12 4v15M6 13l6 6 6-6"/></svg></button></div>
+  </div>
+</div>
+<div class="fx" id="fx"></div>
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const reduce = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const TABLET = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="currentColor"/><path d="M7.8 16.2l8.4-8.4" stroke="var(--base)" stroke-width="2" stroke-linecap="round"/></svg>';
+  const CAPSULE = '<svg viewBox="0 0 24 24"><g transform="rotate(-45 12 12)"><rect x="3" y="8" width="18" height="8" rx="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 8h5a4 4 0 0 1 0 8h-5Z" fill="currentColor"/></g></svg>';
+  // each key cycles its options; the last one lights the key (read off the recording: Health → Stamina → Mana, 10 → 15 → 20, tablet → capsule)
+  const OPTS = {
+    type: ["Health", "Stamina", "Mana"],
+    dose: ["10", "15", "20"],
+    form: ["tablet", "capsule"],
+  };
+  const state = { type: 2, dose: 2, form: 1 };                 // the recording opens fully lit: Mana · 20 mg · capsule
+  const keys = Object.fromEntries($$(".key").map((k) => [k.dataset.k, k]));
+  const label = { type: "Potion", dose: "Dose", form: "Form" };
+
+  function html(k, i) {
+    const v = OPTS[k][i];
+    if (k === "dose") return `<span><b>${v}</b><small>mg</small></span>`;
+    if (k === "form") return v === "capsule" ? CAPSULE : TABLET;
+    return `<span>${v}</span>`;
+  }
+  function paint(k, slide) {
+    const el = keys[k], i = state[k], lit = i === OPTS[k].length - 1, val = $(".val", el);
+    el.toggleAttribute("data-lit", lit);
+    el.setAttribute("aria-label", `${label[k]}: ${OPTS[k][i]}${k === "dose" ? " mg" : ""}`);
+    if (!slide || reduce()) { val.innerHTML = html(k, i); return; }
+    // the new value slides in from the left, motion-blurred; the old one leaves to the right
+    const old = val.cloneNode(true); old.classList.add("old"); el.appendChild(old);
+    old.animate([{ transform: "translateX(0)", filter: "blur(0)", opacity: 1 }, { transform: "translateX(46px)", filter: "blur(6px)", opacity: 0 }], { duration: 160, easing: "ease-in" }).onfinish = () => old.remove();
+    val.innerHTML = html(k, i);
+    val.animate([{ transform: "translateX(-46px)", filter: "blur(6px)", opacity: 0 }, { transform: "translateX(0)", filter: "blur(0)", opacity: 1 }], { duration: 230, delay: 60, easing: "cubic-bezier(.2,.7,.2,1)", fill: "backwards" });
+  }
+  // press ~170 ms (key sinks, goes glossy dark) → flash rises 70 ms, holds ~100 ms → settles over 300 ms
+  function press(el, then) {
+    el.classList.add("down");
+    if (!reduce()) $(".shade", el).animate([{ opacity: 0 }, { opacity: 1, offset: .12 }, { opacity: 1, offset: .7 }, { opacity: 0 }], { duration: 250 });
+    setTimeout(() => { el.classList.remove("down"); then(); }, reduce() ? 0 : 170);
+  }
+  function flash(el, delay = 0) {
+    if (reduce()) return;
+    $(".glow", el).animate([{ opacity: 0 }, { opacity: .82, offset: .14 }, { opacity: .82, offset: .34 }, { opacity: 0 }], { duration: 500, delay, easing: "ease-out" });
+  }
+  let busy = false;
+  Object.entries(keys).forEach(([k, el]) => el.addEventListener("click", () => {
+    if (busy) return;
+    const next = (state[k] + 1) % OPTS[k].length;
+    el.toggleAttribute("data-lit", next === OPTS[k].length - 1);      // the cylinder already shows the colour it is going to
+    press(el, () => { state[k] = next; paint(k, true); flash(el); });
+  }));
+
+  // dispense: everything flashes, the keys go dark red, the capsule breaks into pills that fly off,
+  // one drops into the button, then the track resets left to right (Health · 10 mg · tablet)
+  const go = $(".go"), fx = $("#fx");
+  go.addEventListener("click", () => {
+    if (busy) return; busy = true;
+    go.classList.add("down"); setTimeout(() => go.classList.remove("down"), 160);
+    const ks = Object.values(keys);
+    if (reduce()) { Object.keys(state).forEach((k) => { state[k] = 0; paint(k, false); }); busy = false; return; }
+    ks.forEach((el, i) => {
+      el.classList.add("crush");
+      $(".glow", el).animate([{ opacity: .9, background: "#fff2ee" }, { opacity: 0 }], { duration: 80 });
+      // dark red for a beat, then the glossy black cylinder until this key resets
+      $(".shade", el).animate([{ opacity: 0, filter: "sepia(1) hue-rotate(-30deg) saturate(4) brightness(.6)" }, { opacity: 1, filter: "sepia(1) hue-rotate(-30deg) saturate(4) brightness(.6)", offset: .12 }, { opacity: 1, filter: "none", offset: .3 }, { opacity: 1, filter: "none", offset: .85 }, { opacity: 0, filter: "none" }], { duration: 330 + i * 130, delay: 40 });
+    });
+    setTimeout(() => ks.forEach((el) => el.classList.remove("crush")), 900);
+    $(".drop", go).animate([{ opacity: 0, transform: "translateY(-40px) scale(.8)" }, { opacity: 1, transform: "translateY(0) scale(1)", offset: .3 }, { opacity: 1, offset: .65 }, { opacity: 0, transform: "translateY(10px) scale(.9)" }], { duration: 380, delay: 60, easing: "ease-out" });
+    setTimeout(burst, 90);
+    [["type", 300], ["dose", 480], ["form", 600]].forEach(([k, at]) => setTimeout(() => { state[k] = 0; paint(k, true); flash(keys[k]); if (k === "form") setTimeout(() => (busy = false), 300); }, at));
+  });
+  function burst() {
+    const S = parseFloat(getComputedStyle(fitEl).getPropertyValue("--s")) || 1;
+    const spots = Object.values(keys).map((el) => el.getBoundingClientRect());
+    // three big pills, gone in under half a second: one up from the name key, two down and away
+    const plan = [[0, .35, -1, 200], [1, -.45, 1, 260], [2, .3, 1, 320]];
+    plan.forEach(([i, dx, dir, spin], n) => {
+      const r = spots[i], p = document.createElement("i"); p.className = "pill"; fx.appendChild(p);
+      const x = r.left + r.width / 2 - 32, y = r.top + r.height / 2 - 14, far = (innerHeight * .65 + 120) * dir;
+      p.style.left = `${x}px`; p.style.top = `${y}px`; p.style.transform = `scale(${S})`;
+      p.animate([
+        { transform: `translate(0,0) rotate(${n * 40}deg) scale(${S})`, filter: "blur(0px)", opacity: 1 },
+        { transform: `translate(${dx * 60 * S}px, ${far * .18}px) rotate(${n * 40 + spin * .3}deg) scale(${S * 1.05})`, filter: "blur(2px)", opacity: 1, offset: .3 },
+        { transform: `translate(${dx * 220 * S}px, ${far}px) rotate(${n * 40 + spin}deg) scale(${S * 1.2})`, filter: "blur(5px)", opacity: .9 },
+      ], { duration: 360 + n * 50, delay: n * 45, easing: "cubic-bezier(.4,0,.9,.55)", fill: "backwards" }).onfinish = () => p.remove();
+    });
+  }
+
+  Object.keys(state).forEach((k) => paint(k, false));
+  const fitEl = $("#fit");
+  const fit = () => fitEl.style.setProperty("--s", Math.min(1.25, (innerWidth - 40) / 544, (innerHeight - 40) / 140));
+  addEventListener("resize", fit); fit();
+
+  // ?demo: the recording's sequence — dispense, cycle the name to Mana, the dose to 20, light the form, dispense again
+  if (/[?&]demo\b/.test(location.search)) {
+    const seq = [[700, go], [1900, keys.type], [2800, keys.type], [3600, keys.dose], [4500, keys.dose], [5300, keys.form], [6300, go]];
+    const ids = seq.map(([ms, el]) => setTimeout(() => el.click(), ms));
+    addEventListener("pointerdown", (e) => { if (e.isTrusted) ids.forEach(clearTimeout); }, { once: true, capture: true });
+  }
+})();
+</script>
+</body>
+</html>

@@ -51,6 +51,7 @@ const LONG_SELF = { "slate-card-order": { secs: 17, query: "?clip" }, "receipt-p
   "pagination-styles": { secs: 10, vw: 710, query: "?demo" },
   "neumorphic-io-switch": { secs: 10, vw: 710, query: "?demo" },
   "m-alpha-relax": { secs: 16, vw: 710, query: "?demo" },
+  "potion-dispenser": { secs: 8, vw: 710, query: "?demo" },
   "done-burst-button": { secs: 9, vw: 710, query: "?demo" },
   "check-linked-ring": { secs: 10, vw: 710, query: "?demo" },
   "stacked-lists-fan": { secs: 9, vw: 710, query: "?demo" },
