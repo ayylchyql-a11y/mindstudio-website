@@ -3,12 +3,12 @@ import type { Locale, Localized } from "@/lib/i18n";
 /**
  * /servizi —— 给意大利客户看的报价页。用户 09-18 拍板：**只走月费**，五档、每档包含前一档；
  * 价格 49 / 129 / 199 / 239 / 269。没拍板的按我的建议先做：不收 setup、随时可停（30 天预告）、
- * 年付 -15%。文案意大利语是原文，en / zh 是给自己看的译文。
+ * 年付 -10%（10-14 用户改，原 -15%）。文案意大利语是原文，en / zh 是给自己看的译文。
  */
 
 export const SERVIZI_LANGS: readonly Locale[] = ["it", "en", "zh"];
 export const CONTACT_EMAIL = "ayylchyql@gmail.com";
-export const ANNUAL_DISCOUNT = 0.15;
+export const ANNUAL_DISCOUNT = 0.1;
 
 export interface Tier {
   id: string;
@@ -130,7 +130,7 @@ export const copy = {
   hint: { it: "passa sopra un livello", en: "hover a plan", zh: "悬停一档" },
   perMonth: { it: "/ mese", en: "/ month", zh: "/ 月" },
   monthlyLabel: { it: "Mensile", en: "Monthly", zh: "月付" },
-  annualLabel: { it: "Annuale · −15%", en: "Annual · −15%", zh: "年付 · −15%" },
+  annualLabel: { it: "Annuale · −10%", en: "Annual · −10%", zh: "年付 · −10%" },
   annualNote: { it: "pagando 12 mesi in anticipo", en: "paying 12 months up front", zh: "一次付 12 个月" },
   includesTitle: { it: "Cosa include", en: "What’s included", zh: "包含" },
   chooseBtn: { it: "Scegli questo livello", en: "Pick this plan", zh: "选这档" },
