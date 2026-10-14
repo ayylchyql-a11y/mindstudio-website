@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>惯性滚轮 · Spin, slow down, snap</title>
+<link rel="stylesheet" href="_xg14/xg14.css">
+</head>
+<body>
+<div class="fit" id="fit"><div class="phone"><div class="screen" id="screen"></div></div></div>
+<script src="_xg14/app.js"></script>
+<script>
+XG14.boot({ first: "remind", demo: [
+  [1000, ({ pages }) => pages[0]._wheels[0].fling(.026)],
+  [4600, ({ pages }) => pages[0]._wheels[1].fling(.02)],
+  [7800, ({ pages }) => pages[0]._wheels[0].fling(-.012)],
+] });
+</script>
+</body>
+</html>

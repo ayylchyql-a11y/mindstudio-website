@@ -84,6 +84,18 @@ const blurbs: Record<string, string> = {
     "The voice orb: a sphere of liquid glass that idles, thinks and breathes with sound, rendered in WebGPU. This is the visual language of AI assistants — the thing on screen while the model is listening — and it ships with a full bench of presets so the same orb can be tuned to a brand. It runs in M Translate's voice mode; on the web it suits assistant landing pages, voice-product demos and any interface that needs a face without drawing one.",
 
   // ── mobile-ui ──
+  "done-burst-button":
+    "A Done button that thanks you properly: it squeezes into a circle, draws a check and then bursts into a little ring of colour across the card. Finishing a focus session should feel like an event, and this is how small that event can be.",
+  "check-linked-ring":
+    "Tick one thing off today's list and the whole card answers — the ring fills a quarter, the number rolls forward and the colour warms up, until it turns bright lime when everything is done. Progress you can feel rather than read.",
+  "stacked-lists-fan":
+    "Four lists stacked like a deck so the page stays short, fanning out one card after another when you want to see inside and folding back the same way. A tidy answer for apps with several collections and little room.",
+  "snap-cards-timeline":
+    "A day planner where the blocks snap into place under your finger and fill with colour as they arrive, while a timeline beside them draws itself in only once each block has settled. Calm, deliberate motion for schedules and routines.",
+  "inertia-wheel-picker":
+    "A time picker that behaves like a real wheel: flick it and it keeps turning, slows down by itself and clicks into place, stretching like a rubber band if you push it past the end. The difference between choosing a time and fighting a form.",
+  "circle-reveal-tabs":
+    "Changing tabs as a circle that grows from your fingertip until the new page fills the screen, and grows back the same way when you return. It keeps people oriented — the new screen visibly comes from what they touched.",
   "m-alpha-relax":
     "My own relaxation app, rebuilt as a working replica of all five screens in light and dark: a calm, soft-light design where every card and button is pressed out of or into one grey-blue surface, with a single indigo colour for anything active. It really plays: binaural beats and isochronic tones sound in the browser, the ambient-sound dials turn under your finger, and the statistics are worked out from months of sample listening. A reference for wellness, meditation and sleep products that want to feel quiet rather than flat.",
   "slate-card-order":

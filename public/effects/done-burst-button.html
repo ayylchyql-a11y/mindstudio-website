@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>完成反馈按钮 · Done, squeeze, tick, burst</title>
+<link rel="stylesheet" href="_xg14/xg14.css">
+</head>
+<body>
+<div class="fit" id="fit"><div class="phone"><div class="screen" id="screen"></div></div></div>
+<script src="_xg14/app.js"></script>
+<script>
+XG14.boot({ first: "focus", demo: [
+  [1200, ({ pages }) => pages[0]._demoDone()],
+  [6200, ({ pages, $$ }) => $$(".row", pages[0])[0].click()],
+  [7000, ({ pages, $$ }) => $$(".row", pages[0])[1].click()],
+] });
+</script>
+</body>
+</html>

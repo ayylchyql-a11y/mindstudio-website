@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>叠卡展开 · Stacked, then fanned out</title>
+<link rel="stylesheet" href="_xg14/xg14.css">
+</head>
+<body>
+<div class="fit" id="fit"><div class="phone"><div class="screen" id="screen"></div></div></div>
+<script src="_xg14/app.js"></script>
+<script>
+XG14.boot({ first: "today", tab: 1, demo: [
+  [1200, ({ pages, $ }) => $(".stack", pages[1]).click()],
+  [4200, ({ pages, $ }) => $(".stack", pages[1]).click()],
+  [6600, ({ pages, $ }) => $(".stack", pages[1]).click()],
+] });
+</script>
+</body>
+</html>

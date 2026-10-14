@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>圆形扩散转场 · Open from where you tapped</title>
+<link rel="stylesheet" href="_xg14/xg14.css">
+</head>
+<body>
+<div class="fit" id="fit"><div class="phone"><div class="screen" id="screen"></div></div></div>
+<script src="_xg14/app.js"></script>
+<script>
+XG14.boot({ first: "today", demo: [
+  [1200, ({ go }) => go(3)],
+  [3600, ({ go }) => go(0)],
+  [5600, ({ go }) => go(1)],
+  [7600, ({ go }) => go(2)],
+  [9600, ({ go }) => go(0)],
+] });
+</script>
+</body>
+</html>
