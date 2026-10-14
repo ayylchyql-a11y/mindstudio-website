@@ -4146,7 +4146,7 @@ export const effects: Effect[] = [
     previewHeight: 481,
     accent: "#df4f36",
     anatomy: [
-      "<b>The stub is a window anchored at its bottom.</b> Its content (label, code, hint, handle) is absolutely positioned to the bottom of a clipped box whose height follows the drag (26 → 104 px), so pulling reveals the hint and handle first and the code last — the way the reference peels open.",
+      "<b>The stub is a window anchored at its bottom.</b> Its content (label, code, hint, handle) is absolutely positioned to the bottom of a clipped box whose height follows the drag (26 → 112 px), so pulling reveals the hint and handle first and the code last — the way the reference peels open. Once open, the handle fades and collapses so the code sits alone, as it does in the reference.",
       "<b>Coming away from the line.</b> While dragging, the stub gains up to 6 px of gap under the tear line (as layout margin, so the ticket's mask still covers it) and rotates up to 2° about its top-right corner in the direction of the pointer's sideways movement; on release both spring back to 0.",
       "<b>40 % decides.</b> On release, (h − 26) / (104 − 26) > .4 opens it fully; less springs back. Pulling past full stretches with 25 % resistance. When it opens the code types in 35 ms per character. A plain tap on the handle toggles, and Enter/Space do the same for keyboard users.",
       "<b>Ticket notches.</b> Two 7 px half-circles are cut at the tear line with two radial-gradient masks intersected (<code>mask-composite: intersect</code>). The shorthand <code>mask</code> resets the composite, so it has to be written after the shorthand.",
@@ -4154,14 +4154,15 @@ export const effects: Effect[] = [
       "Shared shell (_popup/popup.css, kit.js): a 300 × 640 phone on a blurred room, Chinese UI text as in the reference, Inter and JetBrains Mono self-hosted; a small cubic-bezier solver lets number counters ride the same curve as the CSS motion. Photos: CC0 / public domain via Openverse (StockSnap, Wikimedia Commons, WordPress Photo Directory) — list in _popup/SOURCES.txt.",
     ],
     tokens: [
-      { label: "Stub", value: "26 → 104px" },
+      { label: "Stub", value: "26 → 112px" },
+      { label: "Handle", value: "9px dot · 1.5px #c0645a ring · 29px grip" },
       { label: "Threshold", value: "40% to open" },
       { label: "Swing", value: "≤ 2° · gap ≤ 6px" },
       { label: "Spring", value: "cubic-bezier(.3,1.2,.5,1) · 500ms" },
       { label: "Code", value: "35ms per character" },
     ],
     prompt:
-      "Build a phone mock of a light meal-log app (today's intake as 14 rounded segments on a half circle with '1000 / 1800 kcal', three macro cards, meal chips, a note, two meal rows, a dark tab bar with a red camera button). The camera button springs up a dark ticket (#2b2826, radius 24) from the bottom (cubic-bezier(.3,1.25,.5,1)): '◑ FERN TABLE · 餐桌年册 TABLE PASS', a food photo, '剩余天数 163 天' with a red '● 有效中', 有效期至 / 常吃 早餐 / 年限 / 开册日期 / 每周 一份新食单, then a dashed tear line with two 7px half-circle notches (radial-gradient masks intersected) and under it a 26px stub showing only a handle. The stub is a clipped box whose content is anchored to its bottom (食单编号, LF7K-2QXP in 19px mono, '需要时出示这一栏', the handle); dragging the handle grows the stub with the pointer up to 104px (25% resistance beyond), adds up to 6px gap under the tear line and up to 2° rotation about the top-right corner; release past 40% opens it with a spring and types the code 35ms per character, otherwise it springs back. A tap or Enter toggles.",
+      "Build a phone mock of a light meal-log app (today's intake as 14 rounded segments on a half circle with '1000 / 1800 kcal', three macro cards, meal chips, a note, two meal rows, a dark tab bar with a red camera button). The camera button springs up a dark ticket (#2b2826, radius 24) from the bottom (cubic-bezier(.3,1.25,.5,1)): '◑ FERN TABLE · 餐桌年册 TABLE PASS', a food photo, '剩余天数 163 天' with a red '● 有效中', 有效期至 / 常吃 早餐 / 年限 / 开册日期 / 每周 一份新食单, then a red (#b4544a) dashed tear line with two 7px half-circle notches (radial-gradient masks intersected) and under it a 26px stub showing only a handle (a 9px white dot in a thin red ring on a short grey grip bar). The stub is a clipped box whose content is anchored to its bottom (食单编号, LF7K-2QXP in bold 26px mono, '需要时出示这一栏', the handle); dragging the handle grows the stub with the pointer up to 112px (25% resistance beyond), adds up to 6px gap under the tear line and up to 2° rotation about the top-right corner; release past 40% opens it with a spring, fades the handle away and types the code 35ms per character, otherwise it springs back. A tap or Enter toggles.",
   },
   {
     slug: "m-alpha-relax",

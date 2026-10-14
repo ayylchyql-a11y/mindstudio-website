@@ -50,16 +50,22 @@
   .ok { display: flex; align-items: center; gap: 4px; padding-bottom: 6px; font-size: 8.5px; } .ok::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--red); }
   .kvs { display: grid; grid-template-columns: 1.2fr 1fr .7fr; gap: 9px 8px; margin-top: 9px; }
   .kvs b { display: block; margin-top: 2px; font-size: 10px; font-weight: 600; }
-  .tear { position: relative; height: 1px; margin: 0 12px; border-top: 1.5px dashed #6d4a40; }
+  .tear { position: relative; height: 1px; margin: 0 12px; border-top: 1.2px dashed #b4544a; }   /* the tear line is red, as in the reference */
   /* the stub: a clipped column anchored to its bottom — growing it shows the hint and handle first, then the code */
   .stub { position: relative; height: var(--h, 26px); overflow: hidden; margin-top: var(--gap, 0px); transform-origin: 100% 0; transform: rotate(var(--tilt, 0deg)); border-radius: 0 0 24px 24px; background: #2b2826; touch-action: none; cursor: grab; }
   .stub.anim { transition: height .5s cubic-bezier(.3, 1.2, .5, 1), transform .5s cubic-bezier(.3, 1.2, .5, 1), margin-top .5s cubic-bezier(.3, 1.2, .5, 1); }
   .stub:active { cursor: grabbing; }
-  .stub .col { position: absolute; left: 0; right: 0; bottom: 0; display: grid; justify-items: center; padding: 0 14px 8px; }
-  .stub .lbl { margin-bottom: 2px; letter-spacing: .1em; }
-  .code { font: 600 19px var(--mono); letter-spacing: .1em; min-height: 26px; }
-  .hint { margin-top: 2px; font-size: 7.5px; color: #8b857c; }
-  .knob { margin-top: 7px; width: 12px; height: 12px; border-radius: 50%; background: #f2eee8; box-shadow: 0 0 0 3px rgb(242 238 232 / .18); }
+  .stub .col { position: absolute; left: 0; right: 0; bottom: 0; display: grid; justify-items: center; padding: 0 14px 8px; transition: padding-bottom .4s cubic-bezier(.3, 1.2, .5, 1); }
+  .stub.open .col { padding-bottom: 22px; }
+  .stub .lbl { margin-bottom: 4px; font-size: 9.5px; letter-spacing: .12em; }
+  .code { font: 700 26px var(--mono); letter-spacing: .08em; color: #f7f3ed; min-height: 34px; line-height: 34px; }
+  .hint { margin-top: 3px; font-size: 9.5px; color: #8b857c; }
+  /* the handle: a small white dot in a thin red ring, on a short grey grip bar; it fades away once the stub is open */
+  .knob { position: relative; margin-top: 7px; width: 9px; height: 9px; border-radius: 50%; background: #f4f0ea;
+    box-shadow: 0 0 0 3px #2b2826, 0 0 0 4.5px #c0645a; transition: opacity .25s, height .35s, margin-top .35s; }
+  .knob::before { content: ""; position: absolute; z-index: -1; left: 50%; top: 50%; width: 29px; height: 2.5px; margin: -1.25px 0 0 -14.5px; border-radius: 2px; background: #4f494a; }
+  .stub.open .knob { opacity: 0; height: 0; margin-top: 0; }
+  .stub.open .knob:focus-visible { opacity: 1; height: 9px; margin-top: 7px; }
   .knob:focus-visible { outline: 2px solid #8d7cf6; outline-offset: 3px; }
 </style>
 </head>
@@ -113,7 +119,7 @@
     Object.entries({ x: x - 5, y: y - 9, width: 10, height: 18, rx: 5, fill: i < LIT ? "#df4f36" : "#e4ddd4", transform: `rotate(${(a * 180) / Math.PI + 90} ${x} ${y})` }).forEach(([k, v]) => r.setAttribute(k, v));
     arcs.appendChild(r);
   }
-  const SHUT = 26, FULL = 104, CODE = "LF7K-2QXP";
+  const SHUT = 26, FULL = 112, CODE = "LF7K-2QXP";
   let open = false, h = SHUT, drag = null, typing = [];
   const cut = () => ticket.style.setProperty("--cut", ticket.offsetHeight - stub.offsetHeight + "px");   // notch the ticket at the tear line
   function set(height, animate) {
@@ -133,7 +139,7 @@
     [...CODE].forEach((c, i) => typing.push(setTimeout(() => (code.textContent += c), Kit.reduce() ? 0 : 60 + i * 35)));
   }
   function settle(toOpen) {
-    open = toOpen; drag = null; set(toOpen ? FULL : SHUT, true);
+    open = toOpen; drag = null; set(toOpen ? FULL : SHUT, true); stub.classList.toggle("open", toOpen);
     knob.setAttribute("aria-expanded", String(toOpen)); knob.setAttribute("aria-label", toOpen ? "收起食单编号" : "下拉显示食单编号");
     if (toOpen && !code.textContent) type(true); if (!toOpen) setTimeout(() => !open && type(false), 500);
   }
