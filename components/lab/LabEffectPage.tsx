@@ -6,7 +6,7 @@ import EffectVideo from "@/components/EffectVideo";
 import LabCta, { fullPathFor } from "@/components/lab/LabCta";
 import { blurbOf } from "@/data/effect-blurbs";
 import { categoryById, demoPath, effectBySlug, effects, effectsIn, isOpen, labCopy, posterPath, videoPath } from "@/data/effects";
-import { readDemoSource } from "@/lib/effect-source";
+import { readCodeFile, readDemoSource } from "@/lib/effect-source";
 import { ENGLISH_ONLY, altsFor, defaultLocale, getDictionary, isLocale, locales, pick, type Locale } from "@/lib/i18n";
 
 /**
@@ -58,7 +58,7 @@ export default async function LabEffectPage({ params, full }: { params: EffectPa
   // 🩸目录型的成品作品（bundleDir）没有「那一个文件」：它的产物是 1MB 打包 bundle，
   //   贴出来对读的人没有任何意义，而且 readDemoSource 会直接 ENOENT 把构建打断。
   // 🩸公开版**不读**：读了就算不渲染，也没必要让构建多做 84 次无用功。
-  const source = showFull && !e.bundleDir ? readDemoSource(e.slug) : null;
+  const source = !showFull ? null : e.codeFile ? readCodeFile(e.codeFile) : !e.bundleDir ? readDemoSource(e.slug) : null;
   const siblings = effectsIn(cat.id).filter((x) => x.slug !== e.slug);
 
   return (

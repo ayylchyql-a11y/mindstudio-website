@@ -1,0 +1,1 @@
+import{a as e}from"./chunk-5TL3NGWZ.js";import{b as o,c as t}from"./chunk-EN3SAVJI.js";var r=o(t(),1),{RainbowButtonLiveShowcase:n}=e,p={id:"rainbow-button",aliases:["rainbowbutton","chromatic-button"]};async function c(){await Promise.all([n.preload()])}function m(a){let{demoKey:i}=a;return(0,r.jsx)(n,{},i)}export{p as a,c as b,m as c};

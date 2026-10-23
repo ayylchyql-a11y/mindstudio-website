@@ -1,0 +1,1 @@
+import{a as t}from"./chunk-5TL3NGWZ.js";import{b as o,c as e}from"./chunk-EN3SAVJI.js";var r=o(e(),1),{ChatLiveShowcase:a}=t,m={id:"chat",aliases:[]};async function n(){await Promise.all([a.preload()])}function s(p){return(0,r.jsx)(a,{})}export{m as a,n as b,s as c};

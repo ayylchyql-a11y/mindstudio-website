@@ -1,0 +1,1 @@
+import{a as e}from"./chunk-5TL3NGWZ.js";import{b as o,c as t}from"./chunk-EN3SAVJI.js";var a=o(t(),1),{AIAgentActivityLiveShowcase:i}=e,s={id:"ai-agent-activity",aliases:[]};async function m(){await Promise.all([i.preload()])}function n(r){return(0,a.jsx)(i,{})}export{s as a,m as b,n as c};

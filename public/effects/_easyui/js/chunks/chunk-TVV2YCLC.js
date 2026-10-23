@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var s=e(t(),1),{SelectionBasketShowcase:r}=o,p={id:"selection-basket",aliases:[]};async function c(){await Promise.all([o.SelectionBasketShowcase.preload()])}function i(a){let{demoKey:n}=a;return(0,s.jsx)(r,{},n)}export{p as a,c as b,i as c};

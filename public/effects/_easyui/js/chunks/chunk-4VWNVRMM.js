@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as i,c as n}from"./chunk-EN3SAVJI.js";var e=i(n(),1),{ThinkingOrbDemo:m}=o,a={id:"thinking-orb",aliases:[]};async function d(){await Promise.all([o.ThinkingOrbDemo.preload()])}function s(t){let{demoKey:r}=t;return(0,e.jsx)("div",{className:"py-2 w-full",children:(0,e.jsx)(m,{},r)})}export{a,d as b,s as c};

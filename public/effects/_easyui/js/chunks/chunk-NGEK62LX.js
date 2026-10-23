@@ -1,0 +1,1 @@
+import{a as s}from"./chunk-5TL3NGWZ.js";import{b as o,c as e}from"./chunk-EN3SAVJI.js";var a=o(e(),1),{StickyPagesLiveShowcase:t}=s,m={id:"sticky-pages",aliases:["stickypages","sticky-stacking-pages"]};async function n(){await Promise.all([t.preload()])}function r(i){let{demoKey:p}=i;return(0,a.jsx)(t,{},p)}export{m as a,n as b,r as c};

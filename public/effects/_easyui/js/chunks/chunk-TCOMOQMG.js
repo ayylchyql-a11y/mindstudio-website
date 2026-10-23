@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var r=e(t(),1),{SpotlightSearchShowcase:p}=o,c={id:"spotlight-search",aliases:[]};async function n(){await Promise.all([o.SpotlightSearchShowcase.preload()])}function i(s){let{demoKey:a}=s;return(0,r.jsx)(p,{},a)}export{c as a,n as b,i as c};

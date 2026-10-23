@@ -1,0 +1,1 @@
+import{a as n}from"./chunk-5TL3NGWZ.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var o=e(t(),1),{NeonEdgeButton:p}=n,a={id:"neon-edge-button",aliases:[]};async function d(){await Promise.all([p.preload()])}function i(r){let{demoKey:s}=r;return(0,o.jsx)("div",{className:"py-12 flex justify-center",children:(0,o.jsx)(p,{children:"Deploy preview"},s)})}export{a,d as b,i as c};

@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var r=e(t(),1),{GlyphMatrixShowcase:m}=o,l={id:"glyph-matrix",aliases:["glyph-matrices","glyphmatrix"]};async function n(){await Promise.all([o.GlyphMatrixShowcase.preload()])}function s(a){let{demoKey:p}=a;return(0,r.jsx)(m,{},p)}export{l as a,n as b,s as c};

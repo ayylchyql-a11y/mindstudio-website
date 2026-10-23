@@ -1,0 +1,351 @@
+[
+  {
+    "id": "book-call-button",
+    "plays": "hover",
+    "accent": "#82ff22",
+    "title": { "en": "Book a call pill", "zh": "预约通话胶囊按钮", "zh-tw": "預約通話膠囊按鈕" },
+    "gist": {
+      "en": "A large black pill with a lime capsule tucked into its left third, holding a dotted arrow, and the words “Book a call” beside it. Hover or focus it and the capsule stretches across the whole pill, the label slides right and fades, and a ringing phone handset spins up into the centre.",
+      "zh": "一颗很大的黑色胶囊按钮，左边三分之一嵌着一截荧光绿的小胶囊，里面是点阵箭头，旁边写着「Book a call」。鼠标移上去或键盘聚焦时，绿胶囊横向铺满整颗按钮，文字往右滑走淡出，中间转着放大出一个正在响铃的电话听筒。",
+      "zh-tw": "一顆很大的黑色膠囊按鈕，左邊三分之一嵌著一截螢光綠的小膠囊，裡面是點陣箭頭，旁邊寫著「Book a call」。滑鼠移上去或用鍵盤聚焦時，綠膠囊橫向鋪滿整顆按鈕，文字往右滑開淡出，中央旋轉放大出一支正在響鈴的電話話筒。"
+    },
+    "anatomy": [
+      "<b>Three stacked layers.</b> A 306 × 96 px pill (radius 48, fill <code>#090909</code>, inset 3 px <code>#111</code> ring) holds: a lime capsule inset 10 px on every side, the rest-state row (arrow column + label), and a centred phone icon. Only the capsule and the two content layers animate; the pill itself only scales.",
+      "<b>Capsule growth.</b> At rest the capsule is 36% of the pill wide, anchored at <code>left: 10px</code>. On hover it animates to <code>left/right: 10px</code> (full width) on a spring of stiffness 190, damping 24, mass 0.85, so it grows rightward with a small settle.",
+      "<b>Content swap.</b> The arrow (ten 3 px dots in a 48 px box) and the 30 px label (tracking −0.045em, <code>#f5f5f5</code>) fade to 0 and drift 18 px right; the handset with two ringing arcs comes in from opacity 0, scale 0.5, rotate −8° to upright. Both use a faster spring: 280 / 24 / 0.7.",
+      "<b>Press feel.</b> The whole pill scales to 1.01 on hover and 0.975 on press (spring 420 / 24). Focus and pointer-down also count as hover, so keyboard and touch users see the expanded state.",
+      "<b>Accessibility.</b> Renders a real <code>&lt;button&gt;</code>, or an <code>&lt;a&gt;</code> when given a link, labelled with its text; icons are <code>aria-hidden</code>. Focus shows a 2 px lime ring offset 2 px on black. With reduced motion every transition is instant and the scale effects are dropped."
+    ],
+    "tokens": [
+      { "label": "Lime / ink", "value": "#82ff22 · #090909 · #f5f5f5" },
+      { "label": "Pill", "value": "306 × 96 px · radius 48 · capsule inset 10 px · rest width 36%" },
+      { "label": "Capsule spring", "value": "stiffness 190 · damping 24 · mass 0.85" },
+      { "label": "Content spring", "value": "stiffness 280 · damping 24 · mass 0.7 · label x +18 px" },
+      { "label": "Press", "value": "hover 1.01 · tap 0.975 · spring 420 / 24" }
+    ],
+    "prompt": "Build a 306×96px call-to-action pill: background #090909, border-radius 48px, inset box-shadow 0 0 0 3px #111, overflow hidden. Inside, absolutely position a lime (#82ff22) capsule with border-radius 999, top/bottom/left inset 10px and width 36%. Over it, a row: a 36%-wide column centring a 48×48 SVG arrow made of ten 3px-radius dots in #090909, then the label 'Book a call' at 30px, weight 400, letter-spacing -0.045em, colour #f5f5f5, 8px left padding. Add a centred 52×52 phone-handset icon (3px stroke, two ringing arcs to its upper right) in #090909, initially opacity 0, scale 0.5, rotate -8deg, pointer-events none. On mouseenter, focus or pointerdown: animate the capsule to left/right 10px (full width) with a spring stiffness 190, damping 24, mass 0.85; fade the arrow+label row to opacity 0 and translate it 18px right, and bring the phone to opacity 1, scale 1, rotate 0, both with spring 280/24/0.7. Reverse on mouseleave, blur, pointerup. Scale the whole pill to 1.01 on hover and 0.975 on press with spring stiffness 420, damping 24. Use a <button> (or <a> when a link is given) with aria-label equal to the text and aria-hidden icons; focus-visible ring 2px #82ff22 with 2px black offset. Under prefers-reduced-motion, set all durations to 0 and skip the scale effects.",
+    "caveats": [
+      "On touch screens the expanded state lasts only while the finger is down; releasing collapses it, so the phone flashes briefly before navigation."
+    ],
+    "blurb": "A bold, oversized booking button where a bright green capsule sweeps across a black pill and a ringing phone appears as soon as the visitor shows interest. It turns a plain “contact us” moment into a small reward, and suits agency sites, consultancy landing pages, sales demos and any page whose single goal is getting someone onto a call."
+  },
+  {
+    "id": "button",
+    "plays": "click",
+    "accent": "#f2f2f3",
+    "title": { "en": "Button set", "zh": "基础按钮组", "zh-tw": "基礎按鈕組" },
+    "gist": {
+      "en": "The base button family: solid, raised, outlined, ghost, a red destructive, a green confirm and a bordered variant, in three heights plus a square icon size. Every one shrinks slightly under the pointer and springs back on release; the loading state swaps the icon for a spinner and dims the button.",
+      "zh": "最基础的一整套按钮：实心、浮起、描边、幽灵、红色危险、绿色确认，再加一个带边框的款式，分三种高度外加正方形图标尺寸。每一颗被按下时都会微微缩小，松手弹回；加载状态把图标换成转圈并整体变暗。",
+      "zh-tw": "最基礎的一整套按鈕：實心、浮起、描邊、幽靈、紅色危險、綠色確認，再加一個帶邊框的款式，分三種高度外加正方形圖示尺寸。每一顆被按下時都會微微縮小，放開後彈回；載入狀態把圖示換成旋轉圈並整體變暗。"
+    },
+    "anatomy": [
+      "<b>Variant table.</b> One <code>motion.button</code> with a class map. Solid uses the foreground token as fill (<code>#F2F2F3</code> on <code>#111113</code> in dark) and drops to 90% opacity on hover; raised and outline use the surface/border tokens (<code>#1C1C1F</code> / <code>#29292C</code>, hover <code>#202023</code> / <code>#343438</code>); destructive and success are a 10% tint with a 30% border that floods to solid rose-500 or emerald-500 with white text on hover.",
+      "<b>Sizes.</b> sm 32 px tall, 12 px side padding, 12 px text, 6 px radius; md 40 px, 18 px padding, 14 px text, 8 px radius; lg 48 px, 24 px padding, 16 px text; icon 40 × 40. Gaps between icon and text grow 6 / 8 / 10 px.",
+      "<b>Press.</b> <code>whileTap</code> scales to 0.97 on a spring of stiffness 380, damping 30, mass 0.5, which lands in about 200 ms. Colour and border changes are a plain 150 ms CSS transition.",
+      "<b>Loading and disabled.</b> Loading replaces the left icon with a spinning loader (12 px on sm, 16 px otherwise), can swap the label for a loading text, sets <code>aria-busy</code>, and like disabled drops opacity to 0.3 and turns off pointer events and the press animation. Keyboard focus shows a 1 px outline offset 1 px."
+    ],
+    "tokens": [
+      { "label": "Press spring", "value": "scale 0.97 · stiffness 380 · damping 30 · mass 0.5" },
+      { "label": "Heights", "value": "32 / 40 / 48 px · icon 40 × 40" },
+      { "label": "Radius", "value": "6 px (sm) · 8 px (md, lg)" },
+      { "label": "Dark tokens", "value": "#F2F2F3 · #111113 · #1C1C1F · #29292C" },
+      { "label": "Disabled", "value": "opacity 0.3 · 150 ms colour transition" }
+    ],
+    "prompt": "Build a button component with variants primary (fill #F2F2F3, text #111113, hover opacity 0.9), secondary (fill #1C1C1F, 1px border #29292C, hover #202023 / #343438), outline (transparent, same border), ghost (transparent, text #A1A1A6, hover text #F2F2F3 and fill #202023), destructive (rose-500 at 10% fill, 30% border, rose text; hover solid rose-500 with white text), success (same pattern in emerald-500), link (no padding, underline on hover) and a bordered variant like secondary. Sizes: sm h32, px12, 12px text, radius 6, gap 6; md h40, px18, 14px text, radius 8, gap 8; lg h48, px24, 16px text, radius 8, gap 10; icon 40×40. Font weight 500, inline-flex centred. On press scale to 0.97 with a spring of stiffness 380, damping 30, mass 0.5; colours transition over 150ms. Support leftIcon/rightIcon, fullWidth, and isLoading: show a spinning loader (12px on sm, 16px otherwise) in place of the left icon, optionally replace the label with loadingText, hide the right icon, set aria-busy, and like disabled set opacity 0.3, pointer-events none and no press animation. Focus-visible: 1px outline with 1px offset.",
+    "caveats": [
+      "The bordered variant ships a sweeping light streak that only runs when a parent carries Tailwind's <code>group</code> class; on its own it never plays."
+    ],
+    "blurb": "The everyday button kit that every other screen leans on: a solid main action, quieter secondary and outline options, a ghost for toolbars, and clearly coloured buttons for deleting or confirming. Each one gives a small physical press, and a built-in loading state covers form submits and saves, so a product can stay consistent from settings pages to checkout."
+  },
+  {
+    "id": "code-snippet-deck",
+    "plays": "click",
+    "accent": "#fafafa",
+    "title": { "en": "Code snippet deck", "zh": "多语言代码卡", "zh-tw": "多語言程式碼卡" },
+    "gist": {
+      "en": "A dark code window with a filename, a row of language tabs and Params / Copy buttons on top. Switching tabs slides a grey pill under the chosen language and swaps the code; opening Params reveals a strip of checkboxes, dropdowns and text fields that rewrite values inside the code as you change them.",
+      "zh": "一个深色代码窗口，顶上有文件名、一排语言标签，以及 Params、Copy 两个按钮。切换标签时一块灰色底块滑到选中的语言下面，代码随之换掉；打开 Params 会露出一条勾选框、下拉框和输入框，改一下，代码里对应的值就跟着变。",
+      "zh-tw": "一個深色程式碼視窗，頂端有檔名、一排語言分頁，以及 Params、Copy 兩個按鈕。切換分頁時一塊灰色底塊滑到選中的語言下方，程式碼隨之替換；打開 Params 會露出一列核取方塊、下拉選單和輸入框，改一下，程式碼裡對應的值就跟著變。"
+    },
+    "anatomy": [
+      "<b>Window chrome.</b> A 12 px-radius card (<code>#0E0E0E</code>, 1 px <code>#1F1F1F</code> border) with a <code>#141414</code> header: three 10 px dots, a 12 px mono filename in <code>#A1A1A1</code>, a segmented tab rail, and the action buttons. A matching footer shows the active runtime and the line count in 11 px mono <code>#6B6B6B</code>.",
+      "<b>Sliding tab pill.</b> The selected tab draws a <code>#1F1F1F</code> pill with a <code>#2A2A2A</code> border behind its label using a shared layout id, so it travels between tabs on a spring of stiffness 380, damping 30, mass 0.5. Inactive tabs sit at <code>#6B6B6B</code> and lighten on hover.",
+      "<b>Live parameters.</b> Each snippet's code can be a function of a parameter object. The Params button inverts to white-on-black while open and shows boolean, select and text controls; any change re-runs the function and redraws the code immediately.",
+      "<b>Code body.</b> A <code>#050505</code> area capped at 500 px tall that scrolls both ways, 12 px mono text with relaxed leading, 32 px right-aligned line numbers in <code>#505050</code>. Listed lines get a 10% white wash and a 2 px white bar on the left.",
+      "<b>Copy.</b> Copies the resolved code (with the current parameter values) and swaps the label to a check and “Copied” for 2 s. The whole card is a labelled region."
+    ],
+    "tokens": [
+      { "label": "Surfaces", "value": "#050505 · #0E0E0E · #141414 · #1F1F1F" },
+      { "label": "Tab pill spring", "value": "stiffness 380 · damping 30 · mass 0.5" },
+      { "label": "Highlight line", "value": "rgba(255,255,255,0.1) · 2 px white left bar" },
+      { "label": "Code area", "value": "max-height 500 px · 12 px mono · gutter 32 px" },
+      { "label": "Copied state", "value": "2000 ms" }
+    ],
+    "prompt": "Build a code window component: card radius 12px, background #0E0E0E, 1px border #1F1F1F, large drop shadow. Header (#141414, padding 12px 16px, bottom border #1F1F1F): three 10px circles in #1F1F1F, a terminal icon plus filename in 12px monospace #A1A1A1, a segmented tab rail (padding 4px, #0E0E0E, radius 12, border #1F1F1F) with one 12px tab per language, and on the right a 'Params' toggle and a 'Copy' button. The selected tab shows a #1F1F1F pill with #2A2A2A border behind its text that moves between tabs as a shared-layout element on a spring of stiffness 380, damping 30, mass 0.5; inactive tabs #6B6B6B, hover #A1A1A1. Each snippet's code may be a function of parameters; the Params toggle (white fill, black text when open) reveals a strip with checkbox, select and text inputs whose changes regenerate the code instantly. Body: #050505, max-height 500px, scroll on overflow, 12px monospace with relaxed line height, a 32px right-aligned line-number gutter in #505050, and highlighted lines with rgba(255,255,255,0.1) background and a 2px white left border. Copy writes the resolved code to the clipboard and shows a check icon and 'Copied' for 2000ms. Footer (#141414, top border) in 11px mono #6B6B6B: 'Runtime: <label>' left, '<n> lines' right. Wrap in role='region' with an aria-label.",
+    "caveats": [
+      "No syntax colouring: the code is a single colour. The language tabs are plain buttons without tab roles or a selected state, so assistive tech does not announce which language is active."
+    ],
+    "blurb": "A code window for documentation and developer landing pages that shows the same call in several languages, lets readers flip between them, and fills in their own settings before they copy. It turns a static example into something a visitor can adapt on the spot, which suits API docs, SDK quick-starts, integration guides and product pages aimed at engineers."
+  },
+  {
+    "id": "drag-to-confirm",
+    "plays": "click",
+    "accent": "#f43f5e",
+    "title": { "en": "Drag to confirm", "zh": "滑动确认条", "zh-tw": "滑動確認條" },
+    "gist": {
+      "en": "A rounded track with a round handle on the left and an instruction in the middle. Drag the handle right: a tinted fill follows it and the text fades out; let go past most of the way and the track turns red (or green, amber, blue depending on the action), a check pops into the handle and a confirmation message appears. Let go too early and the handle springs back.",
+      "zh": "一条圆角滑轨，左端一颗圆形把手，中间是操作提示。把把手往右拖，后面跟着一段淡色填充，提示文字慢慢淡出；拖过大部分距离再松手，整条滑轨变成红色（按动作不同也可能是绿、琥珀或蓝），把手里弹出一个对勾，并显示确认文字。没拖够就松手，把手会弹回起点。",
+      "zh-tw": "一條圓角滑軌，左端一顆圓形把手，中間是操作提示。把把手往右拖，後面跟著一段淡色填充，提示文字慢慢淡出；拖過大部分距離再放開，整條滑軌變成紅色（依動作不同也可能是綠、琥珀或藍），把手裡彈出一個勾勾，並顯示確認文字。沒拖夠就放開，把手會彈回起點。"
+    },
+    "anatomy": [
+      "<b>Track and handle.</b> A pill track (md: 48 px tall, 4 px padding, <code>#121214</code> fill, <code>#232327</code> border, inset shadow) with a 40 px handle (<code>#1C1C20</code>, border <code>#2C2C32</code>). Travel is the track width minus 48 px (sm 40 px track / 32 px handle, lg 56 px / 44 px), re-measured on resize.",
+      "<b>Following fill and fading text.</b> A tinted fill sits behind the handle at handle position + handle width + 4 px. Over the first 55% of travel the label fades from 1 to 0 and drifts 8 px right. Drag uses elastic 0.06 at the ends and no momentum; the handle grows to 1.04 while held.",
+      "<b>Commit or return.</b> Releasing at 85% or more snaps to the end on a spring of stiffness 380, damping 30, mass 0.5, fires a 22 ms vibration where supported, recolours track and handle by action (delete rose, unlock amber, submit blue, others emerald), spins a check in from scale 0 and −20°, and scales the confirmation text in from 0.94. Anything less returns on a looser spring (320 / 24 / 0.7) with a small overshoot.",
+      "<b>Auto reset.</b> After 2.5 s the track returns to its idle look and the handle slides home; the delay is configurable or can be turned off.",
+      "<b>Accessibility.</b> The handle is focusable with a slider role; Enter, Space or Right Arrow confirm in one step, and a visually hidden button offers the same action. Reduced motion makes every move instant."
+    ],
+    "tokens": [
+      { "label": "Commit threshold", "value": "85% of travel · text gone by 55%" },
+      { "label": "Snap spring", "value": "stiffness 380 · damping 30 · mass 0.5" },
+      { "label": "Return spring", "value": "stiffness 320 · damping 24 · mass 0.7" },
+      { "label": "Track (md)", "value": "48 px tall · handle 40 px · travel = width − 48 px" },
+      { "label": "Feedback", "value": "vibrate 22 ms · auto reset 2500 ms · elastic 0.06" }
+    ],
+    "prompt": "Build a slide-to-confirm control up to 384px wide. Track: fully rounded, 48px tall, 4px padding, background #121214, 1px border #232327, inset shadow 0 1px 2px rgba(0,0,0,0.35). Handle: 40px circle, #1C1C20, border #2C2C32, shadow 0 2px 8px rgba(0,0,0,0.4), with an action icon (chevron, trash, lock, archive or arrow). Max travel = track width − 48px (small: 40px track, 32px handle, −40; large: 56px track, 44px handle, −56), recomputed on resize. Horizontal drag only, constrained 0..max, elastic 0.06, no momentum, scale 1.04 while dragging, 0.96 on press. Behind the handle draw a tinted fill whose width is x + handle + 4px. Centred label: opacity 1→0 and translateX 0→8px over x 0..55% of max. On release at ≥85%: animate to max with a spring of stiffness 380, damping 30, mass 0.5, call navigator.vibrate(22), switch track to a 15% tint with a 30% border and the handle to solid colour (rose for delete, amber for unlock, blue for submit, emerald otherwise), pop a check in from scale 0 rotate -20deg, and show the confirmed label scaling from 0.94 with opacity 0→1. Below 85%: spring back to 0 with stiffness 320, damping 24, mass 0.7. After 2500ms reset to idle. Handle has role='slider', tabindex 0; Enter, Space or ArrowRight confirm; add a visually hidden button with the same action. Under prefers-reduced-motion use duration 0 everywhere.",
+    "caveats": [
+      "The slider's reported value is read once per render, so assistive tech hears 0 or 100 rather than the live position while dragging; the keyboard path confirms in a single step instead of moving gradually."
+    ],
+    "blurb": "A safety catch for irreversible actions: instead of a single click, the visitor drags a handle across a track and the control turns red or green to confirm it is done. It makes deleting data, sending money, unlocking something sensitive or pushing a release feel deliberate, and fits admin panels, banking flows, checkout steps and mobile-first apps."
+  },
+  {
+    "id": "liquid-ripple-button",
+    "plays": "self",
+    "accent": "#67e8f9",
+    "title": { "en": "Liquid ripple button", "zh": "水波涟漪按钮", "zh-tw": "水波漣漪按鈕" },
+    "gist": {
+      "en": "A button half-filled with moving water: two translucent cyan wave bands roll in opposite directions along its lower half, topped by a glowing waterline. Hover and the water rises; press and two rings spread out from exactly where you clicked, like a drop hitting the surface.",
+      "zh": "一颗下半截装着流动的水的按钮：两层半透明的青色波浪沿下半部朝相反方向滚动，水面上有一道发光的水线。鼠标移上去水位升高；按下时，从点击的那一点扩散出两圈涟漪，像一滴水落在水面上。",
+      "zh-tw": "一顆下半截裝著流動的水的按鈕：兩層半透明的青色波浪沿下半部朝相反方向滾動，水面上有一道發光的水線。滑鼠移上去水位升高；按下時，從點擊的那一點擴散出兩圈漣漪，像一滴水落在水面上。"
+    },
+    "anatomy": [
+      "<b>Water body.</b> An overflow-hidden band pinned to the bottom of the button, 50% of its height at rest and 65% on hover (500 ms ease-out). Inside it, two SVG waves 200% wide (viewBox 2000 × 100, stretched with <code>preserveAspectRatio=\"none\"</code>, quadratic-curve paths that start and end at the same height) loop by translating half their width.",
+      "<b>Two currents.</b> The back wave is sky-blue <code>#38bdf8</code> at 35% opacity moving right over 6 s; the front wave is cyan <code>#67e8f9</code> at 55% moving left over 4 s, both linear and infinite. A 1 px gradient line with an 8 px cyan glow marks the top of the water. A white 10% sheen fades down over the top half.",
+      "<b>Click ripples.</b> On pointer-down, two 96 px circles are placed at the pointer: an outer cyan ring (2 px border, 30% sky fill, 20 px glow) scaling 0 → 4.5 while fading from 0.95 to 0 over 750 ms, and an inner 1 px white ring scaling 0 → 2.8 over 550 ms, both on <code>cubic-bezier(0.16, 1, 0.3, 1)</code>. At most four ripple pairs exist at once.",
+      "<b>Body and icon.</b> 12 px radius, at least 48 px tall, 24 px side padding; the dark version is <code>#161616</code> with a <code>#3A3A3A</code> border, the light version is <code>#FAFAFA</code> with black text and dimmer water. It scales to 1.02 on hover and 0.97 on press (spring 380 / 30 / 0.5); the droplet icon tilts 12°, grows 15% and turns cyan on hover.",
+      "<b>Reduced motion.</b> The waves and ripples are not rendered at all and the scale effects are dropped, leaving a static button with its sheen."
+    ],
+    "tokens": [
+      { "label": "Water", "value": "#38bdf8 @ 35% · #67e8f9 @ 55%" },
+      { "label": "Wave loops", "value": "back 6 s right · front 4 s left · linear" },
+      { "label": "Water level", "value": "50% → 65% on hover · 500 ms ease-out" },
+      { "label": "Ripples", "value": "96 px · ×4.5 in 750 ms · ×2.8 in 550 ms · ease [0.16, 1, 0.3, 1]" },
+      { "label": "Press spring", "value": "hover 1.02 · tap 0.97 · 380 / 30 / 0.5" }
+    ],
+    "prompt": "Build a button (radius 12px, min-height 48px, padding 12px 24px, 14px medium text, overflow hidden) in a dark style: background #161616, 1px border #3A3A3A (hover #525252), text #FAFAFA, shadow 0 4px 16px rgba(0,0,0,0.4); and a light style: #FAFAFA with #050505 text. Inside, a bottom-pinned water band at 50% height that rises to 65% on hover over 500ms ease-out. In it place two absolutely positioned 200%-wide SVGs (viewBox 0 0 2000 100, preserveAspectRatio none) each filled with a closed wave path whose ends match: back wave #38bdf8 at 35% opacity animating translateX(-50%)→0 over 6s linear infinite; front wave #67e8f9 at 55% opacity animating 0→-50% over 4s linear infinite (use 20% / 30% opacity on the light style). Add a 1px transparent→cyan→transparent line at the water's top with box-shadow 0 0 8px rgba(103,232,249,0.8), and a top-half sheen from rgba(255,255,255,0.1) to transparent. On pointerdown, spawn at the pointer two 96px circles centred on it: an outer ring (2px #67e8f9 border, rgba(56,189,248,0.3) fill, glow 0 0 20px rgba(103,232,249,0.8)) animating scale 0→4.5, opacity 0.95→0 over 750ms, and an inner 1px rgba(255,255,255,0.8) ring scaling 0→2.8, opacity 0.85→0 over 550ms, both with ease cubic-bezier(0.16,1,0.3,1); keep at most four pairs. Label row: 16px droplet icon + text above the water; on hover the icon turns #67e8f9, scales 1.15, rotates 12deg (300ms). Button scales 1.02 on hover and 0.97 on press with a spring of stiffness 380, damping 30, mass 0.5. Under prefers-reduced-motion omit the waves and ripples and the scaling.",
+    "caveats": [
+      "Each button runs two infinite CSS animations even when nobody is looking at it; a page with many of them keeps the compositor busy."
+    ],
+    "blurb": "A button that looks partly filled with water: gentle waves roll along its lower half, the level rises when the pointer arrives, and every click sends rings across the surface from the exact spot pressed. It gives a calm, tactile character to sync, refresh or generate actions, and suits water, wellness, weather or cleaning brands and playful product pages."
+  },
+  {
+    "id": "morphing-button",
+    "plays": "click",
+    "accent": "#34d399",
+    "title": { "en": "Morphing status button", "zh": "状态变形按钮", "zh-tw": "狀態變形按鈕" },
+    "gist": {
+      "en": "A save button that changes its content to match what the save is doing: a disk icon and label at rest, a spinner while working, a green check when done, a red warning when it fails. The old content slides or shrinks out before the new one comes in, and the button shrinks a little under the pointer.",
+      "zh": "一颗保存按钮，里面的内容会跟着保存进度变：平时是磁盘图标加文字，处理中是转圈，成功是绿色对勾，失败是红色警示。旧内容先滑走或缩小退场，新内容再进来；按下时按钮会微微缩一下。",
+      "zh-tw": "一顆儲存按鈕，裡面的內容會跟著儲存進度變：平常是磁碟圖示加文字，處理中是旋轉圈，成功是綠色勾勾，失敗是紅色警示。舊內容先滑開或縮小退場，新內容再進來；按下時按鈕會微微縮一下。"
+    },
+    "anatomy": [
+      "<b>One prop, four faces.</b> A single <code>status</code> value (idle, loading, success, error) picks which content block is mounted. Blocks swap in wait mode, so the outgoing one finishes leaving before the next enters.",
+      "<b>Two kinds of motion.</b> Idle and loading slide vertically past each other: idle enters from 6 px above and leaves 6 px down, loading enters from 6 px below and leaves upward. Success and error instead scale from 0.8 to 1 with a fade. Every swap uses a spring of stiffness 380, damping 30, mass 0.5.",
+      "<b>Colour.</b> Success text and icon are emerald <code>#34d399</code>, error rose <code>#fb7185</code>, both semibold. The light variant is <code>#FAFAFA</code> with black text; also dark (<code>#0E0E0E</code>, border <code>#1F1F1F</code>), a rose-tinted danger and a ghost.",
+      "<b>Shape.</b> At least 120 × 38 px, 16 × 8 px padding, 8 px radius, 12 px text (14 px on wider screens), overflow hidden so sliding content is clipped. It presses to 0.97 and is disabled while loading."
+    ],
+    "tokens": [
+      { "label": "Swap spring", "value": "stiffness 380 · damping 30 · mass 0.5" },
+      { "label": "Slide / scale", "value": "y ±6 px · scale 0.8 → 1" },
+      { "label": "States", "value": "#34d399 success · #fb7185 error" },
+      { "label": "Box", "value": "min 120 × 38 px · radius 8 · padding 16 × 8" }
+    ],
+    "prompt": "Build an async action button with a status prop: idle, loading, success, error. Box: inline-flex centred, min-width 120px, min-height 38px, padding 8px 16px, radius 8px, 1px border, 12px text (14px from the sm breakpoint), weight 500, overflow hidden. Variants: primary #FAFAFA with #050505 text; secondary #0E0E0E with #FAFAFA text and border #1F1F1F (hover #4A4A4A); danger rose-500 at 10% with a 30% border and rose-400 text (hover solid rose-500, white text); ghost transparent #A1A1A1. Content is rendered in an exit-before-enter presence group: idle = save icon + label, entering from y -6px and opacity 0, exiting to y +6px; loading = 14px spinning loader + label, entering from y +6px, exiting to y -6px; success = check + label in #34d399 semibold and error = alert icon + label in #fb7185 semibold, both entering from scale 0.8 opacity 0 and exiting the same way. All swaps use a spring of stiffness 380, damping 30, mass 0.5. Press scales to 0.97 with the same spring; disable the button and the press effect while loading; disabled uses opacity 0.3.",
+    "caveats": [
+      "Only the minimum size is fixed, so a longer label in one state still resizes the button; state changes are not announced to screen readers. The demo shows the four states side by side rather than cycling one button."
+    ],
+    "blurb": "A save or submit button that tells the visitor what is happening without a separate message: it shows progress while working, then a clear success or failure right where they clicked. It reduces uncertainty in settings pages, forms, editors and dashboards, anywhere an action takes a moment and people need to know whether it worked."
+  },
+  {
+    "id": "neon-edge-button",
+    "plays": "self",
+    "accent": "#ffffff",
+    "title": { "en": "Neon edge button", "zh": "流光描边按钮", "zh-tw": "流光描邊按鈕" },
+    "gist": {
+      "en": "A black button with a lightning icon whose one-pixel border is lit by a bright streak that keeps circling the edge. Hovering lightens the face slightly and enlarges the icon; pressing nudges the whole button down in size.",
+      "zh": "一颗带闪电图标的黑色按钮，它一像素宽的边框上有一道亮光不停地绕着边缘转圈。鼠标移上去按钮面稍微变亮、图标放大一点；按下时整颗按钮微微缩小。",
+      "zh-tw": "一顆帶閃電圖示的黑色按鈕，它一像素寬的邊框上有一道亮光不停地繞著邊緣轉圈。滑鼠移上去按鈕面稍微變亮、圖示放大一點；按下時整顆按鈕微微縮小。"
+    },
+    "anatomy": [
+      "<b>Border by subtraction.</b> The outer button has 1 px padding, a 10 px radius and hides overflow. Its inner face (radius 9 px, <code>#050505</code>, hover <code>#0B0B0B</code>) covers everything except that 1 px gap, which is where the light shows through.",
+      "<b>Rotating beam.</b> Behind the face, a layer five times the button's size carries a conic gradient that is transparent for 280°, ramps to white at 85% opacity at 340° and back to transparent at 360°. It spins a full turn in 3 s, linear and forever; a speed prop divides that time.",
+      "<b>Glow and press.</b> A soft halo <code>0 0 24px -10px rgba(255,255,255,0.4)</code> sits around the button (optional). The 16 px icon in <code>#E5E5E5</code> scales 1.1 over 300 ms on hover; the button scales to 0.98 while pressed. All in CSS, no script.",
+      "<b>Reduced motion.</b> The beam stops and is shown at 40% opacity, giving a static partial outline."
+    ],
+    "tokens": [
+      { "label": "Beam", "value": "conic: transparent 0–280° · rgba(255,255,255,0.85) at 340°" },
+      { "label": "Spin", "value": "360° in 3 s / speed · linear · infinite" },
+      { "label": "Shape", "value": "radius 10 px outer · 9 px inner · 1 px edge · min 44 px tall" },
+      { "label": "Face", "value": "#050505 · hover #0B0B0B · icon #E5E5E5" },
+      { "label": "Glow", "value": "0 0 24px -10px rgba(255,255,255,0.4)" }
+    ],
+    "prompt": "Build a CSS-only button: outer element inline-flex, min-height 44px, padding 1px, border-radius 10px, overflow hidden, 14px medium text #FAFAFA, box-shadow 0 0 24px -10px rgba(255,255,255,0.4), scale 0.98 on :active. Inside it, an absolutely positioned layer at inset -200% containing a full-size span with background conic-gradient(from 0deg at 50% 50%, transparent 0deg, transparent 280deg, rgba(255,255,255,0.85) 340deg, transparent 360deg), rotating 0→360deg over 3s linear infinite (duration = 3s / speed). Above it, the face: a span with radius 9px, background #050505 (hover #0B0B0B), min-height 42px, padding 10px 20px, full width, centring a 16px lightning icon in #E5E5E5 (scale 1.1 on hover over 300ms) and the label with an 8px gap. Under prefers-reduced-motion stop the rotation and set the beam to opacity 0.4.",
+    "blurb": "A dark button outlined by a single bright streak that travels around its edge, quietly drawing the eye without colour or noise. It suits developer tools, deploy and launch actions, dark-themed landing pages and any interface that wants one primary action to feel live while the rest of the screen stays calm."
+  },
+  {
+    "id": "press-button",
+    "plays": "click",
+    "accent": "#f2f2f3",
+    "title": { "en": "Squash press button", "zh": "压扁回弹按钮", "zh-tw": "壓扁回彈按鈕" },
+    "gist": {
+      "en": "A plain-looking button that squashes when pressed: it gets a little narrower and noticeably shorter, as if pushed into the page, then springs back to shape on release. Comes in solid, raised, outline and ghost looks.",
+      "zh": "外观很朴素的按钮，按下去会被压扁：宽度略收、高度明显变矮，像被按进页面里，松手后弹回原形。有实心、浮起、描边、幽灵四种外观。",
+      "zh-tw": "外觀很樸素的按鈕，按下去會被壓扁：寬度略收、高度明顯變矮，像被按進頁面裡，放開後彈回原形。有實心、浮起、描邊、幽靈四種外觀。"
+    },
+    "anatomy": [
+      "<b>Squash, not shrink.</b> On pointer-down the button animates <code>scaleX</code> to 1 − c and <code>scaleY</code> to 1 − 1.6c, where c is the press strength (default 0.04, clamped 0.01–0.06): 0.96 wide by 0.936 tall. A uniform 0.97 tap scale is layered on top, so the face ends near 93% × 91%.",
+      "<b>Release.</b> Both axes return to 1 on a spring of stiffness 380, damping 30, mass 0.5; pressing and releasing quickly produces a short recoil rather than a bounce. Cancelled taps (dragging off) also release.",
+      "<b>Looks.</b> Solid uses the foreground token as fill (<code>#F2F2F3</code> on <code>#111113</code> in dark); raised and outline use <code>#1C1C1F</code> / <code>#29292C</code> with lighter hover; ghost is text-only. Heights 32 / 40 / 48 px with 6 or 8 px radius, plus a 40 px square icon size.",
+      "<b>States.</b> Colours change over 150 ms. Disabled drops to 30% opacity and ignores the pointer. Keyboard focus shows a 1 px outline offset 1 px."
+    ],
+    "tokens": [
+      { "label": "Squash", "value": "scaleX 1 − c · scaleY 1 − 1.6c · c = 0.04 (0.01–0.06)" },
+      { "label": "Extra tap scale", "value": "0.97" },
+      { "label": "Spring", "value": "stiffness 380 · damping 30 · mass 0.5" },
+      { "label": "Heights", "value": "32 / 40 / 48 px · icon 40 × 40" }
+    ],
+    "prompt": "Build a button that squashes under the pointer. Variants: primary (fill #F2F2F3, text #111113, hover opacity 0.9), secondary (#1C1C1F, 1px border #29292C, hover #202023 / #343438), outline (transparent with that border), ghost (transparent, #A1A1A6 text, hover #F2F2F3 text on #1C1C1F). Sizes: sm h32 px14 12px text radius 6; md h40 px18 14px text radius 8; lg h48 px24 16px text radius 8; icon 40×40. Add a pressStrength prop c (default 0.04, clamped 0.01..0.06). While the pointer is down animate scaleX to 1−c and scaleY to 1−1.6c, and additionally apply a whileTap scale of 0.97; on release or tap cancel return both axes to 1. All with a spring of stiffness 380, damping 30, mass 0.5. Colours transition 150ms; disabled = opacity 0.3, pointer-events none; focus-visible 1px outline with 1px offset.",
+    "caveats": [
+      "The ghost look skips the size classes, so it has no height or padding of its own and needs them supplied."
+    ],
+    "blurb": "A button that responds to a press like a soft physical key, flattening slightly under the finger and popping back when released. That small bit of weight makes save, cancel and confirm actions feel answered, and it drops into forms, dialogs, toolbars and mobile web apps without changing how the button looks at rest."
+  },
+  {
+    "id": "split-button",
+    "plays": "click",
+    "accent": "#f5f5f5",
+    "title": { "en": "Split button", "zh": "主操作+下拉按钮", "zh-tw": "主操作＋下拉按鈕" },
+    "gist": {
+      "en": "A button cut into two parts by a thin divider: the wide left side runs the main action, the narrow right side holds a chevron. Clicking the chevron flips it upside down and drops a small menu of related actions just below, which closes on a pick, an outside click or Escape.",
+      "zh": "一颗被细分隔线切成两段的按钮：左边宽的一段执行主操作，右边窄的一段放着一个小箭头。点箭头，它会翻转朝上，并在正下方弹出一个列着相关操作的小菜单；选中某项、点外面或按 Esc 都会关掉。",
+      "zh-tw": "一顆被細分隔線切成兩段的按鈕：左邊寬的一段執行主操作，右邊窄的一段放著一個小箭頭。點箭頭，它會翻轉朝上，並在正下方彈出一個列著相關操作的小選單；選取某項、點外面或按 Esc 都會關閉。"
+    },
+    "anatomy": [
+      "<b>Fused pair.</b> Two native buttons in an overflow-hidden group with an 8 px radius (10 px on large), split by a 1 px divider inset 6 px top and bottom. md: main side 20 × 10 px padding and 14 px text, chevron side 10 px padding with a 16 px chevron. Both press to 0.98 (200 ms ease-out).",
+      "<b>Variants.</b> Light: <code>#F5F5F5</code> with black text and a soft white halo that widens on hover. Dark raised: surface and border tokens. Danger <code>#DC2626</code> (hover <code>#EF4444</code>) and info <code>#3B82F6</code>, each with a coloured glow.",
+      "<b>Menu motion.</b> The chevron rotates 180° on a spring of stiffness 400, damping 25, mass 0.5. The menu (min 160 px wide, 12 px radius, 4 px padding, raised surface, deep shadow plus a 1 px 6% white ring) grows from the top-right corner: opacity 0, scale 0.96, 4 px up → rest on the same spring; it leaves at scale 0.97 in 120 ms.",
+      "<b>Placement.</b> Opens 8 px below the trigger, or 8 px above when the space below is shorter than the estimated menu height (36 px per item + 16 px) and the space above is enough.",
+      "<b>Keyboard.</b> The menu takes focus when opened; Up/Down cycle through enabled items with wrap-around, Home/End jump, Enter/Space choose, Escape closes and returns focus to the chevron, Tab closes. The chevron reports <code>aria-haspopup</code> and <code>aria-expanded</code>; reduced motion makes all transitions instant."
+    ],
+    "tokens": [
+      { "label": "Spring", "value": "stiffness 400 · damping 25 · mass 0.5" },
+      { "label": "Menu enter / exit", "value": "scale 0.96 → 1, y ∓4 px · exit scale 0.97 in 120 ms" },
+      { "label": "Colours", "value": "#F5F5F5 · #DC2626 / #EF4444 · #3B82F6" },
+      { "label": "Menu", "value": "min 160 px · radius 12 · offset 8 px · 36 px per item" },
+      { "label": "Shadow", "value": "0 12px 30px -10px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.06)" }
+    ],
+    "prompt": "Build a split button: a wrapper with overflow hidden and radius 8px containing a primary <button> (padding 10px 20px, 14px medium text), a 1px divider with 6px vertical inset (rgba(0,0,0,0.1) on the light variant), and a chevron <button> (padding 10px) holding a 16px chevron-down. Light variant: background #F5F5F5, text #050505, hover #FFFFFF, shadow 0 0 20px -3px rgba(255,255,255,0.15) → hover 0 0 28px -4px rgba(255,255,255,0.28). Danger: #DC2626 at 90% (hover #EF4444) with glow 0 0 18px -4px rgba(220,38,38,0.35). Info: #3B82F6 at 90% (hover #60A5FA). Both halves scale to 0.98 on :active with a 200ms ease-out transition. Clicking the chevron toggles a menu and rotates the chevron 180deg with a spring of stiffness 400, damping 25, mass 0.5. Menu: absolutely positioned at the right edge, 8px below the trigger (flip to 8px above if space below < items×36+16 and space above is larger), min-width 160px, radius 12px, padding 4px, background #18181A, 1px border #29292C, shadow 0 12px 30px -10px rgba(0,0,0,0.8) plus 0 0 0 1px rgba(255,255,255,0.06), transform-origin top right; enter from opacity 0, scale 0.96, y -4px (or +4px when above) on the same spring; exit to opacity 0, scale 0.97 over 120ms. Items: 14px, padding 8px 12px, radius 8px, hover/active background #202023. Close on outside pointerdown. On open focus the menu; ArrowDown/ArrowUp move a wrapping highlight over enabled items, Home/End jump, Enter/Space select and close, Escape closes and refocuses the chevron, Tab closes. Chevron has aria-haspopup='menu', aria-expanded and an aria-label; menu role='menu', items role='menuitem'. Under prefers-reduced-motion use duration 0.",
+    "caveats": [
+      "Keyboard highlighting moves a visual state while focus stays on the menu container (no active-descendant link), so screen readers do not announce which item is highlighted."
+    ],
+    "blurb": "One button for the action people take most, with a small arrow beside it for the close alternatives: deploy now or to a test environment, save or publish, delete or archive. It keeps a toolbar uncluttered while the extra choices stay one click away, and fits dashboards, editors, publishing tools and admin panels."
+  },
+  {
+    "id": "typewriter-button",
+    "plays": "click",
+    "accent": "#fafafa",
+    "title": { "en": "Typewriter button", "zh": "打字机按钮", "zh-tw": "打字機按鈕" },
+    "gist": {
+      "en": "A monospace button that, when clicked, wipes its own label and types it back one character at a time behind a blinking block cursor, with a soft key click for every letter. While it is typing it ignores further clicks and stops reacting to hover.",
+      "zh": "一颗等宽字体的按钮，点一下，它会先清空自己的文字，再一个字一个字地重新打出来，后面跟着一个闪烁的方块光标，每打一个字有一声轻轻的按键声。打字期间再点无效，也不响应悬停。",
+      "zh-tw": "一顆等寬字型的按鈕，點一下，它會先清空自己的文字，再一個字一個字地重新打出來，後面跟著一個閃爍的方塊游標，每打一個字有一聲輕輕的按鍵聲。打字期間再點無效，也不回應滑鼠懸停。"
+    },
+    "anatomy": [
+      "<b>Typing loop.</b> On click the label is cleared, then after 30 ms a timer reveals one more character every <code>charDuration</code> ms (75 by default; the demo uses 65 and 50). Clicks during typing are ignored. An optional auto-start types once on mount.",
+      "<b>Cursor.</b> While typing, a 6 × 14 px block in the text colour sits after the last character and blinks from opacity 1 to 0 every 0.5 s.",
+      "<b>Key sound.</b> Optional, built with the Web Audio API and no files: a 30 ms burst of white noise with an exponential decay, through a band-pass at 1800 Hz (Q 3), gain set to volume × 0.4 (volume 0.25 by default) and ramped to 0.001 over 30 ms.",
+      "<b>Body.</b> 12 px mono, 12 px radius, at least 120 px wide, 16 × 10 px padding. Light: <code>#FAFAFA</code> with black text; dark: <code>#0E0E0E</code> with a <code>#1F1F1F</code> border. When idle it lifts 1 px and grows to 1.02 on hover and presses to 0.97 (spring 380 / 30 / 0.5).",
+      "<b>Accessibility.</b> <code>aria-label</code> always carries the full text, so screen readers never hear a half-typed word; focus shows a 2 px white ring."
+    ],
+    "tokens": [
+      { "label": "Per character", "value": "75 ms default · first after 30 ms" },
+      { "label": "Cursor", "value": "6 × 14 px · blink 0.5 s" },
+      { "label": "Click sound", "value": "30 ms noise · band-pass 1800 Hz, Q 3 · gain vol × 0.4" },
+      { "label": "Hover / tap", "value": "scale 1.02, y −1 px · 0.97 · spring 380 / 30 / 0.5" },
+      { "label": "Body", "value": "12 px mono · radius 12 · min-width 120 px" }
+    ],
+    "prompt": "Build a button whose label is a string, rendered in 12px monospace, weight 500, padding 10px 16px, radius 12px, min-width 120px, 1px border. Light variant #FAFAFA with #050505 text; dark variant #0E0E0E with #FAFAFA text, border #1F1F1F (hover #4A4A4A). At rest show the full label. On click (ignored if already typing): clear the label, wait 30ms, then append one character every charDuration ms (default 75), and when done call onComplete. While typing, show a 6×14px block in currentColor with 2px left margin that blinks opacity 1→0 every 0.5s, and disable hover/tap motion; otherwise scale 1.02 and translateY -1px on hover and 0.97 on press with a spring of stiffness 380, damping 30, mass 0.5. Optional sound per character via Web Audio: a buffer of 30ms white noise multiplied by exp(-i/(len×0.2)), through a bandpass filter at 1800Hz with Q 3, into a gain starting at volume×0.4 (volume default 0.25) ramping exponentially to 0.001 over 30ms. Keep aria-label set to the full text; focus-visible ring 2px white.",
+    "caveats": [
+      "With sound on, a new audio context is opened for every character (closed 60 ms later); browsers limit how many can exist, so very long labels or rapid repeats can drop clicks. Typing still runs when the visitor prefers reduced motion."
+    ],
+    "blurb": "A button that types its own label back out when pressed, complete with a blinking cursor and optional key clicks, like a command being entered at a terminal. It gives install commands, copy-to-run snippets and developer-tool calls to action a bit of character, and suits docs sites, CLI product pages and retro or hacker-themed designs."
+  },
+  {
+    "id": "login",
+    "plays": "click",
+    "accent": "#fafafa",
+    "title": { "en": "Login card", "zh": "登录卡片", "zh-tw": "登入卡片" },
+    "gist": {
+      "en": "A dark sign-in card: a logo tile and greeting, two single-sign-on buttons, a divider, then email and password fields with icons, a remember-me tick box and a full-width Sign In button. Submitting with bad input slides red messages open under the offending fields; typing again makes them fold away.",
+      "zh": "一张深色登录卡片：顶部是标志方块和欢迎语，接着两颗第三方登录按钮、一条分隔线，然后是带图标的邮箱和密码输入框、「记住这台设备」勾选框，以及一颗通栏的登录按钮。输入有误时提交，对应字段下方会展开红色提示；再输入，提示就收起来。",
+      "zh-tw": "一張深色登入卡片：頂端是標誌方塊和歡迎語，接著兩顆第三方登入按鈕、一條分隔線，然後是帶圖示的電子郵件和密碼輸入框、「記住這台裝置」核取方塊，以及一顆滿版的登入按鈕。輸入有誤時送出，對應欄位下方會展開紅色提示；再輸入，提示就收起來。"
+    },
+    "anatomy": [
+      "<b>Card.</b> Up to 448 px wide, 16 px radius, <code>#0E0E0E</code> with a <code>#1F1F1F</code> border, 24 px padding (32 px on wider screens), shadow <code>0 20px 50px rgba(0,0,0,0.6)</code>, and a blurred 5% white glow across the top three-quarters. Header: 40 px rounded logo tile, 20–24 px semibold title, 12–14 px <code>#A1A1A1</code> subtitle.",
+      "<b>Fields.</b> 40 px tall inputs on <code>#141414</code> with a <code>#1F1F1F</code> border that turns <code>#4A4A4A</code> on hover and focus, 12 px text, a 14 px icon at the left in <code>#525252</code>. The password field has an eye toggle that switches between hidden and plain text. Required labels carry a coral asterisk.",
+      "<b>Validation.</b> Runs on submit only: email must be present and look like an address, password at least 6 characters. Each message opens from height 0 and 4 px above on a spring of stiffness 380, damping 30, mass 0.5, in 11 px <code>#FF7A7A</code> with an alert role; the field border goes rose; editing that field clears it.",
+      "<b>Actions.</b> Two provider buttons in a 2-column grid with a 10 px gap above a mono uppercase divider. Remember-me is a 16 px, 4 px-radius box that fills white and pops its check in from scale 0. The submit button is full width with an arrow, and in loading shows a spinner and “Authenticating...”. An optional server error banner slides in above the form the same way."
+    ],
+    "tokens": [
+      { "label": "Card", "value": "max 448 px · radius 16 · #0E0E0E · border #1F1F1F" },
+      { "label": "Input", "value": "40 px · #141414 · border #1F1F1F → #4A4A4A" },
+      { "label": "Error", "value": "#FF7A7A · 11 px · rose-500/50 border" },
+      { "label": "Reveal spring", "value": "stiffness 380 · damping 30 · mass 0.5" },
+      { "label": "Rules", "value": "email pattern · password ≥ 6 characters" }
+    ],
+    "prompt": "Build a sign-in card: max-width 448px, radius 16px, background #0E0E0E, 1px border #1F1F1F, padding 24px (32px from sm), shadow 0 20px 50px rgba(0,0,0,0.6), with a decorative 75%-wide, 96px-tall white-5%-to-transparent gradient blurred 40px at the top centre. Header centred: 40px logo tile (radius 12, #141414, border #1F1F1F), title 'Welcome back' 20px (24px sm) semibold #FAFAFA, subtitle 12–14px #A1A1A1. Then two small secondary buttons for single sign-on in a 2-column grid with 10px gap, and a divider line #1F1F1F with centred 10px uppercase monospace 'Or continue with' in #6B6B6B. Form (noValidate, 16px vertical gap): Email and Password fields with 12px #FAFAFA labels and a #FF7A7A asterisk; inputs 40px tall, 12px text, background #141414, border #1F1F1F (hover/focus #4A4A4A), radius 8, 36px left padding for a 14px #525252 icon; password gets an eye/eye-off toggle at the right. A 'Forgot password?' link sits right of the password label. A 'Remember this device' checkbox: 16px box, radius 4, #141414 / #1F1F1F, checked fills #FAFAFA and pops a check from scale 0. A full-width 40px primary submit 'Sign In' with a right arrow; loading shows a spinner and 'Authenticating...'. On submit validate: email required and matching /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/, password required and ≥6 chars. Show each error under its field as 11px #FF7A7A text with an alert icon and role='alert', revealed from height 0, opacity 0, y -4px with a spring of stiffness 380, damping 30, mass 0.5; set the field border to rgba(244,63,94,0.5); clear an error as soon as that field changes. Optional top error banner (rose 10% fill, 30% border, rose-400 text) using the same reveal. Footer link 'Don't have an account? Sign up' above a #1F1F1F top border.",
+    "caveats": [
+      "Field labels are not tied to their inputs, so clicking a label does not focus the field and screen readers fall back to the placeholder; the password eye is skipped by Tab."
+    ],
+    "blurb": "A ready-made sign-in screen for dark interfaces: a short greeting, quick single sign-on options, email and password with clear inline error messages, and a remember-me choice. It covers the whole returning-user moment for SaaS dashboards, member areas, developer tools and internal apps, and pairs naturally with a matching sign-up card."
+  },
+  {
+    "id": "sign-up",
+    "plays": "click",
+    "accent": "#6ee7b7",
+    "title": { "en": "Sign-up card", "zh": "注册卡片", "zh-tw": "註冊卡片" },
+    "gist": {
+      "en": "A dark registration card with name, email, password and confirm-password fields, two single-sign-on buttons and a terms tick box. As you type a password, a four-segment meter lights up from red through amber and blue to green with a word under it; submitting with problems opens red messages under each field that needs fixing.",
+      "zh": "一张深色注册卡片：姓名、邮箱、密码、确认密码四个输入框，两颗第三方注册按钮，以及一个同意条款的勾选框。输入密码时，下方四段强度条依次亮起，从红到琥珀、蓝再到绿，下面写着强度等级；提交时哪里有问题，哪个字段下面就展开红色提示。",
+      "zh-tw": "一張深色註冊卡片：姓名、電子郵件、密碼、確認密碼四個輸入框，兩顆第三方註冊按鈕，以及一個同意條款的核取方塊。輸入密碼時，下方四段強度條依序亮起，從紅到琥珀、藍再到綠，下面標示強度等級；送出時哪裡有問題，哪個欄位下方就展開紅色提示。"
+    },
+    "anatomy": [
+      "<b>Same shell as the login card.</b> Up to 448 px wide, 16 px radius, <code>#0E0E0E</code> with a <code>#1F1F1F</code> border, deep shadow and a blurred top glow; logo tile, title and subtitle centred; two provider buttons and an “or sign up with email” divider; fields spaced 14 px apart.",
+      "<b>Strength meter.</b> Appears once the password is not empty: four 4 px bars with 4 px gaps. One point each for length ≥ 8, an uppercase letter, a digit and a symbol; bars light cumulatively in <code>#FF7A7A</code>, <code>#F59E0B</code>, <code>#38BDF8</code>, <code>#6EE7B7</code> over 200 ms, unlit bars stay <code>#1F1F1F</code>. A 10 px mono caption reads Weak, Fair, Good or Strong.",
+      "<b>Validation.</b> On submit: name required, email required and address-shaped, password at least 8 characters, confirmation must match (can be switched off), and the terms box must be ticked. Each message opens from height 0 and 4 px above on a spring of stiffness 380, damping 30, mass 0.5, in 11 px <code>#FF7A7A</code> with an alert role, and clears as soon as its field is edited.",
+      "<b>Fields and submit.</b> 40 px inputs on <code>#141414</code> with left icons; both password fields have eye toggles. The terms checkbox label can hold links. The full-width submit reads Create Account and switches to a spinner with “Creating account...” while loading."
+    ],
+    "tokens": [
+      { "label": "Meter colours", "value": "#FF7A7A · #F59E0B · #38BDF8 · #6EE7B7 · off #1F1F1F" },
+      { "label": "Meter", "value": "4 bars · 4 px tall · 4 px gap · 200 ms" },
+      { "label": "Score", "value": "+1 each: ≥ 8 chars · A–Z · 0–9 · symbol" },
+      { "label": "Reveal spring", "value": "stiffness 380 · damping 30 · mass 0.5" },
+      { "label": "Card", "value": "max 448 px · radius 16 · #0E0E0E · inputs 40 px #141414" }
+    ],
+    "prompt": "Build a registration card matching a dark sign-in card: max-width 448px, radius 16px, #0E0E0E, 1px border #1F1F1F, padding 24px (32px sm), shadow 0 20px 50px rgba(0,0,0,0.6), blurred white-5% glow at the top. Header: 40px logo tile, 'Create an account' 20–24px semibold, subtitle 12–14px #A1A1A1. Two small secondary single-sign-on buttons in a 2-column grid (gap 10px) and a divider with 10px uppercase monospace 'Or sign up with email' in #6B6B6B. Form (noValidate, 14px gap): Full Name, Email Address, Password, Confirm Password — inputs 40px, #141414, border #1F1F1F (hover/focus #4A4A4A), radius 8, 12px text, 14px #525252 left icon, eye toggle on both password fields; labels 12px with a #FF7A7A asterisk. Under the password, once it has any character, show four flex bars 4px tall with 4px gaps; score = (length ≥ 8) + (has A–Z) + (has 0–9) + (has a non-alphanumeric); bar n lights when score ≥ n in #FF7A7A, #F59E0B, #38BDF8, #6EE7B7 respectively (unlit #1F1F1F, 200ms colour transition), with a 10px monospace row 'Strength' / Weak|Fair|Good|Strong. Then a terms checkbox (16px, radius 4, fills #FAFAFA with a check popping from scale 0) whose label contains links, and a full-width 40px primary 'Create Account' button with a right arrow (loading: spinner + 'Creating account...'). Validate on submit: name required; email required and matching a basic address pattern; password ≥ 8 chars; confirmation equals password; terms ticked. Show each error below its field in 11px #FF7A7A with an alert icon and role='alert', revealed from height 0, opacity 0, y -4px on a spring of stiffness 380, damping 30, mass 0.5, with a rose border on the field; clear it when that field changes. Footer link 'Already have an account? Sign in' above a #1F1F1F border.",
+    "caveats": [
+      "The strength meter is a simple four-rule checklist (a long all-lowercase passphrase scores only one bar), and as on the login card the labels are not linked to their inputs."
+    ],
+    "blurb": "A complete account-creation card for dark interfaces with name, email, password and confirmation, quick single sign-on options, a terms agreement and a live password-strength meter that coaches people toward a safer choice. It is the natural first step for SaaS trials, membership sites, communities and developer platforms, alongside a matching sign-in card."
+  }
+]

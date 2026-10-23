@@ -1,0 +1,1 @@
+import{a as e}from"./chunk-F474P2UG.js";import{b as o,c as p}from"./chunk-EN3SAVJI.js";var r=o(p(),1),{SpeedWarpShowcase:t}=e,n={id:"speed-warp",aliases:["speed-warps","speedwarp"]};async function i(){await Promise.all([e.SpeedWarpShowcase.preload()])}function d(s){let{demoKey:a}=s;return(0,r.jsx)(t,{},a)}export{n as a,i as b,d as c};

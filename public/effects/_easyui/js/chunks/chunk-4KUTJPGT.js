@@ -1,0 +1,1 @@
+import{a as i}from"./chunk-5TL3NGWZ.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var o=e(t(),1),{NotificationStack:a}=i,p={id:"notification-stack",aliases:[]};async function c(){await Promise.all([a.preload()])}function m(s){let{demoKey:n}=s;return(0,o.jsx)("div",{className:"py-6 flex justify-center",children:(0,o.jsx)(a,{maxVisible:3},n)})}export{p as a,c as b,m as c};

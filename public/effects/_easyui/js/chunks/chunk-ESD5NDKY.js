@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as r}from"./chunk-EN3SAVJI.js";var t=e(r(),1),{DragToConfirmShowcase:n}=o,p={id:"drag-to-confirm",aliases:[]};async function c(){await Promise.all([o.DragToConfirmShowcase.preload()])}function s(a){let{demoKey:m}=a;return(0,t.jsx)(n,{},m)}export{p as a,c as b,s as c};

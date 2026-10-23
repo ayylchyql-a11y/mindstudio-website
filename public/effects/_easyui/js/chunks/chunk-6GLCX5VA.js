@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as a}from"./chunk-EN3SAVJI.js";var r=e(a(),1),{CalendarDemo:n}=o,d={id:"calendar",aliases:[]};async function i(){await Promise.all([o.CalendarDemo.preload()])}function p(t){let{demoKey:m}=t;return(0,r.jsx)(n,{},m)}export{d as a,i as b,p as c};

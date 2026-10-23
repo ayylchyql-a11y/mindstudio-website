@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as a}from"./chunk-EN3SAVJI.js";var t=e(a(),1),{PackageBoxDemoShowcase:s}=o,n={id:"package-box",aliases:["packagebox"]};async function i(){await Promise.all([o.PackageBoxDemoShowcase.preload()])}function r(m){let{demoKey:p}=m;return(0,t.jsx)(s,{},p)}export{n as a,i as b,r as c};

@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as n}from"./chunk-EN3SAVJI.js";var r=e(n(),1),{MorphingIconShowcase:t}=o,c={id:"morphing-icon",aliases:["morphing-icons","morphingicon"]};async function a(){await Promise.all([o.MorphingIconShowcase.preload()])}function m(i){let{demoKey:p}=i;return(0,r.jsx)(t,{},p)}export{c as a,a as b,m as c};

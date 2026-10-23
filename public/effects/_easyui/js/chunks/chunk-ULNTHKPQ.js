@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as m}from"./chunk-EN3SAVJI.js";var t=e(m(),1),{ComboboxDemo:s}=o,i={id:"combobox",aliases:[]};async function c(){await Promise.all([o.ComboboxDemo.preload()])}function n(r){let{demoKey:p}=r;return(0,t.jsx)(s,{},p)}export{i as a,c as b,n as c};

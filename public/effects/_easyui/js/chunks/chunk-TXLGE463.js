@@ -1,0 +1,1 @@
+import{a as s}from"./chunk-5TL3NGWZ.js";import{b as o,c as e}from"./chunk-EN3SAVJI.js";var p=o(e(),1),{AIResponseLiveShowcase:t}=s,n={id:"ai-response",aliases:[]};async function m(){await Promise.all([t.preload()])}function a(r){return(0,p.jsx)(t,{})}export{n as a,m as b,a as c};

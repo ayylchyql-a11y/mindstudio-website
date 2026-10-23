@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as r}from"./chunk-EN3SAVJI.js";var t=e(r(),1),{LoaderShowcase:m}=o,d={id:"loader",aliases:[]};async function i(){await Promise.all([o.LoaderShowcase.preload()])}function p(a){let{demoKey:s}=a;return(0,t.jsx)(m,{},s)}export{d as a,i as b,p as c};

@@ -1,0 +1,1 @@
+import{a as t}from"./chunk-5TL3NGWZ.js";import{b as o,c as e}from"./chunk-EN3SAVJI.js";var s=o(e(),1),{MeteorsLiveShowcase:r}=t,i={id:"meteors",aliases:["meteor-shower","meteor-card"]};async function c(){await Promise.all([r.preload()])}function p(m){let{demoKey:a}=m;return(0,s.jsx)(r,{},a)}export{i as a,c as b,p as c};

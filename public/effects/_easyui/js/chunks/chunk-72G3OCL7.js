@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as r}from"./chunk-EN3SAVJI.js";var s=e(r(),1),{ScrollProgressNavShowcase:p}=o,n={id:"scroll-progress-nav",aliases:[]};async function c(){await Promise.all([o.ScrollProgressNavShowcase.preload()])}function l(t){let{demoKey:a}=t;return(0,s.jsx)(p,{},a)}export{n as a,c as b,l as c};

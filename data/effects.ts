@@ -1,5 +1,6 @@
 import type { Localized } from "@/lib/i18n";
 import { OPEN_SLUGS } from "@/lib/lab-open";
+import { kitEffects } from "./effects-kit";
 
 /**
  * Lab = 设计效果库。
@@ -15,7 +16,7 @@ import { OPEN_SLUGS } from "@/lib/lab-open";
  *    在这里再抄一份 = 两处真相，改了 demo 忘了改展示，页面上给的代码就是错的。
  */
 
-export type CategoryId = "web-effects" | "border-effects" | "icon-morph" | "animated-icons" | "widgets" | "dashboard" | "creative" | "mobile-ui";
+export type CategoryId = "web-effects" | "border-effects" | "icon-morph" | "animated-icons" | "widgets" | "dashboard" | "creative" | "mobile-ui" | "kit";
 
 export interface Category {
   id: CategoryId;
@@ -181,6 +182,28 @@ export const categories: Category[] = [
     },
     accent: "#22d3c5",
   },
+  {
+    /* 2026-10-23：EasyUI（MIT, Suraj Maurya）整套原样打包进来 —— 跑的是它自己的代码，
+       不是重写。打包脚本 scratchpad/easyui/ms/build.mjs，条目由 ms/assemble.mjs 生成到 data/effects-kit.ts。 */
+    id: "kit",
+    title: { en: "Component kit", zh: "组件库", "zh-tw": "元件庫", ja: "コンポーネントキット", ko: "컴포넌트 키트", it: "Kit di componenti" },
+    intro: {
+      en: "A whole React component kit brought in as it ships: 128 pieces from EasyUI (MIT, by Suraj Maurya) running on their own code, so every spring, timing and control panel is the original. Buttons, menus, dialogs, toasts, forms, charts and a long tail of motion pieces — each with the component source to copy and a prompt that rebuilds it.",
+      zh: "一整套 React 组件原样搬进来：EasyUI（MIT 许可，作者 Suraj Maurya）的 128 个组件跑的就是它自己的代码，弹簧、时序、调参面板都是原版。按钮、菜单、弹窗、通知、表单、图表，还有一长串动效小件——每条都附原版组件源码，和一段能让 AI 重做出来的提示词。",
+      "zh-tw": "一整套 React 元件原封不動搬進來：EasyUI（MIT 授權，作者 Suraj Maurya）的 128 個元件跑的就是它自己的程式碼，彈簧、時序、調參面板都是原版。按鈕、選單、對話框、通知、表單、圖表，還有一長串動效小品——每條都附原版元件原始碼，和一段能讓 AI 重做出來的提示詞。",
+      it: "Un intero kit di componenti React portato dentro così com'è: 128 pezzi di EasyUI (MIT, di Suraj Maurya) che girano sul loro codice, quindi molle, tempi e pannelli di controllo sono gli originali. Pulsanti, menu, dialoghi, notifiche, moduli, grafici e una lunga serie di pezzi animati — ognuno con il sorgente del componente da copiare e un prompt per ricostruirlo.",
+    },
+    accent: "#3b82f6",
+    groups: [
+      { id: "buttons", title: { en: "Buttons", zh: "按钮", "zh-tw": "按鈕", ja: "ボタン", ko: "버튼", it: "Pulsanti" } },
+      { id: "forms", title: { en: "Forms", zh: "表单", "zh-tw": "表單", ja: "フォーム", ko: "폼", it: "Moduli" } },
+      { id: "auth", title: { en: "Sign in", zh: "登录注册", "zh-tw": "登入註冊", ja: "ログイン", ko: "로그인", it: "Accesso" } },
+      { id: "navigation", title: { en: "Navigation", zh: "导航", "zh-tw": "導覽", ja: "ナビゲーション", ko: "내비게이션", it: "Navigazione" } },
+      { id: "overlays", title: { en: "Overlays", zh: "浮层", "zh-tw": "浮層", ja: "オーバーレイ", ko: "오버레이", it: "Livelli sovrapposti" } },
+      { id: "feedback", title: { en: "Feedback & data", zh: "反馈与数据", "zh-tw": "回饋與資料", ja: "フィードバックとデータ", ko: "피드백과 데이터", it: "Feedback e dati" } },
+      { id: "motion", title: { en: "Motion pieces", zh: "动效小件", "zh-tw": "動效小品", ja: "モーション", ko: "모션", it: "Pezzi animati" } },
+    ],
+  },
 ];
 
 export interface Effect {
@@ -226,6 +249,12 @@ export interface Effect {
    * 该讲的是怎么做出来的（anatomy / tokens / prompt）。
    */
   bundleDir?: true;
+  /**
+   * 「代码」栏改读这个文件（相对 public/effects/），而不是样板 html 本身。
+   * 给打包型样板用：EasyUI 那批的 html 只是个挂载壳，真正值得抄的是原版组件 TSX
+   * （MIT，文件头带署名）。路径由 scratchpad/easyui/ms/build.mjs 生成。
+   */
+  codeFile?: string;
   /**
    * 总览页轮播用的静态海报（`/effects/<slug>/poster.jpg`）。
    * 🩸重的作品必须给它：轮播是一进 /lab 就自动播的，
@@ -5332,6 +5361,8 @@ export const effects: Effect[] = [
     ],
     source: { label: "LerSent001 · Liquid Orb Editor (WebGPU) · MIT", url: "https://github.com/LerSent001/orb" },
   },
+  // 组件库（EasyUI 原版打包）—— 生成文件，见 data/effects-kit.ts
+  ...kitEffects,
 ];
 
 export function effectsIn(category: CategoryId): Effect[] {

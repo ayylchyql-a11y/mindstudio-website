@@ -1,0 +1,769 @@
+[
+  {
+    "id": "not-found",
+    "plays": "self",
+    "accent": "#fe5510",
+    "title": {
+      "en": "Frosted-glass 404",
+      "zh": "磨砂玻璃 404 页",
+      "zh-tw": "毛玻璃 404 頁面"
+    },
+    "gist": {
+      "en": "A full error page: a big white \"404\" sits on a tilted orange slab, half hidden behind a frosted-glass folder with a white X on its corner. The pieces spring in one after another, then the whole illustration drifts up and down slowly; moving the mouse shifts each layer by a different amount for depth, and hovering lifts the glass and spins the X.",
+      "zh": "一整张错误页：倾斜的橙色板上压着一个巨大的白色「404」，一半被一块磨砂玻璃文件夹挡住，角上钉着一个白色 X。几层依次弹进来，之后整幅插画缓缓上下浮动；移动鼠标时每一层位移幅度不同，形成纵深，悬停时玻璃上抬、X 转半圈。",
+      "zh-tw": "一整頁錯誤畫面：傾斜的橘色板上壓著一個超大的白色「404」，一半被一塊毛玻璃資料夾擋住，角落釘著一個白色 X。各層依序彈進來，接著整張插圖緩緩上下漂浮；移動滑鼠時每一層位移的幅度不同，營造景深，滑鼠停在上面時玻璃往上抬、X 轉四分之一圈。"
+    },
+    "anatomy": [
+      "<b>A fixed stage.</b> The art is drawn on a 460 × 360 stage and scaled to the container width with a ResizeObserver; everything is rotated 8°. Four layers: an orange slab (285 × 168, r 9, <code>#fe5510</code> darkening to <code>#cf4a12</code> on the right), the 404 glyphs as even-odd SVG paths (white to <code>#eef0ff</code>, warm drop shadow), a 288 × 142 glass pane clipped to a folder-with-tab path, and a 56 px X made of two 46 × 11 rounded bars.",
+      "<b>The glass.</b> A vertical gradient from 55% white to 70% blue <code>rgb(59,70,207)</code> with <code>backdrop-filter: blur(5px) saturate(1.2)</code>, a 1.2 px rim that fades from 85% to 10% white, and a blurred blue glow underneath. Browsers without backdrop-filter get an opaque version of the same gradient. On hover the blur eases to 3 px over 0.4 s and the pane rises 6 px.",
+      "<b>Entrance.</b> Springs of 0.9 s with bounce 0.18: slab from 14 px below at 0 s, digits from 22 px below and 96% scale at 0.08 s, glass from 30 px below at 0.2 s (fading in over 0.5 s from 0.25 s). The X pops from scale 0 and −70° at 0.5 s with a bouncier 0.7 s spring. Text lines then rise 12 px over 0.6 s, staggered 0.15 → 0.58 s.",
+      "<b>Idle and parallax.</b> The whole art floats 5 px up and back every 6 s. With a fine pointer, cursor position across the window (−1…1) is smoothed by a spring (stiffness 90, damping 18, mass 0.6) and moves the slab −5/−3 px, digits 4/2.5 px, glass 11/7 px and X 16/10 px, so near layers travel further.",
+      "<b>Accessibility.</b> The illustration is one <code>role=\"img\"</code> with a text label; the heading takes focus on mount so screen readers announce the page; the page writes its own title and a <code>noindex</code> tag. The back button appears only when there is history to go back to. Reduced motion removes the entrance, float and parallax."
+    ],
+    "tokens": [
+      {
+        "label": "Colours",
+        "value": "#fe5510 · #cf4a12 · glass rgba(59,70,207,0.7)"
+      },
+      {
+        "label": "Entrance spring",
+        "value": "duration 0.9 s · bounce 0.18 · delays 0 / 0.08 / 0.2 s"
+      },
+      {
+        "label": "X pop",
+        "value": "duration 0.7 s · bounce 0.35 · delay 0.5 s · hover rotate 90°"
+      },
+      {
+        "label": "Parallax spring",
+        "value": "stiffness 90 · damping 18 · mass 0.6"
+      },
+      {
+        "label": "Float",
+        "value": "y 0 → −5 → 0 px · 6 s ease-in-out loop"
+      },
+      {
+        "label": "Text rise",
+        "value": "y 12 → 0 · 0.6 s · cubic-bezier(0.23, 1, 0.32, 1)"
+      }
+    ],
+    "prompt": "Build a full-height dark 404 page (min-height 100dvh, centred column, max 576px wide) with two soft background glows (orange rgba(254,85,16,0.16) 560×420 at 18% from top, blue rgba(59,70,207,0.16) 520×360 at 42%). On top, an SVG illustration authored on a 460×360 stage, scaled to the container width, rotated 8°: an orange rect 285×168 r9 (#fe5510, last 28% fading to #cf4a12); white '404' digits as even-odd paths with a white→#eef0ff gradient and drop-shadow 0 6px 10px rgba(110,20,0,0.35); a 288×142 frosted pane clipped to a folder shape with a tab on the top left, background gradient from rgba(255,255,255,0.55) to rgba(59,70,207,0.7), backdrop-filter blur(5px) saturate(1.2), a 1.2px white rim fading 0.85→0.1, and a blurred rgba(53,68,187,0.55) glow below; a white 56px X of two 46×11 pill bars at ±45° on the pane's bottom edge. Entrance: springs (duration 0.9, bounce 0.18) — slab y+14 at 0s, digits y+22 scale 0.96 at 0.08s, pane y+30 at 0.2s with a 0.5s fade from 0.25s; X from scale 0 rotate −70° with duration 0.7 bounce 0.35 at 0.5s. Loop the whole art y 0→−5→0 over 6s ease-in-out. On fine pointers, map cursor position to −1…1, filter it through a spring (90/18/0.6) and offset layers by −5/−3, 4/2.5, 11/7 and 16/10px. Hover: pane rises 6px and its blur drops to 3px over 0.4s; X rotates 90°. Below: an 11.5px uppercase 'Error 404' eyebrow (tracking 0.22em), a 32/44px semibold heading with a white→neutral-400 text gradient, a 15–16px grey description, a pill showing the current pathname with an orange dot, and two 44px pill buttons (solid white 'Go back home', outlined 'Go back' shown only if history exists), each rising 12px over 0.6s cubic-bezier(0.23,1,0.32,1) staggered from 0.15s. Focus the heading on mount, label the art as role=img, set the document title and robots noindex, and disable all motion for prefers-reduced-motion.",
+    "caveats": [
+      "It is a whole page, not a widget: it renders its own <main> at full viewport height, sets the document title and noindex, and moves focus to its heading on mount — use it as the catch-all route, not inside another page."
+    ],
+    "blurb": "A dead-end page that still feels cared for: a big glowing number half hidden behind a frosted folder, gently floating and shifting in depth as the cursor moves, with a clear headline and a way back home. Drop it in as the catch-all route of a product site, documentation portal or web app so a broken link becomes a small moment of polish instead of a bare error."
+  },
+  {
+    "id": "notification-bell",
+    "plays": "click",
+    "accent": "#f43f5e",
+    "title": {
+      "en": "Notification bell",
+      "zh": "通知铃铛",
+      "zh-tw": "通知鈴鐺"
+    },
+    "gist": {
+      "en": "A square bell button with a red count badge. When a new alert arrives the bell rocks side to side and the count ticks up; clicking it drops a dark panel listing the notifications, unread ones highlighted with a pulsing red dot, each with its own mark-as-read button and a 'Read all' link in the header.",
+      "zh": "一颗方形铃铛按钮，右上角挂着红色数字角标。来新提醒时铃铛左右摇几下、数字加一；点一下展开深色面板，列出所有通知，未读的那几条底色更亮、带一颗跳动的红点，每条都有单独的「标为已读」，顶部还有「全部已读」。",
+      "zh-tw": "一顆方形鈴鐺按鈕，右上角掛著紅色數字標記。有新通知時鈴鐺左右晃幾下、數字加一；點一下展開深色面板，列出所有通知，未讀的幾則底色較亮、帶一顆閃動的紅點，每則都能單獨「標為已讀」，標題列還有「全部已讀」。"
+    },
+    "anatomy": [
+      "<b>Trigger.</b> A 40 px button (10 px padding, r 12) on <code>#0E0E0E</code> with a <code>#1F1F1F</code> border and a <code>#525252</code> bell that turns white on hover; while open it switches to <code>#141414</code> / <code>#4A4A4A</code>. Hover scales to 1.05, press to 0.95. Its <code>aria-label</code> reads the unread count and <code>aria-expanded</code> tracks the panel.",
+      "<b>Badge.</b> An 18 px rose (<code>#f43f5e</code>) pill pinned 4 px outside the top-right corner, 9 px bold mono digits, 2 px border in the button colour so it looks cut out; counts over 99 show “99+”. It pops in and out from scale 0 on a stiff spring (380 / 30 / 0.5). A dot-only mode shrinks it to 10 px.",
+      "<b>Shake.</b> When the unread count goes up, the button rotates through 0 → −12° → 10° → −8° → 6° → −2° → 0 in 0.5 s ease-in-out.",
+      "<b>Panel.</b> Opens under the button, right-aligned on desktop (384 px) and centred on phones (viewport − 64 px, max 320). It fades in from 8 px lower and 95% scale on the same stiff spring; 95% opaque with a heavy backdrop blur and a 0 16px 40px shadow. Rows scroll after 320 px; unread rows sit on <code>#141414</code> with a pulsing 8 px red dot and bright text. A mousedown anywhere outside closes it."
+    ],
+    "tokens": [
+      {
+        "label": "Badge",
+        "value": "#f43f5e · 18 px · 9 px mono · 2 px #0E0E0E border"
+      },
+      {
+        "label": "Spring",
+        "value": "stiffness 380 · damping 30 · mass 0.5"
+      },
+      {
+        "label": "Shake",
+        "value": "rotate 0/−12/10/−8/6/−2/0° · 0.5 s ease-in-out"
+      },
+      {
+        "label": "Panel",
+        "value": "384 px · r 16 · y 8 → 0 · scale 0.95 → 1"
+      },
+      {
+        "label": "Surfaces",
+        "value": "#0E0E0E · #141414 · border #1F1F1F / #4A4A4A"
+      }
+    ],
+    "prompt": "Build a notification bell for a dark UI. Trigger: a 40px square button (padding 10px, radius 12px, bg #0E0E0E, 1px #1F1F1F border, 20px bell icon #525252 turning #FAFAFA on hover; when open bg #141414 and border #4A4A4A), hover scale 1.05, tap 0.95, aria-label with the unread count, aria-expanded. Badge: rose #f43f5e pill, min 18×18px, 9px bold monospace white digits, 2px #0E0E0E border, positioned −4px top/right, capped at '99+', entering/exiting with scale 0↔1 and opacity on a spring (stiffness 380, damping 30, mass 0.5). When the unread count increases, rotate the button through [0,−12,10,−8,6,−2,0]° over 0.5s ease-in-out. Click toggles a panel 8px below: 384px wide right-aligned (on phones 100vw−64px max 320px, centred), radius 16px, bg #0E0E0E at 95% with backdrop-blur-xl, 1px #1F1F1F border, shadow 0 16px 40px rgba(0,0,0,0.6), animating from opacity 0, y 8, scale 0.95 with the same spring. Header on #141414: 'Notifications' 12px semibold, a rose-tinted 'N new' pill, a 'Read all' text button and a close X. List max-height 320px with 1px dividers; each row 12px padding: an 8px dot (rose and pulsing if unread), 12px message (white medium if unread, #A1A1A1 otherwise), 10px mono timestamp, and a check button to mark it read; unread rows have bg #141414. Empty state: grey bell and 'No notifications right now'. Close on mousedown outside.",
+    "caveats": [
+      "The last-seen count is only stored when the number does not rise, so after two quick alerts, marking one as read can shake the bell again.",
+      "No Escape key or focus move into the panel; it is mouse- and tap-first."
+    ],
+    "blurb": "The familiar bell in a product's top bar, done with care: a crisp red count, a little wobble when something new comes in, and a dropdown that lists what happened with clear unread markers and one-tap clearing. Fits dashboards, admin panels, SaaS headers and any app that needs to tell people quietly that something changed while they were away."
+  },
+  {
+    "id": "notification-stack",
+    "plays": "click",
+    "accent": "#a1a1a1",
+    "title": {
+      "en": "Notification stack",
+      "zh": "叠放通知卡",
+      "zh-tw": "堆疊通知卡"
+    },
+    "gist": {
+      "en": "Three alert cards stacked like a deck, each one slightly lower and smaller than the one in front. Drag a card to the right or hit its X and it slides away while the rest move up; 'Simulate' drops a new card onto the top of the pile, and 'Expand' fans the deck out into a list.",
+      "zh": "三张提醒卡像一叠牌一样摞着，后面每张都比前一张低一点、小一点。把卡片往右拖，或点它的 X，它就滑走，其余的往上补位；点「Simulate」会在最上面落下一张新卡，点「Expand」整叠摊开成列表。",
+      "zh-tw": "三張通知卡像一疊牌一樣疊著，後面每張都比前一張低一點、小一點。把卡片往右拖，或按它的 X，它就滑走，其餘的往上遞補；按「Simulate」會在最上面落下一張新卡，按「Expand」整疊攤開成清單。"
+    },
+    "anatomy": [
+      "<b>Deck geometry.</b> Only the first three cards render while stacked. Card <i>i</i> is absolutely positioned, pushed down <code>12·i</code> px and scaled to <code>1 − 0.04·i</code>, with z-index counting down so the newest sits in front.",
+      "<b>Card.</b> 14 px padding, r 12, <code>#0E0E0E</code> with a <code>#1F1F1F</code> border that lightens to <code>#4A4A4A</code> on hover; a 16 px status icon (white check, light-grey alert or info), 12 px semibold title, 10 px time, 11 px description and a close X.",
+      "<b>Motion.</b> Every position change uses one slightly bouncy spring (stiffness 320, damping 24, mass 0.7) plus layout animation, so the deck re-settles when a card leaves. New cards come in from 20 px above at 95% scale; leaving cards fade while moving 80 px right and shrinking to 90%.",
+      "<b>Swipe.</b> Cards drag horizontally between 0 and 100 px; letting go past 60 px dismisses. The cursor switches to grab / grabbing."
+    ],
+    "tokens": [
+      {
+        "label": "Stack offset",
+        "value": "y 12 px × index · scale 1 − 0.04 × index"
+      },
+      {
+        "label": "Spring",
+        "value": "stiffness 320 · damping 24 · mass 0.7"
+      },
+      {
+        "label": "Dismiss",
+        "value": "drag 0–100 px · threshold 60 px · exit x +80, scale 0.9"
+      },
+      {
+        "label": "Enter",
+        "value": "y −20 · scale 0.95 · opacity 0"
+      },
+      {
+        "label": "Card",
+        "value": "#0E0E0E · border #1F1F1F → #4A4A4A · r 12"
+      }
+    ],
+    "prompt": "Build a stacked notification list for a dark UI, max width 384px. Header row: a 14px bell + 'Notifications (n)' in 12px #A1A1A1, and two text buttons '+ Simulate' (adds a random success/warning/info card at the top) and 'Expand'/'Stack'. Below, a container min-height 140px. Collapsed: render only the first 3 cards, absolutely positioned at top 0, card i translated y = 12·i px, scaled 1 − 0.04·i, z-index descending from the front. Expanded: all cards in normal flow. Each card: padding 14px, radius 12px, bg #0E0E0E, 1px #1F1F1F border (#4A4A4A on hover), 16px status icon, 12px semibold #FAFAFA title, 10px #6B6B6B time, 11px #A1A1A1 description, and a 14px close X. Animate every card with layout animation and a spring (stiffness 320, damping 24, mass 0.7); enter from opacity 0, y −20, scale 0.95; exit to opacity 0, x +80, scale 0.9 (AnimatePresence popLayout). Cards drag on the x axis constrained to 0–100px and dismiss when released beyond 60px; cursor grab/grabbing. Empty state: a bordered box reading 'No pending notifications'.",
+    "caveats": [
+      "In the expanded view each card keeps a 74 px-per-index offset on top of normal flow, so cards end up about 137 px apart and run past the container.",
+      "Swipe is pointer-only; keyboard users can only use the X buttons."
+    ],
+    "blurb": "A compact pile of recent alerts that takes the space of one card but holds many: newer messages land on top, old ones can be flicked away sideways, and the whole pile can be fanned out to review. Useful for activity panels, deploy and build status, inboxes in dashboards and any app that has to show several short updates without flooding the screen."
+  },
+  {
+    "id": "orbital-loading-ring",
+    "plays": "self",
+    "accent": "#fafafa",
+    "title": {
+      "en": "Orbital loading ring",
+      "zh": "轨道加载环",
+      "zh-tw": "軌道載入環"
+    },
+    "gist": {
+      "en": "A loading indicator drawn as a tiny planetary system: a glowing white satellite circles a dashed outer track, a second smaller one runs the opposite way on an inner ring with a speed-up and slow-down each lap, and a bright core in the middle breathes in and out.",
+      "zh": "把加载指示画成一个迷你星系：一颗发光的白色卫星绕着外圈虚线轨道转，另一颗更小的在内圈反向跑、每圈都有一次加速和减速，正中的亮核一呼一吸地脉动。",
+      "zh-tw": "把載入指示畫成一個迷你星系：一顆發光的白色衛星繞著外圈虛線軌道轉，另一顆較小的在內圈反向跑、每圈都會先加速再減速，正中央的亮核一呼一吸地脈動。"
+    },
+    "anatomy": [
+      "<b>Static tracks.</b> One SVG in a 100 × 100 viewBox: an outer circle r 44 in <code>#282828</code>, 1.5 stroke, dashed 3 / 3, and an inner solid circle r 30 in <code>#333333</code>.",
+      "<b>Outer orbit.</b> A full-size layer spins clockwise, linear, every 2.4 s. It carries a 10 px white dot at the top with a <code>0 0 10px 2px rgba(255,255,255,0.6)</code> glow and, except in the minimal variant, a faint 6 px dot (40% white) on the opposite side.",
+      "<b>Inner orbit.</b> A layer inset 18% spins counter-clockwise every 1.6 s on <code>cubic-bezier(0.4, 0, 0.2, 1)</code>, so it accelerates and brakes each lap. It carries an 8 px light-grey dot; the dense variant adds a 6 px half-opacity dot at 90°.",
+      "<b>Core.</b> A 12 px white dot with a 12 px glow, pulsing opacity 0.6 → 1 and scale 0.96 → 1.04 every 1.2 s, ease-in-out.",
+      "<b>Accessibility.</b> <code>role=\"status\"</code> with an <code>aria-label</code> and a visually hidden label; a <code>speed</code> prop divides all three durations. Under reduced motion every keyframe is switched off and the rings sit still."
+    ],
+    "tokens": [
+      {
+        "label": "Durations",
+        "value": "outer 2.4 s linear · inner 1.6 s · core 1.2 s"
+      },
+      {
+        "label": "Inner easing",
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)"
+      },
+      {
+        "label": "Tracks",
+        "value": "r 44 dashed 3 3 #282828 · r 30 #333333 · 1.5 stroke"
+      },
+      {
+        "label": "Dots",
+        "value": "10 / 8 / 12 px · glow rgba(255,255,255,0.6)"
+      },
+      {
+        "label": "Size",
+        "value": "72 px default · 96 px in demo"
+      }
+    ],
+    "prompt": "Build a CSS-only orbital loader, default 72px square (demo 96px), white on dark. Layer 1: an SVG (viewBox 0 0 100 100) with a dashed circle r44 stroke #282828 width 1.5 dasharray '3 3' and a solid circle r30 stroke #333333 width 1.5. Layer 2 (inset 0): rotates 0→360° linear infinite every 2.4s; a 10px white dot centred at the top edge (−4px) with box-shadow 0 0 10px 2px rgba(255,255,255,0.6), plus a 6px 40%-white dot at the bottom. Layer 3 (inset 18%): rotates 360→0° every 1.6s with cubic-bezier(0.4,0,0.2,1); an 8px #d4d4d8 dot at its top with a 8px white glow at 40%, and in a 'dense' variant a 6px 50%-opacity dot at its right edge. Centre: a 12px white dot with 0 0 12px rgba(255,255,255,0.5), keyframes 0%/100% opacity 0.6 scale 0.96, 50% opacity 1 scale 1.04, 1.2s ease-in-out infinite. A speed prop divides all durations. role=status with aria-label and a visually hidden label; under prefers-reduced-motion set animation:none on all three layers.",
+    "blurb": "A small loader with more character than a spinning circle: two satellites orbit in opposite directions around a softly glowing core. It reads as calm, technical and alive, which suits sync and upload states, AI or data-processing screens, splash moments and any dark interface that wants its waiting moments to look intentional."
+  },
+  {
+    "id": "payment-receipt-printer",
+    "plays": "self",
+    "accent": "#34d399",
+    "title": {
+      "en": "Receipt printer",
+      "zh": "小票打印机",
+      "zh-tw": "收據列印機"
+    },
+    "gist": {
+      "en": "A small dark point-of-sale printer that, a moment after the page loads, hums and feeds out a paper receipt from its slot: the paper slides down with zig-zag torn edges, showing the shop, order number, items, total and a barcode. A status strip above switches from 'Printing' to 'Ready', and you can replay the print or copy the order number.",
+      "zh": "一台深色的小型收银打印机，页面载入片刻后开始震动，从出纸口吐出一张小票：纸带着锯齿撕边往下滑，上面印着店名、订单号、商品、总价和条形码。上方的状态条从「Printing」变成「Ready」，下面可以重新打印一次或复制订单号。",
+      "zh-tw": "一台深色的小型收銀出單機，頁面載入一下子後開始震動，從出紙口吐出一張收據：紙帶著鋸齒撕邊往下滑，上面印著店名、訂單編號、品項、總額和條碼。上方的狀態列從「Printing」變成「Ready」，下方可以重印一次或複製訂單編號。"
+    },
+    "anatomy": [
+      "<b>Printer body.</b> A rounded-16 block with a <code>#141414 → #0E0E0E → #0B0B0B</code> vertical gradient, a 1 px highlight line along the top, a model label and an LED pill (green and pulsing at 0.8 s while feeding, steady green when done, grey on standby). Below it, a 12 px black slot with an inset shadow.",
+      "<b>The feed.</b> Starting 400 ms after mount, the paper (92% of the width, sitting behind the printer and clipped by its wrapper) slides from −100% to 0 while fading from 40% to full opacity over 2.4 s with <code>cubic-bezier(0.16, 1, 0.3, 1)</code> — fast at first, then easing out. Meanwhile the printer jitters ±0.6 px sideways and ±0.2 px vertically on a 0.18 s loop.",
+      "<b>The paper.</b> Light <code>#F9F9F8</code>, cream <code>#FDFBF7</code> or dark themes; monospace 8–12 px text in dashed-divided sections; 6 px SVG zig-zag strips top and bottom; two 14 px half-circle notches punched into the sides; a 36-bar SVG barcode with the order number under it.",
+      "<b>Controls.</b> “Replay Print” (disabled and spinning while printing) remounts the paper and starts again after 150 ms; “Copy Order” writes the number to the clipboard (with a hidden-textarea fallback) and shows a green “Copied” for 2 s. The status strip is <code>aria-live=\"polite\"</code>; with reduced motion the receipt is simply shown complete."
+    ],
+    "tokens": [
+      {
+        "label": "Feed",
+        "value": "2.4 s · cubic-bezier(0.16, 1, 0.3, 1) · start delay 400 ms"
+      },
+      {
+        "label": "Jitter",
+        "value": "x ±0.6 px · y ±0.2 px · 0.18 s loop"
+      },
+      {
+        "label": "Paper",
+        "value": "#F9F9F8 light · #FDFBF7 cream · #0E0E0E dark"
+      },
+      {
+        "label": "LED",
+        "value": "#34d399 · pulse 0.8 s · opacity 0.4 ↔ 1"
+      },
+      {
+        "label": "Width",
+        "value": "max 360 px · paper 92%"
+      }
+    ],
+    "prompt": "Build a thermal receipt printer animation, max 360px wide, on a dark page. Top: a status strip (bg #0E0E0E, border #1F1F1F, radius 12) with a 28px emerald check circle, 'Payment Complete' / 'Receipt has been issued', and an 8px status dot (amber pinging while printing, emerald when done) with a mono label; it enters from y −10, scale 0.96 on a spring (380/30/0.5). Printer: radius 16, padding 14, gradient #141414→#0E0E0E→#0B0B0B, 1px #1F1F1F border, shadow 0 12px 28px rgba(0,0,0,0.6), a 1px white/10 top highlight; header with a printer icon, mono model name and an LED pill (6px emerald dot pulsing opacity 0.4↔1, scale 0.9↔1.1 over 0.8s while 'FEED', steady for 'ONLINE', grey for 'STANDBY'); below, a 12px-tall black capsule slot with an inset shadow. While printing, loop the printer x [0,−0.6,0.6,−0.4,0.4,0] and y [0,−0.2,0.2,0] over 0.18s. Paper: a 92%-wide block tucked behind the printer (−6px overlap, overflow hidden), 20px padding, monospace, light #F9F9F8 text #111, animating y −100%→0 and opacity 0.4→1 over 2.4s cubic-bezier(0.16,1,0.3,1), starting 400ms after mount. Content in dashed-divided sections: merchant icon + uppercase name, order/date/payment rows at 10px, item/price rows, subtotal and a bold total, a 36-bar SVG barcode with the order number, a thank-you line. Add 6px zig-zag SVG edges on top and bottom and 14px circular notches on both sides. Buttons under it: 'Replay Print' (disabled + spinning icon while printing; remount the paper and restart after 150ms) and 'Copy Order' (clipboard, shows green 'Copied' for 2s). Respect prefers-reduced-motion by showing the finished receipt immediately.",
+    "caveats": [
+      "The receipt is a fixed layout built for a handful of items; long carts make a very tall strip with no internal scroll."
+    ],
+    "blurb": "A checkout confirmation that feels physical: a little counter-top printer hums and pushes out a paper receipt with torn edges, line items, total and barcode, then lets the customer copy the order number. A warm, memorable way to close a purchase on shop, restaurant ordering and booking sites, or to dress up an order-history screen."
+  },
+  {
+    "id": "payment-status",
+    "plays": "click",
+    "accent": "#34d399",
+    "title": {
+      "en": "Payment status card",
+      "zh": "支付状态卡",
+      "zh-tw": "付款狀態卡"
+    },
+    "gist": {
+      "en": "A checkout result card. In the success state shown, a green circle pops in and its check mark draws itself, followed by the amount, transaction ID, date and card. 'View Receipt' unfolds an itemised breakdown underneath, 'Download' saves a text receipt, and the ID copies with one click. The same card also has processing, verifying, failed and refunded states.",
+      "zh": "结账结果卡。演示的是支付成功：一个绿色圆圈弹出来，里面的对勾自己画出来，然后是金额、交易号、时间和卡片信息。点「View Receipt」下方展开明细，点「Download」保存一份文本收据，交易号一点就复制。这张卡还有处理中、验证中、失败、已退款几种状态。",
+      "zh-tw": "結帳結果卡。示範的是付款成功：一個綠色圓圈彈出來，裡面的勾勾自己畫出來，接著是金額、交易編號、時間和卡片資訊。按「View Receipt」會在下方展開明細，按「Download」存一份文字收據，交易編號點一下就複製。這張卡另外還有處理中、驗證中、失敗、已退款幾種狀態。"
+    },
+    "anatomy": [
+      "<b>Status badge.</b> A 56 px circle per state: processing has a white/30 ring with a white top arc spinning every 1.2 s; verifying a sky-blue arc every 1 s around a shield; success, failed and refunded scale in from 0.8 on a stiff spring (380 / 30 / 0.5). On success the check path draws from 0 to full length in 0.4 s after a 0.1 s delay.",
+      "<b>Card.</b> Max 448 px, r 16, <code>#0E0E0E</code> with a <code>#1F1F1F</code> border and a soft drop shadow; an 18–20 px heading and 12–14 px message per state, then a mono amount pill (“Total $149.00”).",
+      "<b>Details.</b> On success or refund, a details block rises 12 px on a gentle spring (170 / 26 / 0.9): the transaction ID as a button (cut to 14 characters; copies and shows a green tick for 2 s), date, and payment method with the last four digits.",
+      "<b>Receipt.</b> “View Receipt” toggles an itemised panel on <code>#050505</code> that opens from height 0 to auto with the same gentle spring. “Download” builds a plain-text receipt in a Blob and downloads it, unless you pass your own handler. The failed state instead shows a solid white “Try Again” and an outlined “Change Payment Method”."
+    ],
+    "tokens": [
+      {
+        "label": "Success",
+        "value": "#34d399 on emerald 10% · border emerald 30%"
+      },
+      {
+        "label": "Check draw",
+        "value": "pathLength 0 → 1 · 0.4 s ease-out · delay 0.1 s"
+      },
+      {
+        "label": "Spinners",
+        "value": "processing 1.2 s · verifying 1 s · linear"
+      },
+      {
+        "label": "Details spring",
+        "value": "stiffness 170 · damping 26 · mass 0.9"
+      },
+      {
+        "label": "Badge spring",
+        "value": "stiffness 380 · damping 30 · mass 0.5 · from scale 0.8"
+      }
+    ],
+    "prompt": "Build a payment result card, max 448px, radius 16, padding 24–28px, bg #0E0E0E, 1px #1F1F1F border, shadow 0 12px 30px −10px rgba(0,0,0,0.6), centred text. A 56px status circle per state: processing (bg #141414, a rotating ring white/30 with a solid white top border, 1.2s linear, card icon), verifying (sky-400 arc, 1s, shield icon), success (emerald-500/10 fill, emerald-500/30 border, a 28px check path drawn pathLength 0→1 in 0.4s ease-out after 0.1s), failed (rose alert), refunded (grey rotate-ccw); non-spinning badges scale 0.8→1 on a spring (380/30/0.5). Heading 18–20px semibold, message 12–14px #A1A1A1, then a mono pill 'Total $149.00'. For success/refunded, a details section (border-top, enters y 12→0 with spring 170/26/0.9): transaction ID as a small copy button (first 14 chars + '...', shows a green check for 2s), date, payment method + '•••• 4242'; then two equal buttons 'View Receipt' (toggles an itemised panel on #050505 that animates height 0→auto with the same spring, listing items and 'Total Paid') and 'Download' (creates a text/plain Blob receipt and downloads it). For failed: a full-width solid #FAFAFA 'Try Again' button and an outlined 'Change Payment Method' with an arrow.",
+    "caveats": [
+      "State changes are not announced (no live region), and the processing spinners keep turning under reduced motion."
+    ],
+    "blurb": "The screen people see right after paying, covering every outcome: in progress, being verified, done, declined or refunded. The success view gives a reassuring tick, the amount and the key details, with a receipt that can be opened or saved; the failure view offers a clear retry. Fits checkouts, subscriptions, donations and in-app purchases."
+  },
+  {
+    "id": "product-tour",
+    "plays": "click",
+    "accent": "#d4d4d4",
+    "title": {
+      "en": "Spotlight product tour",
+      "zh": "聚光灯引导",
+      "zh-tw": "聚光燈導覽"
+    },
+    "gist": {
+      "en": "Press 'Start tour' and the page dims except for a rounded hole that frames one element at a time, with a small card beside it explaining what it is. Next and Back spring the hole and the card to the next element, scrolling the page if needed; the card's text slides sideways and its height adjusts to fit. Arrow keys and Esc work too.",
+      "zh": "点「Start tour」后整页变暗，只留一个圆角镂空框住某个元素，旁边一张小卡片说明它是做什么的。点下一步或上一步，镂空框和卡片一起弹到下一个元素，需要时页面会自动滚过去；卡片里的文字横向滑入，高度跟着内容伸缩。方向键和 Esc 也能用。",
+      "zh-tw": "按「Start tour」後整頁變暗，只留一個圓角鏤空框住某個元素，旁邊一張小卡片說明它的用途。按下一步或上一步，鏤空框和卡片一起彈到下一個元素，需要時頁面會自動捲過去；卡片內文字橫向滑入，高度跟著內容伸縮。方向鍵和 Esc 也能操作。"
+    },
+    "anatomy": [
+      "<b>Spotlight.</b> A full-screen SVG: a black 60% rect masked by a rounded rect hole, plus a 1.5 px white/35 outline on the same hole. The hole is the target's bounding box plus 8 px padding, with a radius of the element's own corner radius + padding (min 8, max half the short side). Its x, y, width, height and radius are motion values on a spring (stiffness 380, damping 38, mass 0.9). On the first step it starts 48 px wider on every side and closes in.",
+      "<b>Card placement.</b> 340 px wide; it tries the preferred side, then bottom, top, right, left, keeping 14 px from the target and 16 px from the viewport edge, and rides its own spring (320 / 34 / 0.9). Under 640 px it docks as a bottom sheet up to 440 px wide, clearing the safe-area inset. Steps without a target sit centred.",
+      "<b>Step change.</b> Content slides 20 px in the travel direction with a 3 px blur over 0.2 s <code>cubic-bezier(0.23, 1, 0.32, 1)</code>; the content area's height springs to the new text. Off-screen targets are scrolled to centre first and the tour waits until scrolling has settled; late-mounting targets are polled for up to 36 frames. Progress dots grow from 6 to 16 px on the active step.",
+      "<b>Staying attached.</b> ResizeObserver, scroll, resize and visual-viewport events re-measure the target every frame; within 700 ms of a step change the hole springs, after that it snaps. Wheel and touch scrolling of the page are blocked except inside the card.",
+      "<b>Accessibility.</b> The card is <code>role=\"dialog\" aria-modal</code>; focus lands on Next, Tab loops inside the card, and focus returns to where it was on close. ← / → step, Esc dismisses; the text region is <code>aria-live=\"polite\"</code>. Reduced motion makes the hole and card jump instead of spring."
+    ],
+    "tokens": [
+      {
+        "label": "Spotlight spring",
+        "value": "stiffness 380 · damping 38 · mass 0.9"
+      },
+      {
+        "label": "Card spring",
+        "value": "stiffness 320 · damping 34 · mass 0.9"
+      },
+      {
+        "label": "Text swap",
+        "value": "x ±20 px · blur 3 px · 0.2 s · cubic-bezier(0.23, 1, 0.32, 1)"
+      },
+      {
+        "label": "Overlay",
+        "value": "black 60% · outline white 35% 1.5 px · fade 0.2 s"
+      },
+      {
+        "label": "Layout",
+        "value": "card 340 px · gap 14 · margin 16 · sheet < 640 px, max 440"
+      }
+    ],
+    "prompt": "Build a spotlight product tour rendered in a portal. Steps: {target?: selector or getter, title, body, placement?: auto|top|bottom|left|right, padding? (8), radius?}. Overlay: fixed full-screen, z 9999, fading in 0.2s; an SVG whose black rect at 60% opacity is masked by a rounded-rect hole, with a matching 1.5px white/35% outline. Hole = target rect + padding, radius = element border radius + padding clamped to [8, half the short side]. Drive hole x/y/width/height/radius as motion values with a spring (stiffness 380, damping 38, mass 0.9); on the first step start the hole 48px larger on each side (+16 radius). Tooltip card: 340px wide, radius 16, white (dark: neutral-950), 1px border, large shadow; header '2 of 5' 11px tabular + 'Skip'; body title 15px semibold, text 13px grey; footer with clickable progress dots (6px, active 16px wide, 200ms width transition) and Back / Next (or Done) buttons, active scale 0.97. Place the card on the preferred side if it fits, else bottom/top/right/left, 14px from the target and clamped 16px inside the viewport; position via a spring (320/34/0.9). Below 640px wide, dock it as a bottom sheet (max 440px, viewport − 24) 12px above the bottom plus env(safe-area-inset-bottom). Steps with no target centre the card and collapse the hole. On step change: scroll the target to centre if it's within 24px of an edge and wait until its position is still for 6 frames (max 1s); slide content ±20px with 3px blur over 0.2s cubic-bezier(0.23,1,0.32,1) in the travel direction; spring the content area's height to the new content (cap 40% vh on phones, vh − 160 on desktop, scroll inside). Keep the hole on the target on scroll/resize/visualViewport resize via rAF. Block page wheel/touchmove outside the card. Keyboard: ←/→ navigate, Esc closes; role=dialog aria-modal, focus Next on open, trap Tab, restore focus on close; reduced motion sets values instantly.",
+    "caveats": [
+      "Targets are looked up by selector at run time; if one never appears within about 36 frames that step quietly falls back to a centred card with no spotlight."
+    ],
+    "blurb": "A guided first-run walkthrough that dims the screen and shines a light on one part of the interface at a time, with a short note beside it and simple next and back controls. Ideal for onboarding new users to a dashboard or web app, announcing a new feature, or walking customers through a setup flow without writing a separate help page."
+  },
+  {
+    "id": "recovery-ledger",
+    "plays": "click",
+    "accent": "#34d399",
+    "title": {
+      "en": "Recovery ledger",
+      "zh": "版本回溯时间线",
+      "zh-tw": "版本回溯時間軸"
+    },
+    "gist": {
+      "en": "A version-history panel laid out as a vertical timeline: each snapshot is a card with what changed, who did it and when, and the live one is ringed in green and tagged 'Current Head'. Clicking a card rotates its chevron and unfolds a code diff underneath; with a restore handler wired up, older entries also get a 'Revert' button that spins while the restore runs.",
+      "zh": "一个版本历史面板，排成竖向时间线：每个快照是一张卡片，写着改了什么、谁改的、什么时候；当前生效的那个用绿圈标出并挂着「Current Head」。点一张卡片，箭头转半圈，下面展开代码差异；如果接了恢复回调，旧版本还会多一个「Revert」按钮，恢复进行时图标转圈。",
+      "zh-tw": "一個版本歷史面板，排成直向時間軸：每個快照是一張卡片，寫著改了什麼、誰改的、什麼時候；目前生效的那個用綠圈標出並掛著「Current Head」。點一張卡片，箭頭轉半圈，下方展開程式碼差異；若有接上還原回呼，舊版本還會多一顆「Revert」按鈕，還原進行中圖示會轉圈。"
+    },
+    "anatomy": [
+      "<b>Frame.</b> A rounded-16 panel on <code>#0E0E0E</code> with a <code>#1F1F1F</code> border; a <code>#141414</code> header with a clock icon, title and an “N snapshots” mono pill.",
+      "<b>Timeline.</b> A 2 px <code>#1F1F1F</code> rail runs down the left; each entry is indented 32 px with a 16 px ringed pip on the rail. The current entry's pip turns <code>#34d399</code> with a 6 px dot, its card gets an emerald 30% border and a “Current Head” tag. Entries fade up 10 px on mount, 50 ms apart.",
+      "<b>Expand.</b> Clicking a card opens it (one at a time) and rotates the chevron 180° on a stiff spring (380 / 30 / 0.5). The details panel grows from height 0 with a standard spring (200 / 28 / 0.85) and holds the diff in a <code>#050505</code> mono 10 px box, plus optional preview text.",
+      "<b>Revert.</b> Shown only on non-current, restorable entries when an <code>onRestore</code> handler is given. It turns white on hover; while the handler's promise runs it shows a spinner and every other Revert is disabled."
+    ],
+    "tokens": [
+      {
+        "label": "Current",
+        "value": "#34d399 · border emerald-500/30"
+      },
+      {
+        "label": "Rail",
+        "value": "2 px #1F1F1F · pip 16 px · indent 32 px"
+      },
+      {
+        "label": "Stagger",
+        "value": "y 10 → 0 · 50 ms per entry"
+      },
+      {
+        "label": "Panel spring",
+        "value": "stiffness 200 · damping 28 · mass 0.85"
+      },
+      {
+        "label": "Chevron spring",
+        "value": "stiffness 380 · damping 30 · mass 0.5"
+      }
+    ],
+    "prompt": "Build a version-history timeline for a dark UI. Panel: radius 16, bg #0E0E0E, 1px #1F1F1F border, overflow hidden; header on #141414 with a clock icon, 'Recovery Ledger' 12px semibold and an 'N snapshots' 10px mono pill. List padding 16, gap 16, with a 2px #1F1F1F vertical rail at left 28px. Each entry: padding-left 32px, a 16px circle pip (2px border, bg #0E0E0E) at top 12px on the rail; the current entry's pip is emerald (#34d399) with a 6px inner dot. Entry card: padding 12, radius 12, 1px border; current = bg #141414 + emerald-500/30 border + a 'Current Head' emerald mono tag; expanded = bg #141414 + #4A4A4A border; otherwise #0E0E0E / #1F1F1F with hover lift to #4A4A4A. Content: 12px semibold action, 11px #A1A1A1 description, a 10px mono meta row (time, author with user icon). Right side: an optional 'Revert' button (10px, #141414, becomes #FAFAFA bg with dark text on hover; spinner while an async onRestore runs; disables all others) shown only for non-current restorable entries, and a 14px chevron rotating 180° on a spring (380/30/0.5). Clicking a card toggles a single expanded entry: a panel with a top border animating height 0→auto and opacity on a spring (200/28/0.85), containing the diff in a #050505 bordered mono 10px <pre> and optional preview text. Entries mount with opacity 0, y 10 → 0, staggered 50ms.",
+    "caveats": [
+      "The cards are clickable divs with no keyboard focus or aria-expanded, so the details can't be opened from the keyboard.",
+      "The demo passes no restore handler, so no Revert buttons appear in it."
+    ],
+    "blurb": "A clear history of every saved state — what changed, who changed it and when — with the live version marked and older ones a click away from a detailed diff and a one-tap rollback. Suited to deploy dashboards, document and design editors, settings with audit trails and any admin tool where people need confidence that a change can be undone."
+  },
+  {
+    "id": "rocket-party-popper",
+    "plays": "click",
+    "accent": "#fbbf24",
+    "title": {
+      "en": "Rocket launch confetti",
+      "zh": "火箭发射彩带",
+      "zh-tw": "火箭發射彩帶"
+    },
+    "gist": {
+      "en": "A small black rocket hovers over its pad with a flickering amber flame. Press 'Launch celebration' (or the rocket itself) and it shoots straight up and out of sight on a burst of flame; a moment later a fan of colourful confetti — strips, squares and dots — erupts upward from the same spot and tumbles down. A 'Launch again' button resets it.",
+      "zh": "一枚黑色小火箭悬在发射台上方，尾部琥珀色火焰微微闪动。点「Launch celebration」或直接点火箭，它喷出一团火焰笔直冲上去、消失不见；片刻后同一位置向上喷出一扇形的彩色纸屑——长条、方块和圆点——再翻滚着落下。之后出现「Launch again」按钮，可以复位重来。",
+      "zh-tw": "一枚黑色小火箭懸在發射台上方，尾端琥珀色火焰微微閃動。按「Launch celebration」或直接點火箭，它噴出一團火焰筆直往上衝、消失不見；片刻後同一位置向上噴出一片扇形的彩色紙花——長條、方塊和圓點——再翻滾著落下。之後出現「Launch again」按鈕，可以重設再玩一次。"
+    },
+    "anatomy": [
+      "<b>Idle rocket.</b> A 48 px <code>#050505</code> tile (r 12, <code>#1F1F1F</code> border) holding a white rocket icon turned −45° so it points up, bobbing 2.5 px over 2.2 s; under it an 8 × 12 px amber flame flickers (scaleY 0.8 ↔ 1.2, opacity 0.4 ↔ 0.7, 1.2 s), above a 56 px launch-pad bar.",
+      "<b>Lift-off.</b> The rocket travels from −2 to −170 px, grows to 110% and fades out in 0.58 s on <code>cubic-bezier(0.4, 0, 0.2, 1)</code>, while a 14 × 32 px amber-to-orange flame swells 1 → 1.3 → 1.1 and fades over 0.5 s. The button reads “Launching...” and is disabled.",
+      "<b>Confetti.</b> At 600 ms a canvas that overhangs the component (80 px each side, 128 px above) fires 50 pieces from 60 px below its top centre: directions within ±117° of straight up, speed 4.8–12.3 px per frame plus 2.2 upward, ×0.985 drag and +0.2 gravity each frame, spin up to ±5° per frame. Rectangles and strips flip by scaling their height with <code>sin(wobble)</code>; each lives 70–110 frames and fades over its last quarter. Seven colours: white, sky, mint, gold, pink, violet, zinc.",
+      "<b>Reset.</b> The pad fades out (0.18 s) and a dark “Launch again” button scales in from 95% on a gentle spring (170 / 26 / 0.9); clicking it clears the canvas. With reduced motion there is no flight and no confetti — it just swaps to the reset button."
+    ],
+    "tokens": [
+      {
+        "label": "Lift-off",
+        "value": "y −2 → −170 px · scale 1.1 · 0.58 s · cubic-bezier(0.4, 0, 0.2, 1)"
+      },
+      {
+        "label": "Burst",
+        "value": "50 pieces · at 600 ms · spread 1.3π · speed 4.8–12.3"
+      },
+      {
+        "label": "Physics",
+        "value": "drag 0.985 · gravity 0.2 · life 70–110 frames"
+      },
+      {
+        "label": "Colours",
+        "value": "#FAFAFA #38BDF8 #34D399 #FBBF24 #F472B6 #A78BFA #E4E4E7"
+      },
+      {
+        "label": "Idle",
+        "value": "bob 2.5 px / 2.2 s · flame 1.2 s"
+      }
+    ],
+    "prompt": "Build a rocket-launch celebration, max 512px wide, centred. Idle: a 96px-tall track with a 56×6px dark pad bar at the bottom; above it a 48px #050505 tile (radius 12, 1px #1F1F1F border, hover #4A4A4A) holding a white rocket icon rotated −45°, bobbing y 0→−2.5→0 over 2.2s ease-in-out; beneath the tile an 8×12px amber gradient flame looping scaleY 0.8→1.2 and opacity 0.4→0.7 over 1.2s. Below, a white pill button 'Launch celebration' with a sparkles icon (radius 12, 12px semibold, active scale 0.97). On click (button or rocket): rocket animates y −2→−170, scale 1→1.1, opacity [1,1,0.8,0] over 0.58s cubic-bezier(0.4,0,0.2,1); swap the small flame for a 14×32px amber-300→orange-500 flame scaling [1,1.3,1.1] and fading over 0.5s; button reads 'Launching...' disabled. At 600ms fire a canvas confetti burst: canvas absolutely positioned 80px wider on each side, 128px above and 80px below, DPR-scaled; 50 particles from (centre, 60px), angle = −π/2 ± 0.65π random, speed (4.8–12.3)·dpr, vy −2.2·dpr extra; each frame vx,vy ×0.985 and vy +0.2, rotation += ±5°, wobble += 0.08–0.18; draw circles or rects whose height is multiplied by sin(wobble); size 4–8.5 × 6–14; life 70–110 frames, alpha fading over the last 25%; colours #FAFAFA #38BDF8 #34D399 #FBBF24 #F472B6 #A78BFA #E4E4E7; stop the rAF loop when empty. Then fade the pad out (0.18s, scale 0.98) and scale in a dark 'Launch again' button (spring 170/26/0.9) that clears the canvas and resets. Under prefers-reduced-motion skip flight and confetti.",
+    "caveats": [
+      "Confetti physics is stepped per animation frame, not per millisecond, so on a 120 Hz screen the burst plays about twice as fast.",
+      "The title / description / metric props are never rendered; they fall through to the root element, so a passed title shows up as a browser tooltip."
+    ],
+    "blurb": "A playful finish line: a tiny rocket lifts off and a shower of confetti follows, turning a completed step into a small celebration. Great for launch and publish buttons, onboarding milestones, finished checklists, first sales or any moment in a product where users deserve a little reward without leaving the page."
+  },
+  {
+    "id": "skeleton",
+    "plays": "click",
+    "accent": "#525252",
+    "title": {
+      "en": "Skeleton loader",
+      "zh": "骨架屏",
+      "zh-tw": "骨架畫面"
+    },
+    "gist": {
+      "en": "Placeholder shapes for content that is still loading — a round avatar and a few text bars — with a faint band of light sweeping across them. Toggle the demo and the skeleton fades away while the real profile card rises a few pixels into place and comes into focus from a slight blur.",
+      "zh": "内容还在加载时的占位形状——一个圆形头像加几条文字横条——上面有一道淡淡的光带横扫过去。切换演示按钮，骨架淡出，真实的资料卡从轻微模糊中清晰起来，同时往上浮几像素落位。",
+      "zh-tw": "內容還在載入時的佔位形狀——一個圓形頭像加幾條文字橫條——上面有一道淡淡的光帶橫掃而過。切換示範按鈕，骨架淡出，真實的個人資料卡從些微模糊中變清楚，同時往上浮幾個像素就定位。"
+    },
+    "anatomy": [
+      "<b>Block.</b> A rounded-6 div in <code>neutral-200</code> at 70% (dark: <code>neutral-800</code> at 70%) with <code>overflow: hidden</code>; size and shape come from the class you give it. It is <code>aria-hidden</code>.",
+      "<b>Sweep.</b> An inner span with a horizontal gradient transparent → white 65% (dark: white 7%) → transparent moves from −100% to 100% of the block over 1.6 s ease-in-out, repeating with a 0.2 s pause.",
+      "<b>Presets.</b> Text lines are 14 px tall with 10 px gaps and widths cycling 100 / 94 / 98 / 88%, the last line cut to 62%; avatars are circles, 40 px by default (48 px in the demo).",
+      "<b>Reveal.</b> A wrapper swaps skeleton for content one after the other: the skeleton fades in and out in 0.12 s and carries <code>role=\"status\" aria-busy</code> with a “Loading” label; content enters from opacity 0, 6 px lower and 4 px blur over 0.3 s on <code>cubic-bezier(0.32, 0.72, 0, 1)</code>."
+    ],
+    "tokens": [
+      {
+        "label": "Sweep",
+        "value": "x −100% → 100% · 1.6 s ease-in-out · repeat delay 0.2 s"
+      },
+      {
+        "label": "Fill",
+        "value": "neutral-200/70 light · neutral-800/70 dark"
+      },
+      {
+        "label": "Highlight",
+        "value": "white 65% light · white 7% dark"
+      },
+      {
+        "label": "Reveal",
+        "value": "y 6 · blur 4 px · 0.3 s · cubic-bezier(0.32, 0.72, 0, 1)"
+      },
+      {
+        "label": "Text lines",
+        "value": "14 px · gap 10 · 100/94/98/88% · last 62%"
+      }
+    ],
+    "prompt": "Build a skeleton loading kit. Skeleton: a div with radius 6, bg neutral-200 at 70% (dark neutral-800 at 70%), position relative, overflow hidden, aria-hidden; inside an absolutely filled span with linear-gradient(90deg, transparent, rgba(255,255,255,0.65), transparent) (dark: 0.07 alpha) animating x −100%→100% over 1.6s ease-in-out, infinite, 0.2s repeat delay. SkeletonText: n bars 14px tall, 10px apart, widths cycling 100%, 94%, 98%, 88% with the last bar at 62%. SkeletonAvatar: a circle, default 40px. SkeletonReveal({loading, skeleton, children}): AnimatePresence mode 'wait', no initial animation; the skeleton wrapper fades in/out over 0.12s with role=status, aria-busy=true, aria-label='Loading'; the content enters from opacity 0, y 6px, blur 4px to clear over 0.3s cubic-bezier(0.32,0.72,0,1). Demo: a card with padding 20, radius 16, showing a 48px avatar, a 66%-wide 16px title bar and two text lines while loading, then a profile row with a violet-to-indigo gradient avatar, name and role, toggled by a button.",
+    "caveats": [
+      "The sweep keeps running under reduced motion, and each block animates on its own clock, so sweeps across many blocks are not synchronised."
+    ],
+    "blurb": "Calm placeholder shapes that hold the layout while data arrives, with a soft light passing over them so the page never looks frozen, then a gentle hand-off to the real content. A staple for feeds, profile cards, dashboards, product lists and any screen that loads from the network and should feel fast even while waiting."
+  },
+  {
+    "id": "smooth-accordion",
+    "plays": "click",
+    "accent": "#fafafa",
+    "title": {
+      "en": "Spring accordion",
+      "zh": "弹簧折叠面板",
+      "zh-tw": "彈簧摺疊面板"
+    },
+    "gist": {
+      "en": "A dark bordered list of questions. Clicking a row spins its chevron upside down and opens the answer below by growing the row's height on a soft spring while the text fades in; opening another row closes the first one at the same time.",
+      "zh": "一个深色带边框的问题列表。点某一行，右边箭头翻转朝上，下方答案随行高在柔和的弹簧里撑开、文字同时淡入；打开另一行时，前一行同步收起。",
+      "zh-tw": "一個深色帶邊框的問題清單。點某一列，右側箭頭翻轉朝上，下方答案隨列高以柔和的彈簧撐開、文字同時淡入；打開另一列時，前一列同步收合。"
+    },
+    "anatomy": [
+      "<b>Shell.</b> A rounded-12 box on <code>#0E0E0E</code> with a <code>#1F1F1F</code> border and 1 px dividers between rows.",
+      "<b>Row header.</b> A full-width button with 16 px padding that darkens to <code>#141414</code> on hover: 14 px medium white title, optional 12 px <code>#6B6B6B</code> subtitle, and a 16 px <code>#525252</code> chevron that rotates 180° on a stiff spring (380 / 30 / 0.5). It carries <code>aria-expanded</code>.",
+      "<b>Panel.</b> Mounted only while open; it animates height 0 → auto and opacity 0 → 1 on a gentle spring (stiffness 170, damping 26, mass 0.9) — near critically damped, so no overshoot. Text is 12 px (14 px from small screens up) in <code>#A1A1A1</code> with 16 px side padding.",
+      "<b>Behaviour.</b> One open at a time unless <code>allowMultiple</code> is set; <code>defaultOpen</code> ids open on first render without animating."
+    ],
+    "tokens": [
+      {
+        "label": "Height spring",
+        "value": "stiffness 170 · damping 26 · mass 0.9"
+      },
+      {
+        "label": "Chevron spring",
+        "value": "stiffness 380 · damping 30 · mass 0.5 · 180°"
+      },
+      {
+        "label": "Surfaces",
+        "value": "#0E0E0E · hover #141414 · border #1F1F1F"
+      },
+      {
+        "label": "Text",
+        "value": "title 14 px #FAFAFA · body 12–14 px #A1A1A1"
+      }
+    ],
+    "prompt": "Build a dark accordion: a container with radius 12, 1px #1F1F1F border, bg #0E0E0E, overflow hidden, 1px #1F1F1F dividers. Each item: a full-width button (padding 16px, left-aligned, hover bg #141414, aria-expanded) with a 14px medium #FAFAFA title, optional 12px #6B6B6B subtitle, and a 16px #525252 chevron that rotates 0↔180° on a spring (stiffness 380, damping 30, mass 0.5). The answer mounts only when open (AnimatePresence, initial={false}) and animates height 0→auto plus opacity 0→1 (and back on close) on a spring (stiffness 170, damping 26, mass 0.9), overflow hidden; inner padding 4px top, 16px sides and bottom, 12px (sm: 14px) #A1A1A1 relaxed text. Single-open by default (opening one closes the other), allowMultiple to keep several open, defaultOpen array of ids.",
+    "caveats": [
+      "Closed answers are removed from the DOM, so their text can't be found with in-page search, and the buttons have no aria-controls link to their panels."
+    ],
+    "blurb": "A tidy question-and-answer list that keeps long pages short: tap a question and the answer opens with an unhurried, physical motion while the previous one folds away. Works for FAQ sections, pricing details, product specifications, shipping and returns policies, settings groups and help centres, on both marketing sites and the inside of web apps."
+  },
+  {
+    "id": "stack-unfold-panel",
+    "plays": "click",
+    "accent": "#4a4a4a",
+    "title": {
+      "en": "Stack unfold panel",
+      "zh": "叠卡展开面板",
+      "zh-tw": "疊卡展開面板"
+    },
+    "gist": {
+      "en": "A column of numbered dark cards — 01, 02, 03 — each with a title, subtitle and small tag. The first starts open. Clicking another card lifts it with a brighter border and shadow, unfolds its body, folds the previous one shut, and the cards below slide to their new positions.",
+      "zh": "一列编了号的深色卡片——01、02、03——每张有标题、副标题和小标签，第一张默认展开。点另一张，它的边框变亮、带上阴影，正文展开，上一张同时收起，下方的卡片顺势滑到新位置。",
+      "zh-tw": "一列編了號的深色卡片——01、02、03——每張有標題、副標題和小標籤，第一張預設展開。點另一張，它的邊框變亮、帶上陰影，內文展開，上一張同時收合，下方的卡片順勢滑到新位置。"
+    },
+    "anatomy": [
+      "<b>Cards.</b> Separate rounded-16 cards 10 px apart. Closed: <code>#0E0E0E</code>, <code>#1F1F1F</code> border, hover to <code>#4A4A4A</code>. Open: <code>#141414</code>, <code>#4A4A4A</code> border and a <code>0 8px 30px rgba(0,0,0,0.4)</code> shadow.",
+      "<b>Header.</b> A button (16 × 14 px padding) with a two-digit mono index in <code>#6B6B6B</code>, a 12 px semibold title, an 11 px subtitle, a 9 px mono badge pill and a chevron that turns 180° on a stiff spring (380 / 30 / 0.5). It sets <code>aria-expanded</code> and <code>aria-controls</code>.",
+      "<b>Fold.</b> The body animates height 0 → auto with opacity on a standard spring (stiffness 200, damping 28, mass 0.85), behind a 1 px divider. Each card also has <code>layout</code>, so siblings glide instead of jumping as heights change; cards enter on mount from 15 px below.",
+      "<b>Options.</b> First card open by default; single-open unless <code>allowMultiple</code>; controllable from outside; individual cards can be disabled; a minimal variant flattens them into rows with only a bottom border."
+    ],
+    "tokens": [
+      {
+        "label": "Fold spring",
+        "value": "stiffness 200 · damping 28 · mass 0.85"
+      },
+      {
+        "label": "Chevron spring",
+        "value": "stiffness 380 · damping 30 · mass 0.5"
+      },
+      {
+        "label": "Open card",
+        "value": "#141414 · border #4A4A4A · shadow 0 8px 30px rgba(0,0,0,0.4)"
+      },
+      {
+        "label": "Closed card",
+        "value": "#0E0E0E · border #1F1F1F · r 16 · gap 10 px"
+      }
+    ],
+    "prompt": "Build a stack of expandable cards for a dark UI, 10px apart. Each card: radius 16, 1px border, overflow hidden, layout animation, mounting from opacity 0, y 15 with a spring (stiffness 200, damping 28, mass 0.85). Closed: bg #0E0E0E, border #1F1F1F, hover border #4A4A4A and bg #141414. Open: bg #141414, border #4A4A4A, shadow 0 8px 30px rgba(0,0,0,0.4). Header: a full-width button (padding 16px × 14px, aria-expanded, aria-controls) with a 10px mono index ('01') in #6B6B6B, a 12px semibold #FAFAFA title, an 11px #6B6B6B subtitle, an optional 9px mono badge pill (bg #141414, border #1F1F1F, #A1A1A1 text) and a 16px chevron rotating 180° on a spring (380/30/0.5). Body: animate height 0→auto and opacity with the 200/28/0.85 spring; inside, a 1px #1F1F1F top border and 12px #A1A1A1 text with 16px padding. First card open by default, only one open at a time unless allowMultiple; support controlled expandedIds/onExpandedChange, disabled cards and a 'minimal' variant (transparent, square, bottom border only).",
+    "caveats": [
+      "Closed card bodies are unmounted, so their text isn't in the page until opened."
+    ],
+    "blurb": "A set of numbered cards that open one at a time to reveal more detail, with the rest of the stack shifting politely out of the way. Great for feature breakdowns, step-by-step processes, plan comparisons, technical specs and onboarding checklists — anywhere a page has several topics that each deserve a short explanation."
+  },
+  {
+    "id": "stat-card",
+    "plays": "self",
+    "accent": "#6d7cff",
+    "title": {
+      "en": "KPI stat cards",
+      "zh": "指标数据卡",
+      "zh-tw": "指標數據卡"
+    },
+    "gist": {
+      "en": "A row of four metric cards — revenue, active users, conversion, churn. On load each number counts up while its sparkline draws itself from left to right and the latest point keeps pinging. Move across a sparkline and a cursor dot follows the line, the big number jumps to that day's value and the caption shows the date.",
+      "zh": "一排四张指标卡——营收、活跃用户、转化率、流失率。载入时每个数字从零数上去，迷你折线从左往右画出来，最新那个点一直在向外扩散。在折线上划过，一颗光标点沿线跟着走，大数字跳到那一天的值，下方小字显示日期。",
+      "zh-tw": "一排四張指標卡——營收、活躍用戶、轉換率、流失率。載入時每個數字從零往上跳，迷你折線從左到右畫出來，最新那一點持續向外擴散。在折線上滑過，一顆游標點沿線跟著走，大數字跳到當天的數值，下方小字顯示日期。"
+    },
+    "anatomy": [
+      "<b>Card.</b> Rounded-16, white (dark <code>#0b0b0c</code>), a 1 px 7% ring that strengthens on hover, shadow <code>0 1px 2px rgba(0,0,0,0.04), 0 18px 36px -28px rgba(0,0,0,0.2)</code>. Top row: 12.5 px label and a delta pill (11.5 px, 8 px triangle) — emerald when good, rose when bad, grey at zero. <code>goodWhen=\"down\"</code> flips the colours for metrics like churn.",
+      "<b>Number.</b> 28–30 px semibold, −0.035em tracking, tabular figures. On mount it counts from 0 over 1.1 s on <code>cubic-bezier(0.23, 1, 0.32, 1)</code>; while scrubbing it tweens to the hovered point in 0.22 s.",
+      "<b>Sparkline.</b> 52 px tall, full card width (measured), drawn as a monotone cubic path with a 2 px stroke and an area fill fading from 28% to 0. The line draws via <code>pathLength</code> 0 → 1 in 1.1 s after 0.15 s; the area fades in over 0.8 s after 0.5 s. The last point has a 3.5 px dot with a ring scaling 1 → 2.8 and fading every 1.8 s.",
+      "<b>Scrub.</b> Pointer x snaps to the nearest point; a dashed (2 3) vertical line and a 4.5 px dot with a 2 px card-coloured stroke follow on a tight spring (600 / 44 / 0.5) — the first position jumps, later ones glide. The caption swaps to that point's label.",
+      "<b>Accessibility.</b> Each card is focusable; ← / → walk the points and Esc clears; the card's <code>aria-label</code> summarises value and change, and a polite live region reads the scrubbed point. Reduced motion skips the count-up, draw and ping. A grid helper lays cards out at min 210 px each."
+    ],
+    "tokens": [
+      {
+        "label": "Demo colours",
+        "value": "#6d7cff · #34d1bf · #ffb44c · #ff6b8b"
+      },
+      {
+        "label": "Count-up / draw",
+        "value": "1.1 s · cubic-bezier(0.23, 1, 0.32, 1) · line delay 0.15 s"
+      },
+      {
+        "label": "Scrub spring",
+        "value": "stiffness 600 · damping 44 · mass 0.5"
+      },
+      {
+        "label": "Ping",
+        "value": "r 3.5 · scale 1 → 2.8 · opacity 0.4 → 0 · 1.8 s"
+      },
+      {
+        "label": "Sparkline",
+        "value": "52 px · stroke 2 · fill 28% → 0"
+      },
+      {
+        "label": "Grid",
+        "value": "auto-fit minmax(min(100%, 210px), 1fr) · gap 12 / 16"
+      }
+    ],
+    "prompt": "Build KPI stat cards plus a grid (auto-fit, minmax(min(100%,210px),1fr), gap 12px, 16px from sm). Card: radius 16, padding-top 16, white / dark #0b0b0c, 1px ring at 7% that goes to 15% on hover, shadow 0 1px 2px rgba(0,0,0,0.04), 0 18px 36px −28px rgba(0,0,0,0.2), focusable (tabIndex 0). Row 1 (16px side padding): 12.5px neutral-500 label; a delta pill 11.5px tabular with an 8px triangle (rotated for negative), emerald-500/10 bg + emerald text if good, rose if bad, grey if 0, where good depends on goodWhen 'up'|'down'; delta computed from previous value or first trend point. Row 2: value 28px (sm 30px) semibold, tracking −0.035em, tabular, counting up from 0 over 1.1s cubic-bezier(0.23,1,0.32,1). Row 3: 12px caption ('Last 14 days'). Bottom: a 52px SVG sparkline at the measured card width, monotone cubic through the points (8px top / 6px bottom padding), stroke 2px in the card colour (#6d7cff, #34d1bf, #ffb44c, #ff6b8b), area gradient 0.28→0 opacity; line draws pathLength 0→1 over 1.1s after 0.15s, area fades in over 0.8s after 0.5s; last point a 3.5px dot with a looping ring scale 1→2.8, opacity 0.4→0, 1.8s ease-out. Scrubbing: on pointermove/down pick the nearest index; show a dashed (2 3) vertical line and a 4.5px dot with a 2px stroke in the card bg, both following via springs (stiffness 600, damping 44, mass 0.5) — jump on first show; hide the latest-point dot; tween the value to that point in 0.22s; caption shows the point label. Clear on mouse leave, blur, outside tap or Escape; ←/→ step through points. aria-label summarises label, value and change; a polite live region announces the scrubbed point. Honour prefers-reduced-motion.",
+    "blurb": "Headline numbers for a dashboard that reward a closer look: each card shows a key metric, how it moved against the last period in green or red, and a small trend line you can glide across to read any single day. Fits analytics overviews, admin home screens, SaaS reports and investor or sales dashboards on both desktop and mobile."
+  },
+  {
+    "id": "undo-toast",
+    "plays": "self",
+    "accent": "#fafafa",
+    "title": {
+      "en": "Undo toast",
+      "zh": "可撤销提示条",
+      "zh-tw": "可復原提示框"
+    },
+    "gist": {
+      "en": "A dark toast at the bottom of the screen saying a project was archived, with an Undo button and a thin white bar along its bottom edge that drains over eight seconds before the toast closes itself. Hovering pauses the countdown; pressing Undo swaps the trash icon for a green tick, the message changes to 'Restored successfully', and the toast leaves a moment later.",
+      "zh": "屏幕底部一条深色提示：项目已归档，旁边一个「Undo」按钮，底边一根细白条在八秒内缩完，然后提示自动关闭。鼠标停在上面倒计时暂停；点「Undo」，垃圾桶图标换成绿色对勾，文字变成「Restored successfully」，片刻后提示离场。",
+      "zh-tw": "畫面底部一則深色提示：專案已封存，旁邊一顆「Undo」按鈕，底邊一條細白線在八秒內縮完，接著提示自動關閉。滑鼠停在上面倒數會暫停；按「Undo」，垃圾桶圖示換成綠色勾勾，文字變成「Restored successfully」，稍後提示離開。"
+    },
+    "anatomy": [
+      "<b>Toast.</b> Fixed 20 px from the bottom centre (six positions available). Rounded-12 on <code>#0E0E0E</code>, <code>#1F1F1F</code> border, shadow <code>0 12px 32px rgba(0,0,0,0.6)</code>, 280 px min width (340 px from small screens), max 448 px. Row: a 32 px icon tile (trash in <code>#A1A1A1</code>; check, warning, error and info variants use emerald, amber, rose and sky), 12 px semibold title and 11 px description, an Undo button and a close X.",
+      "<b>Enter / exit.</b> Rises 16 px from below at 96% scale on a stiff spring (380 / 30 / 0.5); leaves by shrinking to 94% and dropping 10 px. Top positions mirror the direction.",
+      "<b>Countdown.</b> A 2 px <code>#FAFAFA</code> bar on a <code>#050505</code> track shrinks linearly, updated every animation frame, over the duration (5 s default, 8 s in the demo); at zero the toast dismisses itself. Hover pauses it.",
+      "<b>Undo.</b> The tick pops in from scale 0 on the same spring, the bar disappears, the copy switches to the restored message and the toast closes 1.4 s later. The toast is <code>role=\"status\"</code> with <code>aria-live=\"polite\"</code>."
+    ],
+    "tokens": [
+      {
+        "label": "Spring",
+        "value": "stiffness 380 · damping 30 · mass 0.5"
+      },
+      {
+        "label": "Enter / exit",
+        "value": "y 16 · scale 0.96 → 1 · exit scale 0.94, y 10"
+      },
+      {
+        "label": "Countdown",
+        "value": "5000 ms default · 8000 ms demo · 2 px #FAFAFA on #050505"
+      },
+      {
+        "label": "Undo close",
+        "value": "1.4 s after restore"
+      },
+      {
+        "label": "Size",
+        "value": "min 280 / 340 px · max 448 px · r 12"
+      }
+    ],
+    "prompt": "Build an undo toast fixed 20px from the bottom centre of the viewport (also support top/bottom × left/centre/right). Card: radius 12, bg #0E0E0E, 1px #1F1F1F border, shadow 0 12px 32px rgba(0,0,0,0.6), padding 14–16px, min width 280px (340px ≥sm), max 448px, role=status aria-live=polite. Row: a 32px icon tile (bg #141414, border #1F1F1F) with a trash icon in #A1A1A1 (variants: emerald check, amber warning, rose error, sky info); a 12px semibold title and an 11px #A1A1A1 description, both truncated; an 'Undo' button (12px, bg #141414, border #1F1F1F → #4A4A4A on hover, undo icon); a 14px close X. Enter from opacity 0, y +16 (−16 for top positions), scale 0.96 and exit to scale 0.94, y ±10 on a spring (stiffness 380, damping 30, mass 0.5). A 2px progress bar pinned to the bottom (#FAFAFA on #050505) shrinks from 100% to 0 linearly via requestAnimationFrame over the duration (default 5000ms) and then dismisses; hovering pauses it and leaving resumes with the remaining time. Undo: cancel the timer, pop an emerald check in from scale 0 with the same spring, replace the title with 'Restored successfully', hide the description and bar, call onUndo, and dismiss after 1400ms.",
+    "caveats": [
+      "After a hover pause the bar restarts from full and drains over the remaining time, so its length no longer matches the time actually left.",
+      "It is fixed to the viewport and the demo has no way to bring it back once it has timed out."
+    ],
+    "blurb": "The safety net after a destructive action: a quiet message confirms what just happened and offers a few seconds to take it back, with a shrinking line showing how long is left. A good fit for archiving, deleting, moving or sending in email clients, project tools, file managers, admin panels and any app that prefers forgiveness over confirmation dialogs."
+  },
+  {
+    "id": "unfold-accordion",
+    "plays": "click",
+    "accent": "#f2f2f3",
+    "title": {
+      "en": "Unfold accordion",
+      "zh": "联动展开问答",
+      "zh-tw": "連動展開問答"
+    },
+    "gist": {
+      "en": "A three-question FAQ list in a rounded box, all closed at first. Click a question and its chevron flips while the panel grows open; the answer text doesn't just fade in, it rises a few pixels into place slightly ahead of the height, so the opening reads as one movement. Opening another question closes the current one.",
+      "zh": "一个圆角框里放着三个问题的 FAQ，一开始全部收起。点一个问题，箭头翻转，面板撑开；答案文字不只是淡入，而是略早于高度动画往上升几像素落位，让整个展开看起来是同一个动作。点另一个问题时当前这个会收起。",
+      "zh-tw": "一個圓角框裡放了三個問題的 FAQ，一開始全部收合。點一個問題，箭頭翻轉、面板撐開；答案文字不只是淡入，而是比高度動畫稍早往上升幾個像素就定位，讓整個展開看起來是同一個動作。點另一個問題時目前這個會收起。"
+    },
+    "anatomy": [
+      "<b>Shell.</b> Rounded-12 box with 1 px dividers, using theme tokens: surface <code>#1C1C1F</code>, border <code>#29292C</code>, title <code>#F2F2F3</code>, body <code>#A1A1A6</code> in dark mode (white / <code>#E4E4E7</code> / <code>#0A0A0A</code> / <code>#52525B</code> in light). Headers lighten to the raised surface on hover.",
+      "<b>Two layers of motion.</b> The outer panel animates height 0 → auto and opacity on a gentle spring (170 / 26 / 0.9). Inside it, the content moves from 4 px above and transparent to rest in 0.28 s on <code>cubic-bezier(0.16, 1, 0.3, 1)</code> — shorter than the spring, so the text settles before the box finishes growing. Closing plays both in reverse.",
+      "<b>Chevron.</b> 16 px, rotates 0 ↔ 180° on a stiff spring (380 / 30 / 0.5), running alongside the height change.",
+      "<b>Behaviour.</b> The content has no top padding, so it starts tight under the title; single-open by default with <code>allowMultiple</code> and <code>defaultOpen</code> options; buttons carry <code>aria-expanded</code>."
+    ],
+    "tokens": [
+      {
+        "label": "Height spring",
+        "value": "stiffness 170 · damping 26 · mass 0.9"
+      },
+      {
+        "label": "Content",
+        "value": "y −4 → 0 · 0.28 s · cubic-bezier(0.16, 1, 0.3, 1)"
+      },
+      {
+        "label": "Chevron spring",
+        "value": "stiffness 380 · damping 30 · mass 0.5"
+      },
+      {
+        "label": "Dark tokens",
+        "value": "#1C1C1F surface · #29292C border · #F2F2F3 / #A1A1A6 text"
+      }
+    ],
+    "prompt": "Build a themed accordion: container radius 12, 1px border (#29292C dark / #E4E4E7 light), bg surface (#1C1C1F / #FFFFFF), 1px dividers, overflow hidden. Each header is a full-width button, padding 16px, 14px medium title (#F2F2F3 / #0A0A0A), optional 12px muted subtitle, hover bg raised surface (#18181A / #F1F1F2), aria-expanded, and a 16px chevron (#A1A1A6 / #52525B) rotating 0↔180° on a spring (stiffness 380, damping 30, mass 0.5). When open, mount a panel (AnimatePresence, initial={false}) that animates height 0→auto and opacity 0→1 on a spring (stiffness 170, damping 26, mass 0.9), overflow hidden; inside it a content block with padding 0 16px 16px, 12px (sm 14px) relaxed secondary text, animating y −4→0 and opacity 0→1 over 0.28s cubic-bezier(0.16,1,0.3,1), reversing on exit. One open at a time by default; allowMultiple and defaultOpen props.",
+    "caveats": [
+      "Closed answers are unmounted, so their text isn't available to in-page search until opened."
+    ],
+    "blurb": "A question-and-answer list where opening an item feels like a single, considered gesture: the arrow turns, the panel grows and the answer settles into place together. Made for FAQ sections, pricing and policy pages, help centres, course outlines and product detail pages that want a light, readable structure without visual noise or anything flashy."
+  },
+  {
+    "id": "velocity-toast",
+    "plays": "click",
+    "accent": "#34d399",
+    "title": {
+      "en": "Velocity toast",
+      "zh": "冲入式提示条",
+      "zh-tw": "衝入式提示框"
+    },
+    "gist": {
+      "en": "Press 'Show toast' and a small card slides up from the bottom of the screen with a green tick — 'File uploaded, ready to share' — starting further out than usual so it arrives fast, then stopping dead without a bounce. A hairline along its bottom edge drains over three and a half seconds and the toast then slips away; hovering freezes the line and it carries on exactly where it stopped.",
+      "zh": "点「Show toast」，屏幕底部滑上来一张带绿色对勾的小卡——「File uploaded, ready to share」——它从比平常更远的位置快速冲进来、稳稳停住。底边一根细线在三秒半内缩完，然后提示滑走；鼠标停在上面细线会冻结，移开后从停下的位置接着走。",
+      "zh-tw": "按「Show toast」，畫面底部滑上來一張帶綠色勾勾的小卡——「File uploaded, ready to share」——它從比平常更遠的位置快速衝進來、穩穩停住。底邊一條細線在三秒半內縮完，接著提示滑走；滑鼠停在上面細線會凍結，移開後從停下的位置繼續。"
+    },
+    "anatomy": [
+      "<b>Toast.</b> Fixed 20 px from the bottom centre (six positions). Rounded-12 on the theme surface (<code>#1C1C1F</code> dark) with a <code>#29292C</code> border and the elevated shadow token; 280 / 340 px minimum, 448 px max. A 32 px icon tile (emerald check for success; amber, rose, sky for other variants), 12 px semibold title, 11 px secondary description and a close X.",
+      "<b>Entry.</b> Starts 22 px below at 94% scale and transparent, then settles on a stiff spring (380 / 30 / 0.5); the longer run-up on the same short spring is what makes it arrive fast. Exit shrinks to 96% and drops 12 px.",
+      "<b>Countdown.</b> A 2 px bar in the primary text colour on a border-coloured track. A requestAnimationFrame loop writes <code>(remaining / duration)<sup>1.05</sup> × 100%</code> into a motion value — a barely-there ease-in — and dismisses at zero (3.5 s in the demo, 4 s default).",
+      "<b>Pause without a jump.</b> Hover stops the loop; on leave the start time is shifted back by the time already used, so the bar resumes from exactly where it froze. The toast is <code>role=\"status\" aria-live=\"polite\"</code>."
+    ],
+    "tokens": [
+      {
+        "label": "Spring",
+        "value": "stiffness 380 · damping 30 · mass 0.5"
+      },
+      {
+        "label": "Entry",
+        "value": "y 22 → 0 · scale 0.94 → 1 · exit scale 0.96, y 12"
+      },
+      {
+        "label": "Progress curve",
+        "value": "(remaining / duration)^1.05"
+      },
+      {
+        "label": "Duration",
+        "value": "4000 ms default · 3500 ms demo"
+      },
+      {
+        "label": "Dark tokens",
+        "value": "#1C1C1F surface · #29292C border · #F2F2F3 bar"
+      }
+    ],
+    "prompt": "Build a toast fixed 20px from the bottom centre (support six corner/centre positions), controlled by open/onDismiss. Card: radius 12, bg surface #1C1C1F (light #FFFFFF), 1px border #29292C (#E4E4E7), shadow 0 10px 25px −8px rgba(0,0,0,0.22) plus a 1px faint ring, padding 14–16px, min width 280px (340px ≥sm), max 448px, role=status aria-live=polite. Row: a 32px icon tile (raised surface bg, border) with a variant icon (success emerald check, warning amber, error rose, info sky), a 12px semibold title and 11px secondary description (truncated), and a 14px close X. Animate in from opacity 0, y +22 (−22 for top positions), scale 0.94 to rest, and out to opacity 0, scale 0.96, y ±12, all on a spring (stiffness 380, damping 30, mass 0.5). Progress: a 2px bar at the bottom (fill = primary text colour #F2F2F3, track = border colour) whose width comes from a motion value updated each animation frame as (remaining/duration)^1.05 × 100%; dismiss when remaining hits 0 (default 4000ms). On mouseenter stop the loop; on mouseleave set start = now − (duration − remaining) so it resumes with no jump. Demo: a 'Show toast' button opening a success toast 'File uploaded' / 'ready to share' for 3500ms.",
+    "caveats": [
+      "The auto-dismiss timer lives inside the progress loop, so with the progress bar turned off the toast never closes by itself."
+    ],
+    "blurb": "A short confirmation that pops up from the edge of the screen, says what just happened and leaves on its own, with a thin line showing how long it will stay. Hovering holds it in place so nobody misses the message. Suited to uploads, saves, sent messages, copied links and other quick success or warning notices in any web app."
+  }
+]

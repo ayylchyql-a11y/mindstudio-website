@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var m=e(t(),1),{BadgeDemo:p}=o,d={id:"badge",aliases:[]};async function i(){await Promise.all([o.BadgeDemo.preload()])}function s(a){let{demoKey:r}=a;return(0,m.jsx)(p,{},r)}export{d as a,i as b,s as c};

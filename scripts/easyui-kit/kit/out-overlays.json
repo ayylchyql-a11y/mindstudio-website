@@ -1,0 +1,539 @@
+[
+  {
+    "id": "avatar-stack",
+    "plays": "hover",
+    "accent": "#e4e4e7",
+    "title": {
+      "en": "Avatar Stack",
+      "zh": "叠放头像组",
+      "zh-tw": "疊放頭像組"
+    },
+    "gist": {
+      "en": "A row of round profile photos that overlap like a hand of cards, with a +N chip when there are more people than slots. Hover any face and it rises, grows by a quarter and comes to the front while a small dark name label pops up above it. Buttons under the demo switch size, overlap and how many faces show.",
+      "zh": "一排圆形头像像扇开的纸牌一样互相压着，人数超过显示上限时末尾多一个「+N」圆片。鼠标移到哪张脸上，它就往上抬、放大四分之一并跳到最前面，头顶同时弹出一个深色名字标签。演示下方的按钮可以切换尺寸、重叠程度和最多显示几人。",
+      "zh-tw": "一排圓形頭像像攤開的撲克牌一樣互相疊著，人數超過顯示上限時，最後會多一個「+N」圓片。滑鼠移到哪張臉上，它就往上抬、放大四分之一並跳到最前面，頭頂同時跳出一個深色名字標籤。示範下方的按鈕可以切換尺寸、重疊程度和最多顯示幾人。"
+    },
+    "anatomy": [
+      "<b>The stack.</b> A flex row of circles; every circle after the first gets a negative left margin (<code>-8 / -12 / -16 px</code> for sm/md/lg overlap). Stacking order runs left over right (<code>z-index = count − index</code>), each circle has a 2 px border in the page background colour so the overlaps read as cut-outs.",
+      "<b>Sizes.</b> sm 28 px, md 36 px, lg 44 px (default), xl 56 px. A missing photo falls back to up to two initials on a muted fill. Avatars beyond <code>max</code> (default 5) collapse into one same-sized “+N” circle with <code>aria-label=\"N more users\"</code>.",
+      "<b>Hover lift.</b> The hovered circle jumps to <code>z-index 50</code> and springs to <code>scale 1.25, y −6 px</code> (stiffness 400, damping 25), gaining a 2 px translucent ring and a deep drop shadow; leaving springs it back.",
+      "<b>Name label.</b> A <code>#121214</code> pill with a white/10 hairline and a rotated 8 px square as its pointer sits 36 px above the circle. It enters from <code>opacity 0, y 6, scale 0.85</code> on a stiffer spring (450 / 25) and exits to <code>y 4, scale 0.9</code>.",
+      "Wrapped in <code>role=\"group\"</code>. The labels are pointer-only: the circles are not focusable, so keyboard users get the photo alt text but no name label."
+    ],
+    "tokens": [
+      {
+        "label": "Hover spring",
+        "value": "stiffness 400 · damping 25 · scale 1.25 · y −6px"
+      },
+      {
+        "label": "Label spring",
+        "value": "stiffness 450 · damping 25 · from scale 0.85, y 6px"
+      },
+      {
+        "label": "Sizes",
+        "value": "28 / 36 / 44 / 56 px"
+      },
+      {
+        "label": "Overlap",
+        "value": "−8 / −12 / −16 px"
+      },
+      {
+        "label": "Label",
+        "value": "#121214 · border rgba(255,255,255,.1) · 36px above"
+      }
+    ],
+    "prompt": "Build an overlapping avatar row on a dark surface. Render up to max=5 circular avatars (default 44px; options 28/36/44/56px) in a flex row, each after the first pulled left by -12px (options -8/-16px), with a 2px border in the background colour and z-index = count − index so left avatars sit on top. Missing photos show up to two uppercase initials on a muted fill. If there are more people than max, append a same-sized '+N' circle with aria-label 'N more users'. On mouseenter, raise that avatar to z-index 50 and spring it to scale 1.25 and y -6px (stiffness 400, damping 25) with a 2px semi-transparent ring and a large black shadow; spring back on leave. Also show a name label 36px above: #121214 background, 1px rgba(255,255,255,.1) border, 12px medium white text, px 8 py 2, a rotated 8px square tail at the bottom; animate it from opacity 0, y 6, scale 0.85 to rest on a spring of stiffness 450 damping 25, exiting to opacity 0, y 4, scale 0.9. Wrap the row in role='group'. Optionally add toolbar buttons to switch size (SM/MD/LG/XL), overlap (SM/MD/LG) and max (3–6).",
+    "caveats": [
+      "Name labels appear on mouse hover only; the avatars take no keyboard focus, so there is no focus path to the labels."
+    ],
+    "blurb": "A compact way to say “these people are here”: overlapping profile photos that tuck into one row, with a counter for everyone who does not fit. Pointing at a face lifts it out of the pile and shows the name. Fits project cards, shared documents, team pages, event attendee lists and anywhere a list of collaborators would take too much room."
+  },
+  {
+    "id": "command-menu",
+    "plays": "click",
+    "accent": "#fafafa",
+    "title": {
+      "en": "Command Menu",
+      "zh": "命令面板",
+      "zh-tw": "指令面板"
+    },
+    "gist": {
+      "en": "A keyboard-first palette that drops in near the top of the screen over a dimmed, blurred page. Typing filters a single list of pages, documents and actions; arrow keys move a grey highlight row, Enter runs the item and Escape closes it. The panel arrives with a short scale-and-drop spring rather than a fade.",
+      "zh": "以键盘为主的命令面板：页面整体变暗变糊，面板落在屏幕上方偏中的位置。打字即过滤同一张列表里的页面、文档和操作；上下键移动灰色高亮行，回车执行，Esc 关闭。面板出现时是一下带弹簧的轻微放大加下落，而不是单纯淡入。",
+      "zh-tw": "以鍵盤為主的指令面板：整個頁面變暗變模糊，面板落在畫面偏上方的位置。打字即可篩選同一份清單裡的頁面、文件和動作；上下鍵移動灰色反白列，按 Enter 執行，按 Esc 關閉。面板出現時是一個帶彈簧的輕微放大加下落，而不是單純淡入。"
+    },
+    "anatomy": [
+      "<b>Overlay.</b> A fixed full-screen layer, panel pinned 80 px from the top. Backdrop is <code>rgba(0,0,0,.6)</code> with a 4 px backdrop blur and fades in; clicking it closes.",
+      "<b>Panel.</b> Up to 576 px wide, <code>#141414</code> fill, 1 px <code>#1F1F1F</code> border, 12 px radius, shadow <code>0 24px 60px rgba(0,0,0,.6)</code>. It springs in from <code>opacity 0, scale 0.97, y −8 px</code> (stiffness 380, damping 30, mass 0.5) and leaves the same way.",
+      "<b>Search row and results.</b> An auto-focused 16 px input with a search glyph and an “ESC” key-cap. Below, a list capped at 320 px tall: 12 px rows with icon, title, a dim category word and a mono shortcut chip. The active row turns <code>#1F1F1F</code> with white text and shows a return-arrow glyph; hovering a row also makes it active. A footer shows ↑↓ and ↵ hints.",
+      "<b>Keys.</b> Filtering is a case-insensitive substring match on title or category, and resets the highlight to the first row. ↑/↓ wrap around the list, Enter runs the item, Escape or ⌘K/Ctrl+K closes. Marked up as <code>role=\"dialog\" aria-modal</code> with a <code>listbox</code> of <code>option</code>s carrying <code>aria-selected</code>."
+    ],
+    "tokens": [
+      {
+        "label": "Enter spring",
+        "value": "stiffness 380 · damping 30 · mass 0.5"
+      },
+      {
+        "label": "Enter from",
+        "value": "opacity 0 · scale 0.97 · y −8px"
+      },
+      {
+        "label": "Panel",
+        "value": "#141414 · border #1F1F1F · radius 12px · max-w 576px"
+      },
+      {
+        "label": "Active row",
+        "value": "#1F1F1F · text #FAFAFA"
+      },
+      {
+        "label": "Backdrop",
+        "value": "rgba(0,0,0,.6) · blur 4px"
+      }
+    ],
+    "prompt": "Build a command palette overlay. A fixed full-screen layer with a rgba(0,0,0,.6) backdrop and 4px backdrop blur that fades in and closes on click; the panel sits 80px from the top, centred, max width 576px, background #141414, 1px #1F1F1F border, 12px radius, shadow 0 24px 60px rgba(0,0,0,.6). Animate the panel in from opacity 0, scale 0.97, y -8px with a spring (stiffness 380, damping 30, mass 0.5) and out the same way. Top row: search icon (#525252), an auto-focused transparent 16px input with placeholder colour #6B6B6B, and a mono 'ESC' key-cap (#0E0E0E bg, #1F1F1F border). Results: scrollable list max 320px, 6px padding, rows 12px text with px 12 py 8, 6px radius, each showing a 16px icon, title, a #555 category word and a mono shortcut chip; inactive text #A1A1A1, active row #1F1F1F with #FAFAFA text and a return-arrow glyph. Hovering a row makes it active. Filter by case-insensitive substring on title or category and reset the active index to 0 on every keystroke; ArrowDown/ArrowUp wrap, Enter runs the active item and closes, Escape closes. Footer bar with '↑↓ navigate' and '↵ select' hints at 11px #6B6B6B. Use role='dialog' aria-modal='true' on the layer and role='listbox' / role='option' aria-selected on the rows.",
+    "caveats": [
+      "The component does not open itself: its ⌘K listener only closes it, so the host page has to listen for the shortcut and pass isOpen.",
+      "The input does not point at the active row with aria-activedescendant, so screen readers do not announce the highlighted result while arrowing."
+    ],
+    "blurb": "A keyboard launcher for people who would rather type than click: one shortcut opens a search box over the page, and every page, document and action of the product is a few letters away. Fits documentation sites, dashboards, admin tools and design-heavy portfolios that want power users to move around without hunting through menus."
+  },
+  {
+    "id": "directional-tooltip",
+    "plays": "hover",
+    "accent": "#f2f2f3",
+    "title": {
+      "en": "Directional Tooltip",
+      "zh": "方向感提示框",
+      "zh-tw": "方向感工具提示"
+    },
+    "gist": {
+      "en": "A small dark label that appears beside a button after a brief pause on hover or keyboard focus. It starts a few pixels inside, toward the button, and springs outward into place while scaling up, so it reads as coming out of the control. The demo has one above a Save button and two to the left and right of arrow buttons.",
+      "zh": "鼠标停在按钮上或用键盘聚焦，稍等片刻，旁边就冒出一个深色小标签。它一开始偏向按钮几像素，然后带弹簧地往外推到位并同时放大，看上去像是从按钮里钻出来的。演示里一个在「Save」按钮上方，另两个分别在左右箭头按钮的两侧。",
+      "zh-tw": "滑鼠停在按鈕上或用鍵盤聚焦，稍等一下，旁邊就冒出一個深色小標籤。它一開始往按鈕方向偏幾個像素，接著帶彈簧往外推到定位並同時放大，看起來像是從按鈕裡鑽出來的。示範裡一個在「Save」按鈕上方，另外兩個分別在左右箭頭按鈕的外側。"
+    },
+    "anatomy": [
+      "<b>Placement.</b> The trigger is wrapped in an inline <code>relative</code> span; the bubble is absolutely positioned on one of four sides (top / right / bottom / left), aligned start, centre or end, with an 8 px gap.",
+      "<b>Directional entrance.</b> It starts 8 px displaced toward the trigger (a top tooltip starts 8 px lower, a left one 8 px further right) at <code>scale 0.94, opacity 0</code>, then springs to rest (stiffness 380, damping 30, mass 0.5). On exit it slides back only half that distance (4 px) to <code>scale 0.96</code>.",
+      "<b>Bubble.</b> 12 px text, padding 6 × 10 px, 6 px radius, <code>#1C1C1F</code> fill, 1 px <code>#29292C</code> border, soft elevated shadow. The pointer is an 8 px box with a 4 px border where only the side facing the trigger is coloured, giving a small triangle in the border colour.",
+      "<b>Timing and access.</b> Opens 150 ms after mouseenter or focus, closes immediately on leave or blur (the pending timer is cancelled). The bubble has <code>role=\"tooltip\"</code> and the trigger gets <code>aria-describedby</code> while it is shown."
+    ],
+    "tokens": [
+      {
+        "label": "Spring",
+        "value": "stiffness 380 · damping 30 · mass 0.5"
+      },
+      {
+        "label": "Enter from",
+        "value": "8px toward trigger · scale 0.94 · opacity 0"
+      },
+      {
+        "label": "Exit to",
+        "value": "4px toward trigger · scale 0.96"
+      },
+      {
+        "label": "Delay",
+        "value": "150 ms open · 0 ms close"
+      },
+      {
+        "label": "Bubble",
+        "value": "#1C1C1F · border #29292C · radius 6px · 8px gap"
+      }
+    ],
+    "prompt": "Build a tooltip that appears to emerge from its trigger. Wrap the trigger in an inline relative span and clone mouseenter/mouseleave/focus/blur handlers onto it. Open 150ms after mouseenter or focus, close immediately on mouseleave or blur, cancelling any pending timer. Position the bubble absolutely on a chosen side (top, right, bottom, left) centred by default (start/end optional) with an 8px gap. Style: max-width 320px, no wrapping, 12px text, padding 6px 10px, 6px radius, background #1C1C1F, text #F2F2F3, 1px #29292C border, shadow 0 10px 25px -8px rgba(0,0,0,.22). Add a pointer made from an 8×8 span with a 4px border where only the side facing the trigger is #29292C. Animate in from opacity 0, scale 0.94 and an 8px offset toward the trigger (top: y +8, bottom: y -8, left: x +8, right: x -8) to rest using a spring (stiffness 380, damping 30, mass 0.5); exit to opacity 0, scale 0.96 and half the offset (4px). Give the bubble role='tooltip' and set aria-describedby on the trigger while open. Demo: a Save button with a top tooltip, and two arrow buttons with left and right tooltips.",
+    "caveats": [
+      "The side is fixed: there is no viewport collision check, so a tooltip near a screen edge will be clipped rather than flipped."
+    ],
+    "blurb": "A small helper label that explains an icon or button the moment someone pauses on it, and appears to slide out of the control it describes so the eye knows which button it belongs to. Works with the keyboard as well as the mouse. Fits toolbars, icon-only navigation, editors and settings screens where space for text labels is tight."
+  },
+  {
+    "id": "intro-loader",
+    "plays": "self",
+    "accent": "#fafafa",
+    "title": {
+      "en": "Intro Loader",
+      "zh": "多语问候开场",
+      "zh-tw": "多語問候開場"
+    },
+    "gist": {
+      "en": "A splash screen that flashes “Hello” in six languages, one after another, each word blurring into focus in the centre while a hairline progress bar fills along the bottom. When the last greeting has landed, the whole screen blurs out and lifts away. In the demo a Replay button takes its place; a Skip pill or Escape cuts the sequence short.",
+      "zh": "开场闪屏：屏幕中央接连闪过六种语言的「你好」，每个词都从模糊里聚焦出来，底部一条细线进度条同步往前走。最后一个问候落定后，整屏变糊、微微放大然后消失。演示里结束后会换成一个「Replay」按钮；右上角的 Skip 按钮或 Esc 键可以直接跳过。",
+      "zh-tw": "開場畫面：畫面中央接連閃過六種語言的「你好」，每個字都從模糊中對焦出來，底部一條細線進度條同步往前推。最後一個問候定格後，整個畫面變模糊、微微放大然後消失。示範中結束後會換成「Replay」按鈕；右上角的 Skip 按鈕或 Esc 鍵可以直接略過。"
+    },
+    "anatomy": [
+      "<b>Greeting cycle.</b> Hello → Hola → Bonjour → Ciao → こんにちは → नमस्कार, one every 240 ms (divided by a speed multiplier, floor 100 ms). Each word remounts and animates from <code>opacity 0, scale 0.94, y 10 px, blur 8 px</code> to sharp in 220 ms on <code>cubic-bezier(0.22, 1, 0.36, 1)</code>. Type is 30 / 36 / 48 px medium, <code>#FAFAFA</code>, tight tracking.",
+      "<b>Finish.</b> 450 ms after the last word the overlay exits over 650 ms on the same curve to <code>opacity 0, scale 1.02, blur 12 px</code> — about 1.65 s from start to the exit. Full-screen mode uses a fixed <code>#090909</code> layer; inline mode is a 320–384 px tall box that is replaced by a Replay button.",
+      "<b>Progress and glow.</b> A 2 px track (white at 8%) inset from the sides at the bottom; its fill is a white 40% → 100% → 70% gradient whose width steps to <code>(index+1)/6</code>, each step eased over 220 ms. Behind the text, a 288–384 px circle of white at 3.5% blurred 80 px gives a faint backlight.",
+      "<b>Skip.</b> A rounded “Skip ESC” pill in the top-right corner fades down 6 px into view after 100 ms; clicking it or pressing Escape ends the intro at once.",
+      "A polite <code>aria-live</code> region announces each greeting and the layer is labelled as a dialog. With reduced motion the greeting cycle is skipped entirely and the exit drops the scale and blur."
+    ],
+    "tokens": [
+      {
+        "label": "Per greeting",
+        "value": "240 ms · enter 220 ms · blur 8px → 0"
+      },
+      {
+        "label": "Exit",
+        "value": "650 ms · scale 1.02 · blur 12px · after 450 ms hold"
+      },
+      {
+        "label": "Easing",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)"
+      },
+      {
+        "label": "Progress",
+        "value": "2px · track rgba(255,255,255,.08) · fill white 40→100→70%"
+      },
+      {
+        "label": "Background",
+        "value": "#090909 · glow rgba(255,255,255,.035) blur 80px"
+      }
+    ],
+    "prompt": "Build a multilingual intro splash. A layer (full-screen fixed #090909, or an inline box 320px tall, 384px from the sm breakpoint) centres one greeting at a time: Hello, Hola, Bonjour, Ciao, こんにちは, नमस्कार. Advance every 240ms; each new word animates from opacity 0, scale 0.94, y 10px, blur(8px) to opacity 1, scale 1, y 0, blur(0) in 220ms with cubic-bezier(0.22,1,0.36,1); text 30px (36px sm, 48px md), weight 500, #FAFAFA, tight tracking. Behind it place a 288px (384px sm) circle of rgba(255,255,255,.035) blurred 80px. At the bottom (24px up, 32px sm) draw a 2px rounded track rgba(255,255,255,.08) inset 32px (one third on sm) with a fill gradient white 40% → white → white 70% whose width animates to (index+1)/6 over 220ms ease-out. 450ms after the last word, exit the whole layer over 650ms with the same curve to opacity 0, scale 1.02, blur(12px). Top-right, a rounded pill 'Skip' + 'ESC' key-cap (#181818 at 90%, #333 border, 11px mono #A1A1A1) fades in from y -6 after 100ms over 300ms; clicking it or pressing Escape finishes immediately. Include an aria-live='polite' sr-only region that reads the current greeting, label the layer as a dialog, and under prefers-reduced-motion skip the cycle and exit with opacity only. In inline mode, replace it after the exit with a 'Replay Intro' button that restarts the sequence.",
+    "caveats": [
+      "The exit fades a full-screen CSS blur, which can stutter on low-end mobile GPUs."
+    ],
+    "blurb": "An opening moment for a website or app: a warm greeting that cycles through several languages before the real page appears, with a thin line showing how far along it is. Visitors can skip it at any time. Fits international brands, portfolios, product launches and landing pages that want a short, human first impression instead of a spinner."
+  },
+  {
+    "id": "morphing-dialog",
+    "plays": "click",
+    "accent": "#fafafa",
+    "title": {
+      "en": "Morphing Dialog",
+      "zh": "层次展开对话框",
+      "zh-tw": "層次展開對話框"
+    },
+    "gist": {
+      "en": "A button opens a large dark card in the middle of a blurred, darkened page. The card itself appears at full size at once; what moves is the content — the title, then the subtitle, then the body each rise 4–8 px into place about 50 ms apart. Escape, the close button or a click on the backdrop dismisses it.",
+      "zh": "点按钮后，页面变暗变糊，中央出现一张深色大卡片。卡片本身一下子就以完整尺寸出现，真正在动的是里面的内容：标题、副标题、正文依次间隔约 50 毫秒，各自上浮 4–8 像素到位。按 Esc、点关闭按钮或点背景都能关掉。",
+      "zh-tw": "按下按鈕後，頁面變暗變模糊，中央出現一張深色大卡片。卡片本身一下子就以完整尺寸出現，真正在動的是裡面的內容：標題、副標題、內文依序間隔約 50 毫秒，各自往上浮 4–8 像素到定位。按 Esc、點關閉按鈕或點背景都能關閉。"
+    },
+    "anatomy": [
+      "<b>Backdrop.</b> Fixed full-screen <code>rgba(0,0,0,.7)</code> with a 12 px backdrop blur, fading over 320 ms on <code>cubic-bezier(0.22, 1, 0.36, 1)</code>. Clicking it closes; while open, page scroll is locked.",
+      "<b>Card.</b> Up to 512 px wide, <code>#0E0E0E</code>, 1 px <code>#1F1F1F</code> border, 16 px radius, 24–32 px padding, shadow <code>0 20px 50px rgba(0,0,0,.6)</code>. It carries a shared-layout id with a morph spring (stiffness 220, damping 32, mass 1), but the trigger has no matching id, so in practice it appears in place without growing from the button.",
+      "<b>Staggered content.</b> Title (18–20 px semibold) and subtitle (12–14 px, <code>#A1A1A1</code>) each fade up from <code>y 4 px</code> with delays of 50 and 100 ms; the body fades up from <code>y 8 px</code> at 150 ms. Measured: the title goes from transparent to opaque between roughly 50 and 360 ms.",
+      "<b>Close.</b> A 28 px icon button in the top-right (<code>aria-label=\"Close dialog\"</code>), Escape, or the backdrop."
+    ],
+    "tokens": [
+      {
+        "label": "Backdrop",
+        "value": "rgba(0,0,0,.7) · blur 12px · 320ms"
+      },
+      {
+        "label": "Curve",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)"
+      },
+      {
+        "label": "Content stagger",
+        "value": "50 / 100 / 150 ms · y 4 / 4 / 8px"
+      },
+      {
+        "label": "Layout spring",
+        "value": "stiffness 220 · damping 32 · mass 1"
+      },
+      {
+        "label": "Card",
+        "value": "#0E0E0E · border #1F1F1F · radius 16px · max-w 512px"
+      }
+    ],
+    "prompt": "Build a modal that opens from a trigger button. On open, lock body scroll, render a fixed full-screen layer centring the card with 16–24px padding, and fade in a rgba(0,0,0,.7) backdrop with 12px backdrop blur over 320ms on cubic-bezier(0.22,1,0.36,1); clicking it closes. The card: max width 512px, background #0E0E0E, 1px #1F1F1F border, 16px radius, padding 24px (32px on sm), shadow 0 20px 50px rgba(0,0,0,.6), overflow hidden. Inside, a header row with an 18px (20px sm) semibold #FAFAFA title and a 12px (14px sm) #A1A1A1 subtitle on the left and a 28px close icon button (#525252, hover #FAFAFA on #141414) on the right, then the body 16px below. Stagger the content: title fades up from y 4px after 50ms, subtitle from y 4px after 100ms, body from y 8px after 150ms, each with roughly 300ms opacity. Escape, the close button and the backdrop all close it. For a true morph, give the trigger and the card the same shared-layout id and use a spring of stiffness 220, damping 32, mass 1.",
+    "caveats": [
+      "The name promises a morph from the button, but the trigger is not given the shared layout id, so the card simply appears; the visible motion is the backdrop fade and the staggered content.",
+      "No focus is moved into the card and Tab is not trapped."
+    ],
+    "blurb": "A focused detail view for settings, records or explanations: the page dims and blurs behind a single card, and its heading, subheading and body arrive one after another so the eye reads them in order. Closing is quick by key, button or click outside. Fits dashboards, settings areas and product pages that need to show more without leaving the page."
+  },
+  {
+    "id": "origin-dropdown",
+    "plays": "click",
+    "accent": "#f2f2f3",
+    "title": {
+      "en": "Origin Dropdown",
+      "zh": "有来处的下拉菜单",
+      "zh-tw": "有出處的下拉選單"
+    },
+    "gist": {
+      "en": "A compact button with a chevron opens a small menu that grows out of the edge of the button nearest to it, scaling up from the corner it is pinned to while sliding outward a few pixels. The chevron flips as it opens. The demo stacks one menu opening downward (Profile, Settings and a red Sign out) and one opening upward.",
+      "zh": "一个带小箭头的紧凑按钮，点开后的小菜单是从按钮靠近它的那条边长出来的：以贴住的那个角为原点放大，同时往外滑出几像素，箭头随之翻转。演示里上面一个往下展开（Profile、Settings 和红色的 Sign out），下面一个往上展开。",
+      "zh-tw": "一個帶小箭頭的精簡按鈕，點開後的小選單是從按鈕最靠近它的那一邊長出來的：以貼住的那個角為原點放大，同時往外滑出幾個像素，箭頭跟著翻轉。示範中上面那個往下展開（Profile、Settings 和紅色的 Sign out），下面那個往上展開。"
+    },
+    "anatomy": [
+      "<b>Trigger.</b> A 36 px tall button (14 px side padding, 8 px radius, 12 px medium text, 1 px border, surface fill) with a 14 px chevron that rotates 180° on the same snappy spring as the menu. It carries <code>aria-haspopup=\"menu\"</code> and <code>aria-expanded</code>.",
+      "<b>Origin-aware entrance.</b> The menu sits 8 px off the chosen side (top, right, bottom, left) with its transform-origin on the corner touching the trigger. It enters from <code>scale 0.96</code> and 8 px back toward the trigger, springing out (stiffness 380, damping 30, mass 0.5); it exits to <code>scale 0.97</code> retreating only 40% of that distance (3.2 px).",
+      "<b>Menu.</b> At least 200 px wide, 6 px vertical padding, 8 px radius, surface fill <code>#1C1C1F</code>, 1 px <code>#29292C</code> border, elevated shadow. Rows are 12 px text with 8 × 12 px padding, optional icon and 10 px muted description; destructive rows are <code>#FB7185</code>, disabled rows drop to 30% opacity.",
+      "<b>Closing.</b> Selecting an item, pressing Escape or a mousedown anywhere outside the component. Menu and items use <code>role=\"menu\"</code> / <code>menuitem</code>; can be controlled or uncontrolled."
+    ],
+    "tokens": [
+      {
+        "label": "Spring",
+        "value": "stiffness 380 · damping 30 · mass 0.5"
+      },
+      {
+        "label": "Enter from",
+        "value": "scale 0.96 · 8px toward trigger"
+      },
+      {
+        "label": "Exit to",
+        "value": "scale 0.97 · 3.2px toward trigger"
+      },
+      {
+        "label": "Menu",
+        "value": "min-w 200px · radius 8px · #1C1C1F · border #29292C"
+      },
+      {
+        "label": "Destructive",
+        "value": "#FB7185"
+      }
+    ],
+    "prompt": "Build a dropdown whose menu grows out of its trigger. Trigger: a button 36px tall, padding 0 14px, 8px radius, 12px medium text #F2F2F3 on #1C1C1F with a 1px #29292C border (hover #18181A / #343438), followed by a 14px chevron that rotates 0→180° when open on a spring (stiffness 380, damping 30, mass 0.5); set aria-haspopup='menu' and aria-expanded. Menu: absolutely positioned 8px off a configurable side (bottom default: top-full left 0; top: bottom-full; left/right: beside, top-aligned), transform-origin at the corner touching the trigger (bottom → top-left, top → bottom-left), min width 200px, padding 6px 0, 8px radius, #1C1C1F fill, 1px #29292C border, shadow 0 10px 25px -8px rgba(0,0,0,.22). Animate in from opacity 0, scale 0.96 and an 8px offset back toward the trigger (bottom: y -8, top: y +8, left: x +8, right: x -8) using the same spring; exit to opacity 0, scale 0.97 and 40% of that offset. Rows: full-width buttons, 12px text, padding 8px 12px, optional 10px #6F6F75 description under the label, hover background #18181A; destructive rows #FB7185; disabled rows 30% opacity and inert. Close on item select, Escape, or mousedown outside. role='menu' on the panel and role='menuitem' on rows. Demo: a bottom menu with Profile ('Manage account'), Settings ('App preferences') and a destructive Sign out, plus a second trigger that opens upward.",
+    "caveats": [
+      "No arrow-key navigation between items; keyboard users move through the rows with Tab."
+    ],
+    "blurb": "A small action menu that unfolds from the edge of the button that opened it, so it always feels attached to its trigger whether it opens below, above or to the side. Dangerous actions stand out in red. Fits account menus, row actions in tables, toolbars and any place that needs a few choices tucked behind one button."
+  },
+  {
+    "id": "peek-card",
+    "plays": "hover",
+    "accent": "#34d399",
+    "title": {
+      "en": "Peek Card",
+      "zh": "悬停速览卡",
+      "zh-tw": "懸停速覽卡"
+    },
+    "gist": {
+      "en": "Point at a record reference — here a payment pill — and after a short pause a dark preview card rises above it with the amount, the customer, a few key/value details and a green status dot. Moving into the card keeps it open, so the copy-email button inside can be used. On touch the pill toggles the card with a tap.",
+      "zh": "把鼠标停在一条记录的引用上（这里是一个付款编号标签），稍等片刻，上方就浮出一张深色速览卡：金额、客户、几行关键信息和一个绿色状态点。鼠标移进卡片里它也不会消失，可以点里面的复制邮箱按钮。触屏上点一下标签即可开合。",
+      "zh-tw": "把滑鼠停在一筆紀錄的引用上（這裡是一個付款編號標籤），稍等一下，上方就浮出一張深色速覽卡：金額、客戶、幾行關鍵資訊和一個綠色狀態點。滑鼠移進卡片裡它也不會消失，可以按裡面的複製電子郵件按鈕。觸控螢幕上點一下標籤即可開關。"
+    },
+    "anatomy": [
+      "<b>Trigger and timing.</b> Any inline content wrapped in a focusable (<code>tabIndex 0</code>) element. Opens 200 ms after mouseenter, or at once on focus or tap; closes on mouseleave, blur, a second tap or a click elsewhere. The card is a child of the trigger, so the pointer can travel into it.",
+      "<b>Auto placement.</b> Prefers above; flips below only if there is under 220 px above the trigger and more room underneath. Horizontally centred on the trigger with an 8 px gap.",
+      "<b>Motion.</b> Enters from <code>opacity 0, scale 0.96</code> and 6 px toward the trigger, on a snappy spring (stiffness 380, damping 30, mass 0.5). Leaves faster: 120 ms to 4 px back.",
+      "<b>Card.</b> 288 px wide (320 px from the sm breakpoint), <code>#0E0E0E</code>, 1 px <code>#1F1F1F</code> border, 12 px radius, 16 px padding, shadow <code>0 16px 40px rgba(0,0,0,.6)</code>. Sections split by hairlines: title + subtitle with a mono amount chip; a customer row with a 24 px initials circle and a copy button that turns into a green check for 2 s; mono key/value lines; a footer timestamp with an <code>#34D399</code> status dot. A pulsing skeleton replaces the body while loading."
+    ],
+    "tokens": [
+      {
+        "label": "Hover delay",
+        "value": "200 ms"
+      },
+      {
+        "label": "Enter",
+        "value": "spring 380 / 30 / 0.5 · from scale 0.96, y ±6px"
+      },
+      {
+        "label": "Exit",
+        "value": "120 ms · y ±4px"
+      },
+      {
+        "label": "Card",
+        "value": "#0E0E0E · border #1F1F1F · radius 12px · 288–320px wide"
+      },
+      {
+        "label": "Flip rule",
+        "value": "below only if < 220px above"
+      },
+      {
+        "label": "Status",
+        "value": "#34D399"
+      }
+    ],
+    "prompt": "Build a hover preview card for an inline reference. Wrap the trigger in a relative, inline-flex, tabIndex=0 element. Open 200ms after mouseenter (cancel on leave), immediately on focus, and toggle on click for touch; close on mouseleave, blur and any document click outside. Before opening, measure the trigger: place the card above unless there is less than 220px above and more space below. The card is a child of the trigger, absolutely positioned, horizontally centred, 8px gap, width 288px (320px at sm), background #0E0E0E, 1px #1F1F1F border, 12px radius, 16px padding, shadow 0 16px 40px rgba(0,0,0,.6). Animate in from opacity 0, scale 0.96 and y +6px (above) or -6px (below) with a spring (stiffness 380, damping 30, mass 0.5); exit in 120ms to opacity 0, scale 0.96, y ±4px. Content, 12px base, 12px vertical gaps: header with a 14px semibold #FAFAFA title, 11px #6B6B6B subtitle and a mono amount chip (#141414, #1F1F1F border); a customer row on #141414 with a 24px initials circle, name and truncated email, and a copy icon button that copies the email and shows a #34D399 check for 2 seconds; 11px label/value rows (#A1A1A1 labels, mono #FAFAFA values); a top-bordered footer with a 10px mono timestamp and a 6px #34D399 dot plus status text. Provide a pulsing three-bar skeleton for a loading state.",
+    "caveats": [
+      "Only vertical placement adapts; near the left or right edge of the viewport the centred card can be clipped."
+    ],
+    "blurb": "A quick look without leaving the page: hovering a reference to an order, invoice or user shows a compact summary card right next to it, with the key facts and a one-tap copy action. Moving into the card keeps it open, and touch screens open it with a tap. Fits admin panels, activity feeds, tables and support tools full of IDs."
+  },
+  {
+    "id": "selection-basket",
+    "plays": "click",
+    "accent": "#fb7185",
+    "title": {
+      "en": "Selection Basket",
+      "zh": "批量操作托盘",
+      "zh-tw": "批次操作托盤"
+    },
+    "gist": {
+      "en": "A floating toolbar that rises from the bottom of a list as soon as something is selected and drops away when the selection is cleared. It shows a white count badge, a select-all link, Export / Move / Share buttons, a red Delete and a clear button. In the demo, clicking file rows toggles their checkboxes and the count updates live.",
+      "zh": "一条浮动工具栏：列表里只要选中了东西，它就从底部升起来；选择清空，它就沉下去。上面有白色计数徽章、全选链接、导出 / 移动 / 分享按钮、红色的删除和一个清空按钮。演示里点文件行就能勾选或取消，计数实时变化。",
+      "zh-tw": "一條浮動工具列：清單中只要選取了項目，它就從底部升起；選取清空，它就沉下去。上面有白色計數徽章、全選連結、匯出 / 移動 / 分享按鈕、紅色的刪除和一個清除按鈕。示範中點檔案列就能勾選或取消，計數即時更新。"
+    },
+    "anatomy": [
+      "<b>Presence.</b> Mounted only while <code>selectedCount > 0</code>. Enters from <code>opacity 0, y 24 px, scale 0.95</code> on a slightly bouncy spring (stiffness 320, damping 24, mass 0.7) that overshoots a hair; exits in 150 ms to <code>y 16 px, scale 0.95</code>.",
+      "<b>Docking.</b> Three modes: fixed 24 px above the viewport bottom, contained 12 px above the bottom of its positioned parent (the demo), or inline in the flow. Always horizontally centred and capped at 95% width; the bar scrolls sideways if the buttons do not fit.",
+      "<b>Bar.</b> 16 px radius, <code>#0E0E0E</code> at 95% with a 12 px backdrop blur, 1 px <code>#1F1F1F</code> border, shadow <code>0 20px 50px rgba(0,0,0,.6)</code>. Left block: a 20 px <code>#FAFAFA</code> circle with the count in 11 px bold mono, “item(s) selected”, and an underlined “All (n)” / “Select none” link, closed off by a divider.",
+      "<b>Actions.</b> 12 px buttons with 14 px icons, 8 px radius on <code>#141414</code>; the danger variant is a rose tint (<code>rgba(244,63,94,.1)</code> fill, 30% border, <code>#FB7185</code> text) that fills solid <code>#F43F5E</code> on hover. A 28 px X clears the selection. The bar is a <code>role=\"toolbar\"</code> labelled “Bulk actions toolbar”."
+    ],
+    "tokens": [
+      {
+        "label": "Enter spring",
+        "value": "stiffness 320 · damping 24 · mass 0.7"
+      },
+      {
+        "label": "Enter from",
+        "value": "y 24px · scale 0.95 · opacity 0"
+      },
+      {
+        "label": "Exit",
+        "value": "150 ms · y 16px · scale 0.95"
+      },
+      {
+        "label": "Bar",
+        "value": "#0E0E0E/95 · blur 12px · radius 16px · border #1F1F1F"
+      },
+      {
+        "label": "Danger",
+        "value": "#FB7185 text · #F43F5E hover fill"
+      }
+    ],
+    "prompt": "Build a bulk-action toolbar tied to a selection count. Render it only when count > 0, centred horizontally and docked 12px above the bottom of its relative parent (or 24px above the viewport bottom in fixed mode), max width 95%. Animate in from opacity 0, y 24px, scale 0.95 with a spring (stiffness 320, damping 24, mass 0.7); animate out in 150ms to opacity 0, y 16px, scale 0.95. The bar: flex row, 8–12px gaps, 8px padding, 16px radius, background #0E0E0E at 95% with 12px backdrop blur, 1px #1F1F1F border, shadow 0 20px 50px rgba(0,0,0,.6), horizontal scroll if it overflows; role='toolbar' aria-label='Bulk actions toolbar'. Left block with a right divider: a 20px #FAFAFA circle containing the count in 11px bold mono #050505, the text 'item selected'/'items selected' at 12px #FAFAFA, and an 11px mono underlined link that reads 'All (n)' or 'Select none'. Then action buttons (12px medium, padding 6px 12px, 8px radius, 14px icon): Export, Move to Folder, Share on #141414 with #1F1F1F border and #A1A1A1 text (hover #4A4A4A border, #FAFAFA text), and Delete with rgba(244,63,94,.1) fill, rgba(244,63,94,.3) border and #FB7185 text that turns solid #F43F5E with white text on hover. End with a 28px square X button (aria-label 'Clear selection'). Demo: a dark list of four file rows with checkboxes, two preselected; clicking a row toggles it and a 'Select All' link toggles all.",
+    "caveats": [
+      "The count number swaps instantly; only the bar itself is animated."
+    ],
+    "blurb": "An action bar that appears only when it is useful: as soon as someone ticks items in a list, it rises from the bottom with the count and the things they can do to all of them at once, and disappears when nothing is selected. Fits file managers, inboxes, admin tables, photo galleries and any list where people act on many rows together."
+  },
+  {
+    "id": "settle-modal",
+    "plays": "click",
+    "accent": "#f2f2f3",
+    "title": {
+      "en": "Settle Modal",
+      "zh": "落定式弹窗",
+      "zh-tw": "落定式對話框"
+    },
+    "gist": {
+      "en": "A confirmation dialog that does not just fade: the panel grows slightly past full size and settles back, then its text and buttons follow a beat later with their own smaller lift. The page behind dims and blurs. The demo opens a “Confirm archive” prompt with Cancel and Archive buttons; Escape, the X or a backdrop click close it.",
+      "zh": "一个确认弹窗，不是单纯淡入：面板先略微放大过头再回落到位，里面的文字和按钮晚一拍跟上，自带一个更小的上浮。背后的页面变暗变糊。演示打开的是「Confirm archive」确认框，带 Cancel 和 Archive 两个按钮；按 Esc、点右上角 X 或点背景都能关闭。",
+      "zh-tw": "一個確認對話框，不只是淡入：面板先稍微放大過頭再回落到定位，裡面的文字和按鈕慢半拍跟上，帶著更小的上浮。後方頁面變暗變模糊。示範開啟的是「Confirm archive」確認框，有 Cancel 和 Archive 兩個按鈕；按 Esc、點右上角 X 或點背景都能關閉。"
+    },
+    "anatomy": [
+      "<b>Two-layer settle.</b> The panel animates <code>scale 0.94 → 1.02 → 1</code> with <code>y 8 → 0</code> and opacity in 420 ms on <code>cubic-bezier(0.16, 1, 0.3, 1)</code>. Inside it, the content runs its own 400 ms tween from <code>scale 0.98, y 4 px</code>, delayed 50 ms, so the text lands just after the frame.",
+      "<b>Exit.</b> Panel to <code>opacity 0, scale 0.96, y 4 px</code>; content to <code>scale 0.99, y 2 px</code>. The backdrop (<code>rgba(0,0,0,.5)</code>, 12 px backdrop blur) fades in and out over 320 ms on <code>cubic-bezier(0.22, 1, 0.36, 1)</code>.",
+      "<b>Panel.</b> Width capped at 384 / 448 / 512 px (sm / md / lg), 16 px radius, surface <code>#1C1C1F</code>, 1 px <code>#29292C</code> border, 24–32 px padding. Title 18–20 px semibold, description 14 px <code>#A1A1A6</code>, footer buttons right-aligned with 8 px gap; a 26 px close X sits 14 px from the top-right corner.",
+      "<b>Behaviour.</b> Escape closes, backdrop click closes (can be turned off), body scroll is locked while open and restored after. <code>role=\"dialog\"</code>, <code>aria-modal</code>, and <code>aria-labelledby</code> pointing at the title."
+    ],
+    "tokens": [
+      {
+        "label": "Panel",
+        "value": "420 ms · scale 0.94 → 1.02 → 1 · y 8 → 0"
+      },
+      {
+        "label": "Content",
+        "value": "400 ms · delay 50 ms · scale 0.98 · y 4px"
+      },
+      {
+        "label": "Curve",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)"
+      },
+      {
+        "label": "Backdrop",
+        "value": "rgba(0,0,0,.5) · blur 12px · 320 ms"
+      },
+      {
+        "label": "Surface",
+        "value": "#1C1C1F · border #29292C · radius 16px"
+      }
+    ],
+    "prompt": "Build a modal whose panel settles instead of fading. Layer: fixed full-screen flex centre with 16px padding, role='dialog', aria-modal='true', aria-labelledby → title. Backdrop: rgba(0,0,0,.5) with 12px backdrop blur, opacity 0→1 over 320ms on cubic-bezier(0.22,1,0.36,1); click closes (optional). Panel: width 100% capped at 384px (sm) / 448px (md) / 512px (lg), 16px radius, background #1C1C1F, 1px #29292C border, padding 24px (32px at sm), shadow 0 10px 25px -8px rgba(0,0,0,.22); animate from opacity 0, scale 0.94, y 8px to opacity 1, y 0 with scale keyframes [0.94, 1.02, 1], 420ms, cubic-bezier(0.16,1,0.3,1); exit to opacity 0, scale 0.96, y 4px. Inside, wrap title, description, body and footer in a second layer animating from opacity 0, scale 0.98, y 4px to rest over 400ms on the same curve with a 50ms delay, exiting to scale 0.99, y 2px. Title 18px (20px sm) semibold #F2F2F3 with right padding for the close button; description 14px #A1A1A6, 6px below; footer 24px below, right-aligned, 8px gap. Close X: 14px icon in a 26px button 14px from the top-right, #4D4D52 turning #F2F2F3 on #18181A hover. Escape closes; lock body scroll while open and restore the previous overflow on close. Demo: 'Open modal' button → 'Confirm archive' / 'This will archive the project and notify collaborators.' with a ghost Cancel and a filled #F2F2F3 Archive button.",
+    "caveats": [
+      "Focus is not moved into the panel or trapped there; keyboard users stay on the page behind the backdrop until they press Escape."
+    ],
+    "blurb": "A confirmation dialog with a sense of weight: the panel lands and settles rather than simply fading in, and its words follow a moment later, which draws attention to the decision being asked for. Fits destructive or important confirmations, short forms, onboarding prompts and any moment where a product needs a clear yes or no."
+  },
+  {
+    "id": "sheet",
+    "plays": "click",
+    "accent": "#fafafa",
+    "title": {
+      "en": "Sheet",
+      "zh": "侧滑抽屉",
+      "zh-tw": "側滑抽屜"
+    },
+    "gist": {
+      "en": "A panel that slides in from the right edge over a dimmed page, here holding a short profile form with Cancel and Save. It springs in without bouncing, can be closed with Escape, the X, the backdrop or the footer buttons, and on touch screens it can be swiped back out. Top and bottom variants add a grab handle for the same gesture.",
+      "zh": "一块面板从屏幕右边滑进来盖在变暗的页面上，这里装的是一张简短的个人资料表单，底部有 Cancel 和 Save。它以不回弹的弹簧滑入，Esc、X、点背景或底部按钮都能关闭；触屏上还能直接把它划回去。顶部和底部版本多一个拖拽把手，手势相同。",
+      "zh-tw": "一塊面板從畫面右側滑入，蓋在變暗的頁面上，這裡放的是一份簡短的個人資料表單，底部有 Cancel 和 Save。它以不回彈的彈簧滑入，Esc、X、點背景或底部按鈕都能關閉；觸控螢幕上還能直接把它滑回去。上方和下方版本多一個拖曳把手，手勢相同。"
+    },
+    "anatomy": [
+      "<b>Slide.</b> Portalled to <code>body</code>. The panel moves from <code>x 100%</code> to 0 (or the matching axis for left / top / bottom) on a spring of stiffness 380, damping 38, mass 0.9 — close to critically damped, so it stops without overshoot. The backdrop (<code>rgba(0,0,0,.6)</code> in dark, 2 px blur) fades over 200 ms.",
+      "<b>Size.</b> Side sheets are full height, 88vw wide up to 416 px, with a 1 px border on the inner edge. Top / bottom sheets are up to 512 px wide and 85% of the viewport tall, rounded 16 px on the free edge. Dark theme: <code>#0A0A0A</code> fill, <code>#262626</code> border, <code>#F5F5F5</code> text.",
+      "<b>Swipe to dismiss.</b> Dragging is locked to one axis and only toward the closed edge (elasticity 0.6 that way, 0 the other). Release beyond 96 px or faster than 500 px/s closes; otherwise it snaps back (bounce stiffness 700, damping 45). Side sheets accept the drag anywhere for touch and pen; top / bottom sheets use a 28 px handle bar with a 36 × 4 px pill.",
+      "<b>Focus and scroll.</b> On open the panel takes focus, Tab and Shift+Tab are trapped inside, Escape closes, and focus returns to the element that opened it. Body scroll is locked with right padding equal to the scrollbar width so the page does not jump. <code>role=\"dialog\"</code>, <code>aria-modal</code>, labelled by its title and described by its description."
+    ],
+    "tokens": [
+      {
+        "label": "Spring",
+        "value": "stiffness 380 · damping 38 · mass 0.9"
+      },
+      {
+        "label": "Dismiss",
+        "value": "> 96px or > 500px/s"
+      },
+      {
+        "label": "Drag",
+        "value": "elastic 0.6 · snap-back 700 / 45"
+      },
+      {
+        "label": "Side panel",
+        "value": "88vw · max 416px · full height"
+      },
+      {
+        "label": "Dark",
+        "value": "#0A0A0A · border #262626 · backdrop rgba(0,0,0,.6) blur 2px"
+      }
+    ],
+    "prompt": "Build a sheet (drawer) component with Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetBody, SheetFooter and SheetClose parts sharing context; open state can be controlled or uncontrolled. Portal the content to document.body. Backdrop: absolute full-screen rgba(0,0,0,.6) (light theme rgba(10,10,10,.3)) with 2px blur, fade 200ms, click closes. Right side (default): full height, width 88vw max 416px, 1px left border; left mirrors it; top/bottom: width 100% max 512px, max height 85dvh, 16px radius on the free edge. Colours dark #0A0A0A bg, #262626 border, #F5F5F5 text (light #FFF, #E5E5E5, #171717). Animate from x/y ±100% to 0 and back with a spring of stiffness 380, damping 38, mass 0.9. Enable drag on the sheet's axis only, starting it manually: side sheets start drag on pointerdown for non-mouse pointers (touch-action pan-y), top/bottom sheets from a 28px handle row containing a 36×4px rounded pill. Constrain to 0 with dragElastic 0.6 toward the closing edge and 0 the other way, no momentum, snap-back bounceStiffness 700 bounceDamping 45; on release close if the offset passes 96px or the velocity exceeds 500px/s toward the closing edge. On open: remember document.activeElement, focus the panel (tabIndex -1), lock body scroll adding padding-right equal to the scrollbar width, close on Escape, trap Tab/Shift+Tab within focusable descendants, and on close restore styles and focus. role='dialog', aria-modal, aria-labelledby title id, aria-describedby description id when present. A 32px close X 12px from the top-right. Header padding 20px (right 56px), title 16px semibold, description 14px #A3A3A3; body scrolls; footer right-aligned with a top border and 16px 20px padding. Demo: 'Open sheet' → 'Edit profile' form with Name, Email and Bio fields and Cancel / Save.",
+    "caveats": [
+      "On a side sheet a mouse cannot drag the panel; swipe-to-dismiss works with touch and pen only, while mouse users close it with Escape, the X or the backdrop."
+    ],
+    "blurb": "A side panel for editing or inspecting something without leaving the page: it slides in over the content, keeps keyboard focus inside while open, and on phones can be swiped away with a thumb. It can also come from the top or bottom. Fits settings forms, filters, shopping carts, record details and mobile navigation menus."
+  },
+  {
+    "id": "spotlight-search",
+    "plays": "click",
+    "accent": "#f2f2f3",
+    "title": {
+      "en": "Spotlight Search",
+      "zh": "聚光搜索框",
+      "zh-tw": "聚光搜尋框"
+    },
+    "gist": {
+      "en": "A stripped-down search overlay: a single input over a list of plain titles, opened here from a button. As you type the list narrows instantly, and a soft grey pill glides from row to row to mark the current result when you hover or press the arrow keys. Enter opens the result; Escape, the ESC key-cap or the backdrop close it.",
+      "zh": "一个极简的搜索浮层：一个输入框，下面是一列纯标题，这里通过按钮打开。打字时列表即刻收窄；鼠标悬停或按上下键时，一块柔和的灰色胶囊会在行与行之间滑动，标出当前结果。回车打开结果，Esc、点 ESC 键帽或点背景都能关闭。",
+      "zh-tw": "一個極簡的搜尋浮層：一個輸入框，下面是一列純標題，這裡透過按鈕開啟。打字時清單立刻縮小範圍；滑鼠懸停或按上下鍵時，一塊柔和的灰色膠囊會在列與列之間滑動，標出目前的結果。按 Enter 開啟結果，按 Esc、點 ESC 鍵帽或點背景都能關閉。"
+    },
+    "anatomy": [
+      "<b>Overlay.</b> Fixed full-screen, panel 64 px from the top (96 px from the sm breakpoint). Backdrop <code>rgba(0,0,0,.6)</code> with 4 px blur fades in 150 ms. Panel up to 512 px wide, 16 px radius, <code>#18181A</code>, 1 px <code>#29292C</code> border, elevated shadow; springs in from <code>opacity 0, scale 0.98, y −6 px</code> (stiffness 380, damping 30, mass 0.5).",
+      "<b>Input.</b> 16 px text behind a search glyph, focused 30 ms after opening, with a clickable “ESC” key-cap on the right. Results are titles only: 14 px medium rows with 10 × 14 px padding and 12 px radius in a list capped at 340 px.",
+      "<b>Gliding highlight.</b> The active row renders one background pill (<code>#202023</code>, 1 px <code>#343438</code> border) with a shared layout id, so changing rows animates the same pill to the new position on a gentle spring (stiffness 170, damping 26, mass 0.9) instead of switching instantly.",
+      "<b>Keys and filtering.</b> Case-insensitive substring match on title, category or description; the highlight resets to the first row on every keystroke. ↑/↓ wrap, Enter runs the item and closes, Escape closes. An optional global ⌘K/Ctrl+K toggle exists but is off by default. The panel is a labelled <code>role=\"dialog\" aria-modal</code>."
+    ],
+    "tokens": [
+      {
+        "label": "Panel spring",
+        "value": "stiffness 380 · damping 30 · mass 0.5"
+      },
+      {
+        "label": "Highlight spring",
+        "value": "stiffness 170 · damping 26 · mass 0.9"
+      },
+      {
+        "label": "Enter from",
+        "value": "scale 0.98 · y −6px · opacity 0"
+      },
+      {
+        "label": "Panel",
+        "value": "#18181A · border #29292C · radius 16px · max-w 512px"
+      },
+      {
+        "label": "Highlight",
+        "value": "#202023 · border #343438 · radius 12px"
+      }
+    ],
+    "prompt": "Build a minimal search overlay. Fixed full-screen layer, panel centred 64px from the top (96px at sm). Backdrop rgba(0,0,0,.6) with 4px backdrop blur, opacity fade 150ms, click closes. Panel: max width 512px, 16px radius, background #18181A, 1px #29292C border, shadow 0 10px 25px -8px rgba(0,0,0,.22), role='dialog' aria-modal='true' aria-label='Spotlight Search'; animate from opacity 0, scale 0.98, y -6px with a spring (stiffness 380, damping 30, mass 0.5), exit the same. Header row with a 16px search icon (#4D4D52), a transparent 16px input (#F2F2F3, placeholder #6F6F75) focused 30ms after open, and a clickable mono 10px 'ESC' key-cap that closes. Results list max 340px tall, 6px padding: each row 14px medium text, padding 10px 14px, 12px radius, inactive #A1A1A6, active #F2F2F3. Draw the active background as a single absolutely positioned pill (#202023 with 1px #343438 border, 12px radius) sharing one layout id across rows so it glides between them on a spring (stiffness 170, damping 26, mass 0.9). Hover sets the active row. Filter with a case-insensitive substring on title, category or description; reset the active index to 0 on each query change; show 'No results found for \"…\"' when empty. On the input: ArrowDown/ArrowUp wrap, Enter runs the active item and closes, Escape closes. Optionally register a global Cmd/Ctrl+K toggle.",
+    "caveats": [
+      "Result rows are plain divs without listbox/option roles or aria-activedescendant, so assistive tech does not hear which result is highlighted.",
+      "In this demo the global ⌘K shortcut is not enabled even though the button mentions it; the overlay opens from the button."
+    ],
+    "blurb": "A calm, distraction-free search box that floats over the page: just a field and a list of matching titles, with a soft highlight that slides to whichever result is chosen. Fully usable from the keyboard. Fits documentation sites, component libraries, knowledge bases and apps where people know what they are looking for and want to get there fast."
+  }
+]

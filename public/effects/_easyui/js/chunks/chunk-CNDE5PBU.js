@@ -1,0 +1,1 @@
+import{a as s}from"./chunk-5TL3NGWZ.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var o=e(t(),1),{GooeyMenu:m}=s,a={id:"gooey-menu",aliases:[]};async function c(){await Promise.all([m.preload()])}function i(n){let{demoKey:r}=n;return(0,o.jsx)("div",{className:"py-10 flex flex-col items-center justify-center",children:(0,o.jsx)(m,{},r)})}export{a,c as b,i as c};

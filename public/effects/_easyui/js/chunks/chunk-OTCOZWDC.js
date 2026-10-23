@@ -1,0 +1,1 @@
+import{a as t}from"./chunk-5TL3NGWZ.js";import{b as o,c as e}from"./chunk-EN3SAVJI.js";var a=o(e(),1),{DotShaderLiveShowcase:r}=t,i={id:"dot-shader",aliases:["dotshader","dot-matrix-shader"]};async function n(){await Promise.all([r.preload()])}function m(s){let{demoKey:d}=s;return(0,a.jsx)(r,{},d)}export{i as a,n as b,m as c};

@@ -1,0 +1,893 @@
+[
+ {
+  "id": "animated-tabs",
+  "plays": "click",
+  "accent": "#fafafa",
+  "title": {
+   "en": "Animated Tabs",
+   "zh": "滑块标签页",
+   "zh-tw": "滑塊頁籤"
+  },
+  "gist": {
+   "en": "A compact segmented row of three tabs — Overview, Integration, Security — sitting in a dark tray with a raised tile behind the active one. Click another tab and that tile slides across and resizes to fit the new label, while the panel underneath fades out upward and the next one rises in from 6 px below.",
+   "zh": "一排紧凑的分段标签：Overview、Integration、Security，嵌在深色托盘里，当前那一格背后垫着一块凸起的底块。点另一个标签，底块会滑过去并按新文字的宽度伸缩；下方内容先向上淡出，新内容再从下方 6 px 处浮上来。",
+   "zh-tw": "一排緊湊的分段頁籤：Overview、Integration、Security，嵌在深色托盤裡，目前那一格後面墊著一塊凸起的底塊。點另一個頁籤，底塊會滑過去並依新文字的寬度伸縮；下方內容先往上淡出，新內容再從下方 6 px 處浮上來。"
+  },
+  "anatomy": [
+   "<b>Tray.</b> A <code>flex</code> row with 4 px padding, 8 px radius, background <code>#0E0E0E</code> and a 1 px <code>#1F1F1F</code> border. The <code>glass</code> / <code>pill</code> variants switch the tray and every tab to fully rounded and widen tab padding from 14 to 16 px.",
+   "<b>One travelling tile.</b> Only the active button renders an absolutely positioned tile (<code>#141414</code>, 1 px border, 6 px radius) with a shared <code>layoutId</code>; when the active tab changes the layout engine animates it from the old box to the new one on a spring of stiffness 220, damping 32, mass 1 — no overshoot.",
+   "<b>Label colours.</b> Active text <code>#FAFAFA</code>, idle <code>#6B6B6B</code>, hover <code>#A1A1A1</code>; labels sit on a <code>z-10</code> layer above the tile. An optional badge is a 10 px mono chip.",
+   "<b>Panel swap.</b> <code>AnimatePresence mode=\"wait\"</code> keyed by tab id: the old panel exits to opacity 0 and y −6 px, then the new one enters from y +6 px, both on a spring of 170 / 26 / 0.9. The panel area keeps a 60 px minimum height so the page does not jump.",
+   "Tabs are plain <code>&lt;button&gt;</code>s with a visible focus ring; it can run controlled (<code>activeTab</code> + <code>onChange</code>) or uncontrolled."
+  ],
+  "tokens": [
+   {
+    "label": "Tile spring",
+    "value": "stiffness 220 · damping 32 · mass 1"
+   },
+   {
+    "label": "Panel spring",
+    "value": "stiffness 170 · damping 26 · mass 0.9 · y ±6 px"
+   },
+   {
+    "label": "Tray",
+    "value": "#0E0E0E · border #1F1F1F · pad 4 px · radius 8 px"
+   },
+   {
+    "label": "Text",
+    "value": "active #FAFAFA · idle #6B6B6B · hover #A1A1A1"
+   },
+   {
+    "label": "Tab",
+    "value": "14 × 6 px padding · 14 px medium · radius 6 px"
+   }
+  ],
+  "prompt": "Build a tab switcher on a near-black page. The tab row is a self-aligned flex tray with 4px padding, 4px gap, 8px radius, background #0E0E0E and a 1px #1F1F1F border. Each tab is a button with 14px horizontal / 6px vertical padding, 14px medium text, 6px radius; idle text #6B6B6B, hover #A1A1A1, active #FAFAFA. Behind the active tab render one absolutely positioned tile (#141414, 1px #1F1F1F border, 6px radius) using a shared layout id so it slides and resizes between tabs on a spring of stiffness 220, damping 32, mass 1; labels stay above it on a higher z-index. Below the row, show the active tab's panel inside a container with min-height 60px; swap panels in wait mode — the old one exits to opacity 0 and y -6px, the new one enters from opacity 0 and y +6px, spring stiffness 170, damping 26, mass 0.9. Demo with tabs Overview, Integration, Security, each panel a 12px-radius card with 16px padding and 12px grey text. Offer a pill variant where tray and tabs are fully rounded and tab padding is 16px. Support controlled and uncontrolled use and a visible focus ring.",
+  "caveats": [
+   "Tabs are plain buttons: no <code>tablist</code>/<code>tab</code> roles, no <code>aria-selected</code> and no arrow-key movement — add them if the tabs swap real page content.",
+   "No reduced-motion branch; the tile and panel always spring."
+  ],
+  "blurb": "A segmented tab bar where the highlight behind the current tab physically slides to the one you pick, stretching to fit its label, while the content below hands over with a short rise. It suits settings pages, product sections and documentation where a few views share one spot, and it keeps the switch readable instead of letting panels pop in and out."
+ },
+ {
+  "id": "branching-submenu",
+  "plays": "hover",
+  "accent": "#fafafa",
+  "title": {
+   "en": "Branching Submenu",
+   "zh": "分支子菜单",
+   "zh-tw": "分支子選單"
+  },
+  "gist": {
+   "en": "A dark card split into two columns: on the left a short list of parent sections, on the right a recessed panel showing that section's children. Hover or click a parent and a dark pill slides to it, its chevron nudges right, and the right panel swaps content — the new heading lifts in and the child rows slide in from the left one after another while the panel resizes to fit.",
+   "zh": "一张深色卡片分两栏：左边是几项父级分区，右边是一块凹进去的面板，列出该分区的子项。鼠标移到或点一下父项，一块深色胶囊滑过去，箭头往右挪一点；右侧面板随之换内容——新标题微微上浮出现，子项从左边依次滑入，面板高度同时跟着伸缩。",
+   "zh-tw": "一張深色卡片分成兩欄：左邊是幾個上層分區，右邊是一塊內凹的面板，列出該分區的子項目。滑鼠移到或點一下上層項目，一塊深色膠囊滑過去，箭頭往右挪一點；右側面板跟著換內容——新標題微微上浮出現，子項目從左邊依序滑入，面板高度同時跟著伸縮。"
+  },
+  "anatomy": [
+   "<b>Shell.</b> Up to 576 px wide, 16 px radius, <code>#0E0E0E</code> with a 1 px <code>#1F1F1F</code> border, 12 px padding and a <code>0 12px 32px rgba(0,0,0,.35)</code> drop shadow. Inside, a grid of a 150 px (180 px from the small breakpoint) master column and a flexible detail column.",
+   "<b>Master list.</b> Each parent is a 12 px-radius button with a 12 px label and 10 px <code>#6B6B6B</code> caption. The selected one gets a <code>#050505</code> pill with a <code>#1F1F1F</code> border that moves between rows via a shared <code>layoutId</code> (spring 220 / 32 / 1), and its 14 px chevron turns white and shifts 2 px right over 200 ms. Hover selects as well as click.",
+   "<b>Detail panel.</b> A <code>#050505</code> box with a <code>#171717</code> border and a 24 px hairline stub on its left edge (like a branch line). Its height follows content through <code>layout</code> on a 170 / 26 / 0.9 spring; content swaps in wait mode, leaving at y −6 px and scale 0.98, entering from y +6 px.",
+   "<b>Children.</b> Each row fades in from x −6 px in 220 ms on <code>cubic-bezier(0.16, 1, 0.3, 1)</code>, staggered 35 ms. A 12 px leading tick brightens from <code>#1F1F1F</code> to <code>#52525B</code> and the row gains a <code>#0E0E0E</code> fill on hover.",
+   "<b>Keyboard and motion.</b> Arrow Up/Down move through parents (and focus them), Right or Enter opens, Escape hides the detail panel; parents expose <code>aria-expanded</code>. With reduced motion the layout animation is off, the pill is static and swaps are opacity-only."
+  ],
+  "tokens": [
+   {
+    "label": "Pill spring",
+    "value": "stiffness 220 · damping 32 · mass 1"
+   },
+   {
+    "label": "Panel spring",
+    "value": "stiffness 170 · damping 26 · mass 0.9"
+   },
+   {
+    "label": "Child stagger",
+    "value": "220 ms · 35 ms apart · cubic-bezier(0.16, 1, 0.3, 1)"
+   },
+   {
+    "label": "Surfaces",
+    "value": "#0E0E0E card · #050505 panel/pill · #1F1F1F border"
+   },
+   {
+    "label": "Grid",
+    "value": "150 px / 180 px master · 1fr detail · 12 px gap"
+   }
+  ],
+  "prompt": "Build a two-column branching menu card, max 576px wide, background #0E0E0E, 1px #1F1F1F border, 16px radius, 12px padding, shadow 0 12px 32px rgba(0,0,0,.35). Left column (150px, 180px on wider screens) lists parents — Build ('Component pipeline') and Review ('Quality gates') — as 12px-radius buttons with a 12px white label and 10px #6B6B6B caption plus a 14px chevron on the right. Selecting a parent (on hover, click, or arrow keys) moves a shared #050505 pill with a #1F1F1F border behind it on a spring of stiffness 220, damping 32, mass 1, and turns its chevron white, shifted 2px right over 200ms. Right column is a #050505 panel with a #171717 border, 12px radius, 14px padding and a 24px horizontal hairline at its left edge 32px from the top. It shows a small header (layers icon + parent name) and the children: Registry sync, Type check, SEO audit for Build; Motion pass, Accessibility for Review, each with a caption. Swap content in wait mode: exit to opacity 0, y -6px, scale 0.98; enter from y +6px, scale 0.98, spring stiffness 170, damping 26, mass 0.9; animate the panel's height on the same spring. Children slide in from x -6px over 220ms with cubic-bezier(0.16,1,0.3,1), 35ms apart; on hover a row gets a #0E0E0E fill and its 12px leading tick goes from #1F1F1F to #52525B. Keyboard: ArrowUp/ArrowDown cycle parents, ArrowRight/Enter open, Escape closes the panel; set aria-expanded on parents. Under prefers-reduced-motion use opacity-only swaps and no layout animation.",
+  "caveats": [
+   "Escape hides the detail panel, but only hovering or pressing Right/Enter on a parent brings it back — there is no visible way to reopen it with a pointer except re-hovering."
+  ],
+  "blurb": "A compact two-level navigation card: the main sections sit in a column on the left and the chosen section's sub-pages unfold in a panel beside it, like branches off a trunk. It fits dashboards, settings and developer tools where people need to see one layer deeper without opening a full page, and it works from the keyboard as well as the mouse."
+ },
+ {
+  "id": "breadcrumb",
+  "plays": "hover",
+  "accent": "#fafafa",
+  "title": {
+   "en": "Breadcrumb",
+   "zh": "面包屑导航",
+   "zh-tw": "麵包屑導覽"
+  },
+  "gist": {
+   "en": "A path trail — Home › … › EasyUI › Breadcrumb — with the middle pages folded into an ellipsis. Moving the pointer along the links slides one soft highlight from crumb to crumb; clicking the ellipsis unfolds the hidden pages, which slide in from the left while the rest of the trail shifts over to make room.",
+   "zh": "一条路径导航：Home › … › EasyUI › Breadcrumb，中间几级折叠成省略号。鼠标沿着链接移动，一块浅色高亮会从一节滑到下一节；点省略号，被藏起来的页面展开，从左边滑进来，后面的路径顺势往右让位。",
+   "zh-tw": "一條路徑導覽：Home › … › EasyUI › Breadcrumb，中間幾層收合成刪節號。滑鼠沿著連結移動，一塊淺色醒目底會從一節滑到下一節；點刪節號，被藏起來的頁面展開，從左邊滑進來，後面的路徑順勢往右讓位。"
+  },
+  "anatomy": [
+   "<b>Collapse rule.</b> With more items than <code>maxItems</code> (4 in the demo) it keeps the first crumb and the last <code>maxItems − 2</code>, replacing everything between with a 32 × 28 px ellipsis button labelled 'Show hidden pages'.",
+   "<b>Shared hover pill.</b> Each link is 28 px tall with 8 px side padding. The hovered (or focused) link renders a 6 px-radius <code>#262626</code> fill with one shared <code>layoutId</code>, so it glides between crumbs on a spring of stiffness 500, damping 40, mass 0.6, and disappears when the pointer leaves the list.",
+   "<b>Unfold.</b> Every crumb is a <code>motion.li</code> with <code>layout=\"position\"</code>. When the ellipsis is clicked, the revealed crumbs start at opacity 0 and x −6 px and spring in on the same 500 / 40 / 0.6 curve, the trailing crumbs slide right, and focus jumps to the first revealed link.",
+   "<b>Type and separators.</b> Links are 14 px <code>#A3A3A3</code>, white on hover; the last crumb is plain text in <code>#F5F5F5</code>, medium weight, with <code>aria-current=\"page\"</code>. Separators are a 14 px chevron or a slash in <code>#404040</code>, hidden from screen readers.",
+   "Wrapped in <code>&lt;nav aria-label=\"Breadcrumb\"&gt;</code> with an ordered list; an <code>as</code> prop swaps the anchor for a router link component."
+  ],
+  "tokens": [
+   {
+    "label": "Spring",
+    "value": "stiffness 500 · damping 40 · mass 0.6"
+   },
+   {
+    "label": "Crumb",
+    "value": "28 px tall · 8 px padding · 6 px radius · 14 px text"
+   },
+   {
+    "label": "Colours",
+    "value": "text #A3A3A3 · hover pill #262626 · current #F5F5F5 · separator #404040"
+   },
+   {
+    "label": "Reveal",
+    "value": "opacity 0 → 1 · x −6 → 0 px"
+   },
+   {
+    "label": "Collapse",
+    "value": "maxItems 4 · keeps first + last 2"
+   }
+  ],
+  "prompt": "Build a breadcrumb inside nav aria-label='Breadcrumb' with an ordered list. Items: Home (house icon), Components, Navigation, EasyUI, Breadcrumb (current). When there are more items than maxItems (4), keep the first and the last maxItems-2 and replace the middle with a 32x28px ellipsis button (aria-label 'Show hidden pages', hover fill #262626). Separators are 14px chevrons or a slash in #404040, aria-hidden; offer a toggle between the two. Each link is 28px tall, 8px horizontal padding, 6px radius, 14px text #A3A3A3, white on hover; the last item is non-link text #F5F5F5, medium, aria-current='page'. On hover or focus, render a single 6px-radius #262626 highlight behind the link with a shared layout id so it slides between links on a spring of stiffness 500, damping 40, mass 0.6; remove it when the pointer leaves the list. Every list item animates its position with layout animation. Clicking the ellipsis expands permanently: revealed items enter from opacity 0 and x -6px on the same spring, the following items slide along, and focus moves to the first revealed link. Allow passing a router link component instead of an anchor.",
+  "caveats": [
+   "Once expanded the trail never folds back; there is no reduced-motion branch for the hover pill or the reveal."
+  ],
+  "blurb": "A breadcrumb trail that stays short on deep pages by folding the middle of the path away, then opens it in place when someone wants it. A soft highlight follows the pointer from step to step so it is always clear which page a click will lead to. A good fit for documentation, file browsers, shops with nested categories and admin consoles."
+ },
+ {
+  "id": "dynamic-island",
+  "plays": "click",
+  "accent": "#10b981",
+  "title": {
+   "en": "Dynamic Island",
+   "zh": "灵动岛名片",
+   "zh-tw": "動態島名片"
+  },
+  "gist": {
+   "en": "A small floating dark capsule holding just an avatar and a plus button. Click plus and the capsule stretches sideways into a greeting with profile, share and close buttons; pick profile and it grows into a rounded card with a larger avatar, a green 'Available for hire' chip, role, bio and tags; pick share and it reshapes into a strip of contact links. The avatar travels and resizes between every state.",
+   "zh": "一颗漂浮的深色小胶囊，里面只有头像和一个加号。点加号，胶囊横向拉长，显示问候语和「资料 / 分享 / 收起」三个按钮；点资料，它长成一张圆角卡片：大头像、绿色「可接项目」状态标签、职位、简介和标签；点分享，又变成一排联系方式图标。头像在每种状态之间都会移动并缩放。",
+   "zh-tw": "一顆漂浮的深色小膠囊，裡面只有頭像和一個加號。點加號，膠囊橫向拉長，顯示問候語和「個人資料／分享／收合」三顆按鈕；點個人資料，它長成一張圓角卡片：大頭像、綠色「可接案」狀態標籤、職稱、簡介和標籤；點分享，又變成一排聯絡方式圖示。頭像在每種狀態之間都會移動並縮放。"
+  },
+  "anatomy": [
+   "<b>Four states, one shell.</b> <code>collapsed</code> (28 px avatar + 28 px plus button, 44 px tall pill), <code>expanded</code> (avatar, greeting truncated at 140–210 px, profile / share / divider / close), <code>profile</code> (card up to 380 px wide, 16 px padding, radius 26 px) and <code>share</code> (back arrow, divider, row of 28 px link icons).",
+   "<b>Shell morph.</b> The outer <code>motion.div</code> uses <code>layout</code> on a spring of stiffness 400, damping 30, mass 0.8, so width, height and corner radius (full pill ↔ 26 px) all change together. Surface <code>#141416</code> at 95 % with <code>backdrop-blur</code>, a 12 % white border and a <code>0 16px 40px -8px rgba(0,0,0,.7)</code> shadow.",
+   "<b>Content swap.</b> <code>AnimatePresence mode=\"popLayout\"</code>: outgoing content fades and scales to 0.95 (collapsed) or 0.98 (others) while the incoming fades up from the same scale, 200 ms on <code>cubic-bezier(0.22, 1, 0.36, 1)</code>. The avatar carries a shared <code>layoutId</code>, so it grows from 28 to 48 px and slides into the card header.",
+   "<b>Profile card.</b> Name 14 px semibold beside an emerald status chip (<code>#10B981</code> dot with <code>animate-pulse</code>, 10 % fill, 20 % border), role 12 px, bio, optional label:value tags, and a footer with 'Share Profile' and 'Back'.",
+   "<b>Dismiss and a11y.</b> A pointer-down outside or Escape collapses it. Every icon button has an <code>aria-label</code>; the wrapper is a labelled region. With reduced motion every transition duration drops to 0."
+  ],
+  "tokens": [
+   {
+    "label": "Shell spring",
+    "value": "stiffness 400 · damping 30 · mass 0.8"
+   },
+   {
+    "label": "Content fade",
+    "value": "200 ms · cubic-bezier(0.22, 1, 0.36, 1) · scale 0.95/0.98 → 1"
+   },
+   {
+    "label": "Surface",
+    "value": "#141416 @ 95 % · border rgba(255,255,255,.12) · blur"
+   },
+   {
+    "label": "Sizes",
+    "value": "pill 44 px · buttons 28 px · avatar 28 → 48 px · card 380 px · radius 26 px"
+   },
+   {
+    "label": "Status",
+    "value": "#10B981 dot · emerald 10 % fill"
+   }
+  ],
+  "prompt": "Build a floating profile capsule with four states. Surface #141416 at 95% opacity with backdrop blur, 1px rgba(255,255,255,.12) border, shadow 0 16px 40px -8px rgba(0,0,0,.7), text #F4F4F5. Collapsed: a fully rounded pill, min-height 44px, 8px/6px padding, holding a 28px round avatar (fallback user icon) and a 28px round plus button. Expanded: avatar, a 12-14px medium greeting 'Hello, I'm <name>' truncated at 140px (210px on wider screens), then 28px icon buttons for profile and share, a 1px x 14px divider, and a close button. Profile: the shell becomes a card up to 380px wide with 26px corner radius and 16px padding — 48px avatar, name 14px semibold with a green status chip (#10B981 dot that pulses, emerald 10% fill, 20% border, 10px text 'Available for hire'), role 12px grey, a bio paragraph, label:value tag chips, and a footer row with 'Share Profile' and 'Back'. Share: a back arrow, divider and a horizontal row of five 28px round contact/social link icons. Animate the shell's size and radius with layout animation on a spring of stiffness 400, damping 30, mass 0.8; give the avatar a shared layout id so it moves and grows between states; swap the inner content in pop-layout mode with opacity and scale from 0.95/0.98, 200ms cubic-bezier(0.22,1,0.36,1). Collapse on outside pointer-down or Escape. Give every icon button an aria-label, mark the plus button aria-expanded, and set all durations to 0 under prefers-reduced-motion.",
+  "caveats": [
+   "Focus is not moved into the new state after a click, so keyboard users must tab to find the next control."
+  ],
+  "blurb": "A tiny floating capsule that opens into a personal card: tap it to say hello, open a short profile with availability status, or jump to contact links — all inside one shape that stretches and rounds into each view. Made for portfolios, freelancer sites and creator pages that want contact details always one tap away without a sidebar or footer block."
+ },
+ {
+  "id": "expandable-search",
+  "plays": "click",
+  "accent": "#fafafa",
+  "title": {
+   "en": "Expandable Search",
+   "zh": "展开式搜索框",
+   "zh-tw": "展開式搜尋框"
+  },
+  "gist": {
+   "en": "A narrow dark search field reading 'Quick search…' with a small keyboard-shortcut chip on the right. Click or focus it and it springs wider, its border brightens and the placeholder switches to a longer prompt; typing swaps the chip for a clear button, and clearing or leaving it empty shrinks it back.",
+   "zh": "一个窄窄的深色搜索框，写着「Quick search…」，右侧有个快捷键小标签。点击或聚焦后它带弹性地变宽，边框变亮，占位文字换成更长的提示；一输入，快捷键标签换成清除按钮；清空或留空离开，它就缩回原宽度。",
+   "zh-tw": "一個窄窄的深色搜尋框，寫著「Quick search…」，右側有個快速鍵小標籤。點一下或取得焦點後它帶彈性地變寬，邊框變亮，提示文字換成較長的說明；一輸入，快速鍵標籤換成清除按鈕；清空或留空離開，它就縮回原本寬度。"
+  },
+  "anatomy": [
+   "<b>Field.</b> 36 px tall, 12 px side padding, 8 px radius, a 14 px <code>#525252</code> search icon and a transparent input in 14 px <code>#FAFAFA</code> with <code>#6B6B6B</code> placeholder.",
+   "<b>Width spring.</b> One <code>motion.div</code> animates width 160 → 280 px, border <code>#1F1F1F</code> → <code>#4A4A4A</code> and background <code>#0E0E0E</code> → <code>#141414</code> together on a spring of stiffness 380, damping 30, mass 0.5 — it settles in about 200 ms.",
+   "<b>Open and close.</b> Clicking the box expands it and focuses the input 100 ms later; focusing the input directly also expands. Blur collapses only if the field is empty. The placeholder reads 'Quick search…' collapsed and the full prompt when open.",
+   "<b>Right slot.</b> When empty, a 10 px mono <code>⌘K</code> chip (hidden on small screens) fades in and out; once there is text it becomes a 14 px × button that clears, collapses and reports an empty query through <code>onSearch</code>."
+  ],
+  "tokens": [
+   {
+    "label": "Width",
+    "value": "160 → 280 px"
+   },
+   {
+    "label": "Spring",
+    "value": "stiffness 380 · damping 30 · mass 0.5"
+   },
+   {
+    "label": "Border",
+    "value": "#1F1F1F → #4A4A4A"
+   },
+   {
+    "label": "Fill",
+    "value": "#0E0E0E → #141414"
+   },
+   {
+    "label": "Field",
+    "value": "36 px tall · radius 8 px · icon 14 px #525252"
+   }
+  ],
+  "prompt": "Build a compact search field that widens when used. Container: 36px tall, 12px horizontal padding, 8px radius, 1px border, small shadow. Inside: a 14px search icon in #525252 with 8px right margin, a transparent text input (14px, text #FAFAFA, placeholder #6B6B6B, no outline), and a right slot. Collapsed state: width 160px, border #1F1F1F, background #0E0E0E, placeholder 'Quick search...'. Expanded state: width 280px, border #4A4A4A, background #141414, placeholder 'Search components, tokens...'. Animate width, border colour and background together on a spring of stiffness 380, damping 30, mass 0.5. Clicking the container expands and focuses the input after 100ms; focusing the input expands; blurring collapses only when the value is empty. Right slot: when empty, a fading 10px monospace chip showing a command glyph and K (#141414 fill, #1F1F1F border, hidden below 640px); when there is text, a small X button (#525252, white on hover) that clears the value, collapses the field and calls onSearch with an empty string. Call onSearch on every keystroke.",
+  "caveats": [
+   "The ⌘K chip is a hint only — no keyboard shortcut is wired up.",
+   "The input has no label and the clear button has no <code>aria-label</code>; add both before shipping."
+  ],
+  "blurb": "A search box that stays small in a crowded header and opens up the moment someone reaches for it, giving room to type and then tucking itself away when it is left empty. It suits toolbars, documentation headers and app top bars where search should always be visible but should not take space from navigation when nobody is using it."
+ },
+ {
+  "id": "floating-action-dock",
+  "plays": "hover",
+  "accent": "#fafafa",
+  "title": {
+   "en": "Floating Action Dock",
+   "zh": "放大镜式浮动坞",
+   "zh-tw": "放大鏡式浮動 Dock"
+  },
+  "gist": {
+   "en": "A dark rounded tray of four square app icons resting along their bottom edge. As the pointer moves across it, the icon under the cursor swells and its neighbours grow less the further away they are, so a wave of size follows the mouse; a label pops up above the hovered icon and the active one carries a small white dot underneath.",
+   "zh": "一条深色圆角托盘，四个方形图标底边对齐排着。鼠标在上面移动时，光标正下方的图标胀大，旁边的按距离递减地跟着变大，一道「尺寸波浪」跟着鼠标走；悬停的图标上方弹出名称，当前项下方有个白色小点。",
+   "zh-tw": "一條深色圓角托盤，四個方形圖示底邊對齊排著。滑鼠在上面移動時，游標正下方的圖示脹大，旁邊的依距離遞減地跟著變大，一道「尺寸波浪」跟著滑鼠走；停留的圖示上方跳出名稱，目前項目下方有個白色小點。"
+  },
+  "anatomy": [
+   "<b>Tray.</b> An inline flex row aligned to the bottom (<code>items-end</code>) so icons grow upward; 12 × 10 px padding, 10 px gap, 16 px radius, <code>#0E0E0E</code> at 90 % with backdrop blur, a <code>#1F1F1F</code> border and a <code>0 12px 32px rgba(0,0,0,.5)</code> shadow.",
+   "<b>Distance → size.</b> The tray writes the pointer's <code>clientX</code> into a motion value (reset to infinity on leave). Each icon measures its own centre, maps the horizontal distance through <code>[-120, 0, 120] → [40, 56, 40]</code> px, and feeds that into <code>useSpring</code> with mass 0.1, stiffness 180, damping 14 — light and slightly springy, so the wave trails the cursor by a hair.",
+   "<b>Icon tile.</b> <code>#141414</code> with a <code>#1F1F1F</code> border and 12 px radius; on hover the border goes <code>#4A4A4A</code> and the 20 px glyph goes from <code>#525252</code> to <code>#FAFAFA</code>. Press scales to 0.88. The active tile keeps the lighter border and a 4 px white dot 4 px below it.",
+   "<b>Label.</b> An 11 px tooltip sits 32 px above each tile and fades in over 150 ms on CSS <code>group-hover</code>. Each button carries its label as <code>aria-label</code>."
+  ],
+  "tokens": [
+   {
+    "label": "Size map",
+    "value": "distance −120 / 0 / 120 px → 40 / 56 / 40 px"
+   },
+   {
+    "label": "Size spring",
+    "value": "mass 0.1 · stiffness 180 · damping 14"
+   },
+   {
+    "label": "Press",
+    "value": "scale 0.88 · spring 380 / 30 / 0.5"
+   },
+   {
+    "label": "Tray",
+    "value": "#0E0E0E 90 % · border #1F1F1F · radius 16 px · gap 10 px"
+   },
+   {
+    "label": "Tile",
+    "value": "#141414 · hover border #4A4A4A · radius 12 px · icon 20 px"
+   }
+  ],
+  "prompt": "Build a magnifying icon dock. Container: inline flex row aligned to the bottom, 10px gap, 12px horizontal and 10px vertical padding, 16px radius, background #0E0E0E at 90% with backdrop blur, 1px #1F1F1F border, shadow 0 12px 32px rgba(0,0,0,.5). On mouse move store the pointer's clientX in a motion value; on mouse leave set it to Infinity. Each item is a square button whose width and height come from: distance = pointerX - (its left + width/2); map distance [-120, 0, 120] to [40, 56, 40] px; pass it through a spring of mass 0.1, stiffness 180, damping 14. Tile: #141414 fill, 1px #1F1F1F border, 12px radius, 20px icon in #525252; on hover border #4A4A4A, fill #171717, icon #FAFAFA; tap scale 0.88. The active item keeps the hover border and shows a 4px white dot 4px below its bottom edge. A tooltip (11px white text on #141414, 1px #1F1F1F border, small radius) sits 32px above each tile and fades in over 150ms on hover. Demo with four items: code editor, Terminal, AI Pilot, Security; first one active. Use aria-label on every button.",
+  "caveats": [
+   "Magnification only responds to a mouse; touch and keyboard users always see 40 px tiles, and the tooltip appears on hover only, not on focus."
+  ],
+  "blurb": "A floating launcher of app-style icons that swell under the pointer and ease back as it moves on, so the row feels alive without getting in the way. It works as a quick-action bar at the bottom of a web app, a tool palette in an editor, or a playful shortcut strip on a portfolio or product landing page."
+ },
+ {
+  "id": "glass-navbar",
+  "plays": "hover",
+  "accent": "#fafafa",
+  "title": {
+   "en": "Glass Navbar",
+   "zh": "毛玻璃导航栏",
+   "zh-tw": "毛玻璃導覽列"
+  },
+  "gist": {
+   "en": "A floating translucent top bar with a monogram logo on the left, four links in the middle and a white call-to-action on the right. A dark pill sits behind the current link; hovering another link sends a lighter pill gliding to it, and leaving the bar returns the highlight home. On narrow screens the links fold into a menu button whose icon spins as it toggles and a panel that drops open beneath.",
+   "zh": "一条悬浮的半透明顶栏：左边字母标志，中间四个链接，右边一颗白色行动按钮。当前链接背后垫着深色胶囊；鼠标移到别的链接，另一块胶囊滑过去，移出导航栏后高亮回到原位。窄屏时链接收进菜单按钮，图标切换时会旋转，下方展开一块下拉面板。",
+   "zh-tw": "一條懸浮的半透明頂列：左邊字母標誌，中間四個連結，右邊一顆白色行動按鈕。目前連結後面墊著深色膠囊；滑鼠移到別的連結，另一塊膠囊滑過去，移出導覽列後醒目底回到原位。窄螢幕時連結收進選單按鈕，圖示切換時會旋轉，下方展開一塊下拉面板。"
+  },
+  "anatomy": [
+   "<b>Bar.</b> Floating variant: max 1024 px wide, 16 px radius, 20 × 10 px padding, <code>#0E0E0E</code> at 90 % with <code>backdrop-blur</code>, a <code>#1F1F1F</code> border and a <code>0 12px 32px rgba(0,0,0,.5)</code> shadow, inset 16 px from the top. A full-width variant drops the radius for a bottom border; <code>sticky</code> pins it to the viewport top.",
+   "<b>Two pills.</b> Links are 12 × 6 px, 12 px medium, 8 px radius, <code>#6B6B6B</code> → <code>#FAFAFA</code>. The hover pill (<code>#141414</code>) shares one <code>layoutId</code> and follows the pointer on a snappy spring (380 / 30 / 0.5). The active pill (same fill plus a <code>#1F1F1F</code> border) only renders when nothing is hovered and slides back on a gentler spring (170 / 26 / 0.9).",
+   "<b>Extras.</b> Optional 9 px mono badges ('New'), external-link icons, and a CTA slot — here a <code>#FAFAFA</code> button with <code>#050505</code> text.",
+   "<b>Mobile.</b> Below 768 px the links hide behind a 32 px menu button; the icon swaps between burger and × entering from −90° rotation and 0 opacity. The panel animates height 0 → auto, y −8 → 0 px and opacity on the gentle spring, lists the links full width, repeats the CTA, closes on Escape or link tap, and locks body scroll while open.",
+   "Uses <code>header role=\"banner\"</code>, a labelled <code>nav</code>, <code>aria-current=\"page\"</code> on the active link and <code>aria-expanded</code> on the menu button."
+  ],
+  "tokens": [
+   {
+    "label": "Hover pill",
+    "value": "spring 380 / 30 / 0.5 · #141414"
+   },
+   {
+    "label": "Active pill",
+    "value": "spring 170 / 26 / 0.9 · #141414 + #1F1F1F border"
+   },
+   {
+    "label": "Bar",
+    "value": "#0E0E0E 90 % · blur · radius 16 px · max 1024 px"
+   },
+   {
+    "label": "Link text",
+    "value": "12 px · #6B6B6B → #FAFAFA"
+   },
+   {
+    "label": "Breakpoint",
+    "value": "768 px → menu button + drop panel"
+   }
+  ],
+  "prompt": "Build a floating glass top navigation bar: centred, max 1024px wide, 16px from the top, 16px radius, 20px horizontal / 10px vertical padding, background #0E0E0E at 90% with backdrop blur, 1px #1F1F1F border, shadow 0 12px 32px rgba(0,0,0,.5). Left: a 28px rounded square monogram tile (#141414, #1F1F1F border) and a 14px semibold wordmark. Centre: links Platform, Components (with a 9px mono 'New' badge), Showcase, Docs — 12px medium text, 12px/6px padding, 8px radius, #6B6B6B idle and #FAFAFA when hovered or current. Behind the hovered link render a #141414 pill with a shared layout id on a spring of stiffness 380, damping 30, mass 0.5; when nothing is hovered, render a separate active pill (#141414 plus 1px #1F1F1F border) behind the current link on a spring of stiffness 170, damping 26, mass 0.9. Right: a #FAFAFA button with #050505 12px text 'Deploy Now'. Clicking a link makes it current. Below 768px hide links and CTA and show a 32px menu button (#141414, #1F1F1F border) whose burger/X icon enters from rotate -90deg and opacity 0 on the snappy spring; it opens a panel under a top divider that animates height 0 to auto, y -8 to 0 and opacity on the gentle spring, with full-width links (current one filled #141414) and the CTA below. Close on Escape or link click, lock body scroll while open, set aria-expanded and aria-current='page'.",
+  "blurb": "A floating, see-through header for a product or studio site: logo, a handful of section links and one clear call-to-action. A soft highlight follows the pointer across the links and settles back on the current page, and on phones the whole thing folds into a tidy drop-down menu. A dependable top bar for landing pages, SaaS sites and portfolios."
+ },
+ {
+  "id": "gooey-menu",
+  "plays": "click",
+  "accent": "#3b82f6",
+  "title": {
+   "en": "Gooey Menu",
+   "zh": "液滴下拉菜单",
+   "zh-tw": "液滴下拉選單"
+  },
+  "gist": {
+   "en": "A wide black pill showing the current choice, 'Home', and a chevron. Click it and a dark blob drips out from underneath, stretching on a liquid neck before snapping free into a rounded panel, and the six options drop in one by one; the current one is marked with a blue dot. Pick an option or click away and the panel is sucked back up into the pill.",
+   "zh": "一颗宽宽的黑色胶囊，显示当前选项「Home」和一个下箭头。点一下，一团深色液滴从下面滴出来，先拉出一条液态细颈，再挣脱成一块圆角面板，六个选项逐个落进来，当前项旁边有颗蓝点。选一项或点外面，面板又被吸回胶囊里。",
+   "zh-tw": "一顆寬寬的黑色膠囊，顯示目前選項「Home」和一個下箭頭。點一下，一團深色液滴從下面滴出來，先拉出一條液態細頸，再掙脫成一塊圓角面板，六個選項逐一落進來，目前項目旁邊有顆藍點。選一項或點外面，面板又被吸回膠囊裡。"
+  },
+  "anatomy": [
+   "<b>Geometry.</b> 306 px wide; trigger pill 56 px tall (radius 28 px); 12 px gap; 44 px rows with 10 px panel padding, so six options give a 284 px panel with a 22 px radius.",
+   "<b>The goo.</b> Pill and panel are two solid <code>#0E0E0E</code> shapes inside one layer filtered by an SVG <code>feGaussianBlur stdDeviation=10</code> followed by an alpha <code>feColorMatrix</code> row <code>0 0 0 22 −14</code>, composited <code>atop</code> the source. Where the blurred edges overlap they read as one surface, which is what draws the neck between them.",
+   "<b>Drop and snap.</b> Closed, the panel hides behind the pill at <code>scaleY = 56/284</code> from a top origin. Opening, it falls to y = 68 px on a bouncy spring (stiffness 240, damping 17, mass 1) and grows to full height 50 ms later on 210 / 22 / 1. Closing, both run on a snappier 240 / 20 / 0.9. The 18 px chevron flips 180° on a 300 / 20 spring.",
+   "<b>Rows.</b> Text sits on a separate unfiltered layer so it stays crisp: 15.5 px <code>#DCDCDC</code>, white when active on a <code>#232323</code> 14 px-radius fill. They enter from y −10 px at 35 ms intervals after a 120 ms delay (spring 420 / 26) and leave in reverse at 15 ms. The selection gets a 6 px <code>#3B82F6</code> dot.",
+   "<b>Keyboard.</b> Enter, Space or Down opens; arrows move the active row; Enter/Space chooses; Escape or an outside pointer-down closes. Trigger has <code>aria-haspopup=\"listbox\"</code>/<code>aria-expanded</code>; options use <code>role=\"option\"</code> and <code>aria-selected</code>; the focus ring is blue."
+  ],
+  "tokens": [
+   {
+    "label": "Goo filter",
+    "value": "blur 10 · alpha matrix 0 0 0 22 −14 · atop"
+   },
+   {
+    "label": "Drop",
+    "value": "y spring 240 / 17 / 1 · scaleY spring 210 / 22 / 1 (+50 ms)"
+   },
+   {
+    "label": "Snap back",
+    "value": "spring 240 / 20 / 0.9"
+   },
+   {
+    "label": "Rows",
+    "value": "spring 420 / 26 · stagger 35 ms after 120 ms · out 15 ms"
+   },
+   {
+    "label": "Size",
+    "value": "306 px · pill 56 px · row 44 px · radius 22 px"
+   },
+   {
+    "label": "Selected",
+    "value": "#3B82F6 dot · active row #232323"
+   }
+  ],
+  "prompt": "Build a liquid dropdown 306px wide. Draw two solid #0E0E0E shapes inside one absolutely positioned layer that has an SVG filter: feGaussianBlur stdDeviation 10, then feColorMatrix with alpha row '0 0 0 22 -14', then feComposite operator atop with the source. Shape 1 is the trigger pill, 56px tall, radius 28px. Shape 2 is the panel: height = options x 44px + 20px (284px for six), radius 22px, transform origin top centre. Closed: panel at y 0 with scaleY 56/284 (hidden behind the pill). Open: y 68px on a spring stiffness 240, damping 17, mass 1, and scaleY 1 on stiffness 210, damping 22, mass 1 with a 50ms delay. Closing: both on stiffness 240, damping 20, mass 0.9. On a separate unfiltered layer place the trigger button (22px side padding, 15.5px medium #F4F4F4 label of the current choice, 18px chevron stroke #cfcfcf that rotates 180deg on a 300/20 spring) and the option list at top 68px with 10px padding: rows 44px tall, 10px side margin, 12px padding, 14px radius, 15.5px #DCDCDC text, active row #232323 and white, the selected option marked with a 6px #3B82F6 dot. Rows enter from opacity 0 and y -10px on spring 420/26, staggered 35ms after 120ms; exit staggered 15ms in reverse. Options: Home, About, Projects, Contact, Book a call, Follow us. Keyboard: Enter/Space/ArrowDown open, arrows move, Enter/Space choose, Escape closes; outside pointer-down closes. Use aria-haspopup='listbox', aria-expanded, role option with aria-selected, and a blue focus ring.",
+  "caveats": [
+   "No reduced-motion branch — the drip and bounce always play.",
+   "The SVG blur filter repaints a 306 px-wide layer every frame of the animation; keep only one or two on screen."
+  ],
+  "blurb": "A single-choice dropdown that behaves like a drop of ink: the list drips out of the button, stretches, then breaks free, and gets drawn back in when you choose. It brings personality to a simple menu on a portfolio, studio or event site, or a language and section picker in a playful app, while still working fully from the keyboard."
+ },
+ {
+  "id": "hamburger-menu",
+  "plays": "click",
+  "accent": "#fafafa",
+  "title": {
+   "en": "Hamburger Menu",
+   "zh": "汉堡菜单按钮",
+   "zh-tw": "漢堡選單按鈕"
+  },
+  "gist": {
+   "en": "A three-line menu icon on a dark card. Click it and the top and bottom bars slide together and rotate into an ×, while the middle bar shrinks and fades away; click again and the × springs back into three lines. A caption underneath reports whether it is open or closed.",
+   "zh": "深色卡片上一个三条线的菜单图标。点一下，上下两条线向中间靠拢并旋转成 ×，中间那条缩短淡出；再点一次，× 弹回三条线。下方的小字显示当前是打开还是关闭。",
+   "zh-tw": "深色卡片上一個三條線的選單圖示。點一下，上下兩條線往中間靠攏並旋轉成 ×，中間那條縮短淡出；再點一次，× 彈回三條線。下方的小字顯示目前是開啟還是關閉。"
+  },
+  "anatomy": [
+   "<b>Three bars, all centred.</b> Every line is an absolutely positioned rounded <code>span</code> as wide as the icon box; they are pulled apart with <code>y</code> rather than laid out, so the closed spacing is <code>size × 0.28</code> above and below and stroke is <code>max(2, size × 0.08)</code>. At the demo size of 28 px that is ±7.84 px and 2.24 px.",
+   "<b>Morph.</b> Open: top bar y → 0 and rotate 45°, bottom bar y → 0 and rotate −45°, middle bar opacity → 0 and <code>scaleX</code> → 0.3. All three run on one snappy spring (stiffness 380, damping 30, mass 0.5), which settles in roughly 200 ms with no overshoot.",
+   "<b>Button.</b> 8 px padding, 12 px radius, <code>#FAFAFA</code> bars on a transparent fill that turns <code>#0E0E0E</code> on hover; a white 20 % focus ring; disabled at 40 % opacity.",
+   "<b>A11y.</b> Controlled through <code>isOpen</code>/<code>onChange</code>; announces <code>aria-expanded</code> and switches its label between 'Open Menu' and 'Close Menu'."
+  ],
+  "tokens": [
+   {
+    "label": "Spring",
+    "value": "stiffness 380 · damping 30 · mass 0.5"
+   },
+   {
+    "label": "Bar spacing",
+    "value": "size × 0.28 (7.84 px at 28)"
+   },
+   {
+    "label": "Stroke",
+    "value": "max(2, size × 0.08) (2.24 px at 28)"
+   },
+   {
+    "label": "Open",
+    "value": "±45° · middle scaleX 0.3 + opacity 0"
+   },
+   {
+    "label": "Button",
+    "value": "padding 8 px · radius 12 px · hover #0E0E0E"
+   }
+  ],
+  "prompt": "Build a hamburger-to-close toggle button. Button: 8px padding, 12px radius, transparent background turning #0E0E0E on hover, colour #FAFAFA, focus-visible ring white at 20%, disabled opacity 40%. Inside, a box of size S (default 24px, demo 28px) holding three absolutely centred rounded bars, each S wide and max(2, S x 0.08) tall. Closed: top bar y = -S x 0.28, middle at 0, bottom bar y = +S x 0.28. Open: top bar y 0 and rotate 45deg, bottom bar y 0 and rotate -45deg, middle bar opacity 0 and scaleX 0.3. Animate every property on a spring of stiffness 380, damping 30, mass 0.5. Controlled via isOpen and onChange; set aria-expanded and an aria-label that reads 'Open Menu' or 'Close Menu'. Demo: place it in a #0E0E0E card with 32px padding, 16px radius, #1F1F1F border, with a 12px monospace caption below showing the current state.",
+  "caveats": [
+   "No reduced-motion branch; the bars always spring."
+  ],
+  "blurb": "The familiar three-line menu icon, but it folds cleanly into a close mark and back instead of swapping pictures, so people see that the same button will close what it opened. Drop it into any mobile header, side drawer trigger or compact toolbar; it is accessible out of the box and can be recoloured and resized to match the surrounding bar."
+ },
+ {
+  "id": "ios-search-bar",
+  "plays": "click",
+  "accent": "#fafafa",
+  "title": {
+   "en": "Pill Search Bar",
+   "zh": "胶囊搜索栏",
+   "zh-tw": "膠囊搜尋列"
+  },
+  "gist": {
+   "en": "A rounded pill search field with a magnifier and a faint shortcut hint. Focus it and it stretches wider on a soft spring while its border and icon brighten; as you type, a small round clear button pops in, and a caption below echoes the live query. It stays wide while text remains and shrinks back when emptied and blurred.",
+   "zh": "一条圆润的胶囊搜索栏，带放大镜图标和一个淡淡的快捷键提示。聚焦后它带着柔和的弹性变宽，边框和图标一起变亮；一输入，一颗小圆形清除按钮弹出来，下方的小字同步显示当前查询。有内容时保持展开，清空并失焦后缩回。",
+   "zh-tw": "一條圓潤的膠囊搜尋列，帶放大鏡圖示和一個淡淡的快速鍵提示。取得焦點後它帶著柔和的彈性變寬，邊框和圖示一起變亮；一輸入，一顆小圓形清除按鈕跳出來，下方的小字同步顯示目前的查詢。有內容時保持展開，清空並失焦後縮回。"
+  },
+  "anatomy": [
+   "<b>Width.</b> A <code>motion.div</code> animates width from 220 px to 340 px whenever the input is focused or holds text, on a spring of stiffness 200, damping 28, mass 0.85 — just under critical damping, so it lands with the faintest give.",
+   "<b>Pill.</b> 40 px tall, fully rounded, 14 px side padding. Idle: <code>#0E0E0E</code> fill, <code>#1F1F1F</code> border (hover <code>#4A4A4A</code>), 16 px icon in <code>#525252</code>. Focused: <code>#141414</code> fill, <code>#4A4A4A</code> border, icon <code>#FAFAFA</code>; colour changes take 200 ms.",
+   "<b>Input.</b> <code>type=\"search\"</code> at 16 px — the size that stops mobile browsers zooming on focus — with the native cancel and decoration buttons hidden. Enter calls <code>onSubmit</code>; Escape blurs.",
+   "<b>Clear button.</b> Appears with any text, scaling 0.8 → 1 and fading in over 150 ms; clicking it empties the value, calls <code>onClear</code> and returns focus to the input. While idle and empty, a 9 px mono <code>⌘K</code> hint shows on wider screens.",
+   "The input's <code>aria-label</code> mirrors the placeholder and the clear button is labelled 'Clear search'."
+  ],
+  "tokens": [
+   {
+    "label": "Width",
+    "value": "220 → 340 px"
+   },
+   {
+    "label": "Spring",
+    "value": "stiffness 200 · damping 28 · mass 0.85"
+   },
+   {
+    "label": "Pill",
+    "value": "40 px · fully rounded · padding 14 px"
+   },
+   {
+    "label": "States",
+    "value": "idle #0E0E0E / #1F1F1F · focus #141414 / #4A4A4A"
+   },
+   {
+    "label": "Clear",
+    "value": "scale 0.8 → 1 · 150 ms"
+   }
+  ],
+  "prompt": "Build a controlled pill search bar. Outer wrapper animates width between 220px (idle) and 340px (focused or non-empty) on a spring of stiffness 200, damping 28, mass 0.85. Inner pill: 40px tall, fully rounded, 14px horizontal padding, 1px border, 200ms colour transitions. Idle: background #0E0E0E, border #1F1F1F (hover #4A4A4A), 16px search icon #525252 with 10px right margin. Focused: background #141414, border #4A4A4A, icon #FAFAFA. Input: type search, 16px text #FAFAFA, placeholder #6B6B6B, no outline, native search cancel/decoration hidden, aria-label equal to the placeholder. Enter calls onSubmit(value), Escape blurs. When the value is non-empty, show a round clear button (12px X icon, #141414 fill, #525252 icon turning white) that scales from 0.8 and fades in over 150ms, clears the value, calls onClear and refocuses the input; aria-label 'Clear search'. When idle and empty, show a 9px monospace command-K hint in #6B6B6B on screens 640px and wider. Demo: place it in a #0E0E0E card (32px padding, 16px radius, #1F1F1F border) with placeholder 'Search telemetry...' and a 12px mono caption below that echoes the current query.",
+  "caveats": [
+   "The ⌘K hint is decorative — no global shortcut focuses the field."
+  ],
+  "blurb": "A rounded search field in the style of a phone's native search bar: it waits quietly at a modest width, opens up when tapped, offers a one-touch clear button, and settles back once it is empty. Use it in app headers, list and table filters, help centres and mobile-first web apps where search is frequent but space is tight."
+ },
+ {
+  "id": "morphing-mega-menu",
+  "plays": "hover",
+  "accent": "#fafafa",
+  "title": {
+   "en": "Morphing Mega Menu",
+   "zh": "变形大菜单",
+   "zh-tw": "變形大型選單"
+  },
+  "gist": {
+   "en": "A row of pill-shaped top-level links — Products, Developers, Company, Pricing. Hover one and a large dropdown fades and scales up beneath it with a small pointer arrow; slide across to the next trigger and the same panel glides sideways and reshapes to the new content's width and height while the old content blurs out in the direction you came from. The arrow chases the cursor along the trigger.",
+   "zh": "一排胶囊形的一级链接：Products、Developers、Company、Pricing。鼠标移上去，下方淡入并放大出一块大下拉面板，带一个小尖角；横向移到下一个入口时，同一块面板侧滑过去，按新内容的宽高变形，旧内容朝来的方向模糊淡出。小尖角会沿着入口追着光标走。",
+   "zh-tw": "一排膠囊形的第一層連結：Products、Developers、Company、Pricing。滑鼠移上去，下方淡入並放大出一塊大型下拉面板，帶一個小尖角；橫向移到下一個入口時，同一塊面板側滑過去，依新內容的寬高變形，舊內容往來的方向模糊淡出。小尖角會沿著入口追著游標走。"
+  },
+  "anatomy": [
+   "<b>One panel, many contents.</b> Every dropdown's content is mounted at once, stacked absolutely inside a single bordered box (16 px radius, <code>#262626</code> border, <code>#0A0A0A</code> fill, large soft shadow). A <code>ResizeObserver</code> records each content's natural size; the box animates its width and height to the active one and its <code>x</code> to centre under the trigger, clamped inside the 768 px root.",
+   "<b>Morph vs. open.</b> Moving between triggers while open uses a spring with duration 0.4 s and bounce 0.1 for x, width and height. The first open skips the morph and instead fades opacity 0 → 1 and scales 0.97 → 1 in 180 ms on <code>cubic-bezier(0.23, 1, 0.32, 1)</code> from the trigger's centre (closing: 120 ms). A 12 px transparent top padding bridges the gap so the cursor never 'falls off'.",
+   "<b>Content crossfade.</b> Inactive contents go to opacity 0, shift 16 px toward the side they lie on and blur 2 px over 180 ms; the blur hides the overlap during the swap. Hidden contents are <code>inert</code>.",
+   "<b>Arrow.</b> A 12 px square rotated 45° with a top-left border sits on the panel edge. Its x follows the pointer across the open trigger through a spring of stiffness 600, damping 45, mass 0.6, clamped 20 px from the panel's corners; it snaps on first open.",
+   "<b>Input paths.</b> Hover opens; leaving the menu closes after 120 ms. Focus opens, Arrow Down moves into the first link, Escape closes and refocuses the trigger, tap toggles on touch, an outside press closes. Triggers carry <code>aria-expanded</code>/<code>aria-controls</code>. Reduced motion removes the morph, scale, shift and blur."
+  ],
+  "tokens": [
+   {
+    "label": "Morph",
+    "value": "spring 0.4 s · bounce 0.1 (x, width, height)"
+   },
+   {
+    "label": "Open / close",
+    "value": "180 ms / 120 ms · cubic-bezier(0.23, 1, 0.32, 1) · scale 0.97"
+   },
+   {
+    "label": "Content swap",
+    "value": "±16 px · blur 2 px · 180 ms"
+   },
+   {
+    "label": "Arrow spring",
+    "value": "stiffness 600 · damping 45 · mass 0.6 · 12 px"
+   },
+   {
+    "label": "Timing",
+    "value": "close delay 120 ms · hover gap 12 px"
+   },
+   {
+    "label": "Panels",
+    "value": "540 / 580 / 300 px wide · radius 16 px"
+   }
+  ],
+  "prompt": "Build a mega menu with one shared dropdown that morphs between triggers. Root: centred, max 768px wide, relative. Trigger row: centred pills (rounded-full, 14px/6px padding, 14px medium #A3A3A3; active #171717 fill with #FAFAFA text; press scale 0.97, 150ms) — Products, Developers, Company, and a plain link Pricing. Below the row, one absolutely positioned wrapper with 12px top padding as a hover bridge containing a box (16px radius, 1px #262626 border, #0A0A0A fill, large soft shadow, overflow hidden). Mount all panel contents stacked absolutely at top-left inside the box and measure each with a ResizeObserver. Products: 540px two-column grid of six links (32px bordered icon square, 14px title, 13px grey description): Payments, Analytics, Fraud, Global, Billing, Identity. Developers: 580px with three links (Documentation, SDKs, CLI) and a 200px #171717 changelog card. Company: 300px with About and Careers. Animate the box's width/height to the active content and the wrapper's x to centre under the trigger (clamped to the root), using a spring of duration 0.4s, bounce 0.1 only when moving between triggers while already open; on first open set them instantly and instead fade opacity 0 to 1 and scale 0.97 to 1 in 180ms with cubic-bezier(0.23,1,0.32,1) from the trigger centre (close in 120ms). Inactive contents: opacity 0, x +/-16px toward their side, blur 2px, 180ms, inert. Add a 12px square arrow rotated 45deg with top-left border at the panel's top edge whose x follows the pointer across the open trigger via a spring of stiffness 600, damping 45, mass 0.6, clamped 20px from the panel's ends, snapping on first open. Open on pointer enter or focus; close 120ms after leaving; click toggles; ArrowDown focuses the first link; Escape closes and refocuses the trigger; close on outside pointer-down. Use aria-expanded/aria-controls. Under prefers-reduced-motion drop morph, scale, shift and blur.",
+  "caveats": [
+   "Every panel's content stays mounted in the DOM (inert when hidden) so it can be measured — heavy content in many panels adds up."
+  ],
+  "blurb": "A top-level menu for sites with a lot to show: instead of separate dropdowns popping in and out, one panel glides between sections and reshapes itself to fit each one, with a small pointer that tracks the cursor. It suits product companies, platforms and agencies with rich navigation — features, developer resources, company pages — and stays usable by keyboard and touch."
+ },
+ {
+  "id": "pill-navigation",
+  "plays": "click",
+  "accent": "#fafafa",
+  "title": {
+   "en": "Pill Navigation",
+   "zh": "双层胶囊导航",
+   "zh-tw": "雙層膠囊導覽"
+  },
+  "gist": {
+   "en": "A black segmented pill bar — Overview, Motion, Access, Code — where a white pill marks the current section. Choose a section that has children and a second, smaller pill bar drops in underneath with its own sliding grey highlight; pick another section and the white pill slides over while the sub-bar swaps. Clicking the active section again folds its sub-bar away.",
+   "zh": "一条黑色分段胶囊栏：Overview、Motion、Access、Code，白色胶囊标出当前分区。选一个有子项的分区，下方落下第二条更小的胶囊栏，自带一块会滑动的灰色高亮；换到别的分区，白色胶囊滑过去，子栏随之更换。再点一次当前分区，子栏收起。",
+   "zh-tw": "一條黑色分段膠囊列：Overview、Motion、Access、Code，白色膠囊標出目前分區。選一個有子項目的分區，下方落下第二條較小的膠囊列，自帶一塊會滑動的灰色醒目底；換到別的分區，白色膠囊滑過去，子列跟著更換。再點一次目前分區，子列收合。"
+  },
+  "anatomy": [
+   "<b>Main bar.</b> A fully rounded <code>#050505</code> track with a <code>#1F1F1F</code> border, 4 px padding and an inner shadow. Tabs are 32 px min height, 16 px side padding, 12 px medium text; idle <code>#A1A1A1</code>, active <code>#050505</code> semibold over a <code>#FAFAFA</code> pill with a <code>0 2px 8px rgba(0,0,0,.35)</code> shadow. The pill moves via a shared <code>layoutId</code> on a spring of 220 / 32 / 1. Taps scale to 0.96.",
+   "<b>Chevrons.</b> Parents with children show a 12 px chevron that turns 180° in 200 ms while their sub-bar is open; clicking the active parent toggles the sub-bar.",
+   "<b>Sub-bar.</b> 8 px below, a fully rounded <code>#0B0B0B</code> bar at 90 % with backdrop blur, a <code>#171717</code> border and a <code>0 8px 20px rgba(0,0,0,.35)</code> shadow. It enters from opacity 0, y −6 px, scale 0.96 and leaves to y −4 px on a 170 / 26 / 0.9 spring, in wait mode. Sub-items are 28 px, 11 px text, with a <code>#2E2E2E</code> pill and <code>#404040</code> border sliding on the 220 / 32 / 1 spring; taps scale to 0.95.",
+   "<b>Selection rules.</b> Picking a parent also selects its first child and reports <code>onChange(id, subId)</code>. The whole component animates its own size with <code>layout</code> so width changes ease rather than jump.",
+   "<b>Keyboard and motion.</b> The wrapper is focusable: Left/Right cycle parents, Up/Down cycle children, Escape folds the sub-bar. Roles <code>tablist</code>/<code>tab</code> with <code>aria-selected</code> and <code>menu</code>/<code>menuitem</code>. With reduced motion the pills are static and the sub-bar only fades."
+  ],
+  "tokens": [
+   {
+    "label": "Pill spring",
+    "value": "stiffness 220 · damping 32 · mass 1"
+   },
+   {
+    "label": "Sub-bar spring",
+    "value": "stiffness 170 · damping 26 · mass 0.9 · y −6 px · scale 0.96"
+   },
+   {
+    "label": "Active pill",
+    "value": "#FAFAFA · text #050505 · shadow 0 2px 8px rgba(0,0,0,.35)"
+   },
+   {
+    "label": "Sub pill",
+    "value": "#2E2E2E · border #404040"
+   },
+   {
+    "label": "Tracks",
+    "value": "#050505 / #0B0B0B 90 % · borders #1F1F1F / #171717"
+   }
+  ],
+  "prompt": "Build a two-level pill navigation. Main bar: inline flex, fully rounded, background #050505, 1px #1F1F1F border, 4px padding, inner shadow, role tablist. Tabs: Overview, Motion (children Spring Physics, Liquid Caustics, Gesture Drag), Access, Code (children React JSX, Tailwind v3). Each tab is a fully rounded button, min-height 32px, 16px horizontal padding, 12px medium text #A1A1A1 (hover #FAFAFA); tap scale 0.96. The active tab shows a #FAFAFA pill with shadow 0 2px 8px rgba(0,0,0,.35) behind #050505 semibold text, moved between tabs with a shared layout id on a spring of stiffness 220, damping 32, mass 1. Parents with children show a 12px chevron that rotates 180deg in 200ms while their submenu is open. Selecting a parent selects its first child and opens the submenu; clicking the active parent toggles it. Submenu: 8px below, fully rounded, #0B0B0B at 90% with backdrop blur, 1px #171717 border, 4px padding, shadow 0 8px 20px rgba(0,0,0,.35); in wait mode it enters from opacity 0, y -6px, scale 0.96 and exits to y -4px, scale 0.96 on a spring of stiffness 170, damping 26, mass 0.9. Sub-items: 28px tall, 12px padding, 11px medium #525252 (active #FAFAFA semibold) over a #2E2E2E pill with a #404040 border that slides via its own layout id on the 220/32/1 spring; tap scale 0.95. Animate the whole component's size with layout on the 170/26/0.9 spring. Keyboard on the focusable wrapper: Left/Right cycle parents, Up/Down cycle children, Escape closes the submenu. Under prefers-reduced-motion make pills static and the submenu fade only.",
+  "blurb": "A two-tier navigation made of rounded pills: main sections across the top, and for sections that need it, a smaller row of sub-pages that appears right underneath. Both rows show the current choice with a highlight that slides rather than jumps. It fits documentation, product tours, design-system sites and dashboards where a section has a handful of close siblings."
+ },
+ {
+  "id": "scroll-progress-nav",
+  "plays": "scroll",
+  "accent": "#fafafa",
+  "title": {
+   "en": "Scroll Progress Nav",
+   "zh": "阅读进度目录栏",
+   "zh-tw": "閱讀進度目錄列"
+  },
+  "gist": {
+   "en": "A rounded table-of-contents bar with numbered sections — 01 Overview through 05 Pricing — above a scrolling page. As you scroll, a thin white line along the bar's top edge grows with your progress and the highlight pill slides to whichever section has reached the top; clicking a section scrolls the page down or up to it.",
+   "zh": "一条圆角目录栏，列出带编号的分区：01 Overview 到 05 Pricing，下面是可滚动的页面。往下滚时，栏顶边一条细白线随阅读进度变长，高亮胶囊滑到已经抵达顶部的那一节；点任意一节，页面自动滚到那里。",
+   "zh-tw": "一條圓角目錄列，列出帶編號的分區：01 Overview 到 05 Pricing，下面是可捲動的頁面。往下捲時，列頂邊一條細白線隨閱讀進度變長，醒目膠囊滑到已經抵達頂端的那一節；點任一節，頁面自動捲到那裡。"
+  },
+  "anatomy": [
+   "<b>Bar.</b> A fully rounded <code>nav</code> with 4 px padding, <code>#0E0E0E</code> at 95 % with backdrop blur, a <code>#1F1F1F</code> border and a <code>0 10px 30px rgba(0,0,0,.6)</code> shadow. Each entry is a 12 × 6 px pill: a 10 px mono index plus a 12 px label, <code>#6B6B6B</code> idle and <code>#FAFAFA</code> active.",
+   "<b>Progress line.</b> A 1.5 px <code>#FAFAFA</code> strip clipped to the bar's rounded top edge; its width is <code>scrollTop / (scrollHeight − clientHeight)</code> as a percentage, eased with a 150 ms CSS transition.",
+   "<b>Active section.</b> On every scroll event it walks the sections from last to first and takes the first whose top is within 120 px of the scroll container's top (or above 40 % of the viewport in page mode). The active pill (<code>#141414</code>, <code>#1F1F1F</code> border) moves by shared <code>layoutId</code> on a spring of 220 / 32 / 1; the bar itself resizes with <code>layout</code> on the same spring.",
+   "<b>Navigation.</b> Clicking scrolls the section into view with native animated scrolling (<code>behavior: \"smooth\"</code>), offset 20 px inside a container. In fixed page mode, scrolling past 150 px marks the bar as floating, adds a faint white ring and a 24 px back-to-top button; it can sit top-centre, bottom-centre or top-right.",
+   "<b>Narrow screens.</b> Below 768 px the bar shows only the current index and label with a chevron that drops the full list into a 16 px-radius panel."
+  ],
+  "tokens": [
+   {
+    "label": "Progress line",
+    "value": "1.5 px #FAFAFA · width = scroll % · 150 ms"
+   },
+   {
+    "label": "Pill spring",
+    "value": "stiffness 220 · damping 32 · mass 1"
+   },
+   {
+    "label": "Active rule",
+    "value": "section top ≤ 120 px (container) · ≤ 40 % viewport (page)"
+   },
+   {
+    "label": "Floating",
+    "value": "after 150 px · back-to-top 24 px"
+   },
+   {
+    "label": "Bar",
+    "value": "#0E0E0E 95 % · border #1F1F1F · shadow 0 10px 30px rgba(0,0,0,.6)"
+   }
+  ],
+  "prompt": "Build a section navigator that tracks scroll. A fully rounded nav (aria-label 'Table of contents'), 4px padding, 4px gap, background #0E0E0E at 95% with backdrop blur, 1px #1F1F1F border, shadow 0 10px 30px rgba(0,0,0,.6). Along its top edge, clipped by the rounding, draw a 1.5px #FAFAFA line whose width equals scroll progress (scrollTop / (scrollHeight - clientHeight) x 100%) with a 150ms transition. Entries: 01 Overview, 02 Architecture, 03 Components, 04 Telemetry, 05 Pricing — each a fully rounded button, 12px/6px padding, a 10px monospace index plus 12px medium label, #6B6B6B idle (hover #A1A1A1), #FAFAFA active. The active entry shows a #141414 pill with a 1px #1F1F1F border, moved by a shared layout id on a spring of stiffness 220, damping 32, mass 1; animate the nav's own layout on the same spring. On each scroll of the content container, mark active the last section whose top is within 120px of the container top. Clicking an entry scrolls the container (scroll behavior 'smooth') so that section sits 20px from the top. Demo: the nav sits in a sticky, blurred header above a 300px-tall scroll box with five #141414 cards (12px radius, 20px padding). In whole-page mode, use 40% of the viewport as the threshold, mark the bar floating past 150px scroll with a faint white ring and a 24px round back-to-top button. Below 768px show only the current index and label with a chevron that opens the full list in a 16px-radius dropdown.",
+  "caveats": [
+   "The active entry is not exposed to assistive tech (no <code>aria-current</code>), and every scroll event triggers a React state update."
+  ],
+  "blurb": "A compact table of contents that rides along with a long page, showing how far the reader has got and which chapter they are in, and letting them jump straight to any section. It is a natural fit for long-form articles, case studies, documentation, pricing and feature pages, or any single-page site split into numbered parts."
+ },
+ {
+  "id": "sidebar",
+  "plays": "click",
+  "accent": "#fafafa",
+  "title": {
+   "en": "Collapsible Sidebar",
+   "zh": "可折叠侧边栏",
+   "zh-tw": "可收合側邊欄"
+  },
+  "gist": {
+   "en": "An app sidebar with a logo, grouped links with icons and counts, a nested 'Projects' group and a Collapse button. A soft highlight follows the pointer up and down the list, the selected link has its own sliding fill, and opening a group slides its children down beside a guide line. Collapse it and it narrows to an icon rail with hover tooltips; on phones it becomes a drawer you can swipe away.",
+   "zh": "一个应用侧边栏：顶部标志，分组的链接带图标和数字，可展开的「Projects」子组，底部「Collapse」按钮。一块浅色高亮跟着鼠标在列表里上下移动，选中项另有一块会滑动的底色；展开子组时，子项沿着一条引导线向下滑出。折叠后变成只有图标的窄栏，悬停出提示；在手机上则变成可以滑走的抽屉。",
+   "zh-tw": "一個應用程式側邊欄：頂端標誌，分組的連結帶圖示和數字，可展開的「Projects」子群組，底部「Collapse」按鈕。一塊淺色醒目底跟著滑鼠在清單裡上下移動，選取項目另有一塊會滑動的底色；展開子群組時，子項目沿著一條引導線往下滑出。收合後變成只有圖示的窄欄，停留時出現提示；在手機上則變成可以滑走的抽屜。"
+  },
+  "anatomy": [
+   "<b>Width.</b> The desktop <code>aside</code> animates between 248 px and 56 px on a spring of stiffness 420, damping 36, mass 0.8; labels fade over 150 ms as it narrows, section titles turn into 1 px dividers and the header keeps only its first child (the logo tile).",
+   "<b>Two highlights.</b> A single hover block (<code>#171717</code>) is positioned by the hovered row's <code>offsetTop</code>/<code>offsetHeight</code> and animates y and height on the same spring, fading out in 150 ms when the pointer leaves. The selected row renders a <code>#262626</code> fill with a shared <code>layoutId</code> so selection slides too.",
+   "<b>Groups.</b> Rows are 36 px with 18 px icons and optional count badges. A parent toggles its children: height 0 → auto and opacity in 220 ms on <code>cubic-bezier(0.32, 0.72, 0, 1)</code>, chevron rotated 90°. Children hang off a 1 px guide line; the active child is marked by a 6 px dot that slides along the line. Clicking a parent while collapsed expands the sidebar and opens it.",
+   "<b>Collapsed rail.</b> Hovering an icon shows a tooltip 10 px to its right that slides in from x −4 px over 120 ms. A footer button and <kbd>⌘B</kbd> / <kbd>Ctrl B</kbd> toggle the state.",
+   "<b>Mobile drawer.</b> Below 768 px a trigger opens a 272 px (max 85 vw) drawer sliding in from −100 % on the same spring over a 40 % dark, 2 px-blurred backdrop. Drag it left more than 80 px or flick faster than 400 px/s to dismiss (left elasticity 0.5); Escape and the backdrop also close it, and body scroll is locked. It is a <code>dialog</code> with <code>aria-modal</code>; rows use <code>aria-current</code> and <code>aria-expanded</code>."
+  ],
+  "tokens": [
+   {
+    "label": "Spring",
+    "value": "stiffness 420 · damping 36 · mass 0.8"
+   },
+   {
+    "label": "Width",
+    "value": "248 px ↔ 56 px · drawer 272 px"
+   },
+   {
+    "label": "Group open",
+    "value": "220 ms · cubic-bezier(0.32, 0.72, 0, 1)"
+   },
+   {
+    "label": "Swipe close",
+    "value": "offset < −80 px or velocity < −400 px/s"
+   },
+   {
+    "label": "Fills",
+    "value": "hover #171717 · active #262626 · rail border #262626"
+   },
+   {
+    "label": "Shortcut",
+    "value": "⌘B / Ctrl+B"
+   }
+  ],
+  "prompt": "Build a collapsible app sidebar on #0A0A0A with a right border #262626. Width animates 248px expanded / 56px collapsed on a spring of stiffness 420, damping 36, mass 0.8. Header 56px: a 24px rounded logo tile plus wordmark (collapsed: logo only, centred). Navigation with 8px padding: Home, Inbox (badge 4); section 'Workspace' (12px grey title, collapsed: a 1px divider) with Projects (children Active with count 12, Archived), Team, Settings. Rows are 36px tall, 8px radius, 10px padding, 18px icon in a 20px box, 14px text #A3A3A3 (white when active). One shared hover block (#171717, 8px radius) moves to the hovered or focused row's offsetTop and height on the same spring and fades out in 150ms when the pointer leaves the nav. The active row has a #262626 fill moving by shared layout id. Labels fade over 150ms when collapsing. Parents with children toggle a child list (height 0 to auto + opacity, 220ms cubic-bezier(0.32,0.72,0,1)) and rotate a 14px chevron 90deg; children are 32px rows at 13px, indented 19px with a 1px left guide line, and the active child gets a 6px white dot on the line that slides by layout id. Clicking a parent while collapsed expands the sidebar and opens that parent. In collapsed mode hovering a row shows a tooltip 10px to its right (white chip, dark 12px text) entering from x -4px over 120ms. Footer: a 'Collapse' button with a ⌘B key hint; Cmd/Ctrl+B toggles. Below 768px hide the rail and provide a trigger that opens a 272px (max 85vw) drawer from x -100% on the same spring over a #0A0A0A/40 backdrop with 2px blur; drag-to-close when dragged left past 80px or with velocity below -400px/s (elastic 0.5 to the left), close on Escape or backdrop click, lock body scroll, role dialog aria-modal. Use aria-current='page' and aria-expanded.",
+  "caveats": [
+   "No reduced-motion branch for the width spring or the drawer.",
+   "<kbd>⌘B</kbd> is caught globally, so it overrides the bold shortcut in any text editor on the same page."
+  ],
+  "blurb": "A full app sidebar that can shrink to an icon rail when people want more room and opens as a swipeable drawer on phones. Grouped links, nested pages, counts and tooltips are all built in, and the highlight glides between items. It is a ready base for dashboards, admin panels, inboxes, project tools and any web app with more than a few destinations."
+ },
+ {
+  "id": "slide-pagination",
+  "plays": "click",
+  "accent": "#f2f2f3",
+  "title": {
+   "en": "Slide Pagination",
+   "zh": "滑动分页器",
+   "zh-tw": "滑動分頁器"
+  },
+  "gist": {
+   "en": "A row of square page numbers with previous and next arrows, with the middle pages abbreviated by an ellipsis. Click a page or an arrow and the filled light square glides from the old number to the new one instead of jumping, and the number inside flips to dark text. The arrows dim at the first and last page.",
+   "zh": "一排方形页码，左右各一个箭头，中间较远的页码用省略号代替。点页码或箭头，那块实心浅色方块从旧页码滑到新页码，而不是瞬间跳过去，里面的数字变成深色。到第一页或最后一页时，对应箭头变暗。",
+   "zh-tw": "一排方形頁碼，左右各一個箭頭，中間較遠的頁碼用刪節號代替。點頁碼或箭頭，那塊實心淺色方塊從舊頁碼滑到新頁碼，而不是瞬間跳過去，裡面的數字變成深色。到第一頁或最後一頁時，對應箭頭變暗。"
+  },
+  "anatomy": [
+   "<b>Cells.</b> Page buttons and arrows are 32 × 32 px with 6 px radius and 12 px medium numbers in the secondary text colour (<code>#A1A1A6</code> in dark), hovering to a <code>#18181A</code> fill. Arrows have a 1 px border and drop to 30 % opacity at either end.",
+   "<b>Sliding fill.</b> Only the current page renders an absolutely positioned fill in the primary text colour (<code>#F2F2F3</code>) with a shared <code>layoutId</code>; it travels between buttons on a snappy spring (stiffness 380, damping 30, mass 0.5) and the label inverts to the background colour <code>#111113</code>.",
+   "<b>Range.</b> With <code>siblingCount</code> 1, up to seven slots show: first, last, the current page ± 1, and an ellipsis on either side when the gap is more than one page. Near the ends it shows the first or last five in a run. Twelve pages starting on page 3 reads 1 2 3 4 5 … 12.",
+   "Semantics: <code>nav aria-label=\"Pagination\"</code>, each page labelled 'Page n' with <code>aria-current=\"page\"</code>; arrows labelled and truly disabled at the ends; ellipses hidden from assistive tech. Works controlled or uncontrolled."
+  ],
+  "tokens": [
+   {
+    "label": "Spring",
+    "value": "stiffness 380 · damping 30 · mass 0.5"
+   },
+   {
+    "label": "Cell",
+    "value": "32 × 32 px · radius 6 px · 12 px text"
+   },
+   {
+    "label": "Active",
+    "value": "fill #F2F2F3 · text #111113"
+   },
+   {
+    "label": "Idle",
+    "value": "#A1A1A6 · hover fill #18181A"
+   },
+   {
+    "label": "Range",
+    "value": "siblings 1 · max 7 slots · ellipsis when gap > 1"
+   }
+  ],
+  "prompt": "Build a pagination control: nav aria-label 'Pagination' with a previous arrow, a list of page buttons, and a next arrow, 4px gaps. All cells 32x32px, 6px radius, 12px medium text #A1A1A6, hover fill #18181A and text #F2F2F3. Arrows have a 1px #29292C border (hover #343438), aria-labels 'Previous page'/'Next page', disabled with 30% opacity at the ends. The current page shows a filled #F2F2F3 square behind its number (number turns #111113), rendered with a shared layout id so it slides between buttons on a spring of stiffness 380, damping 30, mass 0.5. Page range with siblingCount 1: if pages <= 7 show all; otherwise show first, last, current +/- 1 and an ellipsis cell (32px, aria-hidden) where the gap exceeds one page; near the start show 1-5 … last, near the end first … last five. Each page button has aria-label 'Page n' and aria-current='page' when active. Demo: 12 pages, starting on page 3, controlled via page/onChange.",
+  "caveats": [
+   "Only the fill animates: when the visible window shifts (e.g. from page 5 to 6), numbers appear and disappear instantly.",
+   "No reduced-motion branch."
+  ],
+  "blurb": "A page-number strip for lists and archives in which the highlight slides to the page you choose, so the jump is easy to follow, while long ranges stay short thanks to ellipses. It fits blog archives, search results, product grids and data tables — anywhere a long list is split into pages and people move back and forth through them."
+ },
+ {
+  "id": "small-floating-dock",
+  "plays": "hover",
+  "accent": "#f43f5e",
+  "title": {
+   "en": "Small Floating Dock",
+   "zh": "迷你悬浮工具坞",
+   "zh-tw": "迷你懸浮工具列"
+  },
+  "gist": {
+   "en": "A small dark capsule of round action buttons floating at the bottom of the screen, one wearing a red count badge. It rests slightly shrunk; move the pointer onto it and it grows to full size, the button under the cursor lifts and swells a little, and a label rises above it.",
+   "zh": "屏幕底部漂浮着一颗深色小胶囊，里面是几颗圆形操作按钮，其中一颗挂着红色数字角标。平时它略微缩小；鼠标移上去，整条长回原尺寸，光标下的按钮微微抬起放大，上方升起一个名称标签。",
+   "zh-tw": "螢幕底部漂浮著一顆深色小膠囊，裡面是幾顆圓形操作按鈕，其中一顆掛著紅色數字徽章。平時它略微縮小；滑鼠移上去，整條長回原尺寸，游標下的按鈕微微抬起放大，上方升起一個名稱標籤。"
+  },
+  "anatomy": [
+   "<b>Capsule.</b> A <code>fixed</code> fully rounded <code>nav</code> 24 px from the bottom (right, centre or left), <code>#0E0E0E</code> at 90 % with strong backdrop blur, a <code>#1F1F1F</code> border and a <code>0 12px 40px rgba(0,0,0,.6)</code> shadow. Sizes: sm 32 px buttons / 6 px padding, md 40 px / 8 px, lg 48 px / 10 px. At most five items.",
+   "<b>Resting scale.</b> It mounts from opacity 0, y +20 px, scale 0.92, then sits at scale 0.95; pointer enter brings it to 1. Both run on a spring of stiffness 200, damping 28, mass 0.85.",
+   "<b>Buttons.</b> Round, <code>#141414</code> with a <code>#1F1F1F</code> border and <code>#A1A1A1</code> 16 px icons; hover scales to 1.12 and lifts 2 px, press scales to 0.95, on a snappy 380 / 30 / 0.5 spring. The active item is a solid <code>#FAFAFA</code> disc with dark icon.",
+   "<b>Badge and label.</b> Counts render as a 16 px <code>#F43F5E</code> chip with 9 px bold mono text, a 2 px ring in the capsule colour, popping from scale 0; above 99 shows '99+'. In icon-only mode, hovering or focusing a button raises a 10 px label from y 6 to −36 px over 150 ms.",
+   "<b>Hide on scroll.</b> Optional: scrolling down past 60 px removes the dock (exit to y +20 px, scale 0.92) and scrolling up brings it back. Buttons carry <code>aria-label</code> and <code>aria-current</code>."
+  ],
+  "tokens": [
+   {
+    "label": "Dock spring",
+    "value": "stiffness 200 · damping 28 · mass 0.85 · rest scale 0.95"
+   },
+   {
+    "label": "Button spring",
+    "value": "stiffness 380 · damping 30 · mass 0.5 · hover 1.12 / −2 px"
+   },
+   {
+    "label": "Badge",
+    "value": "#F43F5E · 16 px · 9 px mono · ring 2 px"
+   },
+   {
+    "label": "Capsule",
+    "value": "#0E0E0E 90 % · border #1F1F1F · shadow 0 12px 40px rgba(0,0,0,.6)"
+   },
+   {
+    "label": "Sizes",
+    "value": "32 / 40 / 48 px buttons"
+   }
+  ],
+  "prompt": "Build a small fixed floating action dock, 24px from the bottom of the viewport and horizontally centred. Capsule: fully rounded, 8px padding, 8px gap, background #0E0E0E at 90% with strong backdrop blur, 1px #1F1F1F border, shadow 0 12px 40px rgba(0,0,0,.6), role navigation. Mount from opacity 0, y +20px, scale 0.92; rest at scale 0.95 and grow to 1 on pointer enter, spring stiffness 200, damping 28, mass 0.85. Items (max five): AI Pilot, Terminal, Code, Security (badge 4) — each a 40px round button, #141414 fill, 1px #1F1F1F border, 16px icon #A1A1A1 turning #FAFAFA; hover scale 1.12 and y -2px, tap scale 0.95, spring stiffness 380, damping 30, mass 0.5. An active item is a solid #FAFAFA disc with #050505 icon. Badge: top-right, min 16px wide, 16px tall, #F43F5E with white 9px bold monospace number, 2px #0E0E0E ring, pops in from scale 0, caps at 99+. Tooltip on hover or focus: 10px white text in a #141414 chip with #1F1F1F border, animating from opacity 0, y 6px, scale 0.9 to opacity 1, y -36px, scale 1 over 150ms. Optional hide-on-scroll: hide when scrolling down past 60px (exit to y +20px, scale 0.92), show when scrolling up. Offer sm/md/lg sizes of 32/40/48px buttons. Every button needs aria-label and aria-current when active.",
+  "caveats": [
+   "It is <code>position: fixed</code>, so it anchors to the viewport, not to the box you place it in.",
+   "The label has no exit animation — it disappears instantly when the pointer leaves."
+  ],
+  "blurb": "A pocket-sized row of shortcut buttons that floats over the page, staying slightly tucked until the pointer reaches it and showing unread counts at a glance. It suits quick actions in web apps — compose, search, notifications, help — or a persistent shortcut bar on a mobile-style site, and it can step out of the way while people scroll down."
+ },
+ {
+  "id": "smart-comparison",
+  "plays": "click",
+  "accent": "#34d399",
+  "title": {
+   "en": "Smart Comparison",
+   "zh": "智能方案对比表",
+   "zh-tw": "智慧方案比較表"
+  },
+  "gist": {
+   "en": "A plan comparison table: three plan cards across the top (the middle one highlighted with a 'Popular' tag), then grouped feature rows with green ticks, grey dashes or text values. A filter box narrows the rows as you type, a 'Differences only' toggle hides rows where every plan is the same, and category headers fold their rows away.",
+   "zh": "一张方案对比表：顶部三张方案卡（中间那张带「Popular」标签、被高亮），下面是分组的功能行，用绿色勾、灰色横线或文字表示。输入筛选框会即时缩小行列表；「仅看差异」开关会隐藏所有方案都一样的行；点分类标题可以把该组行收起来。",
+   "zh-tw": "一張方案比較表：頂端三張方案卡（中間那張帶「Popular」標籤、被強調），下面是分組的功能列，用綠色勾、灰色橫線或文字表示。在篩選框輸入會即時縮小列表；「只看差異」開關會隱藏所有方案都一樣的列；點分類標題可以把該組收合起來。"
+  },
+  "anatomy": [
+   "<b>Toolbar.</b> A 256 px filter input (matches feature name or description, case-insensitive) and a 'Differences only' toggle that inverts to a <code>#FAFAFA</code> fill when on. A feature counts as different when its serialised values are not identical across all plans. An empty result shows a centred note.",
+   "<b>Plan header.</b> A four-column grid: a 'Feature Matrix · N specifications' label, then one 16 px-padded, 12 px-radius card per plan with name, tagline, a 20 px bold mono price with '/mo', and a CTA. The featured card uses a <code>#141414 → #0E0E0E</code> gradient, a 30 % white border, a sparkle icon, a white CTA and a white uppercase badge hanging 10 px above its top edge.",
+   "<b>Category groups.</b> Each header has a 6 px dot and uppercase 12 px title; clicking rotates its chevron −90° in 150 ms and collapses the rows (height and opacity) on a spring of 170 / 26 / 0.9. Rows tint <code>#141414</code> on hover.",
+   "<b>Value cells.</b> <code>true</code> is a 20 px round tick in <code>#34D399</code> on a 10 % emerald fill with a 20 % ring; <code>false</code> is a grey dash on <code>#141414</code>; strings are 12 px mono white. An info icon next to a feature opens a 192 px description tooltip on hover or click.",
+   "<b>Small screens.</b> Below 640 px a segmented plan switcher appears with a sliding <code>#0E0E0E</code> pill (spring 380 / 30 / 0.5); only the selected plan's card and values show, each value prefixed with the plan name."
+  ],
+  "tokens": [
+   {
+    "label": "Tick",
+    "value": "#34D399 on rgba(16,185,129,.1) · 20 px"
+   },
+   {
+    "label": "Collapse spring",
+    "value": "stiffness 170 · damping 26 · mass 0.9"
+   },
+   {
+    "label": "Switcher spring",
+    "value": "stiffness 380 · damping 30 · mass 0.5"
+   },
+   {
+    "label": "Featured card",
+    "value": "#141414 → #0E0E0E · border rgba(255,255,255,.3)"
+   },
+   {
+    "label": "Shell",
+    "value": "#0E0E0E · border #1F1F1F · radius 12 px · padding 20 px"
+   }
+  ],
+  "prompt": "Build a plan comparison table in a #0E0E0E box with a 1px #1F1F1F border, 12px radius, 20px padding. Toolbar (bottom border #1F1F1F): a 256px filter input with a search icon (#141414 fill, #1F1F1F border, 12px text, placeholder 'Filter capabilities...') that matches feature name or description case-insensitively, and a 'Differences only' toggle button (#141414 / #A1A1A1 off; #FAFAFA fill with #050505 text on) that hides features whose values are identical across all plans. Header: 4-column grid — a label 'Feature Matrix' (11px mono uppercase #6B6B6B) with 'N specifications', then three plan cards (16px padding, 12px radius): Hobby $0/mo 'Deploy Free', Pro Team $29/mo featured with a 'Popular' badge and 'Start 14-Day Trial', Enterprise $249/mo 'Contact Sales'. Each card shows a 14px semibold name, an 11px tagline, a 20px bold monospace price and a full-width CTA. The featured card: gradient #141414 to #0E0E0E, 1px rgba(255,255,255,.3) border, sparkle icon, #FAFAFA CTA, and a white uppercase 10px mono badge positioned 10px above the top-right. Body: categories 'Compute & Edge Performance' (Serverless Concurrency 10 nodes/250 nodes/Unlimited, Global Edge Routing no/yes/yes, 0ms Cold Start Standby no/no/yes) and 'Security & Governance' (Single sign-on no/yes/yes, Immutable Audit Logs 7 days/90 days/7 years). Category header: 6px dot, 12px uppercase semibold title, chevron rotating -90deg in 150ms; collapse the rows with height and opacity on a spring of stiffness 170, damping 26, mass 0.9. Rows: same 4-column grid, hover #141414. Booleans: true = 20px round check #34D399 on emerald 10% with 20% border; false = grey minus on #141414. Strings: 12px mono white. An info icon beside each feature toggles a 192px description tooltip on hover or click. Below 640px show a segmented plan switcher with a sliding pill (spring 380/30/0.5) and only the selected plan's card and values, each prefixed with the plan name. Show 'No features match...' when filtering leaves nothing.",
+  "caveats": [
+   "Filtering rows in and out is instant — only category collapse animates.",
+   "Category headers don't expose <code>aria-expanded</code>, and the info tooltip is not tied to its button with <code>aria-describedby</code>."
+  ],
+  "blurb": "A pricing comparison that helps people decide instead of scroll: plan cards on top, grouped features below, a search box to find the one capability they care about, and a switch that hides everything the plans have in common. It belongs on SaaS pricing pages, product tier pages and any offer with several packages to compare, and it adapts to a one-plan-at-a-time view on phones."
+ },
+ {
+  "id": "stepper",
+  "plays": "click",
+  "accent": "#fafafa",
+  "title": {
+   "en": "Stepper",
+   "zh": "步骤进度条",
+   "zh-tw": "步驟進度條"
+  },
+  "gist": {
+   "en": "A four-step progress tracker — Account, Workspace, Invite, Launch — above a content panel with Back and Next buttons. Press Next and the line to the following step fills from left to right, the finished circle turns solid and draws a check mark, an outer ring slides on to the new step, and the panel below slides out to the left as the next one comes in from the right. Completed steps can be clicked to go back.",
+   "zh": "一个四步进度条：Account、Workspace、Invite、Launch，下面是内容面板和「上一步 / 下一步」按钮。按下一步，通往下一步的连线从左往右填满，完成的圆圈变成实心并画出一个勾，一圈外环滑到新的当前步；下方面板向左滑出，新内容从右边滑入。已完成的步骤可以点击返回。",
+   "zh-tw": "一條四步驟進度條：Account、Workspace、Invite、Launch，下面是內容面板和「上一步／下一步」按鈕。按下一步，通往下一步的連線從左往右填滿，完成的圓圈變成實心並畫出一個勾，一圈外環滑到新的目前步驟；下方面板往左滑出，新內容從右邊滑入。已完成的步驟可以點選返回。"
+  },
+  "anatomy": [
+   "<b>Indicators.</b> 28 px circles with 12 px tabular numbers. Complete: solid white with a dark check stroked at width 3, drawn by animating <code>pathLength</code> 0 → 1 over 300 ms (80 ms delay, ease-out) — skipped on first paint so already-done steps don't replay. Current: white outline plus an outer ring 5 px outside it in <code>#404040</code>, which moves between steps via shared <code>layoutId</code> on a spring of stiffness 420, damping 34, mass 0.8. Upcoming: <code>#262626</code> outline, <code>#737373</code> number. Colours change over 300 ms.",
+   "<b>Connectors.</b> A 1 px <code>#262626</code> track between steps with a white fill that scales from 0 to 1 (left origin, or top origin when vertical) in 350 ms on <code>cubic-bezier(0.32, 0.72, 0, 1)</code>.",
+   "<b>Labels.</b> Title 14 px plus 12 px description; in the horizontal layout only the current step keeps its label below 640 px. A vertical orientation stacks steps with the connector running down from the circle's centre.",
+   "<b>Panels.</b> <code>StepPanels</code> shows one child per step, swapped in wait mode: moving forward the old panel leaves 24 px to the left and the new one enters from 24 px right (reversed when going back), with opacity, in 180 ms on the same curve.",
+   "Rendered as <code>&lt;ol aria-label=\"Progress\"&gt;</code>; the current item gets <code>aria-current=\"step\"</code>, completed titles append a screen-reader-only '(completed)', and completed rows become buttons with a focus ring when <code>onStepChange</code> is supplied."
+  ],
+  "tokens": [
+   {
+    "label": "Ring spring",
+    "value": "stiffness 420 · damping 34 · mass 0.8"
+   },
+   {
+    "label": "Connector fill",
+    "value": "350 ms · cubic-bezier(0.32, 0.72, 0, 1)"
+   },
+   {
+    "label": "Check draw",
+    "value": "pathLength 0 → 1 · 300 ms · 80 ms delay"
+   },
+   {
+    "label": "Panel slide",
+    "value": "±24 px · 180 ms"
+   },
+   {
+    "label": "Indicator",
+    "value": "28 px · ring −5 px #404040 · track #262626"
+   }
+  ],
+  "prompt": "Build a stepper with steps Account (Personal info), Workspace (Name project), Invite (Add team), Launch (Done) as an ordered list aria-label 'Progress'. Horizontal layout: each step is a 28px circle followed by a label (14px title, 12px grey description) and, except for the last, a flexible 1px #262626 connector with 12px margins. States: complete = solid white circle with a dark check (stroke 3, path 'M5 12.5l4.5 4.5L19 7.5') drawn from pathLength 0 to 1 over 300ms after 80ms, ease-out, not animated on first render; current = white 1px outline plus an outer ring 5px outside in #404040 that moves between steps by shared layout id on a spring of stiffness 420, damping 34, mass 0.8; upcoming = #262626 outline with #737373 number. Colour changes take 300ms. Connectors before the current step fill with a white bar scaling 0 to 1 from the left over 350ms cubic-bezier(0.32,0.72,0,1). Below 640px hide labels of non-current steps. Vertical option: steps stacked with 28px spacing and the connector running down from the circle at x 13.5px, filling top to bottom. Completed steps are buttons that jump back. Use aria-current='step' and a screen-reader '(completed)' suffix. Below, a panel area (min 140px) swaps one child per step in wait mode: forward = exit to x -24px, enter from x +24px (reverse when going back), with opacity, 180ms on the same curve. Add Back and Next buttons (Next reads 'Finish' on the penultimate step; disabled at the ends) and an orientation toggle.",
+  "caveats": [
+   "No reduced-motion branch for the ring, fill or panel slide."
+  ],
+  "blurb": "A step-by-step progress tracker for multi-part flows that shows where someone is, what is done and what is left, with the progress line filling and checks drawing themselves as they advance. It works for sign-up and onboarding, checkout, setup wizards and long forms broken into stages, and lets people click back to an earlier step to change something."
+ }
+]

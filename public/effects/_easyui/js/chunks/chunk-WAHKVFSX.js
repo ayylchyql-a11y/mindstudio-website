@@ -1,0 +1,1 @@
+import{a}from"./chunk-5TL3NGWZ.js";import{b as o,c as e}from"./chunk-EN3SAVJI.js";var r=o(e(),1),{AdvancedDataTableLiveShowcase:t}=a,s={id:"advanced-data-table",aliases:[]};async function i(){await Promise.all([t.preload()])}function n(d){return(0,r.jsx)(t,{})}export{s as a,i as b,n as c};

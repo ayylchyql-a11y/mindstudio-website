@@ -1,0 +1,1 @@
+import{a as e}from"./chunk-F474P2UG.js";import{b as t,c as l}from"./chunk-EN3SAVJI.js";var o=t(l(),1),{SettleModalDemo:s}=e,i={id:"settle-modal",aliases:[]};async function p(){await Promise.all([e.SettleModalDemo.preload()])}function a(m){return(0,o.jsx)("div",{className:"py-12 flex flex-col items-center justify-center",children:(0,o.jsx)(s,{})})}export{i as a,p as b,a as c};

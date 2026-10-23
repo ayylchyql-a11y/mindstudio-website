@@ -1,0 +1,1 @@
+import{a as e}from"./chunk-5TL3NGWZ.js";import{b as o,c as t}from"./chunk-EN3SAVJI.js";var r=o(t(),1),{ShootingStarsLiveShowcase:s}=e,p={id:"shooting-stars",aliases:["shootingstars","celestial-stars"]};async function c(){await Promise.all([s.preload()])}function n(a){let{demoKey:i}=a;return(0,r.jsx)(s,{},i)}export{p as a,c as b,n as c};

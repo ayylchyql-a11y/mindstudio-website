@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as t,c as e}from"./chunk-EN3SAVJI.js";var s=t(e(),1),{SplitButtonShowcase:i}=o,m={id:"split-button",aliases:["split-buttons","splitbutton"]};async function l(){await Promise.all([o.SplitButtonShowcase.preload()])}function r(p){let{demoKey:n}=p;return(0,s.jsx)(i,{},n)}export{m as a,l as b,r as c};

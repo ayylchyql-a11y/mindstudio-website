@@ -1,0 +1,1 @@
+import{a}from"./chunk-F474P2UG.js";import{b as o,c as t}from"./chunk-EN3SAVJI.js";var e=o(t(),1),{AvatarStackShowcase:c}=a,n={id:"avatar-stack",aliases:["avatar-stacks","avatarstack"]};async function i(){await Promise.all([a.AvatarStackShowcase.preload()])}function m(r){let{demoKey:s}=r;return(0,e.jsx)(c,{},s)}export{n as a,i as b,m as c};

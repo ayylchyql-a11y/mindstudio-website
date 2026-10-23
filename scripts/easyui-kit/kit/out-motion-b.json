@@ -1,0 +1,1059 @@
+[
+ {
+  "id": "morphing-icon",
+  "plays": "click",
+  "accent": "#34d399",
+  "title": {
+   "en": "Morphing icon",
+   "zh": "旋转换形图标",
+   "zh-tw": "旋轉變形圖示"
+  },
+  "gist": {
+   "en": "Two icons share one square slot: a pill button and a row of five toolbar toggles (bookmark, sound, theme, play, lock). Click one and the current glyph spins a quarter turn away while shrinking and fading, as its replacement spins in from the opposite quarter turn and grows to full size, picking up its colour.",
+   "zh": "两个图标叠在同一个方格里：一颗胶囊按钮，外加一排五个工具栏开关（书签、声音、主题、播放、锁）。点一下，当前图标转走四分之一圈、同时缩小变淡，替换它的图标从反方向转四分之一圈进来、放大到原尺寸，并换上自己的颜色。",
+   "zh-tw": "兩個圖示疊在同一個方格裡：一顆膠囊按鈕，外加一排五個工具列開關（書籤、聲音、主題、播放、鎖）。點一下，目前的圖示轉走四分之一圈、同時縮小變淡，取代它的圖示從反方向轉四分之一圈進來、放大到原尺寸，並換上自己的顏色。"
+  },
+  "anatomy": [
+   "<b>One slot, two layers.</b> A fixed <code>size × size</code> box (16 or 20 px in the demo) holds two absolutely positioned layers, the “from” and the “to” icon, both centred. Nothing is unmounted; only transforms and opacity change.",
+   "<b>Opposite quarter turns.</b> Inactive: from = opacity 1, scale 1, rotate 0; to = opacity 0, scale 0.65, rotate +90°. Active: from leaves to opacity 0, scale 0.65, rotate −90° while to arrives at 0°. Both run 300 ms on <code>[0.4, 0, 0.2, 1]</code>, so the swap reads as one continuous spin.",
+   "<b>Toolbar states.</b> Each toggle is a 44 px rounded-xl button that presses to scale 0.90 (the pill CTA to 0.95); the active state adds a raised surface, a border and the icon colour — emerald for saved / playing, rose for muted, sky for night, amber for unlocked.",
+   "<b>Screen readers.</b> The hidden layer gets <code>aria-hidden</code>, so only the current glyph is exposed; the buttons carry their own <code>aria-label</code>."
+  ],
+  "tokens": [
+   {
+    "label": "Duration",
+    "value": "300 ms"
+   },
+   {
+    "label": "Easing",
+    "value": "cubic-bezier(0.4, 0, 0.2, 1)"
+   },
+   {
+    "label": "Exit / enter",
+    "value": "rotate −90° / +90° → 0 · scale 0.65 → 1"
+   },
+   {
+    "label": "Slot",
+    "value": "20 px (16 px in the pill)"
+   },
+   {
+    "label": "Press",
+    "value": "scale 0.90 icon button · 0.95 pill"
+   }
+  ],
+  "prompt": "Build a MorphingIcon component: a relative inline-flex square of `size` px (default 20) containing two absolutely positioned, centred layers — `from` and `to` icons. When `active` is false, from is opacity 1 / scale 1 / rotate 0 and to is opacity 0 / scale 0.65 / rotate 90deg; when true, from goes to opacity 0 / scale 0.65 / rotate -90deg and to goes to opacity 1 / scale 1 / rotate 0. Animate both with a 300 ms tween on cubic-bezier(0.4, 0, 0.2, 1), no initial animation on mount. Set aria-hidden on whichever layer is hidden. Demo on a dark surface: a rounded-full pill button (Bookmark → emerald BookmarkCheck, label switches Save/Saved to Collection, press scale 0.95) above a rounded-2xl blurred strip of five 44px rounded-xl toggles — Bookmark→BookmarkCheck emerald, Volume2→VolumeX rose, amber Sun→sky Moon, Play→Pause emerald, Lock→Unlock amber — each pressing to scale 0.90 and gaining a raised background and border when active; every button has an aria-label.",
+  "caveats": [
+   "No reduced-motion branch: the rotation always plays."
+  ],
+  "blurb": "A small icon swap where the old symbol spins out and the new one spins in, giving toggles a clear before-and-after. It suits save, mute, play, lock and theme switches in toolbars, media players and cards — anywhere a button flips between two states and the user should notice that it did."
+ },
+ {
+  "id": "nimbu-mirchi",
+  "plays": "hover",
+  "accent": "#f2c72f",
+  "title": {
+   "en": "Nimbu-mirchi charm",
+   "zh": "柠檬辣椒挂饰",
+   "zh-tw": "檸檬辣椒吊飾"
+  },
+  "gist": {
+   "en": "A hand-painted SVG talisman — four glossy green chillies stacked above a big yellow lemon, a dark knot and three loose threads — hangs from a thin line at the top of the frame. Move the pointer across it and it swings toward the cursor with a heavy, slightly overshooting pendulum, each layer trailing at a smaller angle; leave and it sways back to rest.",
+   "zh": "一串手绘 SVG 护身符——四根带光泽的青辣椒叠在一颗大黄柠檬上方，下面一个深色绳结和三根散线——从画面顶部一根细线上垂下来。指针在上面移动，它就朝指针方向摆过去，像有分量的钟摆，会稍微摆过头；每一层摆的角度依次更小。指针离开，它慢慢晃回原位。",
+   "zh-tw": "一串手繪 SVG 護身符——四根帶光澤的青辣椒疊在一顆大黃檸檬上方，下面一個深色繩結和三根散線——從畫面頂端一條細線垂下來。游標在上面移動，它就朝游標方向擺過去，像有重量的鐘擺，會稍微擺過頭；每一層擺的角度依序更小。游標離開，它慢慢晃回原位。"
+  },
+  "anatomy": [
+   "<b>Pointer to spring.</b> Pointer position over the container is normalised to −1…1 on each axis and clamped, then fed into two springs: X with stiffness 55, damping 9, mass 1.8; Y with stiffness 45, damping 10, mass 1.6. The low damping against high mass is what gives the overshoot.",
+   "<b>Pivot from the top.</b> The whole 360×520 SVG rotates about its top edge by up to ±13° and lifts ±5 px with Y. Inside it the chilli cluster adds ±7°, the lemon ±3° and the threads ±5° around their own pivots, so the layers lag one another instead of moving as one rigid sticker.",
+   "<b>Painted look.</b> Each chilli is a bezier blob with a three-stop green gradient (#3F8B2A → #2E6B1E → #234F18), a 35 % dark underside overlay, a pale #9BD86A gloss stroke and a dark stem cap; the lemon is a 92×86 ellipse with a radial #FFE36B → #F2C72F → #C2901A fill, an offset shadow, a specular blob and a few pore dots.",
+   "<b>Accessibility.</b> The container is <code>role=\"img\"</code> with a caption as its label. Under reduced motion the pointer listeners are never attached, so the charm hangs still."
+  ],
+  "tokens": [
+   {
+    "label": "Spring X",
+    "value": "stiffness 55 · damping 9 · mass 1.8"
+   },
+   {
+    "label": "Spring Y",
+    "value": "stiffness 45 · damping 10 · mass 1.6"
+   },
+   {
+    "label": "Swing",
+    "value": "±13° whole · ±7° chillies · ±5° threads · ±3° lemon"
+   },
+   {
+    "label": "Lemon",
+    "value": "#FFE36B · #F2C72F · #C2901A"
+   },
+   {
+    "label": "Chilli",
+    "value": "#3F8B2A · #2E6B1E · #234F18"
+   }
+  ],
+  "prompt": "Build a hanging lemon-and-chilli charm as one inline SVG (viewBox 360×520) inside a full-width container at least 600px tall with touch-action none. A 1px neutral line runs from the top edge 56px down to the charm. Draw four horizontally stacked green chillies (organic bezier blobs, linear gradient #3F8B2A/#2E6B1E/#234F18, a 35% dark #1E3F14→#0F2409 overlay, a 3.5px #9BD86A gloss stroke along the top, a dark #1B3A11 stem ellipse on the right, each tilted -3..4deg), below them a lemon ellipse rx92 ry86 at (180,340) with a radial gradient #FFE36B→#F2C72F→#C2901A, an offset brown shadow, a cream specular blob and six faint pore dots, then a 56×28 dark rounded knot and three thin grey trailing threads. On pointermove normalise the pointer to -1..1 around the container centre (clamped) and drive two springs — X stiffness 55 damping 9 mass 1.8, Y stiffness 45 damping 10 mass 1.6; on pointerleave set both to 0. Map X to the whole charm's rotation ±13deg about its top centre and Y to translateY ±5px; additionally rotate the chilli group ±7deg, the lemon ±3deg and the threads ±5deg about their own pivots. Use motion values only, no React state per frame. Give the container role=img with an aria-label, and skip the pointer listeners entirely under prefers-reduced-motion.",
+  "caveats": [
+   "Needs a hovering pointer; on touch it only moves while a finger drags across it, and there is no keyboard path."
+  ],
+  "blurb": "A hanging good-luck charm of chillies and a lemon that swings toward your cursor and sways back with real weight. It is a playful hero or footer ornament for food, festival and culture sites, a launch page that wants a little personality, or a page-not-found screen — decoration that rewards curiosity without asking anything of the visitor."
+ },
+ {
+  "id": "package-box",
+  "plays": "click",
+  "accent": "#b07b4a",
+  "title": {
+   "en": "Package box",
+   "zh": "开箱快递盒",
+   "zh-tw": "開箱包裹"
+  },
+  "gist": {
+   "en": "A cardboard box drawn in CSS 3D, seen from above at a corner, with packing tape, a shipping sticker and handling marks. Click it and the tape splits along the seam, the two long flaps fold back followed by the two short ones, and a packing slip rises out of the box and turns to face you at full size. Click again and the same sequence plays in reverse.",
+   "zh": "一个用 CSS 3D 搭出来的纸箱，从斜上方看一个角，带封箱胶带、快递面单和搬运标记。点一下，胶带沿接缝裂开，两片长盖先向后翻开、两片短盖随后，一张装箱单从箱子里升起来，转正朝向你、放大到原尺寸。再点一下，整段动画倒着播回去。",
+   "zh-tw": "一個用 CSS 3D 搭出來的紙箱，從斜上方看一個角，帶封箱膠帶、物流貼紙和搬運標示。點一下，膠帶沿接縫裂開，兩片長蓋先往後翻開、兩片短蓋隨後，一張出貨單從箱子裡升起，轉正面對你、放大到原尺寸。再點一下，整段動畫倒著播回去。"
+  },
+  "anatomy": [
+   "<b>A real box.</b> A 200 px cube built from five walls with <code>preserve-3d</code>, tilted <code>rotateX(-30deg) rotateY(-45deg)</code> under a 2200 px perspective. Every face is shaded from one <code>--box</code> colour with <code>color-mix</code> (lit face +6 % white, shaded face −26–36 % black, inside −42–72 %) over an SVG fractal-noise grain.",
+   "<b>One timeline.</b> A single value <code>t</code> runs 0 → 1 linearly over 2.4 s to open and 1 → 0 over 1.5 s to close; every part reads its own slice. Tape cut 0–0.08; long flaps −90° → −238° at 0.08–0.34 and 0.11–0.37; short flaps −90° → −212° at 0.26–0.50 and 0.29–0.53 on <code>cubic-bezier(0.34,1.1,0.5,1)</code>; the slip rises 0.46–0.78 and turns to face the camera 0.66–1, scaling 0.54 → 1. Clicking mid-way just reverses direction.",
+   "<b>The slip.</b> A 240×340 paper card with faint fold lines, a serif heading, ship-to and date, three line items, a total and a rotated round stamp in <code>--accent</code>. Its pose is computed each frame so it steps 56 px toward the camera while it un-tilts. The stage grows from 392 to 650 design px as it rises, and the whole scene scales to its container.",
+   "<b>Hover and press.</b> While closed the box lifts 4 px on hover (spring 0.35 s, bounce 0.2) and presses to scale 0.99.",
+   "<b>Accessibility.</b> A real button under the box toggles it with <code>aria-expanded</code> / <code>aria-controls</code>; Esc closes; the slip is <code>inert</code> while closed. Reduced motion jumps straight to the end state."
+  ],
+  "tokens": [
+   {
+    "label": "Timeline",
+    "value": "open 2.4 s · close 1.5 s · linear master"
+   },
+   {
+    "label": "Flap ease",
+    "value": "cubic-bezier(0.34, 1.1, 0.5, 1)"
+   },
+   {
+    "label": "Camera",
+    "value": "rotateX −30° · rotateY −45° · perspective 2200 px"
+   },
+   {
+    "label": "Sizes",
+    "value": "box 200 px · slip 240×340 · stage 440 wide"
+   },
+   {
+    "label": "Colours",
+    "value": "box #b07b4a · tape #d3c3aa · paper #fbfaf6 · stamp #c2552b"
+   }
+  ],
+  "prompt": "Build a CSS-3D cardboard box that opens on click. Stage: 440px wide design space, 392px tall closed and 650px open, scaled to fit the container, perspective 2200px with origin 50% 38%. Box: a 200px cube (floor + four walls, preserve-3d, 5px radius) rotated rotateX(-30deg) rotateY(-45deg); colour every face from one --box (#b07b4a) via color-mix — left/front +6% white to -7% black, right -26%..-36% black, flap tops +14%..+3% white, inside -42%..-72% black — layered with an SVG feTurbulence grain. Put a barcode sticker on the front face, fragile/this-side-up marks on the right, and a 46px tape strip (#d3c3aa) across the two long flaps and down both sides. Each wall carries a 200×100 flap hinged at its top edge, starting at -90deg. Drive everything from one motion value t: 0→1 linear over 2.4s to open, back over 1.5s to close (reversible mid-flight). Slices: tape seam line fades in 0–0.08; long flaps rotate to -238deg over 0.08–0.34 and 0.11–0.37, short flaps to -212deg over 0.26–0.50 and 0.29–0.53, ease cubic-bezier(0.34,1.1,0.5,1); a 240×340 paper slip (#fbfaf6, ink #1c1a17) rises out over 0.46–0.78 (ease 0.22,0.8,0.2,1) then over 0.66–1 (ease 0.3,0.9,0.3,1) un-rotates to face the camera, scales 0.54→1 and moves 56px toward the viewer; grow the stage height with 0.65·rise + 0.35·show. The slip shows a serif 'Thank you' heading, ship-to, date, three items, a total and a -10deg round stamp in #c2552b. Closed box lifts 4px on hover (spring 0.35s bounce 0.2) and taps to 0.99. Add a visible button below with aria-expanded/aria-controls, close on Esc, make the slip inert while closed, and jump to the end state under prefers-reduced-motion.",
+  "caveats": [
+   "Relies on color-mix() and nested preserve-3d; older browsers flatten or mis-shade the faces."
+  ],
+  "blurb": "An unboxing moment: a cardboard parcel that opens its flaps and lifts a packing slip up to the reader. It fits order confirmations, thank-you pages after checkout, shipping notifications, gift reveals and onboarding screens that hand over a welcome note — places where a small sense of occasion makes the message land."
+ },
+ {
+  "id": "particle-delete",
+  "plays": "click",
+  "accent": "#34d399",
+  "title": {
+   "en": "Particle delete",
+   "zh": "粒子消散删除",
+   "zh-tw": "粒子消散刪除"
+  },
+  "gist": {
+   "en": "A dark resource list of three rows, each with an icon, a name, a status dot and a trash button that appears on hover. Delete a row and it erodes from left to right behind a soft blurred edge while grey dust peels off that edge and drifts away; when the dust is gone the row is removed, the list closes the gap and the counter in the header rolls down by one. A Restore link brings everything back.",
+   "zh": "一张深色资源列表，三行，每行有图标、名称、状态圆点，悬停时出现垃圾桶按钮。删一行，它会从左到右被一道柔和模糊的边缘吃掉，灰色粉尘从那道边缘上剥落飘走；粉尘散尽后这行被移除，列表收拢空位，标题旁的数字往下滚一格。点「Restore」全部恢复。",
+   "zh-tw": "一張深色資源清單，三列，每列有圖示、名稱、狀態圓點，滑鼠移上去才出現垃圾桶按鈕。刪掉一列，它會從左到右被一道柔和模糊的邊緣吃掉，灰色粉塵從那道邊緣剝落飄走；粉塵散盡後這列被移除，清單收合空位，標題旁的數字往下捲一格。按「Restore」全部還原。"
+  },
+  "anatomy": [
+   "<b>The row erodes.</b> Over 1.1 s the row gets a moving <code>mask-image: linear-gradient(90deg, transparent pos−14%, #000 pos)</code> where pos follows a sine ease 0 → 114 %, plus a blur that grows to 1.4 px.",
+   "<b>Dust on a canvas.</b> A canvas overlay padded 60–140 px around the row is appended to the body. It holds 14 specks per 1,000 px² (min 80, cap 1,400, or 700 on touch / ≤4-core devices), each released exactly when the mask edge passes it, flying 24–234 px along the sweep and slightly up, nudged by a sine/cosine curl field with 60 %/s damping and a light upward pull, living 520–1,140 ms while it shrinks to half size and fades. 6 % of specks are larger (2.4–3.6 px); colours are five neutral greys.",
+   "<b>The list closes up.</b> Rows use layout animation and the card animates its measured height with a spring (0.45 s, no bounce); the count rolls 8 px with a 200 ms <code>[0.23,1,0.32,1]</code> tween; a Restore button slides in 6 px. Empty state shows a dashed circle and a restore link.",
+   "<b>Accessibility.</b> Delete buttons are labelled “Delete &lt;name&gt;”, always visible on touch and on focus; focus moves to the neighbouring row’s button after removal; a polite live region announces “X deleted”. With reduced motion the row just fades out in 160 ms."
+  ],
+  "tokens": [
+   {
+    "label": "Dissolve",
+    "value": "1100 ms · sine ease · 14 % soft edge · blur → 1.4 px"
+   },
+   {
+    "label": "Particles",
+    "value": "14 / 1000 px² · cap 1400 (700 low-power)"
+   },
+   {
+    "label": "Speck life",
+    "value": "520–1140 ms · size 0.7–2.2 px (6 % at 2.4–3.6)"
+   },
+   {
+    "label": "List spring",
+    "value": "duration 0.45 s · bounce 0"
+   },
+   {
+    "label": "Surface",
+    "value": "#0b0b0c · ring white/7 % · radius 16 px"
+   }
+  ],
+  "prompt": "Build a dark resource list (max-w-lg card, #0b0b0c, 16px radius, 1px white/7% ring, deep drop shadow) with a header 'Resources' and a tabular item count, and three rows (rounded-xl, white/2.5% fill, 32px icon tile, 13px title + 12px grey description, emerald status dot with 8px glow, a 36px trash button that is opacity 0 until row hover/focus on hover-capable devices and turns rose on hover). Deleting a row runs a dust dissolve: over 1100ms set the row's mask-image to linear-gradient(90deg, transparent (pos-14)%, #000 pos%) with pos = (0.5−0.5cos(πp))·114 and filter blur up to 1.4px. Meanwhile append a body-level canvas padded 60–140px around the row (dpr capped at 2) and spawn round(w·h·14/1000) specks (min 80, max 1400, or 700 on coarse pointer or ≤4 cores) in five greys #8a8a8e #71717a #9ca3af #6b7280 #78716c; release each at the time the mask edge reaches it, with velocity 24–234px/s along the sweep and 10–90px/s upward, add a curl force sin(y·0.021+t·3.1)·70 / cos(x·0.019+t·2.4)·70−20, damp by 0.6/s, life 520–1140ms, shrink to half and fade with (1−k)^1.6. When done remove the canvas and the row; rows reflow with a layout spring (0.45s, bounce 0); the card height animates with the same spring; the count rolls 8px (200ms, ease 0.23,1,0.32,1); a 'Restore N' button fades in from 6px right. Move focus to the neighbouring delete button, announce deletions in an aria-live region, and under prefers-reduced-motion fade the row out in 160ms instead.",
+  "caveats": [
+   "Each delete creates a full-page-layer canvas and up to 1,400 particles; firing many at once on weak hardware will drop frames."
+  ],
+  "blurb": "A delete action that turns a list row into drifting dust before the list closes up, so removing something feels final but not abrupt. It suits dashboards, file and resource managers, notification centres and to-do lists — anywhere people clear items one at a time and benefit from a clear, satisfying confirmation that the item is gone."
+ },
+ {
+  "id": "photo-box",
+  "plays": "hover",
+  "accent": "#e8742f",
+  "title": {
+   "en": "Photo box",
+   "zh": "照片收纳盒",
+   "zh-tw": "相片收納盒"
+  },
+  "gist": {
+   "en": "A frosted orange card titled 写真箱 sits over a paper keepsake box holding three small instant-photo prints. Hover and the box slides out to the right from under the cover while the prints fan apart; click a print and it flies to the centre at twice its size with a caption underneath as everything else fades and blurs. Click anywhere to send it back into the box.",
+   "zh": "一张磨砂橙色卡片（标题「写真箱」）压在一个纸质收纳盒上，盒里插着三张小拍立得。指针移上去，盒子从卡片下向右滑出，三张照片同时散开成扇形；点其中一张，它飞到中央、放大两倍多，下方出现说明文字，其余部分变淡变模糊。随便点一下，照片就飞回盒里。",
+   "zh-tw": "一張霧面橘色卡片（標題「写真箱」）壓在一個紙製收納盒上，盒裡插著三張小拍立得。游標移上去，盒子從卡片下往右滑出，三張照片同時散開成扇形；點其中一張，它飛到中央、放大兩倍多，下方出現說明文字，其餘部分變淡變模糊。隨便點一下，照片就飛回盒裡。"
+  },
+  "anatomy": [
+   "<b>Layered stage.</b> A 490×440 design stage scaled to its width: back panel (#bba67c), three 120×150 polaroids at 0.7 scale, a front lip (#ecdcb9) with a round latch and an orange tab, and on top a 247×156 cover in an orange gradient (#f28e54 → #e26a24) with an 8 px backdrop blur plus a 12 px frosted strip on its right third where prints pass behind.",
+   "<b>Open.</b> The box parts slide 85 px right on a spring (0.55 s, bounce 0.12). Prints move from a tidy row (−6°, −1°, 4°) to a fan (−12°, −2°, 9°) on a bouncier spring (0.55 s, bounce 0.24), staggered 40 ms on the way out and 30 ms in reverse on the way back.",
+   "<b>Enlarge.</b> The chosen print springs (bounce 0.1) to the stage centre at scale 2.05 (2.4 on narrow screens), unrotated; everything else drops to 14 % opacity with a 2 px blur over 280 ms. A full-stage layer fades in over 200 ms and the caption rises 8 px after a 200 ms delay.",
+   "<b>Inputs.</b> Mouse hover is hit-tested against the drawn composition, not the whole rectangle. Touch and keyboard pin it open instead (tap outside to close). Prints are buttons with labels; the enlarged view is a modal dialog that takes focus and closes on click, Enter, Space or Esc, returning focus to the print. Reduced motion makes every move instant."
+  ],
+  "tokens": [
+   {
+    "label": "Box slide",
+    "value": "85 px · spring 0.55 s bounce 0.12"
+   },
+   {
+    "label": "Fan",
+    "value": "spring 0.55 s bounce 0.24 · stagger 40 ms"
+   },
+   {
+    "label": "Enlarge",
+    "value": "scale 2.05 (2.4 compact) · others 14 % + blur 2 px"
+   },
+   {
+    "label": "Fade ease",
+    "value": "280 ms cubic-bezier(0.23, 1, 0.32, 1)"
+   },
+   {
+    "label": "Colours",
+    "value": "cover #e8742f · lip #ecdcb9 · back #bba67c · tab #d1522a"
+   }
+  ],
+  "prompt": "Build a photo keepsake box on a 490×440 design stage scaled to the container width (530 tall with 45px offset under 520px wide). Layers, back to front: a box back panel (273×144, #bba67c→#ad9669, top radius 10), three polaroids (120×150, cream #fbf9f5 frame, 7px padding, 104px picture, Japanese title under it) at scale 0.7 resting at x 118/170/222 with rotations -6/-1/4deg, a front lip (273×60, #ecdcb9→#e3d1a9, a 30px round latch, 'PRINTS · 3' label) and an 18×38 orange tab on its right edge, then a 247×156 rounded-14 cover button at (16,150) with a 135deg orange gradient rgba(242,142,84)→rgba(226,106,36), backdrop blur 8px, a 36%-wide right strip with blur 12px masked from transparent, a white 23px title '写真箱', a 13px subtitle and two white/30% hairlines. Mouse hover over the drawn shape opens it: box parts slide 85px right (spring 0.55s bounce 0.12), prints fan to (97,184,-12deg), (154,176,-2deg), (227,194,9deg) with spring 0.55s bounce 0.24 staggered 40ms (reverse stagger 30ms on close). Clicking a print springs it (bounce 0.1) to the stage centre at scale 2.05 (2.4 compact), rotation 0, while the cover, box and other prints go to opacity 0.14 and blur 2px over 280ms ease (0.23,1,0.32,1); a click-anywhere layer fades in 200ms and the caption fades up 8px after 200ms. Touch/keyboard toggles a pinned open state; tapping outside unpins. Prints are labelled buttons (focus ring #e8742f), the enlarged view is role=dialog aria-modal that takes focus and closes on click/Enter/Space/Esc and refocuses the print; all motion is instant under prefers-reduced-motion.",
+  "caveats": [
+   "Holds at most three prints, and the layout coordinates are hand-placed for exactly that number."
+  ],
+  "blurb": "A keepsake box of instant photos that slides open when you approach and lets you pull one print out to look at it closely. It works as a small gallery for a portfolio, a travel or wedding page, an “about us” section with a few personal moments, or a product page showing three highlights in a warmer, tactile way."
+ },
+ {
+  "id": "pricing",
+  "plays": "hover",
+  "accent": "#fafafa",
+  "title": {
+   "en": "Two-tier pricing",
+   "zh": "双档价格卡",
+   "zh-tw": "雙方案價格卡"
+  },
+  "gist": {
+   "en": "Two pricing cards side by side — a plain Free tier and a slightly brighter, more elevated Pro tier — each with a large price, a cadence line, a check-mark feature list and a full-width button. The cards rise 8 px into place on load; hovering the Pro button sends a single bright beam across it while the button grows a touch.",
+   "zh": "两张并排的价格卡——朴素的免费档和更亮、更浮起一点的 Pro 档——各有大号价格、计费周期、打勾的功能列表和一颗整宽按钮。载入时两张卡上浮 8 px 到位；指针移到 Pro 按钮上，一道亮光从左扫到右，按钮同时微微放大。",
+   "zh-tw": "兩張並排的價格卡——樸素的免費方案和更亮、更浮起一點的 Pro 方案——各有大號價格、計費週期、打勾的功能清單和一顆滿版按鈕。載入時兩張卡上浮 8 px 定位；游標移到 Pro 按鈕上，一道亮光從左掃到右，按鈕同時微微放大。"
+  },
+  "anatomy": [
+   "<b>Grid.</b> One column on phones, two from the md breakpoint, max width 896 px, 20–32 px gap, cards stretched to equal height. Each card is rounded-2xl with 24 / 32 / 40 px padding, a 36–48 px semibold price tracked −0.035 em, a 1 px divider and a feature list with 16 px check icons.",
+   "<b>Featured tier.</b> On a dark page the Pro card is #141414 with a #2A2A2A border and a deeper 12 / 28 px shadow, versus the Free card on the base surface; borders brighten on hover over 300 ms. Its button inverts to white with dark text.",
+   "<b>Entrance.</b> Each card fades in from 8 px below on a spring (stiffness 200, damping 28, mass 0.85), the featured one 50 ms later.",
+   "<b>Button shimmer.</b> Two layers inside the Pro button: an always-on vertical sheen (white 0 → 50 % → 0 in dark mode) and a hover-only beam (a 90° white band at 70 %) that slides from −110 % to 110 % once in 1.6 s ease-out. Buttons scale to 1.015 on hover and 0.98 on press.",
+   "<b>Accessibility.</b> Section labelled “Pricing”; check icons are hidden from assistive tech; cards show a focus-within ring. Reduced motion skips the entrance and removes the beam, leaving the static sheen."
+  ],
+  "tokens": [
+   {
+    "label": "Entrance spring",
+    "value": "stiffness 200 · damping 28 · mass 0.85 · y 8 px"
+   },
+   {
+    "label": "Shimmer",
+    "value": "1600 ms ease-out · translateX −110 % → 110 %"
+   },
+   {
+    "label": "Button",
+    "value": "h 44 px · radius 8 px · hover 1.015 · press 0.98"
+   },
+   {
+    "label": "Pro card (dark)",
+    "value": "#141414 · border #2A2A2A → #3F3F46"
+   },
+   {
+    "label": "Price",
+    "value": "36–48 px · 600 · tracking −0.035 em"
+   }
+  ],
+  "prompt": "Build a two-tier pricing section on a dark page: a grid (1 column, 2 from md, max-w 896px, gap 20–32px, items-stretch) with a Free card and a featured Pro card. Each card: rounded-2xl, padding 24/32/40px by breakpoint, name (16px medium), tagline (12–14px muted), price 36–48px semibold tracking -0.035em with a small cadence beside it, a 1px divider, a feature list with 16px check icons (stroke 2.25), and a full-width 44px rounded-lg button pinned to the bottom. Free card: base surface, subtle border, outline button. Pro card: #141414 background, #2A2A2A border (#3F3F46 on hover), shadow 0 1px 2px rgba(0,0,0,.4) + 0 12px 28px -12px rgba(0,0,0,.6), white button with dark text. Border/background transitions 300ms ease-out. Cards enter with opacity 0→1 and y 8→0 on a spring (stiffness 200, damping 28, mass 0.85), Pro delayed 50ms. Buttons scale 1.015 on hover and 0.98 on press. Inside the Pro button add an always-on 180deg sheen (transparent → white 50% → transparent) and a hover-only 90deg white beam (70% at centre) that animates translateX(-110%)→(110%) once over 1600ms ease-out. Label the section 'Pricing', give cards a focus-within ring, and under prefers-reduced-motion skip the entrance and disable the beam.",
+  "blurb": "A two-plan pricing block that sets a free option beside a highlighted paid one, with a single glint on the upgrade button to draw the eye. It drops into SaaS landing pages, app and template stores, course sites and membership pages — anywhere the choice is simple and the paid tier should stand out without shouting."
+ },
+ {
+  "id": "profile-card",
+  "plays": "hover",
+  "accent": "#6285d5",
+  "title": {
+   "en": "Profile card",
+   "zh": "个人主页卡片",
+   "zh-tw": "個人檔案卡片"
+  },
+  "gist": {
+   "en": "A large black profile card: a painted cover of layered deep-blue arcs on top, a rounded square avatar straddling the seam, then a name with a blue verified badge, a handle, a short bio, follower and post counts and a website link. Motion is kept to the moments you touch it — the avatar lifts 3 px on hover and the pale Follow pill grows on hover and dips when pressed.",
+   "zh": "一张大号黑色个人卡片：顶部是一层层深蓝弧线叠出来的封面，圆角方形头像压在封面接缝上，下面是名字加蓝色认证徽章、账号、一句简介、粉丝数和帖子数，以及个人网站链接。动效只在你碰到时出现——头像悬停时上浮 3 px，浅色「Follow」胶囊按钮悬停时变大、按下时收一下。",
+   "zh-tw": "一張大尺寸黑色個人卡片：上方是一層層深藍弧線疊出來的封面，圓角方形頭像壓在封面接縫上，下面是名稱加藍色認證徽章、帳號、一句簡介、追蹤者數和貼文數，以及個人網站連結。動態只在你碰到時出現——頭像滑過時上浮 3 px，淺色「Follow」膠囊按鈕滑過時放大、按下時縮一下。"
+  },
+  "anatomy": [
+   "<b>Cover art from gradients.</b> No image: six absolutely positioned ellipses — radial gradients from #6e87ed / #5b72cf / #7188e7 down to near-black, separated by solid black ellipses rotated −16° and −4° — stack into curved bands of blue light. 260 px tall (180 px on phones).",
+   "<b>Card shell.</b> Max width 586 px, black, 40 px radius (30 px from sm), a soft 18 / 45 px shadow. The detail panel is #030303 with 41 px side padding and 78 px top padding to clear the 110 px avatar, which sits at −58 px with a 5 px black border, 28 px radius and a #DCE5FF fill.",
+   "<b>Type.</b> Name 30 px regular at −0.045 em, handle 16 px #747474, bio 15 px #8B8B8B, counts 15 px with white numbers and #6F6F6F labels, link 15 px #6285D5 with a chain icon.",
+   "<b>Interaction.</b> Follow is a 36 px #E4E9F9 pill that scales to 1.025 on hover (150 ms ease-out) and 0.97 while pressed; a grey social icon brightens to white; the avatar lifts 3 px over 200 ms; the link fades to 75 %.",
+   "<b>Accessibility.</b> Cover art and icons are hidden from assistive tech, buttons and the external link have labels and visible focus rings, the press scale is skipped under reduced motion."
+  ],
+  "tokens": [
+   {
+    "label": "Card",
+    "value": "max 586 px · radius 40 px (30 px sm) · #000 / #030303"
+   },
+   {
+    "label": "Cover blues",
+    "value": "#6e87ed · #5b72cf · #354e9a · #101a36"
+   },
+   {
+    "label": "Avatar",
+    "value": "110 px · radius 28 px · 5 px border · hover −3 px / 200 ms"
+   },
+   {
+    "label": "Follow",
+    "value": "#E4E9F9 · h 36 px · hover 1.025 · press 0.97"
+   },
+   {
+    "label": "Link",
+    "value": "#6285D5"
+   }
+  ],
+  "prompt": "Build a dark social profile card, max-w 586px, black, border-radius 40px (30px at sm), shadow 0 18px 45px rgba(0,0,0,.14), overflow hidden. Top: a 260px cover (180px on mobile) painted only with CSS — on black, stack rounded ellipses: a 760×340 radial #6e87ed→#354e9a→#101a36→#020307 glow at top-left, a 880×300 black ellipse rotated -16deg cutting it, a 720×220 radial #5b72cf→#273967→#0a1225 band at top 120px, an 820×140 black separator rotated -4deg, a 760×170 #7188e7 lower band and a dark vignette bottom-right. Bottom-right of the cover: a 36px grey social icon button and a 36px pill 'Follow' (#E4E9F9, #141414 15px semibold text, min-w 112px) that scales 1.025 on hover over 150ms ease-out and 0.97 on press. Detail panel #030303, padding 78px 41px 28px: a 110px avatar at top -58px left 38px (radius 28px, 5px black border, #DCE5FF) that lifts 3px on hover over 200ms; name 30px tracking -0.045em with a 25px blue (#1597E8) scalloped verified badge; handle 16px #747474; bio 15px #8B8B8B; follower/post counts (white numbers, #6F6F6F labels, 22px gap); an external link 15px #6285D5 with a chain icon that fades to 75% on hover. Hide decorative art from screen readers, label the buttons and link, add focus-visible rings, and skip the press scale under prefers-reduced-motion.",
+  "caveats": [
+   "Mostly static: beyond two hover lifts and a press, nothing moves."
+  ],
+  "blurb": "A bold, dark profile card with a glowing blue cover, an avatar that overlaps the edge and the essentials — name, bio, follower numbers, link and a follow button. It suits creator pages, team and speaker sections, community member directories and link-in-bio pages where one person should be introduced at a glance."
+ },
+ {
+  "id": "rainbow-button",
+  "plays": "self",
+  "accent": "#ff4242",
+  "title": {
+   "en": "Rainbow button",
+   "zh": "彩虹流光按钮",
+   "zh-tw": "彩虹流光按鈕"
+  },
+  "gist": {
+   "en": "Near-black buttons whose 2 px border is a five-colour spectrum that keeps sliding sideways, with a blurred copy of the same spectrum glowing underneath like light spilling onto the floor. The demo pairs a filled and an outline button with a panel to switch variant and size, toggle the glow and set the cycle speed; hovering brightens the button and widens the glow.",
+   "zh": "近黑色的按钮，2 px 的边框是一条五色光谱、不停横向流动，按钮底下还有一份模糊的同色光谱，像光洒在地面上。演示里放了实心和描边两颗按钮，配一个面板切换样式和尺寸、开关光晕、调循环速度；指针移上去按钮变亮，光晕更散。",
+   "zh-tw": "近黑色的按鈕，2 px 的邊框是一條五色光譜、不停橫向流動，按鈕下方還有一份模糊的同色光譜，像光灑在地面上。展示裡放了實心和描邊兩顆按鈕，搭配一個面板切換樣式和尺寸、開關光暈、調整循環速度；游標移上去按鈕變亮，光暈更散開。"
+  },
+  "anatomy": [
+   "<b>Border from backgrounds.</b> A transparent 2 px border with three stacked backgrounds: a solid #0c0d0e fill clipped to the padding box, a #0c0d0e-to-transparent vertical fade and a 90° spectrum (red, green, blue, cyan, violet) both clipped to the border box. The fade makes the bottom edge brightest and the top edge dim.",
+   "<b>Endless pan.</b> The spectrum is 200 % wide and its <code>background-position</code> runs 0 % → 200 % linearly over 3 s (adjustable 1–6 s via a CSS variable), looping forever.",
+   "<b>Floor glow.</b> A <code>::before</code> behind the button, 75 % wide and 30 % tall, hangs 22 % below it with the same moving spectrum, blur 12 px at 85 % opacity; on hover it goes to blur 16 px at full opacity over 300 ms and the button gets <code>brightness(1.1)</code>.",
+   "<b>Variants.</b> Filled (#0c0d0e) or outline (#18191c with a top/side hairline); sizes 32 / 40 / 48 px tall plus a 40 px icon square. Press scales to 0.98.",
+   "<b>Reduced motion.</b> Both the border pan and the glow pan stop; the colours stay."
+  ],
+  "tokens": [
+   {
+    "label": "Spectrum",
+    "value": "hsl(0/90/210/195/270 100% 63%)"
+   },
+   {
+    "label": "Pan",
+    "value": "background-position 0 → 200 % · 3 s linear infinite"
+   },
+   {
+    "label": "Glow",
+    "value": "75 % × 30 % · bottom −22 % · blur 12 → 16 px"
+   },
+   {
+    "label": "Fill",
+    "value": "#0c0d0e (outline #18191c)"
+   },
+   {
+    "label": "Sizes",
+    "value": "h 32 / 40 / 48 px · radius 8 / 12 / 16 px"
+   }
+  ],
+  "prompt": "Build a RainbowButton: an inline-flex button, h-40px px-20px rounded-xl, 14px semibold white text, with a transparent 2px border and three backgrounds — linear-gradient(#0c0d0e,#0c0d0e) clipped to padding-box, linear-gradient(#0c0d0e 50%, rgba(12,13,14,.6) 80%, transparent) clipped to border-box, and linear-gradient(90deg, hsl(0 100% 63%), hsl(90 100% 63%), hsl(210 100% 63%), hsl(195 100% 63%), hsl(270 100% 63%)) clipped to border-box — all with background-origin border-box and background-size 200%. Animate background-position 0% 50% → 200% 50% linearly, infinite, over var(--rainbow-speed, 3s). Add a ::before glow at z-index -1: left 50% translateX(-50%), bottom -22%, width 75%, height 30%, the same spectrum at 200% size and the same animation, filter blur(12px), opacity .85, transitioning to blur(16px) and opacity 1 over 300ms on hover. Hover also sets brightness(1.1); press scales 0.98. Offer an outline variant (#18191c fill, 1px input-colour border with transparent bottom) and sizes sm 32px / default 40px / lg 48px / icon 40×40. Expose the five colours and speed as props mapped to CSS variables, and stop both animations under prefers-reduced-motion.",
+  "blurb": "A dark call-to-action button framed by a moving band of rainbow light that also glows softly beneath it. It works as the single headline action on a launch page, an upgrade or “get access” prompt, or a sign-up button on a dark hero — one per screen, where colour is meant to pull focus."
+ },
+ {
+  "id": "reveal-card",
+  "plays": "hover",
+  "accent": "#fafafa",
+  "title": {
+   "en": "Tilt reveal card",
+   "zh": "倾斜揭示卡片",
+   "zh-tw": "傾斜揭露卡片"
+  },
+  "gist": {
+   "en": "A dark card that tips in 3D toward wherever the cursor sits, up to 12° on each axis, with a faint white glare that follows the pointer across its surface. While you hover, a hidden lower section — here two lines of telemetry — fades up into view below a divider; when you leave, the card springs flat and the extra lines fade away.",
+   "zh": "一张深色卡片，会朝指针所在的位置立体倾斜，每个方向最多 12°，表面还有一块淡淡的白色反光跟着指针移动。悬停时，卡片下半部原本隐藏的内容——这里是两行运行数据——在分隔线下方淡入上浮；指针离开，卡片弹回平放，多出的内容淡出。",
+   "zh-tw": "一張深色卡片，會朝游標所在的位置立體傾斜，每個方向最多 12°，表面還有一塊淡淡的白色反光跟著游標移動。滑過時，卡片下半部原本隱藏的內容——這裡是兩行運行數據——在分隔線下方淡入上浮；游標離開，卡片彈回平放，多出的內容淡出。"
+  },
+  "anatomy": [
+   "<b>Tilt.</b> The wrapper sets <code>perspective: 1000px</code>. Pointer offset from the card centre, as a fraction of half the width/height, maps to rotateY = x · 12° and rotateX = −y · 12°, each through a spring with stiffness 260 and damping 20. Leaving resets both to 0, so the card settles back with a small wobble.",
+   "<b>Glare.</b> While hovered, an overlay at 20 % opacity paints <code>radial-gradient(circle at x% y%, rgba(255,255,255,0.4), transparent 60%)</code>, with x/y tracking the pointer directly (no spring).",
+   "<b>Reveal.</b> The extra content sits below a 1 px #1F1F1F divider and animates opacity 0 → 1 and y 10 → 0 px in 200 ms on enter, and back on leave. It keeps its space, so the card does not change height.",
+   "<b>Surface.</b> #0E0E0E with a #1F1F1F border that turns #4A4A4A on hover over 200 ms, 12 px radius, 24 px padding."
+  ],
+  "tokens": [
+   {
+    "label": "Max tilt",
+    "value": "12°"
+   },
+   {
+    "label": "Tilt spring",
+    "value": "stiffness 260 · damping 20"
+   },
+   {
+    "label": "Perspective",
+    "value": "1000 px"
+   },
+   {
+    "label": "Reveal",
+    "value": "200 ms · y 10 → 0 px · opacity 0 → 1"
+   },
+   {
+    "label": "Surface",
+    "value": "#0E0E0E · border #1F1F1F → #4A4A4A"
+   }
+  ],
+  "prompt": "Build a RevealCard: an outer div with perspective 1000px, inside it a card (rounded-xl, 1px #1F1F1F border turning #4A4A4A on hover over 200ms, #0E0E0E background, 24px padding, overflow hidden, transform-style preserve-3d). On mousemove compute the pointer offset from the card centre as a fraction of half-width/half-height and set rotateY = fx · 12deg and rotateX = -fy · 12deg through springs (stiffness 260, damping 20); on mouseleave set both back to 0. While hovered render a pointer-events-none overlay at opacity 0.2 with radial-gradient(circle at {x}% {y}%, rgba(255,255,255,.4), transparent 60%) where x,y are the raw pointer percentages. Main content sits above (z-10). Optional reveal content lives below a 1px #1F1F1F top border with 16px margin/padding and animates opacity 0→1, y 10→0 in 200ms while hovered and back on leave, keeping its layout space. Demo: max-w-sm card titled 'Interactive 3D Tilt' (14px #FAFAFA) with 12px #A1A1A1 copy, revealing two 12px lines of checked telemetry.",
+  "caveats": [
+   "Hover-only: on touch and keyboard the hidden section never appears (it stays in the DOM, so screen readers still read it), and there is no reduced-motion branch for the tilt."
+  ],
+  "blurb": "A dark card that tilts toward your cursor with a soft sheen and reveals an extra line or two of detail while you hover. It suits feature grids, service or plan cards, project tiles and status panels, where the headline should stay clean and the supporting facts appear only for visitors who show interest."
+ },
+ {
+  "id": "scrollvelocitytext",
+  "plays": "scroll",
+  "accent": "#f5f5f5",
+  "title": {
+   "en": "Scroll-stretch headline",
+   "zh": "滚动拉伸标题",
+   "zh-tw": "捲動拉伸標題"
+  },
+  "gist": {
+   "en": "A heavy monospaced headline, BUILD THE FUTURE, sits in a scrollable panel. Scroll down and the letters spread apart, the line grows and, past a point, fades out; scroll back up and it winds back exactly as far as you reverse. When you stop, it stays where it is rather than snapping back.",
+   "zh": "一行粗体等宽大标题「BUILD THE FUTURE」放在一个可滚动的面板里。往下滚，字母间距拉开、整行放大，超过某个程度后开始淡出；往回滚多少，它就收回多少。停下不滚，它就停在当下的状态，不会自己弹回去。",
+   "zh-tw": "一行粗體等寬大標題「BUILD THE FUTURE」放在一個可捲動的面板裡。往下捲，字母間距拉開、整行放大，超過某個程度後開始淡出；往回捲多少，它就收回多少。停下不捲，它就停在當下的狀態，不會自己彈回去。"
+  },
+  "anatomy": [
+   "<b>Progress from net scroll.</b> Every scroll event adds <code>dy / expandDistance × intensity</code> to a target clamped 0–1 (300 px and 1.2× in the demo), so downward scrolling pushes it up and upward scrolling pulls it down. At the very top of the window it is forced back to 0.",
+   "<b>Inertial follow.</b> A requestAnimationFrame loop eases the displayed value toward the target with frame-rate-independent exponential damping, λ = 3.5 × 1000 / 400 ms ≈ 8.75 per second, and goes to sleep once the gap is under 0.0003.",
+   "<b>What progress drives.</b> letter-spacing 0.02 → 0.6 em, <code>scale3d</code> 1 → 1.4 around the centre, and opacity held at 1 until progress 0.6, then linear to 0 at 1. Values are written straight to the element’s style, never through component state.",
+   "<b>Accessibility.</b> The text stays one unbroken text node (no per-letter spans), so it reads normally. Under reduced motion the listener is not attached and a CSS override pins it at rest."
+  ],
+  "tokens": [
+   {
+    "label": "Distance",
+    "value": "expandDistance 300 px · intensity 1.2"
+   },
+   {
+    "label": "Damping",
+    "value": "smoothing 400 ms → λ 8.75 /s · settle < 0.0003"
+   },
+   {
+    "label": "Spacing",
+    "value": "0.02 → 0.6 em"
+   },
+   {
+    "label": "Scale",
+    "value": "1 → 1.4"
+   },
+   {
+    "label": "Fade",
+    "value": "starts at progress 0.6"
+   }
+  ],
+  "prompt": "Build ScrollVelocityText: an inline-block text element (default span, here an h2 'BUILD THE FUTURE', 24px→60px font-black monospace uppercase #F5F5F5) whose look follows a progress value p in 0..1. On each scroll event of the window or a given container, add (scrollDelta / expandDistance) · intensity to a target (expandDistance 300px, intensity 1.2; default 500 and 1), clamp to 0..1, and force 0 when the window is at scrollTop 0. In a requestAnimationFrame loop move p toward the target by 1 − exp(−λ·dt) with λ = 3.5·1000/smoothingMs (400ms), dt capped at 64ms; stop the loop when |target − p| < 0.0003 and restart it on the next scroll. Apply p directly to style: letter-spacing = 0.02 + p·(0.6 − 0.02) em, transform scale3d(1 + p·0.4) with origin centre, opacity 1 until p = 0.6 then linear down to 0 at p = 1. Never split the text into letters. Use passive listeners, reset the last scroll position on resize, and under prefers-reduced-motion skip the listeners and force spacing to the minimum, no transform, opacity 1. Demo inside a 340–380px tall scroll panel (#151515, rounded-2xl, #363636 border) with 900px of content and buttons that scroll it by 120px.",
+  "caveats": [
+   "Progress accumulates from net scroll, not page position, so after a long scroll down the text can stay hidden until the reader scrolls back up by the same amount."
+  ],
+  "blurb": "A headline that stretches apart and dissolves as the reader scrolls on, then gathers itself back as they scroll up. It gives a long landing page, a manifesto section, a portfolio intro or a chapter break a sense of momentum, turning a plain scroll into a small moment of motion without adding any controls."
+ },
+ {
+  "id": "shooting-stars",
+  "plays": "self",
+  "accent": "#38bdf8",
+  "title": {
+   "en": "Shooting stars",
+   "zh": "流星夜空",
+   "zh-tw": "流星夜空"
+  },
+  "gist": {
+   "en": "A canvas night sky behind centred heading text: around a hundred stars twinkle at their own pace, and every second or two a meteor ignites somewhere, streaks diagonally down-right with a tapering glowing tail, flares once and burns out, shedding sparks. Moving the pointer shifts the stars a few pixels for depth, and clicking launches a meteor from where you clicked.",
+   "zh": "标题文字后面是一片画布夜空：一百来颗星各自按自己的节奏闪烁，每隔一两秒就有一颗流星在某处点燃，拖着渐细的发光尾巴朝右下斜划过去，中途亮一下再燃尽，一路掉火星。移动指针，星星跟着偏几像素营造纵深；点一下，就从点击处发射一颗流星。",
+   "zh-tw": "標題文字後面是一片畫布夜空：一百來顆星各自依自己的節奏閃爍，每隔一兩秒就有一顆流星在某處點燃，拖著漸細的發光尾巴往右下斜劃過去，途中亮一下再燃盡，一路掉火星。移動游標，星星跟著偏幾個像素營造景深；點一下，就從點擊處發射一顆流星。"
+  },
+  "anatomy": [
+   "<b>Star field.</b> 120 stars (60–200 in the demo), sizes 0.6–2.2 px skewed small by a power of 2.4, each twinkling from the product of two slow sines between its own minimum (0.12–0.32) and maximum (0.65–1) opacity. Stars over 1.2 px get a faint halo; 10 % of the bright ones are drawn as four-point sparkles. A per-star depth of 0.15–1 shifts it up to 18 px with the pointer, eased at 5 % per frame.",
+   "<b>Meteors.</b> Spawned every 1.6 s (±300 ms jitter, default 2.2 s), at most two at once, at 42° ±12°, 12–22 px per frame, tails 90–180 px that grow from zero. Brightness follows a sine bell over a 150–350 px burn with a flare bump around 45–70 % of the way. Each is three layers: a coloured sheath 2.6× wide, a white core on the front 80 %, and a white head with a radial bloom.",
+   "<b>Fireballs and sparks.</b> 12 % of meteors are wider, gold (#FDE047), burn 280–500 px and briefly wash the sky with a faint yellow flash. Meteors shed sparks (35 % chance per frame, always during the flare) that drift backwards and fade over 15–35 frames. Sheath colour is picked from the trail colour, #67E8F9, #93C5FD, #A5F3FC or #FDE047.",
+   "<b>Housekeeping.</b> Canvas DPR capped at 2, rebuilt on resize, paused off-screen via IntersectionObserver; the layer fades in over 800 ms. Reduced motion draws one still frame of stars with no meteors. An optional nebula adds three faint indigo, violet and cyan radial hazes (off in the demo)."
+  ],
+  "tokens": [
+   {
+    "label": "Spawn",
+    "value": "every 1600 ms ±300 · max 2 live"
+   },
+   {
+    "label": "Meteor",
+    "value": "42° ±12° · 12–22 px/frame · tail 90–180 px"
+   },
+   {
+    "label": "Fireball",
+    "value": "12 % · #FDE047 · burn 280–500 px"
+   },
+   {
+    "label": "Stars",
+    "value": "120 · 0.6–2.2 px · parallax 18 px"
+   },
+   {
+    "label": "Trail colours",
+    "value": "#38BDF8 · #67E8F9 · #93C5FD · #A5F3FC"
+   }
+  ],
+  "prompt": "Build a full-bleed canvas night sky component with children centred above it. Background #151515 (default #020617). Create 120 stars at random positions: radius 0.6 + r^2.4·1.6, colour from a palette (#FFFFFF #E5E5E5 #D4D4D4 #A3A3A3), opacity oscillating between a per-star min 0.12–0.32 and max 0.65–1 using (sin(a)·cos(b)+1)/2 with phases advancing 0.012–0.047 and 0.008–0.028 per frame; draw a 2.2× halo at 18% for stars over 1.2px and draw 10% of stars over 1.6px as four-point quadratic-curve sparkles. Pointer parallax: ease a mouse offset (−0.5..0.5) at 5% per frame and shift each star by offset · depth(0.15–1) · 18px. Every 1600ms (±300ms jitter), if fewer than 2 are live, spawn a meteor: 70% inside the top 80% of the sky, 15% just above the top, 15% just left of the left edge; angle 42deg ±12, speed 12–22px per frame, tail 90–180px growing from 0, burn distance 150–350px (fireball 12% of the time: width 2.2–3.7, colour #FDE047, 280–500px). Alpha = sin(progress·π) plus a flare bump within 0.09 of a random point 0.45–0.70 (0.35, or 0.6 for fireballs, which also paint a faint yellow radial flash). Draw a sheath line 2.6× width with gradient transparent → trail colour → white, a white core over the front 80%, a white head dot and a radial bloom 4.2× (6.5× fireball) width. Shed sparks 35% of frames (always during flare) moving backwards, fading over 15–35 frames. Clicking spawns a meteor at the pointer. DPR ≤ 2, ResizeObserver rebuild, IntersectionObserver pause, fade in over 800ms easeOut, canvas aria-hidden, and under prefers-reduced-motion render a single static frame of stars.",
+  "caveats": [
+   "Motion is advanced per frame, not per second, so on a 120 Hz display meteors fly and stars twinkle twice as fast as on 60 Hz."
+  ],
+  "blurb": "A living night sky of twinkling stars with meteors that streak across it every few seconds and can be launched with a click. It makes an atmospheric backdrop for a dark hero, an event or launch countdown, a sign-up screen or a wish-making moment, while the headline in front stays perfectly readable."
+ },
+ {
+  "id": "sparkles-core",
+  "plays": "self",
+  "accent": "#ffffff",
+  "title": {
+   "en": "Sparkle field",
+   "zh": "闪烁粒子场",
+   "zh-tw": "閃爍粒子場"
+  },
+  "gist": {
+   "en": "A canvas of slowly drifting specks — dots, four-point sparkles and small crosses in white to mid-grey — each pulsing in brightness at its own rate behind a centred heading. Move the pointer through it and the specks are pushed out of the way (or pulled in, or brightened, depending on the mode); click and a little burst of new specks sprays out and fades.",
+   "zh": "一块画布上满是缓慢漂浮的光点——圆点、四角星和小十字，颜色从白到中灰——各自按自己的频率明暗闪烁，衬在居中的标题后面。指针划过时光点会被推开（也可设为吸过来或变亮）；点一下，从点击处喷出一小簇新光点，随后淡去。",
+   "zh-tw": "一塊畫布上滿是緩慢漂浮的光點——圓點、四角星和小十字，顏色從白到中灰——各自依自己的頻率明暗閃爍，襯在置中的標題後面。游標劃過時光點會被推開（也可設為吸過來或變亮）；點一下，從點擊處噴出一小簇新光點，隨後淡去。"
+  },
+  "anatomy": [
+   "<b>Count by area.</b> <code>max(12, w·h / 160 000 × density)</code> particles — density 110 in the demo, so about 110 per 400×400 px — sized 0.6–2.4 px, colours spread across #FFFFFF → #737373. In mixed mode 60 % are dots, 25 % four-point quadratic sparkles and 15 % thin crosses.",
+   "<b>Drift and twinkle.</b> Each speck drifts up to ±0.1 px per frame (or streams one way if a direction is set) and wraps around the edges. Opacity follows <code>(sin(phase)+1)/2</code> between a per-speck 0.1–0.4 floor and 0.7–1 ceiling, phase advancing 0.02–0.07 per frame.",
+   "<b>Cursor.</b> Within 140 px of the pointer the force is <code>(1 − d/140) × 2</code>: repulse moves specks outward 1.8× that per frame, attract pulls inward 1.2×, sparkle brightens them by 0.3 and enlarges them 1.6×. Touch pointers are ignored for this.",
+   "<b>Click burst.</b> Six new specks fly out in random directions at 0.4–1.6 px per frame and fade linearly over 45–80 frames before being removed.",
+   "<b>Housekeeping.</b> DPR capped at 2, rebuilt on resize, paused off-screen, fades in over 800 ms. Under reduced motion a single still frame is drawn."
+  ],
+  "tokens": [
+   {
+    "label": "Density",
+    "value": "110 per 400×400 px (min 12)"
+   },
+   {
+    "label": "Size",
+    "value": "0.6–2.4 px"
+   },
+   {
+    "label": "Cursor",
+    "value": "radius 140 px · repulse 1.8 · attract 1.2"
+   },
+   {
+    "label": "Shapes",
+    "value": "60 % dot · 25 % sparkle · 15 % cross"
+   },
+   {
+    "label": "Burst",
+    "value": "6 specks · 45–80 frames"
+   }
+  ],
+  "prompt": "Build a SparklesCore canvas background that fills its container (#151515 here) with children centred above. Particle count = max(12, floor(w·h/160000 · 110)). Each particle: random position, radius 0.6–2.4px, colour from #FFFFFF #E5E5E5 #D4D4D4 #A3A3A3 #737373, velocity (rand−0.5)·0.2 px/frame on each axis, opacity floor 0.1–0.4 and ceiling 0.7–1, twinkle phase stepping 0.02–0.07 per frame with opacity = floor + (sin(phase)+1)/2·(ceiling−floor); shape mix 60% circle, 25% four-point star (quadratic curves through the centre, reach 2×1.2r), 15% cross (two bars 0.6r×3.2r at 1.2r). Wrap particles 10px past each edge. Mouse (not touch) within 140px applies force (1−d/140)·2: repulse pushes away ×1.8 per frame (default), attract pulls ×1.2, sparkle adds 0.3 opacity and 1.6× size. Clicking adds 6 burst particles at the pointer moving outward at 0.4–1.6 px/frame, fading linearly over 45–80 frames then removed. DPR capped at 2, ResizeObserver rebuild, IntersectionObserver pause, container fades in over 800ms easeOut, canvas aria-hidden, and draw one static frame under prefers-reduced-motion.",
+  "caveats": [
+   "Speeds are per frame, so the field drifts and twinkles faster on high-refresh displays."
+  ],
+  "blurb": "A soft field of twinkling specks and tiny stars that drift behind your content and scatter away from the cursor. It suits dark hero sections, launch and waitlist pages, celebratory or festive moments, and product reveals where a quiet sense of magic should sit behind the headline rather than compete with it."
+ },
+ {
+  "id": "speed-warp",
+  "plays": "self",
+  "accent": "#ffffff",
+  "title": {
+   "en": "Speed warp",
+   "zh": "超光速星流",
+   "zh-tw": "超光速星流"
+  },
+  "gist": {
+   "en": "A black panel filled with white star streaks rushing outward from the centre, as if the viewer were flying straight through a star field. Distant stars are faint pin-pricks near the middle; as they approach they brighten, thicken and stretch into longer lines before leaving the edge. The demo lets you switch between four warp speeds and three star densities.",
+   "zh": "一块黑色面板，白色星光条纹从中心向四周急速飞散，像正对着星空直冲过去。远处的星是中心附近淡淡的小点，越靠近越亮、越粗、拉成越长的线，然后从边缘飞出。演示里可以切换四档航速和三档星星密度。",
+   "zh-tw": "一塊黑色面板，白色星光條紋從中心往四周急速飛散，像正對著星空直衝過去。遠處的星是中心附近淡淡的小點，越靠近越亮、越粗、拉成越長的線，然後從邊緣飛出。展示裡可以切換四段航速和三段星星密度。"
+  },
+  "anatomy": [
+   "<b>Stars in 3D.</b> Each of 650 stars (300 / 650 / 1000 in the demo) has x and y spread over twice the canvas size around the centre and a depth z between 0 and the canvas width.",
+   "<b>Projection.</b> Every frame z drops by the speed (28; the buttons give 12, 28, 48, 70). Screen position is <code>x / z × 250 + centre</code> with a fixed focal length of 250. A line is drawn from last frame’s projected point to this one’s, so faster stars and nearer stars draw longer streaks.",
+   "<b>Depth shading.</b> Alpha and width both grow as the star nears: alpha <code>1 − z / width</code> clamped to 0.1–1, line width <code>(1 − z / width) × 2.5 + 0.5</code> px, round caps, pure white. A star that passes the camera respawns at the back at a new random spot.",
+   "<b>Housekeeping.</b> The canvas is transparent (the panel supplies #050505), resizes with its parent and stops drawing when scrolled out of view. The canvas is <code>aria-hidden</code>."
+  ],
+  "tokens": [
+   {
+    "label": "Speed",
+    "value": "28 depth units / frame (12 · 28 · 48 · 70)"
+   },
+   {
+    "label": "Stars",
+    "value": "650 (300 · 650 · 1000)"
+   },
+   {
+    "label": "Focal length",
+    "value": "250"
+   },
+   {
+    "label": "Streak",
+    "value": "width 0.5 → 3 px · alpha 0.1 → 1"
+   },
+   {
+    "label": "Backdrop",
+    "value": "#050505"
+   }
+  ],
+  "prompt": "Build a hyperspace star-streak canvas that fills its parent (here a 380–440px tall rounded-2xl panel, background #050505, with a centred white 30–48px extrabold heading over it). Create N stars (default 600, demo 650) with x in ±width, y in ±height and z in 0..width. Each requestAnimationFrame: clear the canvas; for each star store prevZ = z, then z -= speed (default 25, demo 28); if z <= 0 respawn at z = prevZ = width with new random x,y. Project with focal length 250: sx = x/z·250 + width/2, sy = y/z·250 + height/2, and the same with prevZ. If the new point is inside the canvas, stroke a round-capped line from the previous to the new point in rgba(255,255,255,a) with a = clamp(1 − z/width, 0.1, 1) and lineWidth = (1 − z/width)·2.5 + 0.5. Resize with a ResizeObserver on the parent, pause via IntersectionObserver (rootMargin 100px) or a paused prop, and mark the canvas aria-hidden and pointer-events none. Offer speed presets 12/28/48/70 and star counts 300/650/1000.",
+  "caveats": [
+   "The canvas is not scaled for device pixel ratio, so streaks look soft on high-density screens; there is also no reduced-motion fallback and speed is per frame, so 120 Hz screens fly twice as fast."
+  ],
+  "blurb": "A warp-speed star field that sends streaks of light rushing past the viewer. It gives instant energy to a launch or countdown page, a loading or “preparing your space” screen, a game or sci-fi landing, or a section about speed and performance — best behind a short, bold line of text."
+ },
+ {
+  "id": "spotlight-card",
+  "plays": "hover",
+  "accent": "#38bdf8",
+  "title": {
+   "en": "Spotlight card",
+   "zh": "跟随光斑卡片",
+   "zh-tw": "跟隨光斑卡片"
+  },
+  "gist": {
+   "en": "A dark card that lights up under the cursor: when you hover, a soft white glow and a wider faint sky-blue pool of light appear exactly where the pointer is and follow it across the surface, while the border brightens. Leave the card and the light fades out.",
+   "zh": "一张深色卡片，指针在哪里哪里就亮：悬停时，指针位置出现一团柔和的白光和一片更大的淡天蓝光晕，跟着指针在卡面上移动，同时边框变亮。指针离开，光就淡出。",
+   "zh-tw": "一張深色卡片，游標在哪裡哪裡就亮：滑過時，游標位置出現一團柔和的白光和一片更大的淡天藍光暈，跟著游標在卡面上移動，同時邊框變亮。游標離開，光就淡出。"
+  },
+  "anatomy": [
+   "<b>Pointer as CSS.</b> Pointer coordinates relative to the card go into two motion values, which feed <code>radial-gradient</code> strings directly, so following the cursor costs no re-render. When the pointer leaves they are parked at −1000 px.",
+   "<b>Two glows.</b> A 220 px white circle at 18 % opacity on a layer that overhangs the card by 1 px, and a 350 px circle of <code>rgba(56,189,248,0.08)</code> on a layer inside it, both fading to transparent at 80 % of their radius.",
+   "<b>Reveal on hover.</b> Both layers sit at opacity 0 and switch to 1 over 300 ms on hover; the border goes #1F1F1F → #4A4A4A over the same 300 ms. The glow tracks the pointer with no lag or spring.",
+   "<b>Surface.</b> #0E0E0E, 12 px radius, 24 px padding, overflow hidden; content sits above the glows on <code>z-10</code>. Glow colour and size are props."
+  ],
+  "tokens": [
+   {
+    "label": "Inner glow",
+    "value": "350 px · rgba(56,189,248,0.08)"
+   },
+   {
+    "label": "Edge glow",
+    "value": "220 px · rgba(255,255,255,0.18)"
+   },
+   {
+    "label": "Fade",
+    "value": "300 ms opacity · transparent at 80 %"
+   },
+   {
+    "label": "Border",
+    "value": "#1F1F1F → #4A4A4A"
+   },
+   {
+    "label": "Surface",
+    "value": "#0E0E0E · radius 12 px"
+   }
+  ],
+  "prompt": "Build a SpotlightCard: a relative, overflow-hidden card (#0E0E0E, 1px #1F1F1F border turning #4A4A4A on hover with a 300ms colour transition, 12px radius, 24px padding). Track the pointer with onMouseMove into motion values x,y relative to the card's top-left; on mouseleave set both to -1000. Add two pointer-events-none layers that are opacity 0 and become opacity 1 on card hover over 300ms: (1) inset -1px, background radial-gradient(220px circle at x y, rgba(255,255,255,0.18), transparent 80%); (2) inset 0, background radial-gradient(350px circle at x y, rgba(56,189,248,0.08), transparent 80%) — colour and size configurable. Build the gradient strings from motion values so no React state updates per move. Content sits above on z-10. Demo: max-w-md card with a white dot and 14px #FAFAFA heading, 12px #A1A1A1 copy and a #141414 inset monospace panel.",
+  "caveats": [
+   "Mouse-only: touch screens never show the light."
+  ],
+  "blurb": "A dark card that glows wherever the cursor rests, as if a small torch were passing over it. It suits feature grids, pricing tiles, integration lists, team profiles and dashboard panels on dark sites, adding a quiet sense of responsiveness and depth without moving the layout or distracting from the content itself."
+ },
+ {
+  "id": "stacked-cards",
+  "plays": "scroll",
+  "accent": "#fafafa",
+  "title": {
+   "en": "Stacked story cards",
+   "zh": "堆叠故事卡片",
+   "zh-tw": "堆疊故事卡片"
+  },
+  "gist": {
+   "en": "Four large two-column cards — headline and blurb on one side, a photo on the other — alternating dark and slightly lighter. As you scroll, each card sticks near the top of the viewport a little lower than the one before it, and the cards underneath shrink back so the pile reads as a deck with its edges showing. Scroll up and they spread out and grow back.",
+   "zh": "四张大号双栏卡片——一边是标题和简介，一边是照片——深色和稍浅色交替。往下滚时，每张卡依次贴在视口顶部附近、比上一张略低一点，压在下面的卡片同时缩小，整摞看起来像一叠露出边缘的牌。往上滚，它们重新散开、恢复原大小。",
+   "zh-tw": "四張大尺寸雙欄卡片——一邊是標題和簡介，一邊是照片——深色和稍淺色交替。往下捲時，每張卡依序黏在視窗頂端附近、比上一張略低一點，壓在下面的卡片同時縮小，整疊看起來像一疊露出邊緣的牌。往上捲，它們重新散開、恢復原大小。"
+  },
+  "anatomy": [
+   "<b>Sticky with steps.</b> Each card wrapper is <code>position: sticky</code> with <code>top: calc(4.5rem + index × 16px)</code> and a rising z-index, in a column with 40–64 px gaps and 96–144 px bottom padding, so each new card lands 16 px below the last one’s top edge.",
+   "<b>Scale by section progress.</b> Scroll progress through the whole column (start-start to end-end) drives each card from scale 1 at <code>index / total</code> to <code>1 − (total − index − 1) × 0.075</code> at the end, origin top centre. With four cards the first ends at 0.775, then 0.85, 0.925 and 1. It is a straight mapping from scroll, so reversing reverses it exactly.",
+   "<b>Card.</b> 22 px radius (28 px from sm), min height 460–500 px, a one-column stack on phones (photo 220–280 px on top with a bottom scrim) and two columns from md; headline 24 → 48 px bold. Odd cards are zinc-950, even ones zinc-900 on dark pages. Photos zoom to 1.05 over 700 ms on hover.",
+   "<b>Semantics.</b> A labelled section of <code>article</code>s; images carry alt text and load lazily. There is no reduced-motion branch; the scaling is tied to scroll position."
+  ],
+  "tokens": [
+   {
+    "label": "Sticky top",
+    "value": "calc(4.5rem + i × 16px)"
+   },
+   {
+    "label": "Scale step",
+    "value": "0.075 per card beneath"
+   },
+   {
+    "label": "Radius",
+    "value": "22 px · 28 px sm+"
+   },
+   {
+    "label": "Card height",
+    "value": "min 460 / 500 px"
+   },
+   {
+    "label": "Photo hover",
+    "value": "scale 1.05 · 700 ms"
+   }
+  ],
+  "prompt": "Build a scroll-stacking card section: a max-w-1160px container holding a flex column (gap 40px, 64px from sm; bottom padding 96/144px) of N cards. Wrap each card in a div with position sticky, top calc(4.5rem + index·16px), z-index index+1. Track scrollYProgress of the column with offset ['start start','end end'] and give each card scale = map(progress, [index/N, 1], [1, 1 − (N−index−1)·0.075]) with transform-origin top centre. Each card is an article with rounded 22px (28px sm+), 1px border, shadow 0 20px 50px rgba(0,0,0,.5) on dark, min-height 460/500px, a grid that is one column on mobile and two from md: text column (padding 24/40/48px, bold headline 24→36→48px, description 14→18px, optional pill CTA with arrow, pressing to 0.98) and an image column (220/280px tall on mobile, full height on desktop, object-cover, scale 1.05 on hover over 700ms, a bottom black/25% scrim on mobile). Alternate zinc-950 and zinc-900 cards with white text. Label the section and give images alt text.",
+  "caveats": [
+   "The stacking uses position: sticky, so it breaks if any ancestor sets overflow hidden or auto."
+  ],
+  "blurb": "A scroll-driven stack of large story cards that pile up like a deck as the reader moves down the page, each new chapter settling on top of the last. It works well for annual reviews, case studies, product feature tours and blog highlights — sequences of a few big ideas that deserve a full card each."
+ },
+ {
+  "id": "sticky-pages",
+  "plays": "scroll",
+  "accent": "#f5f5f5",
+  "title": {
+   "en": "Sticky stacking pages",
+   "zh": "粘顶叠页",
+   "zh-tw": "黏頂疊頁"
+  },
+  "gist": {
+   "en": "Inside a scrollable panel, three dark sections numbered 01 to 03 each pin to the top as they arrive and the next one slides up over it, leaving a 16 px strip of the one beneath visible, so they pile into a stack of tabs. After the third, the content below scrolls on normally. No script is involved — it is the browser’s own sticky positioning.",
+   "zh": "在一个可滚动的面板里，三段编号 01 到 03 的深色区块滚到顶部时各自钉住，下一段从下面滑上来盖住它，只露出下面那段 16 px 的边，叠成一摞标签。第三段之后，下面的内容恢复正常滚动。全程不用脚本，靠的是浏览器自带的粘性定位。",
+   "zh-tw": "在一個可捲動的面板裡，三段編號 01 到 03 的深色區塊捲到頂端時各自固定，下一段從下方滑上來蓋住它，只露出底下那段 16 px 的邊，疊成一疊分頁標籤。第三段之後，下面的內容恢復正常捲動。全程不用腳本，靠的是瀏覽器內建的黏性定位。"
+  },
+  "anatomy": [
+   "<b>Pure CSS.</b> Each page is <code>position: sticky</code> with a rising z-index. The demo hand-sets <code>top</code> to 0, 16 and 32 px; the component computes <code>topOffset + index × stackOffset</code> (both default 0, which gives a full clean cover) and each page defaults to 100vh tall.",
+   "<b>Depth by tone.</b> Sections step lighter as they stack — #202020, #242424, #2C2C2C — each with a #363636 border, 16 px radius, 260–300 px minimum height and a large drop shadow so the covering page reads as lifted.",
+   "<b>Layout per page.</b> A monospace chip (“01. ARCHITECTURE”) and a muted label across the top, a 20–24 px bold heading and short copy at the bottom. The component’s default page instead centres a sky-blue badge, a “0n / 0N” counter, a 36–60 px title and a description.",
+   "<b>Release.</b> When the container runs out, the stack scrolls away together and ordinary flow resumes. There is no animation code, so there is nothing to disable for reduced motion."
+  ],
+  "tokens": [
+   {
+    "label": "Offsets",
+    "value": "top 0 / 16 / 32 px (stackOffset 16)"
+   },
+   {
+    "label": "Tones",
+    "value": "#202020 · #242424 · #2C2C2C"
+   },
+   {
+    "label": "Border",
+    "value": "#363636 · radius 16 px"
+   },
+   {
+    "label": "Page height",
+    "value": "min 260–300 px (component default 100vh)"
+   },
+   {
+    "label": "Default page bg",
+    "value": "#090A0F"
+   }
+  ],
+  "prompt": "Build sticky stacking pages with CSS only. A container holds N page wrappers, each position: sticky with top = topOffset + index·stackOffset px and z-index index+1, height pageHeight (default 100vh, default page background #090A0F). Demo inside a 400–460px scrollable panel (#151515, rounded-2xl, #363636 border, 12–16px padding, 16px vertical gaps): an intro card, then three sticky sections at top 0, 16px and 32px with backgrounds #202020, #242424, #2C2C2C, 1px #363636 border, 16px radius, shadow-2xl, min-height 260/300px, padding 20/32px, laid out as a row with a monospace chip ('01. ARCHITECTURE', '02. DESIGN SYSTEM', '03. PRODUCTION READY') and a muted mono label on top and a 20–24px bold #F5F5F5 heading with 12–14px #A3A3A3 copy at the bottom; then a normal-flow closing card. Each later section should slide over and cover the previous one while leaving its 16px top edge visible. For the data-driven default page, centre a sky-400 pill badge, a mono 'subtitle • 0n / 0N' line, a 36–60px extrabold title and slate-400 description.",
+  "caveats": [
+   "Relies on position: sticky, which silently stops working inside any ancestor with overflow hidden or auto other than the intended scroller."
+  ],
+  "blurb": "Full sections that pin in place and let the next one slide over them like sheets of paper, leaving a thin edge of each behind. It suits step-by-step product stories, process or methodology pages, menus of services and onboarding tours — any narrative where each chapter should briefly own the screen before handing over."
+ },
+ {
+  "id": "story-card",
+  "plays": "click",
+  "accent": "#f4f4f5",
+  "title": {
+   "en": "Story card carousel",
+   "zh": "故事卡片轮播",
+   "zh-tw": "故事卡片輪播"
+  },
+  "gist": {
+   "en": "A row of photo cards where one story is open wide with its headline and blurb over a dark gradient, and the next three wait to its right as narrow slivers. Click a sliver, press an arrow button or key, swipe, or flick the scroll wheel, and the open card squeezes shut to the left while the next one widens into its place; the loop never runs out.",
+   "zh": "一排照片卡片：当前的故事整张展开，标题和简介压在深色渐变上；后面三张在右边排成越来越窄的细条。点细条、按箭头按钮或方向键、左右滑、或者拨一下滚轮，展开的那张就向左收窄消失，下一张展开占位；循环播放，永远翻不到底。",
+   "zh-tw": "一排照片卡片：目前的故事整張展開，標題和簡介壓在深色漸層上；後面三張在右邊排成越來越窄的細條。點細條、按箭頭按鈕或方向鍵、左右滑、或撥一下滾輪，展開的那張就往左收窄消失，下一張展開補位；循環播放，永遠翻不到底。"
+  },
+  "anatomy": [
+   "<b>A sliding window of widths.</b> Six slots are rendered around a virtual index: one exiting on the left, the active card, three previews and one entering. On desktop they get 68 / 12 / 8 / 6 % of the row (tablet 74 / 15 / 8 / 3, phone 82 / 13 / 5); the exiting slot animates to 0 % with a negative margin so no gap is left. Height 320 / 400 / 460 px.",
+   "<b>One spring for everything.</b> Width, margin and opacity all move on a spring with stiffness 150, damping 24, mass 0.8, so the outgoing card narrows while the incoming one grows. Keys are virtual indices, so the loop runs forward or backward forever.",
+   "<b>Active content.</b> The open card gets a bottom-to-top black gradient (90 % → 35 % → 0) and its text rises 14 px and fades in over 280 ms after a 50 ms delay. Previews have a 20–40 % black veil and a bottom fade; on hover they scale to 1.02 and their photo zooms to 1.05 over 700 ms.",
+   "<b>Inputs.</b> Prev / next buttons (scale 1.05 hover, 0.95 press); wheel or trackpad deltas over 18 px, throttled to one step per 320 ms; horizontal swipes over 40 px; Left / Right arrow keys anywhere on the page. Optional autoplay (5 s, minimum 1.2 s) pauses on hover and under reduced motion.",
+   "<b>Accessibility.</b> The track announces “Story n of N” politely; each visible card is a focusable button with its title as label and <code>aria-current</code> on the active one. Reduced motion makes all transitions instant."
+  ],
+  "tokens": [
+   {
+    "label": "Spring",
+    "value": "stiffness 150 · damping 24 · mass 0.8"
+   },
+   {
+    "label": "Widths (desktop)",
+    "value": "68 · 12 · 8 · 6 %"
+   },
+   {
+    "label": "Text in",
+    "value": "280 ms · delay 50 ms · y 14 px"
+   },
+   {
+    "label": "Wheel",
+    "value": "threshold 18 px · throttle 320 ms"
+   },
+   {
+    "label": "Track height",
+    "value": "320 / 400 / 460 px"
+   }
+  ],
+  "prompt": "Build an endless story carousel. Header: title (20 to 30px bold) and subtitle on the left, two 36–40px rounded-xl arrow buttons on the right (scale 1.05 hover, 0.95 press). Track: a flex row, overflow hidden, gap 10–12px, height 320px / 400px sm / 460px lg. Keep a virtual index v; render cards for offsets -1..4 keyed by v+offset (card = cards[wrap(v+offset)]). Widths: offset 0 = 68%, 1 = 12%, 2 = 8%, 3 = 6% on desktop; 74/15/8/3% on tablet; 82/13/5% on phones; offset -1 and the last slot = 0% and opacity 0, with the exiting card given a negative right margin equal to the gap. Animate width, marginRight and opacity with a spring (stiffness 150, damping 24, mass 0.8). Each card: rounded-xl/2xl, 1px white/10% border, full-bleed object-cover photo. Active card: gradient from black/90 via black/35 to transparent, bottom-left title (20 to 36px semibold white, 2 lines max) and description (white/90%), entering with opacity 0 to 1, y 14 to 0 over 280ms delay 50ms and exiting to y 6. Previews: black/20–40% veil, bottom fade, scale 1.02 on hover and photo zoom 1.05 over 700ms ease-out; clicking one jumps to it. Navigation also by wheel/trackpad (ignore |delta| < 18, throttle 320ms), touch swipe > 40px horizontal, and Left/Right arrow keys (ignored inside form fields). Optional autoplay every 5s that pauses on hover. Show the active description below the track. Track gets aria-live polite with 'Story n of N'; cards are role=button with aria-label and aria-current; all transitions instant under prefers-reduced-motion.",
+  "caveats": [
+   "Arrow keys are captured on the whole window, so two carousels on one page (or other arrow-key widgets) will fight over them; the wheel handler also turns ordinary vertical scrolling over the track into card changes."
+  ],
+  "blurb": "A looping row of photo stories where one is open and the next ones peek in from the side, ready to expand with a click, swipe or scroll. It suits news and blog highlights, case-study reels, travel or event galleries and product launches — a compact way to show several features while keeping one in focus."
+ },
+ {
+  "id": "text-scramble-decoder",
+  "plays": "click",
+  "accent": "#34d399",
+  "title": {
+   "en": "Text scramble decoder",
+   "zh": "乱码解码文字",
+   "zh-tw": "亂碼解碼文字"
+  },
+  "gist": {
+   "en": "A short monospace status string with a small replay button next to it. Press replay and the text turns green and glowing, every character flickering through random letters, digits and symbols, then the real characters lock in one after another from left to right until the line reads correctly again and turns back to white.",
+   "zh": "一行简短的等宽状态文字，旁边一颗小小的重播按钮。按下重播，文字变成发光的绿色，每个字符都在随机字母、数字和符号之间快速跳动，然后从左到右一个接一个定格成正确的字符，整行恢复正确后变回白色。",
+   "zh-tw": "一行簡短的等寬狀態文字，旁邊一顆小小的重播按鈕。按下重播，文字變成發光的綠色，每個字元都在隨機字母、數字和符號之間快速跳動，然後從左到右一個接一個定格成正確的字元，整行恢復正確後變回白色。"
+  },
+  "anatomy": [
+   "<b>Resolve schedule.</b> On each run every non-space character gets a lock-in point of <code>0.15 + index / (n − 1) × 0.7 + random × 0.08</code> of the duration (1,000 ms in the demo, 800 ms default), so the first letters settle at about 150 ms and the last near 930 ms, with slight jitter.",
+   "<b>Flicker.</b> Until its point is reached a character shows a glyph from <code>A–Z 0–9 _#@$%&amp;</code>, chosen by <code>floor((now + index × 19) / 36) + index × 7</code>: each slot changes about every 36 ms, staggered 19 ms from its neighbour, so the noise ripples rather than blinking in unison.",
+   "<b>State colour.</b> While decoding the text is emerald-400 with an 8 px emerald drop-shadow glow, and the replay icon spins and turns emerald; the button is disabled until the run ends. At rest the text is #FAFAFA. Colour changes take 150 ms.",
+   "<b>Triggers and accessibility.</b> Runs on mount, on hover or from the replay button (the demo uses the button). The wrapper carries the real text as its <code>aria-label</code> and the scrambling span is <code>aria-hidden</code>, so screen readers never hear noise. Reduced motion shows the final text immediately."
+  ],
+  "tokens": [
+   {
+    "label": "Duration",
+    "value": "1000 ms (default 800)"
+   },
+   {
+    "label": "Lock-in",
+    "value": "0.15 + 0.7 · i/(n−1) + 0–0.08"
+   },
+   {
+    "label": "Glyph tick",
+    "value": "36 ms · 19 ms stagger"
+   },
+   {
+    "label": "Glyph set",
+    "value": "A–Z 0–9 _#@$%&"
+   },
+   {
+    "label": "Decoding colour",
+    "value": "#34d399 · glow 0 0 8px rgba(52,211,153,0.35)"
+   }
+  ],
+  "prompt": "Build a TextScrambleDecoder: an inline-block monospace 14px medium tabular-nums span showing a string (e.g. 'REGISTRY.SYNCED'), with an optional 28px rounded-lg replay icon button beside it (#0E0E0E, #1F1F1F border, icon #525252 turning #FAFAFA on hover, press 0.95). decode(): record start time; for each non-space character i of n set threshold = 0.15 + i/(n-1)*0.7 + random*0.08. Each animation frame compute progress = elapsed/duration (1000ms; default 800ms); for each character output the real character if progress >= its threshold, otherwise glyphs[(floor((now + i*19)/36) + i*7) % glyphs.length] from 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_#@$%&'. When progress reaches 1 show the real text. While decoding colour the text emerald-400 with drop-shadow 0 0 8px rgba(52,211,153,.35), spin the replay icon and colour it emerald, and disable the button; otherwise #FAFAFA, with a 150ms colour transition. Support trigger 'mount' | 'hover' | 'manual'. Put the real text in aria-label on the wrapper and aria-hidden on the scrambling span; under prefers-reduced-motion skip straight to the final text.",
+  "caveats": [
+   "In a proportional font the line width jumps as glyphs change; keep it monospace."
+  ],
+  "blurb": "A line of text that scrambles into random characters and then decodes itself letter by letter, like a terminal locking onto a signal. It suits status messages, confirmation labels, hero taglines on technical products, security and developer-tool pages, and small “connected” or “synced” indicators that deserve a moment of attention."
+ },
+ {
+  "id": "thinking-orb",
+  "plays": "self",
+  "accent": "#ffffff",
+  "title": {
+   "en": "Thinking orb",
+   "zh": "思考光球",
+   "zh-tw": "思考光球"
+  },
+  "gist": {
+   "en": "A small sphere made of a hundred or more glowing points that slowly rotates in 3D around a bright breathing core, with near points larger and brighter than far ones. Nine moods change how it moves — calm breathing and listening, a steady working spin, restless searching and solving, threads weaving across the surface — and the demo lets you switch mood, size, speed and light or dark ink.",
+   "zh": "一颗由一百多个发光点组成的小球，绕着中间一颗会呼吸的亮核缓慢做 3D 旋转，近处的点更大更亮、远处的更暗。九种状态决定它怎么动——平静的呼吸和聆听、稳定的工作旋转、躁动的搜索和求解、在球面上来回穿梭的编织——演示里可以切换状态、尺寸、速度和明暗配色。",
+   "zh-tw": "一顆由一百多個發光點組成的小球，繞著中間一顆會呼吸的亮核緩慢做 3D 旋轉，近處的點更大更亮、遠處的更暗。九種狀態決定它怎麼動——平靜的呼吸和聆聽、穩定的工作旋轉、躁動的搜尋和解題、在球面上來回穿梭的編織——展示裡可以切換狀態、尺寸、速度和明暗配色。"
+  },
+  "anatomy": [
+   "<b>Points on a sphere.</b> 45 / 90 / 160 / 220 particles for sizes up to 24 / 48 / 80 px and above, laid out on a golden-angle spiral so the shell is evenly covered, each with its own radius 0.75–1, size 0.4–1.5 and phase. The shell radius is 36 % of the canvas.",
+   "<b>Projection and depth.</b> Every frame each point is rotated, displaced by sine waves, converted to x / y / z and drawn with perspective <code>1 / (1.22 − 0.22z)</code>. Brightness runs 0.2 → 1 from back to front and points behind are halved; front points get a soft shadow glow, and in energetic moods a short motion trail. Rare one-frame cross sparkles flash on near points.",
+   "<b>Nine moods.</b> Each preset sets energy, turbulence, rotation, pulse, compression, wave, drift and core glow — e.g. working 0.8 / 0.2 / 0.35 / 0.7, breathing 0.25 / 0.04 / 0.06 / 1.5, solving 1.35 / 0.7 / 0.95 / 0.85 — plus a per-mood deformation: solving pulses points in and out, weaving braids them across latitudes, shaping bulges the shell into lobes, connecting spins outer points faster.",
+   "<b>Core.</b> A centre dot of 4.6 % of the size pulsing ±10 % × core glow, wrapped in a radial bloom 4.2× its radius and a 14 % shadow blur; a faint halo fills 1.55× the shell.",
+   "<b>Housekeeping.</b> Time advances in real seconds (delta capped at 40 ms) times the speed, so it runs the same at any refresh rate. DPR up to 2; white ink on dark or graphite on light, following the page’s <code>dark</code> class if not set. Exposed as <code>role=\"img\"</code> labelled “&lt;mood&gt; orb”; pauses off-screen and freezes on one frame under reduced motion."
+  ],
+  "tokens": [
+   {
+    "label": "Particles",
+    "value": "45 / 90 / 160 / 220 by size"
+   },
+   {
+    "label": "Shell",
+    "value": "radius 36 % · perspective 1/(1.22 − 0.22z)"
+   },
+   {
+    "label": "Core",
+    "value": "4.6 % · pulse ±10 % · bloom ×4.2"
+   },
+   {
+    "label": "Working preset",
+    "value": "energy 0.8 · rotation 0.35 · pulse 0.7"
+   },
+   {
+    "label": "Size",
+    "value": "80 px demo (default 64)"
+   }
+  ],
+  "prompt": "Build a ThinkingOrb canvas (size default 64px, DPR up to 2) wrapped in a role=img span labelled '<state> orb'. Create particles on a golden spiral: phi = acos(1 − 2(i+0.5)/n), theta = π(1+√5)·i, radius 0.75–1, size 0.4–1.5, random phase and depth; n = 45/90/160/220 for size ≤ 24/48/80/above. Keep time in seconds × speed (frame delta capped at 40ms). Each frame: clear, fill a radial halo to 1.55× the shell radius (shell = 0.36·size; white 6% centre on dark, black 5% on light); breathing = 1 + sin(t·pulse·1.35)·0.045·energy; rotation = t·rotation·0.65. For each particle: theta += rotation·(0.65 + depth·0.45); radius r = base·breathing·compression·(1 + sin(3θ + t(1.05+0.8·energy))·cos(3φ − 0.5t)·turbulence·0.06); apply a per-state tweak (searching wobble, solving converge ±0.045, listening tiny breath, connecting extra spin by radius, weaving θ/φ braids, composing r×0.96, shaping r×(1 + 0.08 sin(2θ + 0.9t))); convert to x,y,z, add a small wave flow; project with 1/(1.22 − 0.22z); depth d = (z+1)/2; draw a dot of size·(0.5 + 0.85d)·(size/64) with alpha clamp(0.05..0.95) of (0.2+0.8d)·(0.25+0.55·depth)·energy (halved when d < 0.25), a shadow glow for d > 0.4, a short gradient trail when energy > 0.8, and a rare thin cross sparkle. Finally draw the core: radius 0.046·size·(1 + sin(t·pulse·1.7)·0.1·coreGlow) with a radial bloom to 4.2× and a hot centre. Presets (energy, turbulence, rotation, pulse, compression, wave, drift, coreGlow): working .8/.2/.35/.7/1/.2/.12/.9, searching 1.15/.5/.8/.55/1.02/.45/.28/.75, solving 1.35/.7/.95/.85/.92/.65/.38/1, listening .4/.08/.12/1.2/1.04/.06/.03/.65, connecting .95/.28/1.3/.5/1/.3/.4/.85, weaving 1.1/.6/.45/.65/.88/.9/.25/.8, composing .75/.18/.2/.9/.75/.35/.1/.7, breathing .25/.04/.06/1.5/1.1/.03/.02/.5, shaping .95/.42/.5/.7/.92/.75/.25/.85. White ink on dark, rgb(20,20,28) on light. Pause via IntersectionObserver or a prop; under prefers-reduced-motion draw a single frame.",
+  "caveats": [
+   "Per-particle shadow blur on canvas is costly; several large orbs on one page will strain weaker devices."
+  ],
+  "blurb": "A small living sphere of light that breathes, spins and stirs in different moods, made to show that an assistant is listening, thinking or composing. It fits AI chat interfaces, voice assistants, loading and processing states, and avatar spots in apps — a calmer, more expressive replacement for a spinner."
+ },
+ {
+  "id": "torque-dial",
+  "plays": "click",
+  "accent": "#3b82f6",
+  "title": {
+   "en": "Torque dial",
+   "zh": "惯性旋钮",
+   "zh-tw": "慣性旋鈕"
+  },
+  "gist": {
+   "en": "A round control knob inside a 270° gauge, with a blue arc that fills as the value rises and a blue notch on the knob pointing at the current setting; the number and label sit underneath. Grab it and twist, and when you let go mid-turn it keeps coasting and slows to a stop. The scroll wheel and arrow keys nudge it one step at a time, and a double-click sends it to the middle.",
+   "zh": "一颗圆形旋钮，外圈是 270° 的刻度弧，数值越高蓝色弧线填得越满，旋钮上的蓝色刻痕指着当前位置；数字和名称在下方。按住拖着转，转到一半松手，它会顺着惯性继续转一段再慢慢停下。滚轮和方向键每次挪一格，双击回到中间值。",
+   "zh-tw": "一顆圓形旋鈕，外圈是 270° 的刻度弧，數值越高藍色弧線填得越滿，旋鈕上的藍色刻痕指著目前位置；數字和名稱在下方。按住拖著轉，轉到一半放手，它會順著慣性繼續轉一段再慢慢停下。滾輪和方向鍵每次移一格，雙擊回到中間值。"
+  },
+  "anatomy": [
+   "<b>Value to angle.</b> The value maps linearly onto a 270° sweep from −135° (bottom-left) to +135° (bottom-right). The gauge is two SVG circles of radius 40 in a 100×100 box, stroke 5, rotated 135°, dashed to 270° of arc: a #1F1F1F track and a #3B82F6 fill whose dash offset shrinks with progress.",
+   "<b>Drag by angle.</b> On pointer down the angle from the dial centre is recorded; each move adds the change in angle (wrapped to ±180°) as <code>Δ° / 270 × range</code>, snapped to the step and clamped. The knob is 65 % of the dial, #141414 with a 6×12 px blue pip, and while dragging its border turns blue with a 15 px blue glow.",
+   "<b>Momentum.</b> The last per-move angle change becomes a velocity; if it exceeds 0.4° on release, it is multiplied by 0.92 every frame and keeps turning the value until it drops under 0.05°. Grabbing again cancels the coast.",
+   "<b>Other inputs.</b> Wheel = ±1 step (the page does not scroll while over the dial). Arrow keys ±1 step, Home / End to the limits, double-click to the midpoint.",
+   "<b>Accessibility.</b> The dial is a focusable <code>role=\"slider\"</code> with label, min, max and current value and a white focus ring; touch-action is disabled so dragging works on touch screens."
+  ],
+  "tokens": [
+   {
+    "label": "Sweep",
+    "value": "270° · −135° → +135°"
+   },
+   {
+    "label": "Friction",
+    "value": "×0.92 per frame · start > 0.4° · stop < 0.05°"
+   },
+   {
+    "label": "Size",
+    "value": "120 px dial · knob 65 % · arc r 40 / stroke 5"
+   },
+   {
+    "label": "Colours",
+    "value": "#3B82F6 fill · #1F1F1F track · #141414 knob"
+   },
+   {
+    "label": "Drag glow",
+    "value": "0 0 15px rgba(59,130,246,0.2)"
+   }
+  ],
+  "prompt": "Build a TorqueDial controlled component (value, min 0, max 100, step 1, onChange, size 120px, unit '%', label 'Master Output Gain') on a #0E0E0E card. Outer div: role=slider with aria-label/min/max/now, tabIndex 0, rounded-full, touch-action none, cursor grab, white focus ring. Inside, an SVG viewBox 0 0 100 100 with two circles r=40 stroke-width 5, round caps, rotated 135deg about the centre, stroke-dasharray '188.5 251.3' (270deg of the circumference): a #1F1F1F track and a #3B82F6 fill with dashoffset 188.5·(1 − progress). Centred knob: 65% of size, #141414, 1px #1F1F1F border, rotated to −135 + progress·270 deg, a 6×12px #3B82F6 pill at the top and a 16px #0E0E0E centre ring; while dragging give it a blue/60% border and 0 0 15px rgba(59,130,246,.2) glow. Drag: on pointerdown record atan2 angle from the centre (0deg at 12 o'clock); on each window pointermove take the angle delta wrapped to ±180, add delta/270·(max−min) to the value, snap to step and clamp; remember the delta as velocity. On pointerup, if |velocity| > 0.4, run a rAF loop multiplying velocity by 0.92 each frame and applying it the same way until |velocity| < 0.05. A new pointerdown cancels the loop. Non-passive wheel listener: preventDefault and ±step. Keys: ArrowUp/Right +step, ArrowDown/Left −step, Home min, End max. Double-click sets the midpoint. Below: value + unit in 14px mono semibold #FAFAFA and the label in 10px mono #6B6B6B.",
+  "caveats": [
+   "The wheel listener swallows page scrolling while the pointer is over the dial, which can trap people scrolling past it."
+  ],
+  "blurb": "A tactile rotary knob you twist with the mouse or a finger, which keeps spinning briefly when flicked and settles on its own. It suits audio and media apps, smart-home and lighting controls, creative tools and settings panels — anywhere a value is adjusted by feel rather than typed in."
+ },
+ {
+  "id": "wallet-balance",
+  "plays": "click",
+  "accent": "#a4d37e",
+  "title": {
+   "en": "Wallet balance pouch",
+   "zh": "钱包余额卡袋",
+   "zh-tw": "錢包餘額卡套"
+  },
+  "gist": {
+   "en": "A dark green pouch holds three pastel account cards — Lumen, Fernway and Harbor — fanned out above a stitched front pocket that shows the combined total. Tap the eye button and the cards slide down into the pocket and shrink slightly while every amount blurs into asterisks and a slash draws across the eye; tap again and they rise back out one after another with the numbers restored.",
+   "zh": "一个深绿色卡袋里插着三张粉彩色账户卡——Lumen、Fernway、Harbor——在带缝线的前袋上方展开，前袋上显示合计余额。点眼睛按钮，三张卡滑进口袋、略微缩小，所有金额模糊成星号，眼睛上划出一道斜杠；再点一次，卡片依次升起，数字恢复显示。",
+   "zh-tw": "一個深綠色卡套裡插著三張粉彩色帳戶卡——Lumen、Fernway、Harbor——在帶縫線的前袋上方展開，前袋上顯示總餘額。點眼睛按鈕，三張卡滑進口袋、稍微縮小，所有金額模糊成星號，眼睛上畫出一道斜線；再點一次，卡片依序升起，數字恢復顯示。"
+  },
+  "anatomy": [
+   "<b>Three layers on a 340×400 stage.</b> An SVG pouch back (#35472b → #2b3a22, rounded bottom, 22 / 26 px green drop shadow), then three 266×130 cards with 18 px radius, a white top sheen and their own colour (lavender #a9a6f0, green #a0d67b, grey #dedede), then an SVG front pocket (#273921 → #202e1a) with a dashed 4 / 3.2 stitch line inset 8 px. The stage scales to its container width.",
+   "<b>Fan and tuck.</b> Visible: card tops at 13, 62.5 and 112 px, scale 1. Hidden: 75, 110 and 145 px, scale 0.89 from the top edge, so they sink behind the pocket. Each moves on a spring (0.5 s, bounce 0.16), staggered 30 ms top-down when revealing and bottom-up when hiding.",
+   "<b>Masked numbers.</b> Each amount cross-fades with “******” through a 4 px blur over 180 ms on <code>[0.23,1,0.32,1]</code>; the real value is removed from the page while hidden. The total switches from 28 px at 0.1 em tracking to a 26 px mask at 0.34 em.",
+   "<b>Eye toggle.</b> A 56 px round button (press 0.92). The eye shifts #a4d37e → #44593a over 280 ms while a slash draws in with <code>pathLength</code> — a thick dark stroke under a thin light one, so it cuts the eye cleanly.",
+   "<b>Accessibility.</b> A labelled group; the button has <code>aria-pressed</code> and a Show / Hide label; a polite live region reads the total or “Balances hidden”. Reduced motion removes the blur and makes moves instant."
+  ],
+  "tokens": [
+   {
+    "label": "Card spring",
+    "value": "0.5 s · bounce 0.16 · stagger 30 ms"
+   },
+   {
+    "label": "Positions",
+    "value": "shown 13 + 49.5i · hidden 75 + 35i · scale 0.89"
+   },
+   {
+    "label": "Mask fade",
+    "value": "180 ms · blur 4 px · [0.23, 1, 0.32, 1]"
+   },
+   {
+    "label": "Pouch",
+    "value": "#35472b · #273921 · stitch rgba(170,196,146,0.55)"
+   },
+   {
+    "label": "Cards",
+    "value": "#a9a6f0 · #a0d67b · #dedede · 266×130 r 18"
+   }
+  ],
+  "prompt": "Build a wallet pouch on a 340×400 stage scaled to the container width (max 400px). Back layer: an SVG pouch path from (20,96) to (320,382) with 66px rounded bottom corners, gradient #35472b→#2b3a22, drop-shadow 0 22px 26px rgba(31,48,22,.26). Middle: three account cards 266×130, left 37, radius 18, background linear-gradient(180deg, white 28% → transparent 45%) over their colour (#a9a6f0, #a0d67b, #dedede), inset top highlight and 0 6px 14px shadow; a 40px header row with a wordmark on the left and the amount in 15px mono (colours #5f5c98, #4f7a3b, #6d6d6d) on the right. Front: an SVG pocket starting at y 179 with 56px rounded bottom, gradient #273921→#202e1a, and a dashed (4 3.2) 1px stitch line rgba(170,196,146,.55) 8px inside. Over the pocket at y 191: the total in 28px tabular #e0e6d8 tracking .1em and a 15px #8c9b83 'Total Balance' label; at y 306 a centred 56px round eye button. Visible state: cards at y = 13 + 49.5i, scale 1; hidden: y = 75 + 35i, scale 0.89 (origin top). Animate with spring duration 0.5 bounce 0.16, delay 30ms·i (reversed order when hiding). Amounts and total cross-fade with '******' using opacity and blur(4px) over 180ms ease (0.23,1,0.32,1), removing the real value from the DOM while hidden. The eye icon colour animates #a4d37e↔#44593a over 280ms and a slash (5px #243420 under 2px #9aa890) draws in via pathLength when hidden. Button: aria-pressed, Show/Hide balances label, press scale 0.92, focus ring #a4d37e/70; add a polite live region; drop blur and duration under prefers-reduced-motion.",
+  "blurb": "A green wallet pouch with a few account cards that tuck themselves away and mask every amount at the tap of an eye. It fits finance and budgeting apps, payment dashboards, banking home screens and freelancer payout pages — anywhere people want their balances glanceable but private when someone is looking over their shoulder."
+ },
+ {
+  "id": "wallet-card",
+  "plays": "hover",
+  "accent": "#1232d4",
+  "title": {
+   "en": "Wallet card",
+   "zh": "钱包余额卡",
+   "zh-tw": "錢包餘額卡"
+  },
+  "gist": {
+   "en": "A black card titled Wallet with the card network and last four digits, a blue gradient pill button, and an inner panel of deep royal blue lit by a cyan glow on its right side, holding a small decorative switch and the balance in large light type. As the pointer moves over the card a soft cyan spotlight follows it across the blue surface; the button lifts a pixel on hover and dips when pressed.",
+   "zh": "一张黑色卡片，标题「Wallet」，下面是卡组织和卡号后四位，右上角一颗蓝色渐变胶囊按钮；内层是一块深宝蓝色面板，右侧泛着青色光，上面有一个装饰性的小开关和大号细体的余额数字。指针在卡上移动时，一团柔和的青色光斑跟着在蓝色面板上游走；按钮悬停时上浮 1 像素，按下时收一下。",
+   "zh-tw": "一張黑色卡片，標題「Wallet」，下面是發卡組織和卡號末四碼，右上角一顆藍色漸層膠囊按鈕；內層是一塊深寶藍色面板，右側泛著青色光，上面有一個裝飾性的小開關和大字細體的餘額數字。游標在卡上移動時，一團柔和的青色光斑跟著在藍色面板上游走；按鈕滑過時上浮 1 像素，按下時縮一下。"
+  },
+  "anatomy": [
+   "<b>Card in a card.</b> A 458×285 aspect black (#020202) shell with 26 px radius and a two-layer drop shadow. An 84 px header holds a 22 px white/90 title and a 12 px white/40 subtitle; the blue panel is inset 84 / 4 / 4 / 4 px with a 22 px radius.",
+   "<b>Painted blue.</b> The panel stacks three radial gradients (a cyan #08CFE6-ish hotspot at 88 % / 38 %, two royal-blue pools) over a 145° #213bd6 → #102ac5 base, plus a blurred cyan bloom rotated −9° and a faint diagonal white sheen.",
+   "<b>Pointer shine.</b> Pointer position feeds motion values that drive <code>radial-gradient(220px circle at x y, rgba(56,224,240,0.18), transparent 70%)</code> on a layer inside the panel, with no re-render per move. On leave the light is parked off-canvas at −1000 px. It is not attached under reduced motion.",
+   "<b>Button.</b> A 35 px pill, gradient #1675e8 → #4698ed with an inner highlight and blue shadow; on hover it rises 1 px, brightens 10 % and deepens its shadow over 150 ms; pressed it scales to 0.97–0.98. The switch at the top-left is purely decorative and hidden from assistive tech.",
+   "<b>Balance.</b> <code>clamp(29px, 4.1vw, 38px)</code> light weight at −0.045 em, white/85, with a 12 px label under it."
+  ],
+  "tokens": [
+   {
+    "label": "Shine",
+    "value": "220 px · rgba(56,224,240,0.18) · transparent 70 %"
+   },
+   {
+    "label": "Panel base",
+    "value": "#213bd6 → #1232d4 → #102ac5"
+   },
+   {
+    "label": "Button",
+    "value": "#1675e8 → #4698ed · h 35 px · hover −1 px"
+   },
+   {
+    "label": "Shell",
+    "value": "#020202 · radius 26 px · aspect 458/285"
+   },
+   {
+    "label": "Balance type",
+    "value": "clamp(29px, 4.1vw, 38px) · 300 · −0.045 em"
+   }
+  ],
+  "prompt": "Build a wallet balance card: an article max-w 458px, aspect 458/285, #020202, radius 26px, overflow hidden, shadow 0 24px 42px rgba(0,0,0,.48) + 0 8px 20px rgba(0,0,0,.28). Header (min-h 84px, padding 23px 22px): 'Wallet' 22px white/90 tracking -0.025em, subtitle '<network> Ending with <last four>' 12px white/40; on the right a 35px pill button (12px medium, gradient to bottom-right #1675e8→#4698ed, inset white highlight, shadow 0 3px 9px rgba(0,71,180,.24)) that on hover translates -1px, brightness 1.1 and shadow 0 5px 13px rgba(0,71,180,.32) over 150ms ease-out, and scales 0.97 on press. Inner panel: absolute inset 84px 4px 4px 4px, radius 22px, background = radial-gradient(ellipse 34% 68% at 88% 38%, rgba(8,207,230,.98), rgba(6,169,220,.92) 20%, rgba(9,100,211,.45) 42%, transparent 68%), radial-gradient(ellipse 48% 75% at 63% 72%, rgba(10,48,206,.95), rgba(18,53,207,.68) 43%, transparent 72%), radial-gradient(ellipse 70% 85% at 25% 65%, rgba(11,70,225,.94), rgba(19,43,199,.78) 48%, transparent 78%), linear-gradient(145deg, #213bd6, #1232d4 45%, #102ac5); add a blurred (18px) cyan bloom rotated -9deg and a faint 124deg white sheen. Track the pointer over the whole card into motion values (reset to -1000 on leave) and paint radial-gradient(220px circle at x y, rgba(56,224,240,.18), transparent 70%) over the panel; skip tracking under prefers-reduced-motion. Top-left of the panel: a decorative 47×27 switch (half white track, 23px pearl knob), aria-hidden. Bottom-left: balance in clamp(29px,4.1vw,38px) font-light tracking -0.045em white/85 and a 12px white/40 'Total Balance' label.",
+  "caveats": [
+   "The switch is a picture, not a control; the only interactive element is the button."
+  ],
+  "blurb": "A dark wallet card with a glowing blue panel that catches a soft light as the cursor moves across it, showing a balance and a single action. It suits fintech landing pages, checkout and top-up screens, account overviews and loyalty or gift-card balances, where one number and one button should feel tangible."
+ }
+]

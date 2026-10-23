@@ -1,0 +1,1 @@
+import{a as e}from"./chunk-5TL3NGWZ.js";import{b as o,c as t}from"./chunk-EN3SAVJI.js";var p=o(t(),1),{GlitchTextLiveShowcase:i}=e,c={id:"glitch-text",aliases:["glitchtext","glitch-typography"]};async function n(){await Promise.all([i.preload()])}function a(r){let{demoKey:s}=r;return(0,p.jsx)(i,{},s)}export{c as a,n as b,a as c};

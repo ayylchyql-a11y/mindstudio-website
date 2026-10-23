@@ -1,0 +1,1 @@
+import{a as r}from"./chunk-5TL3NGWZ.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var o=e(t(),1),{StoryCards:s}=r,i={id:"story-card",aliases:["story-cards"]};async function n(){await Promise.all([s.preload()])}function d(a){let{demoKey:m}=a;return(0,o.jsx)("div",{className:"w-full max-w-5xl mx-auto",children:(0,o.jsx)(s,{},m)})}export{i as a,n as b,d as c};

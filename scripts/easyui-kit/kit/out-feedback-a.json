@@ -1,0 +1,794 @@
+[
+  {
+    "id": "activity-feed",
+    "plays": "click",
+    "accent": "#34d399",
+    "title": {
+      "en": "Activity feed",
+      "zh": "实时事件流",
+      "zh-tw": "即時事件紀錄"
+    },
+    "gist": {
+      "en": "A dark audit log of deploys, security notices and API calls, each on its own card with a type icon, a coloured status dot, a timestamp, a duration and a copyable trace ID. Start the live stream and a new event drops in at the top every 3.5 seconds while the older cards slide down; the chevron on any card unfolds its raw JSON payload.",
+      "zh": "一个深色的审计日志：部署、安全提醒、API 调用各占一张卡片，卡上有类型图标、彩色状态点、时间、耗时和可复制的追踪 ID。打开实时流后，每 3.5 秒顶部落下一条新事件，下面的卡片随之往下滑；点任意卡片的箭头，展开它的原始 JSON。",
+      "zh-tw": "深色的稽核紀錄：部署、安全警示、API 呼叫各佔一張卡片，卡上有類型圖示、彩色狀態點、時間、耗時和可複製的追蹤 ID。開啟即時串流後，每 3.5 秒會從最上方插入一筆新事件，下方卡片跟著往下滑；點任一張卡片的箭頭，就會展開它的原始 JSON。"
+    },
+    "anatomy": [
+      "<b>One card per event.</b> #141414 cards (14px padding, 12px radius, #1F1F1F border, #4A4A4A on hover) inside a #0E0E0E panel. Left: a 32px icon tile coloured by type (rocket white, shield amber, bolt sky, server emerald, warning rose). Right of it: the title with a 6px status dot (emerald success, amber warning, rose error, sky info), a one-line clamped description, then a 10px mono row <code>time • duration • actor</code>.",
+      "<b>Entry and reflow.</b> Every card is a framer-motion <code>layout</code> item. New cards enter from opacity 0, y −8px, scale 0.98; removed ones leave to opacity 0, scale 0.95; both on a spring of stiffness 380, damping 30, mass 0.5, so the cards below slide down instead of jumping. AnimatePresence starts with <code>initial={false}</code>, so the first paint is static.",
+      "<b>Live stream.</b> The toggle turns emerald (10% fill, 30% border) with a pulsing radio icon. While it is on, an interval adds a random deploy, API, security or cache event to the top every 3500 ms and trims the list to 20 entries.",
+      "<b>Filters and search.</b> Category pills (All, Deploy, Security, API, System) show live counts. The search field matches title, description, trace ID and actor. The list is capped at 280px (320px from 640px up) and scrolls.",
+      "<b>Payload inspector.</b> The chevron rotates 180° in 150 ms. The JSON block opens from height 0 on a spring of 170 / 26 / 0.9 inside a #050505 <code>&lt;pre&gt;</code>. The trace chip copies its ID and shows a check for 2 s."
+    ],
+    "tokens": [
+      {
+        "label": "Enter spring",
+        "value": "380 / 30 / 0.5 · from y −8px, scale 0.98"
+      },
+      {
+        "label": "Drawer spring",
+        "value": "170 / 26 / 0.9"
+      },
+      {
+        "label": "Live stream",
+        "value": "every 3500 ms · max 20 entries"
+      },
+      {
+        "label": "Surfaces",
+        "value": "#0E0E0E · #141414 · #1F1F1F · #050505"
+      },
+      {
+        "label": "Status dots",
+        "value": "#34d399 · #fbbf24 · #fb7185 · #38bdf8"
+      }
+    ],
+    "prompt": "Build a dark event feed panel (#0E0E0E, 1px #1F1F1F border, 12px radius, 20px padding). Top bar: a search input (224px, 12px text, #141414, 36px left inset for a 14px search icon) and a 'Start Live Stream' button that turns emerald (bg emerald-500/10, border emerald-500/30, text #34d399, pulsing radio icon) and reads 'Live Stream Active' when on. Below it, filter pills All/Deploy/Security/API/System with mono counts in parentheses; the active pill is #141414 with a border. Then a list capped at 320px height that scrolls, 10px between cards. Each card: #141414, 1px #1F1F1F border (#4A4A4A on hover), 12px radius, 14px padding; a 32px rounded icon tile (#0E0E0E) coloured by type (deploy white rocket, security #fbbf24 shield, api #38bdf8 bolt, system #34d399 server, error #fb7185 triangle); a 12px semibold white title followed by a 6px status dot (success #34d399, warning #fbbf24, error #fb7185, info #38bdf8); an 11px #A1A1A1 one-line description; a 10px mono #6B6B6B row of timestamp • duration • actor. On the right: a mono trace-ID chip that copies on click and shows a check for 2 s, and a chevron that rotates 180° in 150 ms and expands a 'PAYLOAD SNAPSHOT (JSON)' section with a Copy JSON link and a #050505 pre block, animating height 0→auto and opacity on a spring (stiffness 170, damping 26, mass 0.9). Animate every card with framer-motion layout: enter from opacity 0, y −8px, scale 0.98, exit to opacity 0, scale 0.95, spring stiffness 380, damping 30, mass 0.5, no animation on first render. While live, prepend a generated event every 3500 ms and keep at most 20. Show 'No activity events recorded matching filters.' when the filters leave nothing.",
+    "caveats": [
+      "The live stream is a random mock generator; connect a real source by replacing the interval.",
+      "There is no reduced-motion handling: the layout springs and the pulsing icon always run."
+    ],
+    "blurb": "A running log of what just happened in a product, such as releases, security warnings and API calls, laid out as compact cards that people can filter, search and open to see the raw data behind each one. New entries slide in at the top as they arrive. It suits status pages, developer consoles, admin dashboards and any back office where people need to see recent system activity at a glance."
+  },
+  {
+    "id": "activity-heatmap",
+    "plays": "hover",
+    "accent": "#34d399",
+    "title": {
+      "en": "Activity heatmap",
+      "zh": "活跃度热力图",
+      "zh-tw": "活躍度熱度圖"
+    },
+    "gist": {
+      "en": "A year of daily counts drawn as a grid of small rounded squares, one column per week, shaded in five steps of green. A segmented switch turns it into an indigo weekday-by-hour grid. On load the cells pop in as a diagonal wave. Moving over a cell outlines it and shows a tooltip with the exact count and date, and in the hourly view its whole row and column are highlighted.",
+      "zh": "一年的每日数据画成一格格小圆角方块，每列一周，按五档绿色深浅着色；顶部切换器可改成「星期 × 小时」的靛蓝网格。载入时方块沿对角线一波波弹出；鼠标移到某格上会出现描边框和显示具体数值与日期的提示，小时视图还会把整行整列一起点亮。",
+      "zh-tw": "一整年的每日數據畫成一格格小圓角方塊，每欄代表一週，依五階綠色深淺上色；上方切換鈕可改成「星期 × 小時」的靛藍格狀圖。載入時方塊沿對角線一波波浮現；滑鼠移到某一格會出現外框，並跳出標示確切數值與日期的提示，小時檢視還會把整列整欄一起標亮。"
+    },
+    "anatomy": [
+      "<b>Grid sizing.</b> Calendar mode shows up to 53 week columns with 3px gaps and cells capped at 16px. When the container can't fit 11px cells, it drops the oldest weeks instead of shrinking the cells further. Hours mode is a 7 × 24 grid, cell height clamped to 10–22px, gaps 2–3px. Month or hour labels sit in an 18px band on top. Weekday labels (Mon/Wed/Fri) sit on the left and shrink to single letters under 440px.",
+      "<b>Five shades.</b> Non-zero values are split at their own 25th, 50th and 75th percentiles. Each level fills with <code>color-mix(in srgb, color N%, transparent)</code> at N = 28, 52, 76 and 100. Empty cells are white at 6%. A Less…More legend repeats the swatches at 11px.",
+      "<b>Wave entrance.</b> Each rect runs a CSS keyframe from opacity 0 and scale 0.4 to full size over 550 ms on cubic-bezier(0.23, 1, 0.32, 1), delayed 12 ms per column plus 20 ms per row. <code>prefers-reduced-motion</code> turns it off.",
+      "<b>Inspecting.</b> One transparent rect works out which cell is under the pointer. A 1.5px ring glides to that cell in 120 ms, and in hours mode two 4% bands (row and column) slide over in 150 ms. The tooltip follows on a spring (520 / 42 / 0.6) and fades in over 140 ms. Arrow keys move the ring and Escape clears it. An aria-live line reads out the date and count.",
+      "<b>Summary.</b> Above the grid: the total for the period (for example “in the last year”) and the peak day with its value."
+    ],
+    "tokens": [
+      {
+        "label": "Shade mix",
+        "value": "28 · 52 · 76 · 100 %"
+      },
+      {
+        "label": "Cell entrance",
+        "value": "550 ms cubic-bezier(.23,1,.32,1) · +12 ms/col, +20 ms/row"
+      },
+      {
+        "label": "Ring / bands",
+        "value": "120 ms · 150 ms"
+      },
+      {
+        "label": "Tooltip spring",
+        "value": "520 / 42 / 0.6"
+      },
+      {
+        "label": "Colours",
+        "value": "#34d399 calendar · #6d7cff hours"
+      },
+      {
+        "label": "Cells",
+        "value": "11px min · 16px max · 3px gap"
+      }
+    ],
+    "prompt": "Build an SVG activity heatmap with two modes. Calendar: one column per week (up to 53, oldest weeks dropped when cells would fall below 11px), 7 rows, 3px gaps, cells up to 16px with radius min(3, cell/4); month labels in an 18px top band (11px grey), Mon/Wed/Fri labels on the left (single letters under 440px wide). Hours: 7 weekday rows × 24 hour columns, cell height clamped 10–22px, gap 3px (2px when narrow), hour labels every 3 or 6. Bucket non-zero values by their 25/50/75th percentiles into four levels filled with color-mix(in srgb, base X%, transparent) at 28/52/76/100%; empty cells white at 6% (black 5% in light mode). Default base #34d399, hours demo #6d7cff. Entrance: each cell animates opacity 0→1 and scale 0.4→1 over 550ms cubic-bezier(0.23,1,0.32,1) with delay col×12ms + row×20ms, disabled for prefers-reduced-motion. One transparent hit rect maps pointer position to a cell; show a 1.5px ring that moves to it in 120ms, and in hours mode two 4%-opacity rounded bands (row and column) that slide in 150ms. A floating tooltip (count + unit, date) follows on a spring of stiffness 520, damping 42, mass 0.6 and fades in 140ms, flipping below the cell when it would clip. Make the SVG focusable: arrow keys move the selection, Escape clears, an aria-live region announces 'date: N unit'. Above the grid print the period total and the peak cell; below, a right-aligned Less [5 swatches 11px] More legend. In the demo, wrap it in a card with a two-option pill switch (Calendar / By hour) whose white highlight slides on a 0.3s spring with 0.15 bounce.",
+    "caveats": [
+      "Shade levels come from percentiles of the data on screen, so a quiet year and a busy year can look equally dark."
+    ],
+    "blurb": "A contribution-style calendar that shows at a glance which days were busy and which were quiet, with a second view that shows the hours of the week when activity peaks. Visitors can point at any square to see the exact figure. It works for habit trackers, team dashboards, developer profiles, booking or order volume, and any product that wants to show consistency over time."
+  },
+  {
+    "id": "ai-agent-activity",
+    "plays": "click",
+    "accent": "#10b981",
+    "title": {
+      "en": "AI agent activity",
+      "zh": "AI 智能体执行轨迹",
+      "zh-tw": "AI 代理執行軌跡"
+    },
+    "gist": {
+      "en": "A vertical timeline of the steps an AI agent took (analyse, search, check registry, type-check, generate), each with a status disc, a duration and a chevron that opens its parameters, code and output. Press Restart and the steps run again in order: every 900 ms the spinner moves down a row and the row above becomes a green check.",
+      "zh": "AI 智能体执行步骤的竖向时间线——分析、搜索、查注册表、类型检查、生成——每步有状态圆点、耗时，和一个能展开参数、代码与输出的箭头。点 Restart，步骤从头依次重跑：每 900 毫秒转圈图标下移一行，上一行变成绿色对勾。",
+      "zh-tw": "AI 代理執行步驟的直式時間軸——分析、搜尋、檢查登錄表、型別檢查、產生輸出——每一步都有狀態圓點、耗時，以及可展開參數、程式碼與輸出結果的箭頭。按下 Restart，步驟會從頭依序重跑：每 900 毫秒轉圈圖示往下移一列，上一列變成綠色勾勾。"
+    },
+    "anatomy": [
+      "<b>Status disc.</b> A 20px circle (18px on mobile) sitting on a 1px connector line. Pending is a 6px grey dot. Running is a spinning 12px arrow with a 2px emerald ring at 20%. Success is an emerald check on a 10–15% emerald tint. Error is a rose alert icon and cancelled is a pause glyph.",
+      "<b>Rows.</b> The title is 14px and turns medium weight while the step runs. The duration is right-aligned in tabular figures, with a muted one-line description below. Clicking a row that has details toggles it open. The header has Expand all / Collapse all and shows either “Running” with a pulsing emerald dot or “N of M completed”.",
+      "<b>Detail drawer.</b> Opens from height 0 and opacity 0 on a spring (stiffness 300, damping 32, mass 0.6). The chevron rotates 180° on the same spring. Inside, behind a left border: Parameters, a code block labelled with its language, Output Result and small key/value metadata chips.",
+      "<b>Replay.</b> The demo marks step 1 as running and the rest as pending, then advances one step every 900 ms. After the last step every row turns to success and the control bar switches to Completed.",
+      "<b>Reduced motion.</b> Under <code>prefers-reduced-motion</code> the drawer and chevron switch to duration 0."
+    ],
+    "tokens": [
+      {
+        "label": "Spring",
+        "value": "300 / 32 / 0.6"
+      },
+      {
+        "label": "Step interval",
+        "value": "900 ms"
+      },
+      {
+        "label": "Status disc",
+        "value": "20px · 2px ring emerald/20"
+      },
+      {
+        "label": "Colours",
+        "value": "#10b981 success · #f43f5e error"
+      },
+      {
+        "label": "Container",
+        "value": "16px radius · 32px side padding"
+      }
+    ],
+    "prompt": "Build an agent activity timeline card (16px radius, 1px border, translucent surface, Geist-style sans). Header row: 'Activity' title, then either a pulsing 6px emerald dot with 'Running' or 'N of M completed', and on the right 'Expand all / Collapse all' text buttons. Body: one row per step with a 20px status disc on the left joined to the next row by a 1px vertical line. Pending = 6px grey dot; running = 12px spinning refresh arrow inside a disc with a 2px emerald ring at 20% opacity; success = 12px emerald (#10b981) check on an emerald 10–15% tint; error = rose (#f43f5e) alert; cancelled = pause icon. Each row: 14px title (medium while running), a right-aligned tabular duration, a chevron if it has details, and a 12px muted description. Clicking the row toggles a drawer that animates height 0→auto and opacity 0→1 on a spring of stiffness 300, damping 32, mass 0.6 (chevron rotates 180° on the same spring); the drawer has a left border and shows 'Parameters' (string or pretty JSON), an optional code block with its language label, 'Output Result', and metadata chips 'key: value'. Respect prefers-reduced-motion by making both animations instant. Demo: five steps (Analyze request 42ms, Search tokens 94ms, Check registry 142ms, Type check 310ms, Generate output running); a control bar above with status and a Restart button that resets step 1 to running and the rest to pending, then every 900ms marks the previous step success and the next running, finally all success and 'Completed'.",
+    "caveats": [
+      "Rows expand through a clickable div rather than a button, so the details can't be opened from the keyboard."
+    ],
+    "blurb": "Shows the work behind an AI answer as a step-by-step trail: what the assistant searched, which tools it called, what came back and how long each step took. Steps change from waiting to running to done, and people can open any step to read its inputs and outputs. It suits AI products, coding assistants, automation tools and anywhere users need to trust what an agent did."
+  },
+  {
+    "id": "ai-response",
+    "plays": "click",
+    "accent": "#c7d2fe",
+    "title": {
+      "en": "AI response",
+      "zh": "AI 回复卡片",
+      "zh-tw": "AI 回覆卡片"
+    },
+    "gist": {
+      "en": "A single assistant message card. At the top sit an iridescent orb and the model name. Below are a pill listing the tools it used, a rendered markdown answer with a heading, a quote and a code block, a numbered list of sources, and copy, regenerate and thumbs buttons. Press Simulate Stream and the card shows three pulsing skeleton bars with a shimmering “Thinking”, then types the answer in block by block with a blinking caret while the orb turns.",
+      "zh": "一张完整的 AI 回答卡片：顶部是彩虹光球和模型名，下面是列出调用工具的胶囊、渲染好的 Markdown 正文（标题、引用、代码块）、带编号的来源列表，以及复制 / 重新生成 / 点赞点踩按钮。点 Simulate Stream，卡片先显示三条呼吸的骨架条和一个流光的「Thinking」，再一段段打出答案，末尾光标闪烁，光球同时旋转。",
+      "zh-tw": "一張完整的 AI 回答卡片：上方是彩虹光球和模型名稱，接著是列出所用工具的膠囊、排版好的 Markdown 內文（標題、引言、程式碼區塊）、附編號的參考來源，以及複製／重新產生／按讚倒讚按鈕。按下 Simulate Stream，卡片先顯示三條呼吸的骨架列和流光的「Thinking」字樣，再逐段打出答案，結尾游標閃爍，光球同時旋轉。"
+    },
+    "anatomy": [
+      "<b>States.</b> <i>generating</i>: three 10px skeleton bars (75%, 92% and 50% wide) pulse between 0.5 and 1 opacity over 1.6 s, 150 ms apart, next to a “Thinking” label with a grey gradient sweeping across it every 1.8 s. <i>streaming</i>: a pulsing green “Streaming” label appears, each new block rises 5px and fades in over 280 ms on cubic-bezier(0.23, 1, 0.32, 1), and a 2px caret blinks every 1.1 s. <i>error</i>: a rose-tinted panel with a “Try again” link.",
+      "<b>Orb.</b> An 18px circle filled with a conic gradient (#c7d2fe → #fbcfe8 → #fde68a → #a7f3d0), with a 1px white inner highlight. It turns 360° every 7 s at a constant rate, only while the response is busy. An accent prop replaces it with a single-hue conic.",
+      "<b>Markdown built for streaming.</b> Headings, paragraphs, lists, quotes, tables, rules and fenced code (with a filename bar and copy button) all render from partial text, so an unfinished fence doesn't break the layout. Every link passes a protocol allowlist (http, https, mailto and same-site paths). Anything else is shown as plain text.",
+      "<b>Collapsibles and actions.</b> The tools pill and the sources list open with height and opacity on a 0.4 s zero-bounce spring, and their chevrons rotate in 200 ms. Icon buttons are 32px (40px on small screens) and scale to 0.94 when pressed. The thumbs buttons are toggles with <code>aria-pressed</code>.",
+      "<b>Accessibility.</b> The card is an <code>&lt;article&gt;</code> with <code>aria-busy</code> while it works, and the content is <code>aria-live=\"polite\"</code> during streaming. Every motion above is dropped under <code>prefers-reduced-motion</code>."
+    ],
+    "tokens": [
+      {
+        "label": "Block enter",
+        "value": "280 ms · y 5px · cubic-bezier(.23,1,.32,1)"
+      },
+      {
+        "label": "Orb",
+        "value": "18px · 7 s per turn · #c7d2fe #fbcfe8 #fde68a #a7f3d0"
+      },
+      {
+        "label": "Skeleton",
+        "value": "1.6 s pulse · 150 ms stagger"
+      },
+      {
+        "label": "Caret",
+        "value": "2px · 1.1 s blink"
+      },
+      {
+        "label": "Card",
+        "value": "20px radius · #0b0b0c dark"
+      },
+      {
+        "label": "Demo stream",
+        "value": "28 chars / 50 ms after 600 ms"
+      }
+    ],
+    "prompt": "Build an AI answer card (20px radius, #0b0b0c in dark / white in light, 24px padding, hairline ring, shadow 0 1px 2px rgba(0,0,0,.04) + 0 24px 48px -32px rgba(0,0,0,.18)). Header: an 18px orb with a conic gradient #c7d2fe→#fbcfe8→#fde68a→#a7f3d0 and a 1px white inset highlight that rotates 360° every 7s linear only while busy; 'Assistant' 13px medium and the model name in 12px grey; on the right an aria-live status: 'Streaming' with a pulsing 6px emerald dot, or 'Thinking' whose text is clipped to a grey gradient (35%/50%/65%, 250% wide) sweeping from 120% to −120% every 1.8s. Below: a rounded pill 'N tools' that expands a list of tool names with status dots and durations. Content: a markdown renderer that tolerates partial input (headings 19/16.5/15px, paragraphs 14.5px with 1.7 line height, lists, blockquote with a 2px left border, tables, hr, fenced code with filename bar and copy button). While streaming, each new block enters from opacity 0, y 5px over 280ms cubic-bezier(0.23,1,0.32,1) and the last block ends with a 2px caret blinking 1→0.15→1 every 1.1s. While generating with no text, show three 10px rounded skeleton bars at 75%, 92% and 50% width pulsing 0.5→1→0.5 over 1.6s, delayed 150ms each. Error state: rose-tinted panel with an alert icon, message and 'Try again'. Then a 'Sources' toggle (chevron rotates in 200ms) opening a numbered list with title, host and external icon, height/opacity on a 0.4s zero-bounce spring. Footer: copy, regenerate, a divider, thumbs up and thumbs down as 32px icon buttons (40px on mobile) scaling to 0.94 on press, thumbs with aria-pressed. Only render links whose protocol is http, https, mailto or a same-site path. Article gets aria-busy while working; drop all motion under prefers-reduced-motion. Demo controls: state buttons (complete/streaming/generating/error) and 'Simulate Stream' that waits 600ms in generating, then appends 28 characters every 50ms.",
+    "caveats": [
+      "The markdown parser is a small built-in one: no syntax highlighting, no nested lists, no images."
+    ],
+    "blurb": "The answer bubble for an AI assistant, built for text that arrives a piece at a time. It shows a thinking state, fills in formatted text, code and tables as they come, and finishes with sources and quick actions to copy, retry or rate the answer. Links from the model are checked before they become clickable. It fits chat products, help centres, AI search pages and any app that shows generated answers."
+  },
+  {
+    "id": "alert",
+    "plays": "click",
+    "accent": "#34d399",
+    "title": {
+      "en": "Alert",
+      "zh": "提示条",
+      "zh-tw": "提示橫幅"
+    },
+    "gist": {
+      "en": "Three stacked notice banners: a success message, a warning with a Review button and a failed payment. Each is a tinted rounded box with an icon, a bold title and a line of detail. Press the × on one and it fades as its height folds to zero, so the banners below slide up into the gap. A reset button brings them all back.",
+      "zh": "三条叠放的提示横幅——成功、带 Review 按钮的警告、付款失败——每条是带色调的圆角框，含图标、粗体标题和一行说明。点某条的 ×，它淡出并把高度收成零，下面的横幅顺势往上补位；底部按钮可全部恢复。",
+      "zh-tw": "三條疊放的提示橫幅——成功、附 Review 按鈕的警告、付款失敗——每條都是帶色調的圓角框，含圖示、粗體標題和一行說明。按下某條的 ×，它會淡出並把高度收成零，下方橫幅順勢往上遞補；底部按鈕可一次全部還原。"
+    },
+    "anatomy": [
+      "<b>Five tones.</b> neutral, info (sky), success (emerald), warning (amber) and danger (red). In dark mode each one is a 12% fill of its hue with a 30% border, and the 16px icon (info circle, check circle, triangle, alert circle) uses the 400 shade.",
+      "<b>Box.</b> A flex row with a 12px gap, 16px padding, 12px radius and 14px text. The title is medium weight with the description 2px below in muted grey. An optional action slot sits on the right, pulled up 4px so a 28px button lines up with the title.",
+      "<b>Dismiss.</b> A 28px × button with a white 10% hover fill that scales to 0.95 when pressed. The wrapper animates height from auto to 0 and opacity from 1 to 0 over 250 ms on cubic-bezier(0.32, 0.72, 0, 1), with overflow hidden so the content is clipped as it closes. <code>onDismiss</code> fires only after the collapse has finished.",
+      "<b>Roles.</b> Warning and danger render with <code>role=\"alert\"</code> so screen readers announce them straight away. The other tones use <code>role=\"status\"</code>."
+    ],
+    "tokens": [
+      {
+        "label": "Collapse",
+        "value": "250 ms cubic-bezier(.32,.72,0,1)"
+      },
+      {
+        "label": "Box",
+        "value": "16px padding · 12px radius · 12px gap"
+      },
+      {
+        "label": "Dark tint",
+        "value": "hue/12 fill · hue/30 border · icon 400"
+      },
+      {
+        "label": "Close button",
+        "value": "28px · active scale 0.95"
+      },
+      {
+        "label": "Hues",
+        "value": "#34d399 · #fbbf24 · #f87171 · #38bdf8"
+      }
+    ],
+    "prompt": "Build an inline alert component with tones neutral, info, success, warning and danger. Each alert is a flex row (12px gap, 16px padding, 12px radius, 14px text, 1px border): in dark mode the background is the tone colour at 12% and the border at 30% (sky, emerald, amber, red; neutral uses neutral-900/60 and neutral-800), the 16px leading icon uses the 400 shade (#38bdf8, #34d399, #fbbf24, #f87171): info circle, check circle, warning triangle, alert circle. Content: a medium-weight title and a description 2px below in neutral-400. Optional right-hand action slot (demo: a 28px amber outlined 'Review' button on the warning) and an optional 28px × close button (neutral-400, white/10 hover fill, scale 0.95 on press, aria-label 'Dismiss'). Wrap it in AnimatePresence: on dismiss, animate height auto→0 and opacity 1→0 over 250ms with cubic-bezier(0.32,0.72,0,1) and overflow hidden, then call onDismiss after the exit completes so siblings below rise into the space. Use role='alert' for warning and danger, role='status' otherwise. Demo: success 'Operation successful', warning 'Subscription renewing soon' with Review, danger 'Payment failed', stacked 12px apart, plus a 'Reset dismissed alerts' button that appears once any is closed.",
+    "caveats": [
+      "The collapse ignores prefers-reduced-motion and always animates."
+    ],
+    "blurb": "Inline banners for messages that matter on a page: something worked, something needs attention, something failed. Each carries an icon and a short explanation, can hold an action button and folds away cleanly when closed, so nothing jumps. They're useful in account settings, checkout and billing pages, forms, dashboards and onboarding flows."
+  },
+  {
+    "id": "badge",
+    "plays": "click",
+    "accent": "#10b981",
+    "title": {
+      "en": "Badge",
+      "zh": "徽标标签",
+      "zh-tw": "標籤徽章"
+    },
+    "gist": {
+      "en": "Small pill labels in soft, solid and outline styles: a green “Live status” badge with a pinging dot, a beta label, a red counter between minus and plus buttons, and a row of removable tags. Changing the count rolls the old number up and out while the new one rises in. Pressing a tag's × shrinks it away and the remaining tags close the gap.",
+      "zh": "柔和、实心、描边三种样式的小胶囊标签——带脉冲圆点的绿色「Live status」、测试版标签、夹在加减按钮之间的红色计数，以及一排可删除的标签。改数字时旧数字向上滚出、新数字从下面升起；点标签上的 × 它缩小消失，其余标签自动合拢。",
+      "zh-tw": "柔和、實心、外框三種樣式的小膠囊標籤——附脈衝圓點的綠色「Live status」、測試版標籤、夾在加減按鈕之間的紅色計數，還有一排可移除的標籤。數字變動時舊數字往上捲出、新數字從下方升起；點標籤上的 × 它會縮小消失，其他標籤自動靠攏。"
+    },
+    "anatomy": [
+      "<b>Pill.</b> 24px tall with 10px side padding, a full radius, 12px medium text and a 6px gap. There are three variants in four tones (neutral, success, warning, danger). Soft is a 10% hue fill with 400 text in dark mode, solid is a full hue fill with white or dark text, and outline is a 30% hue border.",
+      "<b>Live dot.</b> A 6px dot with a copy behind it at 60% opacity that scales out and fades (Tailwind <code>animate-ping</code>). It is switched off by <code>motion-reduce</code>.",
+      "<b>Rolling value.</b> When the content is a plain string or number, it sits in an overflow-hidden slot keyed by its value (AnimatePresence <code>popLayout</code>). The new value enters from y 70% and opacity 0 while the old one exits to y −70% and opacity 0, on a spring (stiffness 520, damping 36, mass 0.6). Tabular figures keep the width steady.",
+      "<b>Removable tag.</b> An <code>onRemove</code> handler adds a 16px round × at 60% opacity (100% on hover) with <code>aria-label=\"Remove\"</code>. In the demo each tag is a layout item that enters and leaves at scale 0.9 and opacity 0, so its neighbours reflow."
+    ],
+    "tokens": [
+      {
+        "label": "Roll spring",
+        "value": "520 / 36 / 0.6 · y ±70%"
+      },
+      {
+        "label": "Pill",
+        "value": "24px tall · 10px padding · 12px text"
+      },
+      {
+        "label": "Live dot",
+        "value": "6px · ping at 60%"
+      },
+      {
+        "label": "Tones",
+        "value": "#10b981 · #f59e0b · #ef4444"
+      },
+      {
+        "label": "Tag in/out",
+        "value": "scale 0.9 · opacity 0 · layout"
+      }
+    ],
+    "prompt": "Build a badge component: an inline-flex pill 24px tall, 10px horizontal padding, fully rounded, 12px medium text, 6px gap, 1px transparent border. Variants × tones: soft (tone at 10% background, 400 text in dark: emerald, amber, red, neutral-800/300), solid (emerald-500/amber-500/red-500 fill with dark text in dark mode, neutral white with dark text), outline (tone border at 30%, 400 text). Optional leading 6px dot in the tone colour (#10b981, #f59e0b, #ef4444, neutral-400) and, when 'pulse' is set, a second copy behind it using a ping animation at 60% opacity, disabled with motion-reduce. When children is a string or number, wrap it in an overflow-hidden span and use AnimatePresence mode='popLayout' keyed by the value: enter from y 70% opacity 0, exit to y −70% opacity 0, spring stiffness 520, damping 36, mass 0.6, tabular-nums. With onRemove, add a 16px round × button at 60% opacity (full on hover, 10% fill) labelled 'Remove'. Demo: 'Live status' success with pulsing dot, 'Beta release' outline warning, 'Standard' soft neutral; a red solid counter between 28px round − and + buttons (scale 0.9 on press); a box of removable tags that enter/exit at scale 0.9, opacity 0 with layout animation and a 'Reset tags' link once empty.",
+    "caveats": [
+      "The rolling animation only applies to plain strings or numbers; mixed content swaps instantly."
+    ],
+    "blurb": "Compact labels for statuses, counts and tags: a live indicator that pulses quietly, a notification count that rolls to its new value, and tags people can remove with a tap. It's a small building block that makes navigation menus, product cards, data tables, filters, inboxes and settings screens clearer without pulling focus away from the content."
+  },
+  {
+    "id": "bar-chart",
+    "plays": "hover",
+    "accent": "#6d7cff",
+    "title": {
+      "en": "Bar chart",
+      "zh": "柱状图",
+      "zh-tw": "長條圖"
+    },
+    "gist": {
+      "en": "Twelve months of requests from three platforms, drawn as rounded-top bars in indigo, teal and amber. On load the bars grow up from the baseline, one month after another. A Grouped / Stacked switch slides the bars sideways and piles them into single columns. Pointing at a month highlights its column and shows a tooltip with each value and the total.",
+      "zh": "三个平台十二个月的请求量，画成靛蓝、青绿、琥珀三色的圆顶柱子。载入时柱子按月份依次从底线长出；切换 Grouped / Stacked，柱子横向滑动、叠成一根；鼠标指向某个月，该列被高亮，并弹出列出各项数值和合计的提示。",
+      "zh-tw": "三個平台十二個月的請求量，畫成靛藍、青綠、琥珀三色的圓頂長條。載入時長條依月份逐一從基線長出；切換 Grouped／Stacked，長條會橫向滑動、疊成一根；滑鼠指向某個月，該欄會被標亮，並跳出列出各項數值與合計的提示。"
+    },
+    "anatomy": [
+      "<b>Morphable bars.</b> Every bar is a path built from the same command list (move, line, quadratic corner, line, quadratic corner, line, close) with a 6px top radius, so grouped and stacked shapes interpolate directly. Grouped bars are up to 34px wide, 3px apart, within 74% of each month's slot. Stacked mode uses one column 62% wide (max 46px) with 1.5px between segments, and only the top segment is rounded.",
+      "<b>Timing.</b> On entrance each bar grows from zero height at the baseline over 800 ms on cubic-bezier(0.23, 1, 0.32, 1), delayed 40 ms per month and 25 ms per series. After 1.2 s, every later change (switching layout, hiding a series) uses a 0.5 s spring with no bounce.",
+      "<b>Hover.</b> An 8px-radius band at 4–5% opacity slides to the active month on a 0.3 s spring with 0.1 bounce, and the other months fade to 38% opacity over 200 ms. The tooltip follows on a spring (520 / 42 / 0.6). Touch works through pointerdown, and tapping outside clears it.",
+      "<b>Legend.</b> One pill toggle per series (<code>aria-pressed</code>). A hidden series collapses into the centre of its group and the y axis rescales to tidy 1 / 2 / 2.5 / 5 steps over four gridlines. The last visible series can't be hidden.",
+      "<b>Accessibility.</b> The SVG is focusable: ←/→, Home, End and Escape move the highlight, and a visually hidden table holds every value. <code>prefers-reduced-motion</code> sets every duration to 0."
+    ],
+    "tokens": [
+      {
+        "label": "Palette",
+        "value": "#6d7cff · #34d1bf · #ffb44c"
+      },
+      {
+        "label": "Entrance",
+        "value": "800 ms cubic-bezier(.23,1,.32,1) · +40 ms/month, +25 ms/series"
+      },
+      {
+        "label": "Morph spring",
+        "value": "0.5 s · bounce 0"
+      },
+      {
+        "label": "Hover band",
+        "value": "0.3 s spring, bounce 0.1 · others 38%"
+      },
+      {
+        "label": "Bars",
+        "value": "≤34px grouped · ≤46px stacked · 6px radius"
+      }
+    ],
+    "prompt": "Build a responsive SVG bar chart (260px tall) for 12 categories × 3 series coloured #6d7cff, #34d1bf, #ffb44c. Draw each bar as a path with an identical command structure (M, V, Q corner, H, Q corner, V, Z) so it can morph; 6px top radius. Grouped mode: bars up to 34px wide with 3px gaps filling 74% of each slot; stacked mode: one bar 62% of the slot (4–46px) with 1.5px gaps between segments and only the top segment rounded. Y axis: four 'nice' steps (1/2/2.5/5 × 10^n), faint gridlines, 11px tabular labels; X labels 11px, thinned when crowded. Entrance: each bar grows from height 0 at the baseline over 800ms cubic-bezier(0.23,1,0.32,1), delay month×40ms + series×25ms; after 1.2s switch all transitions to a spring of duration 0.5s, bounce 0 so grouped↔stacked and series toggles morph. Hover/touch: a transparent rect maps x to a month; an 8px-radius band at 4–5% opacity slides to it on a spring of 0.3s with 0.1 bounce, other months fade to 38% in 200ms, the active label darkens, and a tooltip (month, a row per series with colour dot and value, plus a Total row when stacked) follows on a spring of stiffness 520, damping 42, mass 0.6 and fades in 140ms. Below, legend pills (32px tall) toggle series with aria-pressed and a strikethrough when off; never hide the last one. Keyboard: focusable SVG with ←/→/Home/End/Escape. Include a visually hidden data table. Respect prefers-reduced-motion. Demo: card titled 'Requests by platform' with a Grouped/Stacked pill switch.",
+    "blurb": "A clear, readable bar chart for comparing a few categories over time, with one switch to see them side by side or stacked into totals. Visitors can point at any period for exact figures and turn series on and off from the legend. It fits analytics dashboards, usage and billing pages, internal reports and any product page that needs to show growth."
+  },
+  {
+    "id": "batch-gesture-tray",
+    "plays": "click",
+    "accent": "#f2f2f3",
+    "title": {
+      "en": "Batch action tray",
+      "zh": "批量操作托盘",
+      "zh-tw": "批次操作工具列"
+    },
+    "gist": {
+      "en": "A list of four files with square checkboxes. Tick one and a floating toolbar rises from below with a count, a Select all link, Export and Archive buttons and a close button. Tick more and the count goes up. Press Esc or × and the tray sinks away.",
+      "zh": "四个文件组成的列表，每行带方形复选框。勾上一个，底部浮起一条工具栏，上面有已选数量、全选、Export、Archive 按钮和关闭 ×；再多勾几个，数量跟着涨；按 Esc 或 × 工具栏就沉下去消失。",
+      "zh-tw": "由四個檔案組成的清單，每列附方形核取方塊。勾選一個，底部就浮出一條工具列，上面有已選數量、全選、Export、Archive 按鈕和關閉 ×；多勾幾個，數量隨之增加；按 Esc 或 × 工具列就會往下沉並消失。"
+    },
+    "anatomy": [
+      "<b>Rows.</b> Each file is a <code>role=\"checkbox\"</code> row with 12px padding, a 12px radius, a 12px medium title and an 11px mono subtitle. It scales to 1.005 on hover and 0.995 on press (spring 380 / 30 / 0.5). Selected rows switch to the raised surface with a 1px ring.",
+      "<b>Checkbox.</b> An 18px rounded square that fills with the primary text colour. The check pops in from scale 0.4 and opacity 0 on a spring (stiffness 500, damping 30).",
+      "<b>Tray.</b> Sticky, 16px above the bottom edge, up to 512px wide, with a 16px radius, the raised surface at 95%, a 24px backdrop blur and a <code>0 20px 50px rgba(0,0,0,.4)</code> shadow. It enters from y 24px, scale 0.96 and opacity 0 on a spring (380 / 30 / 0.5) and leaves the same way.",
+      "<b>Actions.</b> Buttons scale to 1.02 on hover and 0.97 on press (spring 400 / 25). While an action's promise runs, its icon becomes a spinner and every button is disabled. On success the selection clears. A danger option tints a button rose.",
+      "<b>Keyboard.</b> Rows toggle with Enter or Space, and Escape anywhere on the page clears the selection. The tray is a toolbar with <code>aria-live=\"polite\"</code>."
+    ],
+    "tokens": [
+      {
+        "label": "Tray spring",
+        "value": "380 / 30 / 0.5 · from y 24px, scale 0.96"
+      },
+      {
+        "label": "Check pop",
+        "value": "stiffness 500 · damping 30 · from scale 0.4"
+      },
+      {
+        "label": "Button press",
+        "value": "spring 400 / 25 · 1.02 / 0.97"
+      },
+      {
+        "label": "Tray shell",
+        "value": "16px radius · blur 24px · 0 20px 50px rgba(0,0,0,.4)"
+      },
+      {
+        "label": "Dark surfaces",
+        "value": "#1C1C1F · #18181A · #29292C · text #F2F2F3"
+      }
+    ],
+    "prompt": "Build a selectable list with a floating batch-action tray, dark theme (surface #1C1C1F, raised #18181A, border #29292C, text #F2F2F3). Each item is a div with role='checkbox', aria-checked and tabIndex 0, 12px padding, 12px radius, 1px border, 6px apart: an 18px rounded-md checkbox (filled with the text colour when selected, with a 12px check that pops in from scale 0.4/opacity 0 on a spring of stiffness 500, damping 30), a 12px medium title and an 11px mono subtitle. Rows scale to 1.005 on hover and 0.995 on tap with a spring of stiffness 380, damping 30, mass 0.5; Enter/Space toggle. When at least one item is selected, show a sticky toolbar 16px from the bottom, max-width 512px, 16px radius, raised surface at 95%, backdrop-blur 24px, 1px border, shadow 0 20px 50px rgba(0,0,0,0.4), entering and exiting via opacity 0, y 24px, scale 0.96 on the same 380/30/0.5 spring. Toolbar content: a mono count pill, 'selected', a divider, 'Select all' / 'Deselect all'; on the right, action buttons (12px medium, 12px radius, scale 1.02 hover / 0.97 tap on spring stiffness 400 damping 25) that show a spinning loader while their async action runs, disable all actions meanwhile, then clear the selection; optional rose 'danger' style; a divider and an × button labelled 'Dismiss selection (Esc)'. A window keydown listener clears the selection on Escape. Demo items: four config/source files with 'Modified … ago by …' subtitles, actions Export and Archive.",
+    "caveats": [
+      "The Escape listener is global, so it also clears the selection when Esc was meant for something else on the page.",
+      "There is no reduced-motion check on the springs."
+    ],
+    "blurb": "A selection pattern for lists: tick a few items and a floating bar appears with what you can do to all of them at once, then moves out of the way when you're done. It's handy for file managers, inboxes, admin tables, media libraries and order lists, anywhere people need to archive, export or delete several things together."
+  },
+  {
+    "id": "chat",
+    "plays": "click",
+    "accent": "#f2f2f3",
+    "title": {
+      "en": "Chat",
+      "zh": "AI 对话界面",
+      "zh-tw": "AI 對話介面"
+    },
+    "gist": {
+      "en": "A full chat window. On the left is a list of conversations grouped into Today, Yesterday and Previous. A header shows the assistant's name, the thread holds messages with code blocks, and the composer grows as you type. Send a message and it fades up into the thread, the send button spins briefly, and a reply appears 1.2 seconds later as the view scrolls to the bottom.",
+      "zh": "完整的聊天窗口：左侧是按今天 / 昨天 / 更早分组的会话列表，顶部有助手名称，中间是带代码块的消息流，底部输入框随输入内容变高。发出一条消息，它从下方淡入消息流，发送按钮转一会儿，1.2 秒后回复出现，视图自动滚到底。",
+      "zh-tw": "完整的聊天視窗：左側是依今天／昨天／更早分組的對話清單，上方顯示助理名稱，中間是含程式碼區塊的訊息串，底部輸入框會隨內容自動長高。送出一則訊息，它會從下方淡入訊息串，傳送鈕轉一下，1.2 秒後出現回覆，畫面自動捲到最底。"
+    },
+    "anatomy": [
+      "<b>Frame.</b> 600px tall (500px on mobile) with a 16px radius, #121214 in dark mode. The 256px sidebar holds a New chat button and the grouped threads. Below 768px it moves off-canvas and slides in over a backdrop in 200 ms from a menu button.",
+      "<b>Messages.</b> A 28px avatar tile sits next to each bubble. Bubbles are at most 78% wide (88% on mobile) with a 16px radius, and the corner nearest the avatar is squared. User bubbles are #2C2C30 and assistant bubbles #1E1E22 with a border. Each new message enters from y 4px and opacity 0 on a spring (stiffness 320, damping 34, mass 0.7). Inline <code>code</code> becomes a chip, and fenced blocks render in a dark panel with a language label and a Copy button that shows a check for 2 s.",
+      "<b>Composer.</b> The textarea grows up to 160px. Enter sends and Shift+Enter adds a line. Attachments appear as removable file chips that open with height and opacity. The Send button scales to 0.94 when pressed and shows a spinning icon while a reply is pending. It's disabled while the box is empty or a reply is in progress.",
+      "<b>Scroll.</b> An empty sentinel at the end of the thread is scrolled into view (animated) whenever the messages or the busy flag change.",
+      "<b>Reduced motion.</b> The message entrance and the button press are skipped under <code>prefers-reduced-motion</code>."
+    ],
+    "tokens": [
+      {
+        "label": "Message spring",
+        "value": "320 / 34 / 0.7 · from y 4px"
+      },
+      {
+        "label": "Sidebar",
+        "value": "256px · 200 ms slide below 768px"
+      },
+      {
+        "label": "Composer",
+        "value": "auto-grow to 160px"
+      },
+      {
+        "label": "Bubbles",
+        "value": "#2C2C30 user · #1E1E22 assistant · #121214 frame"
+      },
+      {
+        "label": "Demo reply",
+        "value": "1200 ms delay"
+      }
+    ],
+    "prompt": "Build a chat window 600px tall (500px on small screens), 16px radius, 1px #262626 border, #121214 background in dark mode. Left sidebar 256px (bg neutral-900/70, right border): a full-width 'New chat' button and conversation buttons grouped under 10px uppercase headings (Today / Yesterday / Previous); the active thread gets a neutral-800 fill and border. Below 768px the sidebar is translated −100% and slides in over a backdrop in 200ms when a menu button in the header is pressed; choosing a thread closes it. Header: a 28px icon tile, the assistant name in 12px semibold with a small model badge and a 10px subtitle, and a clear-history icon button. Thread: 20px padding, 16px between messages; each message has a 28px rounded avatar tile and a bubble up to 78% wide (88% mobile), 14px padding, 16px radius with the corner nearest the avatar reduced to 2px; user bubble #2C2C30 right-aligned, assistant #1E1E22 with a neutral-800 border, 12px text. Each message mounts from opacity 0, y 4px on a spring (stiffness 320, damping 34, mass 0.7), skipped under prefers-reduced-motion. Parse inline backticks into small chips and ``` fences into a dark code panel with an uppercase 9px language label and a Copy button (check icon for 2s). Call scrollIntoView with animated scrolling on a bottom sentinel on every message change. Composer: a bordered box containing an auto-growing textarea (max 160px), a paperclip button for multiple file attachments shown as removable chips above, the hint 'Return to send, Shift+Return for newline', and a Send button (text-primary background, scale 0.94 on tap) disabled when empty or busy, showing a spinning icon while busy. Demo: sending appends the user message, sets busy, and after 1200ms appends an assistant reply.",
+    "caveats": [
+      "There's no typing indicator in the thread; the only sign of a pending reply is the spinner on the send button.",
+      "The default header subtitle is a hard-coded model name; replace it with your own."
+    ],
+    "blurb": "A complete chat screen for an AI assistant or support bot, with past conversations on the side, a readable message thread that handles code, and a message box that supports attachments and keyboard shortcuts. On phones it tucks the history away behind a menu. It's a ready starting point for AI products, customer support widgets, internal tools and help desks."
+  },
+  {
+    "id": "donut-chart",
+    "plays": "hover",
+    "accent": "#6d7cff",
+    "title": {
+      "en": "Donut chart",
+      "zh": "环形图",
+      "zh-tw": "環圈圖"
+    },
+    "gist": {
+      "en": "Spending across four services shown as a ring of round-capped arcs, with the total counting up in the centre. Point at an arc or a legend row and that arc thickens while the others dim, and the centre switches to its name, amount and share. A Donut / Gauge switch folds the ring into a half-circle meter.",
+      "zh": "四项服务的花费占比画成一圈圆头弧段，中心的总额从零数上去。指向某段弧或图例行，那段弧变粗、其余变暗，中心换成它的名称、金额和占比；Donut / Gauge 切换可把圆环折成半圆仪表。",
+      "zh-tw": "四項服務的花費占比畫成一圈圓頭弧段，中央的總額從零往上跳。指向某段弧或圖例列，那段弧會變粗、其餘變暗，中央換成它的名稱、金額與占比；Donut／Gauge 切換可把圓環收成半圓儀表。"
+    },
+    "anatomy": [
+      "<b>Arcs.</b> Each segment is an SVG arc stroke, 16px thick with round caps, separated by a 3.5px gap plus room for the caps. An invisible 30px stroke on top makes thin slices easy to hit. A 5–6% track ring sits underneath. The diameter goes up to 240px and never drops below 120px.",
+      "<b>Draw-in.</b> Each arc's end angle sweeps out from its start over 1 s on cubic-bezier(0.23, 1, 0.32, 1), starting at 120 ms and staggered 90 ms per slice. The centre total counts up from 0 over 800 ms on the same curve. Later changes (hiding a slice, switching to the gauge) move both ends on a 0.7 s spring with no bounce.",
+      "<b>Focus.</b> The active arc widens from 16 to 20px on a 0.35 s spring with 0.15 bounce, and the others fade to 35% over 200 ms. The centre text swaps with a 4px rise and fall over 160 ms. The value size is 15% of the diameter, clamped to 22–38px.",
+      "<b>Legend.</b> Rows are 40–44px buttons with a dot, the label, the amount and the percentage. Hover or focus highlights the matching arc, and a click hides that slice (strikethrough, 45% opacity, shares recalculated). The legend moves beside the chart when the container is at least 520px wide.",
+      "<b>Reduced motion.</b> The count-up, draw-in and text shift are skipped under <code>prefers-reduced-motion</code>."
+    ],
+    "tokens": [
+      {
+        "label": "Palette",
+        "value": "#6d7cff · #34d1bf · #ffb44c · #ff6b8b"
+      },
+      {
+        "label": "Draw-in",
+        "value": "1 s cubic-bezier(.23,1,.32,1) · 120 ms + 90 ms/slice"
+      },
+      {
+        "label": "Morph spring",
+        "value": "0.7 s · bounce 0"
+      },
+      {
+        "label": "Active arc",
+        "value": "16 → 20px · 0.35 s spring, bounce 0.15"
+      },
+      {
+        "label": "Size",
+        "value": "120–240px · 30px hit stroke"
+      }
+    ],
+    "prompt": "Build an SVG donut chart with an optional half-ring 'gauge' variant. Diameter = min(240, container) and at least 120px; 16px stroke with round caps; segments separated by a 3.5px gap plus cap allowance; a track ring underneath at 6% white (5% black in light). Colours #6d7cff, #34d1bf, #ffb44c, #ff6b8b. Animate each arc's start and end angles as motion values: on first render the end angle sweeps from the start over 1s with cubic-bezier(0.23,1,0.32,1), delay 120ms + index×90ms; afterwards any change (slice hidden, donut↔gauge) animates both angles on a spring of 0.7s, bounce 0. Hovering or tapping an arc (via an invisible 30px stroke) makes it active: its width springs 16→20px (0.35s, bounce 0.15), others fade to 35% opacity in 200ms. Centre readout (bottom-aligned in gauge mode): a 12px grey label and a semibold value at 15% of the diameter clamped 22–38px; when nothing is active show the label 'Total spend' and the total counting from 0 over 800ms; when active show the slice label, value and percent; swap with AnimatePresence mode='wait', 4px rise/fall, 160ms. Legend as a list of 40px buttons (dot, label, value, percent) beside the chart when the container is ≥520px, otherwise below; hover/focus highlights the slice, click toggles it (aria-pressed, strikethrough, 45% opacity, '—' percent) but never hides the last one. Respect prefers-reduced-motion. Demo: card 'Spend by service' with Donut/Gauge pill switch, four services formatted as dollars.",
+    "caveats": [
+      "The arcs themselves can't take keyboard focus; keyboard users reach the slices through the legend buttons."
+    ],
+    "blurb": "Shows how a whole breaks into parts, such as spend by service, traffic by channel or storage by type, as a ring with the total in the middle or as a half-circle gauge. Pointing at a slice brings up its exact amount and share, and the legend lets visitors hide slices to compare the rest. It fits billing pages, analytics cards and finance or budgeting apps."
+  },
+  {
+    "id": "faq",
+    "plays": "click",
+    "accent": "#fafafa",
+    "title": {
+      "en": "FAQ accordion",
+      "zh": "常见问题折叠面板",
+      "zh-tw": "常見問題摺疊面板"
+    },
+    "gist": {
+      "en": "A dark question-and-answer list with a search box and category pills above it. Clicking a question unfolds its answer below as the chevron flips. Several answers can be open at once, and typing in the search box or picking a category narrows the list immediately.",
+      "zh": "深色的问答列表，上方有搜索框和分类胶囊。点一个问题，答案在下面展开，箭头同时翻转；可同时展开多条，在搜索框打字或选分类，列表立即筛选。",
+      "zh-tw": "深色的問答清單，上方有搜尋框和分類膠囊。點一個問題，答案就在下方展開，箭頭同時翻轉；可同時展開多題，在搜尋框輸入文字或選擇分類，清單會立即篩選。"
+    },
+    "anatomy": [
+      "<b>Layout.</b> Up to 768px wide. The search field is 40px tall with a 12px radius, #141414 with a #1F1F1F border and a 16px icon inset 14px. Category pills use 12px text, and the active one sits on #141414 with a border. The unified variant is one #0E0E0E card with 1px #1F1F1F dividers. In the separated variant each item is its own card and gains a #4A4A4A border and a <code>0 4px 20px rgba(0,0,0,.4)</code> shadow when open.",
+      "<b>Row.</b> A full-width button with 16–20px padding. The question is 14px medium #FAFAFA, with an optional 9px mono badge under it, and hover fills the row with #141414. The indicator is a chevron or plus/minus that rotates 180° on a spring (stiffness 380, damping 30, mass 0.5).",
+      "<b>Answer.</b> The region animates height from 0 to auto and opacity from 0 to 1 on a spring (170 / 26 / 0.9, about 400 ms with no overshoot). Text is 14px #A1A1A1 with relaxed leading.",
+      "<b>Behaviour.</b> With <code>allowMultiple</code> several items stay open, otherwise opening one closes the rest. Open items can be set with <code>defaultOpen</code> or controlled through <code>openIds</code>. Search matches the questions and plain-text answers, and an empty state shows a help icon and a message.",
+      "<b>Accessibility.</b> Each header has <code>aria-expanded</code> and <code>aria-controls</code>, and each answer is a <code>role=\"region\"</code> labelled by its header."
+    ],
+    "tokens": [
+      {
+        "label": "Open spring",
+        "value": "170 / 26 / 0.9"
+      },
+      {
+        "label": "Chevron spring",
+        "value": "380 / 30 / 0.5 · 180°"
+      },
+      {
+        "label": "Surfaces",
+        "value": "#0E0E0E · #141414 · #1F1F1F · #4A4A4A"
+      },
+      {
+        "label": "Text",
+        "value": "#FAFAFA question · #A1A1A1 answer · #6B6B6B muted"
+      },
+      {
+        "label": "Search",
+        "value": "40px tall · 12px radius"
+      }
+    ],
+    "prompt": "Build a dark FAQ accordion, max-width 768px, 16px vertical spacing between blocks. Optional search input: 40px tall, 12px radius, #141414 background, 1px #1F1F1F border (#4A4A4A on focus), 12px #FAFAFA text, #6B6B6B placeholder, a 16px search icon 14px from the left. Optional category pills derived from item categories plus 'All': 12px medium, 8px radius, active = #141414 with a #1F1F1F border, inactive #6B6B6B text. Item list (unified variant): one #0E0E0E card, 12px radius, 1px #1F1F1F border and dividers. Each header is a full-width button (16px padding, 20px from 640px up) with the question in 14px medium #FAFAFA, an optional 9px mono badge below it (#141414 with border, #A1A1A1 text), hover background #141414, and on the right a 16px chevron (#6F6F6F, white on hover) that rotates 180° when open with a spring of stiffness 380, damping 30, mass 0.5. The answer panel (role='region', aria-labelledby the header, header has aria-expanded and aria-controls) animates height 0→auto and opacity 0→1 on a spring of stiffness 170, damping 26, mass 0.9 and holds 14px #A1A1A1 text with relaxed line height. Support allowMultiple, defaultOpen, controlled openIds, a plus/minus icon style, and a 'separated' variant where each item is its own card that gets a #4A4A4A border and 0 4px 20px rgba(0,0,0,.4) shadow when open. Filter by category and by search over question and string answers; show a help-circle empty state 'No matching questions found.'",
+    "caveats": [
+      "Colours are hard-coded for dark backgrounds; there's no light theme.",
+      "There's no reduced-motion handling."
+    ],
+    "blurb": "The classic questions-and-answers block, made easier to scan. Visitors can search or filter by topic instead of scrolling, and answers open in place without leaving the page. It works on pricing pages, product and support pages, onboarding docs, and restaurant or shop sites, anywhere common questions should be answered before someone gets in touch."
+  },
+  {
+    "id": "funnel-chart",
+    "plays": "hover",
+    "accent": "#6d7cff",
+    "title": {
+      "en": "Funnel chart",
+      "zh": "转化漏斗图",
+      "zh-tw": "轉換漏斗圖"
+    },
+    "gist": {
+      "en": "Five signup stages, from visiting the site to a paid plan. Each is a centred bar that narrows with the number of people left, and soft curved bands between the bars stand for the people who dropped off, each with a small −% chip. On load the bars spring out from the centre one after another. Pointing at a stage highlights it and its outgoing band and shows the users, the share of the top stage and how many were lost at the next step.",
+      "zh": "从访问网站到付费的五个注册阶段，每段是一根居中的横条，宽度随剩下的人数缩短；相邻横条之间用柔和的弧形色带相连，代表流失的人，色带上有一个「−%」小标签。载入时横条依次从中间弹开；指向某一阶段，它和它下方的色带被高亮，并显示人数、占顶层比例和下一步流失多少。",
+      "zh-tw": "從造訪網站到付費的五個註冊階段，每段是一根置中的橫條，寬度隨剩下的人數縮短；相鄰橫條間以柔和的弧形色帶相連，代表流失的使用者，色帶上有個「−%」小標籤。載入時橫條依序從中央彈開；指向某一階段，它和下方的色帶會被標亮，並顯示人數、占第一階段比例，以及下一步流失多少。"
+    },
+    "anatomy": [
+      "<b>Geometry.</b> Each stage is a 22px label row, then a 30px bar with a 9px radius, then a 30px bridge to the next stage. Bar width is proportional to the value, centred, with a 28px minimum. Colours step from #6d7cff to #34d1bf using <code>color-mix(in oklch)</code>. The bridges are cubic-curved shapes filled with a vertical gradient from 34% to 8% opacity.",
+      "<b>Entrance.</b> Bars grow from zero width at the centre on a 0.9 s spring with 0.12 bounce, 90 ms apart. Bridges fade in over 400 ms from 300 ms, 100 ms apart. The drop chips fade in from 600 ms, also 100 ms apart.",
+      "<b>Summary line.</b> Overall conversion in 22px semibold, followed by “Biggest drop: A → B −x%” in rose. Both are worked out from the data.",
+      "<b>Inspecting.</b> Full-width hit rows set the active stage. Other stages dim to 50%, other bridges to 35% and other chips to 40%, and the active chip gets a rose border. The tooltip follows on a spring (520 / 42 / 0.6). ↑/↓ move between stages and Escape clears. A hidden table lists every stage for screen readers, and reduced motion makes all of it instant.",
+      "<b>Drop chip.</b> A 56 × 20 pill with a 10px radius, filled with the page colour, showing 11px tabular figures."
+    ],
+    "tokens": [
+      {
+        "label": "Rows",
+        "value": "22px label · 30px bar · 30px bridge"
+      },
+      {
+        "label": "Colours",
+        "value": "#6d7cff → #34d1bf (oklch mix)"
+      },
+      {
+        "label": "Bar spring",
+        "value": "0.9 s · bounce 0.12 · 90 ms stagger"
+      },
+      {
+        "label": "Bridge",
+        "value": "gradient 34% → 8% · fade 400 ms"
+      },
+      {
+        "label": "Chip",
+        "value": "56 × 20px · 10px radius"
+      }
+    ],
+    "prompt": "Build an SVG conversion funnel that measures its container width. For each stage draw a 22px row with the label (12.5px) on the left and 'value · % of first stage' on the right, then a 30px bar with 9px radius, centred, width proportional to value (min 28px), coloured by color-mix(in oklch, #6d7cff, #34d1bf i/(n−1)×100%). Between stages draw a 30px bridge whose sides are cubic curves from the upper bar's edges to the lower bar's edges, filled with a vertical gradient from the upper colour at 34% opacity to the lower colour at 8%, and centre a 56×20 pill (10px radius, page background, faint border) with the drop-off '−x%' in 11px tabular grey. Entrance: bars animate x/width from the centre (width 0) on a spring of duration 0.9s, bounce 0.12, delay i×90ms; bridges fade in over 400ms with delay 300ms + i×100ms; chips fade in over 300ms with delay 600ms + i×100ms. Above the chart show overall conversion in 22px semibold and 'Biggest drop: A → B −x%' with the percentage in rose. Interaction: full-width transparent hit rows; the active stage keeps full opacity while other stages go to 50%, other bridges to 35%, other chips to 40%; the active chip turns its border and text rose. A tooltip (label, Users, Of top, and 'Lost next −N (x%)' in rose) follows on a spring of stiffness 520, damping 42, mass 0.6. Focusable SVG: ↑/↓ change stage, Escape clears. Include a visually hidden table. Reduced motion: no entrance, instant updates. Demo stages: Visited site 48,200 → Signed up 15,840 → Created project 9,120 → Invited a teammate 4,210 → Started paid plan 1,380.",
+    "blurb": "Makes it obvious where people leave a sign-up or checkout flow. Each step narrows with the number of people who reach it, and the gaps between steps show how many were lost. A summary line calls out the overall conversion and the weakest step. It fits growth dashboards, marketing reports, sales pipelines and onboarding analytics."
+  },
+  {
+    "id": "interactive-area-chart",
+    "plays": "hover",
+    "accent": "#f5f5f5",
+    "title": {
+      "en": "Interactive area chart",
+      "zh": "交互面积图",
+      "zh-tw": "互動式面積圖"
+    },
+    "gist": {
+      "en": "A portfolio value chart. Above it sit a large dollar figure with a green or red percentage and a 7D / 30D / 1Y switch. Below is a single line with a soft fade beneath it. On load the line draws itself left to right with a dot riding its tip. Switching range reshapes the curve into the new one instead of redrawing it, and dragging across it snaps a dashed crosshair to each day and updates the headline figure and date.",
+      "zh": "资产估值图：上方是大号美元数字和红绿涨跌百分比，旁边是 7D / 30D / 1Y 切换，下面是一条线加一层渐隐填充。载入时线条从左往右画出，线头跟着一个小圆点；切换区间时曲线直接变形成新形状而不是重画；在图上拖动，虚线十字准星逐日吸附，并改写顶部数字和日期。",
+      "zh-tw": "資產估值圖：上方是大字的美元金額與紅綠漲跌百分比，旁邊有 7D／30D／1Y 切換，下方是一條線加上一層漸淡的填色。載入時線條由左向右畫出，線頭跟著一顆小圓點；切換區間時曲線直接變形成新的形狀而非重畫；在圖上拖曳，虛線十字準星會逐日吸附，並同步改寫上方金額與日期。"
+    },
+    "anatomy": [
+      "<b>One shape for every range.</b> Each dataset is resampled to 72 points with Catmull-Rom interpolation and normalised to its own tidy axis, so any two ranges can be blended point for point. A range change tweens a 0→1 mix over 550 ms on cubic-bezier(0.77, 0, 0.175, 1). It always starts from whatever is on screen, so rapid clicks never jump.",
+      "<b>Intro draw.</b> A clip rect widens from the left edge over 1.1 s on the same ease-in-out curve, while a 3.5px dot follows the leading edge of the line and fades out at the end.",
+      "<b>Scrub.</b> The pointer's x position snaps to the nearest real data point. The crosshair (dashed 3 3, 30% opacity) and a 4.5px ringed dot follow on a spring (stiffness 520, damping 42, mass 0.6), and the dot's y position is sampled from the curve on screen. A 124px tooltip shows the date and value, and the headline and change switch to that day.",
+      "<b>Styling.</b> The line is 2px in <code>currentColor</code> (near-white in dark mode), with a fill that fades vertically from 18% to 0%. Padding is 48 top, 12 right, 28 bottom and 48 left. The axis and grid crossfade over 200 ms when the range changes. The range pill is a shared-layout highlight on a 0.3 s spring with 0.15 bounce.",
+      "<b>Accessibility.</b> The SVG is focusable and carries a spoken summary. ←/→ step through the days and Escape clears. Reduced motion skips the intro and makes the morphs instant."
+    ],
+    "tokens": [
+      {
+        "label": "Resample",
+        "value": "72 points · Catmull-Rom"
+      },
+      {
+        "label": "Range morph",
+        "value": "550 ms cubic-bezier(.77,0,.175,1)"
+      },
+      {
+        "label": "Intro draw",
+        "value": "1.1 s, same curve"
+      },
+      {
+        "label": "Crosshair spring",
+        "value": "520 / 42 / 0.6"
+      },
+      {
+        "label": "Area fill",
+        "value": "currentColor 18% → 0%"
+      },
+      {
+        "label": "Padding",
+        "value": "48 / 12 / 28 / 48 px"
+      }
+    ],
+    "prompt": "Build a single-series SVG area chart (260px tall) with range tabs 7D / 30D / 1Y. Header: a 13px grey title, the current value in 30px semibold tabular USD, and a change line (+x.x% in emerald or −x.x% in rose) followed by 'last 30D' or the hovered date; on the right a rounded-full segmented control whose white/neutral-800 pill moves with layoutId on a spring of 0.3s, bounce 0.15. Chart padding 48 top, 12 right, 28 bottom, 48 left. Resample every dataset to 72 points with Catmull-Rom and normalise it to its own nice scale (4 ticks), so ranges can morph: keep 'from' and 'to' arrays and a progress value t; on range change start from the currently displayed points, set t=0 and animate to 1 over 550ms with cubic-bezier(0.77,0,0.175,1). Draw the curve as a cubic spline, 2px stroke in currentColor (neutral-100 on dark), plus an area filled with a vertical gradient of currentColor from 18% to 0%. Intro: animate a clipPath rect from the left edge to full width over 1.1s on the same curve while a 3.5px dot rides the leading point (opacity 0→1→1→0 over progress 0, 0.02, 0.96, 1). Grid lines and compact $ labels crossfade over 200ms per range; 3–5 date labels along the bottom. Scrubbing: on pointer move, snap to the nearest real data index, set a target x and follow it with a spring of stiffness 520, damping 42, mass 0.6 (jump on first hover); draw a dashed (3 3) vertical line at 30% opacity and a 4.5px dot with a 2px stroke and background fill, its y sampled from the live curve; show a 124px tooltip with date and value clamped inside the chart; fade both in 150ms. Header value and change follow the hovered point. Focusable SVG with ←/→ and Escape. Reduced motion: no intro, instant morph.",
+    "caveats": [
+      "It ships with built-in demo data formatted in USD; pass your own series and change the formatter for anything else."
+    ],
+    "blurb": "A single-metric chart for the number people care about most, such as a balance, revenue or users, with quick range buttons and a crosshair that reads out any day. Switching ranges reshapes the line instead of reloading it, so the change reads as one continuous movement. It makes a strong centrepiece for finance apps, account overviews, analytics dashboards and investor pages."
+  },
+  {
+    "id": "live-line-chart",
+    "plays": "self",
+    "accent": "#6d7cff",
+    "title": {
+      "en": "Live line chart",
+      "zh": "实时折线图",
+      "zh-tw": "即時折線圖"
+    },
+    "gist": {
+      "en": "A requests-per-second line that keeps scrolling from right to left. The newest reading sits at the right edge, marked by a dot that sends out a fading ring, with a large current value and its change over the last minute above. Hovering freezes the stream so a crosshair can read any past second. When the pointer leaves, the line catches up and carries on.",
+      "zh": "每秒请求数的折线持续从右向左滚动，最新读数在右端，用一个向外扩散淡出光环的圆点标出，上方是大号当前值和过去一分钟的变化。鼠标悬停时数据流冻结，十字准星可读出任意一秒的值；移开后它追上进度继续走。",
+      "zh-tw": "每秒請求數的折線持續由右往左捲動，最新讀數在最右端，以一顆向外擴散淡出光環的圓點標示，上方是大字的目前數值與過去一分鐘的變化。滑鼠停在圖上時資料流會凍結，十字準星可讀出任一秒的數值；移開後它會加速追上進度再繼續。"
+    },
+    "anatomy": [
+      "<b>Render loop.</b> A single requestAnimationFrame loop writes the path, head and tick attributes straight into the DOM, with no React render per frame. The view runs one interval (1000 ms) behind the feed, so the line glides between readings. The loop stops while the chart is off screen or the tab is hidden.",
+      "<b>Window and scale.</b> 60 s are visible, labelled −60s, −30s and now. The y range is the visible minimum and maximum padded by 16%, and it eases toward new extents with a factor of 1 − e^(−5·dt), so the axis adjusts gradually instead of snapping. Tick labels refresh about 5 times a second. The curve is monotone cubic, 2px #6d7cff, over an area gradient from 26% to 0%.",
+      "<b>Head.</b> A 4px dot with a 2px stroke in the page colour. A halo copy behind it scales from 1 to 3 and fades from 0.4 to 0 every 1.6 s (ease-out).",
+      "<b>Pause and resume.</b> Hover or touch pauses the line and shows a dashed crosshair, a 5px dot and a tooltip reading “value · N.Ns ago”. The Live / Paused pill (emerald pinging dot, or amber) can hold the pause. On resume the clock runs at up to 2.5× speed until it has caught up, or jumps ahead if it is more than a full window behind.",
+      "<b>Reduced motion.</b> The chart redraws only when data arrives, jumps straight to the newest point and hides the halo and the ping. The paused state is announced through <code>aria-live</code>."
+    ],
+    "tokens": [
+      {
+        "label": "Window",
+        "value": "60 s · 1000 ms lag"
+      },
+      {
+        "label": "Halo",
+        "value": "scale 1 → 3 · 1.6 s ease-out"
+      },
+      {
+        "label": "Y easing",
+        "value": "k = 1 − e^(−5·dt) · 16% padding"
+      },
+      {
+        "label": "Catch-up",
+        "value": "up to 2.5× speed"
+      },
+      {
+        "label": "Line",
+        "value": "2px #6d7cff · fill 26% → 0%"
+      }
+    ],
+    "prompt": "Build a real-time SVG line chart (240px tall) fed by a source(push) callback that pushes a value about every 1000ms, seeded with 60 historical values. Keep a timestamped buffer and render with one requestAnimationFrame loop that sets path/circle attributes directly (no React state per frame); pause the loop when the chart is out of view (IntersectionObserver) or the tab is hidden. The displayed time lags real time by 1000ms so the line scrolls continuously right-to-left; show a 60s window with x labels '−60s', '−30s', 'now'. Margins: left 46, top 8, right 12, bottom 22. Y range = visible min/max padded 16%, eased each frame with k = 1 − exp(−dt/1000 × 5); three gridlines with tick labels updated at most every 200ms. Line: monotone cubic path, 2px #6d7cff, round joins; area below filled with a vertical gradient from #6d7cff at 26% to 0%, clipped to the plot. Head: a 4px dot with a 2px page-coloured stroke at the right edge, plus a halo dot that scales 1→3 and fades 0.4→0 every 1.6s ease-out, hidden when paused. Above the chart: the latest value in 32px semibold tabular figures with a 13px grey unit ('req/s'), a line '▲/▼ x% over the last 60s' in emerald or rose, and a 32px rounded-full Live/Paused toggle with an emerald pinging dot (amber when paused). Hover or touch pauses the clock and shows a dashed vertical crosshair, a 5px dot and a tooltip 'value unit / N.Ns ago' that follows on a spring of stiffness 520, damping 42, mass 0.6; leaving resumes, advancing time at up to 2.5× until caught up (or jumping if more than one window behind). Reduced motion: redraw only on new data, snap to the latest point, no halo or ping. Announce 'Live updates paused' via aria-live.",
+    "caveats": [
+      "The demo feed is a random walk; connect a real source through the push callback."
+    ],
+    "blurb": "A live readout for numbers that change every second, such as traffic, sales, sensor readings or queue length, with the line drifting steadily across rather than jumping. Visitors can hover to pause and look back over the last minute. It fits operations dashboards, status pages, trading or IoT screens and product launch counters."
+  },
+  {
+    "id": "loader",
+    "plays": "self",
+    "accent": "#fafafa",
+    "title": {
+      "en": "Loader",
+      "zh": "加载指示器",
+      "zh-tw": "載入指示器"
+    },
+    "gist": {
+      "en": "One loading indicator in four styles you can switch between: a spinning arc, three pulsing dots, a bar sliding along a track, and rings that ripple out from a centre dot. A size picker runs from 24 to 48px. Each style starts moving as soon as it appears.",
+      "zh": "同一个加载指示器的四种样式可切换——旋转的弧线、三颗呼吸的圆点、在轨道上滑过的进度条，以及从中心点向外扩散的圆环——另有 24 到 48px 的尺寸选择。每种一出现就自己动起来。",
+      "zh-tw": "同一個載入指示器有四種樣式可切換——旋轉的弧線、三顆呼吸的圓點、在軌道上滑過的進度條，以及從中心點向外擴散的圓環——另有 24 到 48px 的尺寸可選。每一種一出現就會自動播放。"
+    },
+    "anatomy": [
+      "<b>Arc.</b> A 40 × 40 viewBox with r 16 and a 3px stroke: a #1F1F1F track at 60% and a round-capped arc showing about a third of the circle (dasharray 100, offset 65). The whole SVG turns once every 2.5 s at a constant rate.",
+      "<b>Dots.</b> Three dots, each 18% of the size (min 4px) and 6px apart. Each scales 0.8 → 1.25 → 0.8 and fades 0.3 → 1 → 0.3 over 1.4 s ease-in-out, 220 ms apart.",
+      "<b>Line.</b> A #141414 track twice the size wide and 8% of the size tall (min 3px). A #FAFAFA bar 35% wide sweeps from −35% to 100% every 1.8 s on cubic-bezier(0.4, 0, 0.2, 1).",
+      "<b>Rings.</b> Two 1px rings scale from 0.6 to 1.15 and fade from 0.8 to 0 over 2.2 s (ease-out), 900 ms apart, around a centre dot 20% of the size.",
+      "<b>Accessibility.</b> <code>role=\"status\"</code>, <code>aria-busy</code> and a screen-reader-only label (“Loading...”). A <code>reduceMotion</code> prop replaces every movement with a plain opacity pulse."
+    ],
+    "tokens": [
+      {
+        "label": "Arc",
+        "value": "2.5 s/turn · r 16 · 3px · dash 100 / offset 65"
+      },
+      {
+        "label": "Dots",
+        "value": "1.4 s · 220 ms stagger · scale 0.8–1.25"
+      },
+      {
+        "label": "Line",
+        "value": "1.8 s cubic-bezier(.4,0,.2,1) · 35% bar"
+      },
+      {
+        "label": "Rings",
+        "value": "2.2 s · 900 ms stagger · scale 0.6–1.15"
+      },
+      {
+        "label": "Colours",
+        "value": "#FAFAFA on #1F1F1F / #141414"
+      }
+    ],
+    "prompt": "Build a Loader with a size prop (default 32px) and four variants, coloured with currentColor (#FAFAFA on a dark #0E0E0E card). Arc: an SVG viewBox 0 0 40 40 with a background circle r=16, 3px stroke #1F1F1F at 60% opacity and a foreground circle r=16, 3px stroke, round cap, strokeDasharray 100 and strokeDashoffset 65; rotate the whole SVG 360° every 2.5s linear. Dots: a row (1.5×size wide) of three circles sized max(4, size×0.18) with 6px gaps, each animating scale [0.8, 1.25, 0.8] and opacity [0.3, 1, 0.3] over 1.4s ease-in-out, infinite, delayed 0, 220 and 440ms. Line: a rounded track 2×size wide and max(3, size×0.08) tall in #141414 with overflow hidden, containing a rounded bar 35% wide in #FAFAFA whose left animates from −35% to 100% over 1.8s with cubic-bezier(0.4,0,0.2,1), infinite. Rings: two absolutely positioned 1px circular borders animating scale 0.6→1.15 and opacity 0.8→0 over 2.2s ease-out, infinite, second delayed 900ms, around a centre dot of max(4, size×0.2). Wrapper: role='status', aria-busy='true', aria-label and an sr-only label. A reduceMotion prop replaces each motion with an opacity pulse (0.3/0.8 or 0.4/1 or 0.2/0.6). Demo: a mono segmented control for arc/dots/line/rings (active = #FAFAFA pill with #050505 text) and size buttons 24/32/40/48px.",
+    "caveats": [
+      "Reduced motion is a prop and isn't read from the system setting; wire it to prefers-reduced-motion yourself."
+    ],
+    "blurb": "A small set of calm loading indicators (a spinner, dots, a progress sweep and a ripple) that share one size and colour setting, so the same waiting state looks right in a button, a card or a full page. Use it wherever content or results take a moment: forms, search, dashboards, checkout and app start-up."
+  },
+  {
+    "id": "morphing-shape-loader",
+    "plays": "self",
+    "accent": "#fafafa",
+    "title": {
+      "en": "Morphing shape loader",
+      "zh": "变形图形加载器",
+      "zh-tw": "變形圖形載入器"
+    },
+    "gist": {
+      "en": "A single white outline that keeps changing shape: an octagon swells into a diamond, pinches into a lopsided blob, then grows spikes into a star. The points of the outline move to their new positions rather than one shape cross-fading into the next. Each change takes 1.4 seconds and holds for 0.4 before the next, looping forever.",
+      "zh": "一个白色轮廓不停地改变形状——八边形鼓成菱形，再捏成不规则的团块，又刺成星形——是逐个顶点变形而不是淡入淡出。每次变形用 1.4 秒，停 0.4 秒后进入下一个，无限循环。",
+      "zh-tw": "一個白色輪廓不停變換形狀——八邊形撐成菱形，再捏成不規則的團塊，又冒出尖角成為星形——是逐點變形而非交叉淡化。每次變形 1.4 秒，停留 0.4 秒後接著下一個，無限循環。"
+    },
+    "anatomy": [
+      "<b>Eight anchors.</b> Every shape is a closed polyline of 8 points on a 100-unit viewBox around (50, 50) at radius 36, written with the same M / L … Z commands so the <code>d</code> attribute can be tweened number by number. Shapes differ only in the radius of each anchor. Square pushes alternate anchors out to 36 / cos 45° (a diamond whose corners touch the edge of the box), star alternates between 100% and 45%, and triangle varies between 56% and 100%.",
+      "<b>Cycle.</b> A timeout of duration + hold advances the shape index, and framer-motion tweens the path to the new <code>d</code> over the duration on cubic-bezier(0.45, 0.05, 0.2, 1). The demo uses 160px, 1.4 s duration, 0.4 s hold and six shapes, looping.",
+      "<b>Stroke.</b> The width is a fraction of the viewBox (demo 0.06, i.e. 6 units or about 9.6px at 160px), with round caps and joins. It's #FAFAFA in dark mode and #0A0A0A in light unless a colour is passed. The filled variant uses a diagonal gradient from 95% to 55% opacity.",
+      "<b>Accessibility.</b> <code>role=\"status\"</code> with an aria-label and screen-reader-only text. Under <code>prefers-reduced-motion</code> it renders one static shape at 85% opacity and never advances."
+    ],
+    "tokens": [
+      {
+        "label": "Morph",
+        "value": "1.4 s cubic-bezier(.45,.05,.2,1) · hold 0.4 s"
+      },
+      {
+        "label": "Geometry",
+        "value": "viewBox 100 · r 36 · 8 anchors"
+      },
+      {
+        "label": "Stroke",
+        "value": "0.06 × viewBox · round caps"
+      },
+      {
+        "label": "Colour",
+        "value": "#FAFAFA dark · #0A0A0A light"
+      },
+      {
+        "label": "Size",
+        "value": "160px demo · 96px default"
+      }
+    ],
+    "prompt": "Build a loader that morphs one SVG path between shapes. Use a 100×100 viewBox, centre (50,50), base radius 36, and represent every shape as exactly 8 anchors at angles i×45° − 90°, joined as 'M x,y L … Z' so all paths share the same command structure; shapes vary only the per-anchor radius (circle/hexagon/pentagon = 36; square = 36 / cos(local angle) giving a diamond; star alternates 36 and 16.2; triangle = 36 × (0.45 + 0.55 × peak factor)). Render a motion.path with animate={{ d: currentPath }} and transition duration 1.4s, ease cubic-bezier(0.45,0.05,0.2,1); advance to the next shape with a setTimeout of (duration + hold) = 1.8s, looping through circle, square, triangle, hexagon, star, pentagon. Size 160px; stroke width 0.06 × 100 = 6 units, round caps and joins, colour #FAFAFA on dark (#0A0A0A on light), no fill; optional filled variant with a diagonal linear gradient from 95% to 55% opacity. Wrapper: role='status', aria-label 'Loading', sr-only text. Under prefers-reduced-motion render a single static path at 85% opacity and do not schedule the timer.",
+    "caveats": [
+      "With only 8 anchors, circle, hexagon and pentagon all draw the same octagon and the triangle comes out as an uneven blob, so the step from pentagon back to circle visibly does nothing.",
+      "The diamond's corners reach about 51 units from the centre and are clipped slightly at the edge of the box."
+    ],
+    "blurb": "A playful loading mark that keeps changing shape instead of spinning, which makes waiting feel a little less mechanical. It works as a page or splash loader, a placeholder while generated content arrives, or a brand moment in creative portfolios, AI tools and design-led apps, and it can be tinted or filled to match any palette."
+  }
+]

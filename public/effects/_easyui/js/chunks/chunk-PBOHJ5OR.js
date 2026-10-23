@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var r=e(t(),1),{DatePickerDemo:p}=o,n={id:"date-picker",aliases:[]};async function c(){await Promise.all([o.DatePickerDemo.preload()])}function i(m){let{demoKey:a}=m;return(0,r.jsx)(p,{},a)}export{n as a,c as b,i as c};

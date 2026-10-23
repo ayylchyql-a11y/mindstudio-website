@@ -16,3 +16,9 @@ export function readDemoSource(slug: string): string {
   if (!/^[a-z0-9-]+$/.test(slug)) throw new Error(`bad effect slug: ${slug}`);
   return readFileSync(join(process.cwd(), "public", "effects", `${slug}.html`), "utf8").trimEnd();
 }
+
+/** `codeFile`（相对 public/effects/）→ 文件内容。只允许 _easyui/src/ 下的 .tsx。 */
+export function readCodeFile(rel: string): string {
+  if (!/^_easyui\/src\/[A-Za-z0-9._-]+\.tsx$/.test(rel)) throw new Error(`bad codeFile: ${rel}`);
+  return readFileSync(join(process.cwd(), "public", "effects", rel), "utf8").trimEnd();
+}

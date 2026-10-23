@@ -32,6 +32,53 @@ const WIDTH = 960;
 const SECONDS = 8;
 /** 个别样板的 plays 标的是「怎么看」不是「怎么驱动」：bin-eats-label 标 hover，真要点一下才吃标签。 */
 const DRIVE_OVERRIDE = { "bin-eats-label": "click", "command-bar": "type", "dashboard-ambient-ai": "ask", "dashboard-terminal": "ask", "dashboard-keyboard": "keys", "snap-to-guide": "self", "stretch-header": "self" };
+/**
+ * 组件库（EasyUI）里通用驱动点不中的那几条：逐条写动作脚本。
+ * 步骤：["click", 文字或 "css:选择器"] · ["hover", …] · ["type", "css:选择器", 文本] · ["press", 键] · ["files"] · ["wait", ms]
+ * 2026-10-23 按「480 宽 2fps 帧差 ≤200 像素」挑出来的 14 条。
+ */
+const KIT_DRIVE = {
+  "morphing-mega-menu": [["wait", 700], ["hover", "Products"], ["wait", 1500], ["hover", "Developers"], ["wait", 1500], ["hover", "Company"], ["wait", 1500], ["hover", "Products"], ["wait", 1500]],
+  "draw-checkbox": [["wait", 600], ["click", "Product updates"], ["wait", 700], ["click", "Newsletter"], ["wait", 700], ["click", "Beta features"], ["wait", 1200], ["click", "Newsletter"], ["wait", 700], ["click", "Product updates"], ["wait", 1500]],
+  "morphing-button": [["wait", 600], ["click", "Save Changes"], ["wait", 1200], ["click", "Failed"], ["wait", 1200], ["click", "Saved ✓"], ["wait", 1200], ["click", "Save Changes"], ["wait", 1500]],
+  "otp-input": [["wait", 600], ["click", "css:input[aria-label='Digit 1 of 6']"], ["type", null, "482913"], ["wait", 3500]],
+  "sign-up": [["wait", 500], ["type", "css:input[placeholder='Jane Doe']", "Ada Rossi"], ["type", "css:input[placeholder='name@company.com']", "ada@studio.dev"], ["type", "css:input[placeholder='At least 8 characters']", "correct-horse-7"], ["type", "css:input[placeholder='Re-enter your password']", "correct-horse-7"], ["wait", 1500]],
+  "car-smoke-page-transition": [["wait", 500], ["click", "css:button:has-text('Launch Transition')"], ["wait", 5200]],
+  "stepper": [["wait", 500], ["click", "Next Step"], ["wait", 1000], ["click", "Next Step"], ["wait", 1000], ["click", "Next Step"], ["wait", 1000], ["click", "Back"], ["wait", 900], ["click", "Vertical"], ["wait", 900], ["click", "Next Step"], ["wait", 1200]],
+  "chat": [["wait", 500], ["type", "css:textarea", "How do springs feel natural?"], ["press", "Enter"], ["wait", 4000]],
+  "morphing-icon": [["wait", 500], ["click", "css:[aria-label='Toggle Bookmark']"], ["wait", 800], ["click", "css:[aria-label='Toggle Audio']"], ["wait", 800], ["click", "css:[aria-label='Toggle Theme']"], ["wait", 800], ["click", "css:[aria-label='Toggle Playback']"], ["wait", 800], ["click", "css:[aria-label='Toggle Lock']"], ["wait", 800], ["click", "Save to Collection"], ["wait", 1500]],
+  "press-button": [["wait", 500], ["click", "Save changes"], ["wait", 900], ["click", "Cancel"], ["wait", 900], ["click", "Save changes"], ["wait", 900], ["click", "Cancel"], ["wait", 900], ["click", "Save changes"], ["wait", 1500]],
+  "payment-status": [["wait", 3000], ["click", "View Receipt"], ["wait", 1500], ["click", "Download"], ["wait", 2000]],
+  "stretch-switch": [["wait", 500], ["click", "css:[role=switch] >> nth=0"], ["wait", 900], ["click", "css:[role=switch] >> nth=1"], ["wait", 900], ["click", "css:[role=switch] >> nth=0"], ["wait", 900], ["click", "css:[role=switch] >> nth=1"], ["wait", 1500]],
+  "login": [["wait", 500], ["type", "css:input[placeholder='name@company.com']", "ada@studio.dev"], ["type", "css:input[type=password]", "correct-horse-7"], ["click", "Sign In"], ["wait", 3000]],
+  "animated-file-upload": [["wait", 900], ["files"], ["wait", 6000]],
+};
+
+/** 按 KIT_DRIVE 的步骤演一遍；鼠标用 glide 走过去，录出来像真人在点。 */
+async function runSteps(page, steps, W, H) {
+  let at = [W / 2, H / 2];
+  const loc = (q) => q.startsWith("css:") ? page.locator(q.slice(4)).first() : page.getByText(q, { exact: true }).first();
+  const goto = async (q) => {
+    const l = loc(q);
+    const b = await l.boundingBox().catch(() => null);
+    if (!b) return null;
+    const to = [b.x + b.width / 2, b.y + b.height / 2];
+    await glide(page, at, to, 450); at = to;
+    return l;
+  };
+  for (const [op, a, b] of steps) {
+    if (op === "wait") await sleep(a);
+    else if (op === "hover") await goto(a);
+    else if (op === "click") { if (await goto(a)) { await page.mouse.click(at[0], at[1]); } }
+    else if (op === "type") { if (a && await goto(a)) await page.mouse.click(at[0], at[1]); await page.keyboard.type(b, { delay: 70 }); await sleep(250); }
+    else if (op === "press") await page.keyboard.press(a);
+    else if (op === "files") await page.setInputFiles("input[type=file]", [
+      { name: "brand-guidelines.pdf", mimeType: "application/pdf", buffer: Buffer.alloc(240000, 1) },
+      { name: "hero-photo.jpg", mimeType: "image/jpeg", buffer: Buffer.alloc(820000, 2) },
+    ]);
+  }
+}
+
 /** 「ask」类：往提示词栏里打两句话、各回车一次（天空 AI 那条是意大利语后台，打英文会穿帮）。 */
 const ASK_TEXT = { "dashboard-ambient-ai": ["Come va oggi?", "Metti in pausa gli ordini 20 minuti"], "dashboard-terminal": ["ordini attesa", "conferma tutti"] };
 /** 「keys」类：按键序列（字符串 = 按键，数字 = 等待 ms）。键盘优先那条：J/K 走行、Enter 开详情、C 推进。 */
@@ -100,7 +147,15 @@ function loadEffects() {
       bundleDir: /\n    bundleDir: true/.test(block),
       height: Number(field("height")),
     };
-  });
+  }).concat(loadKit());
+}
+
+/** 组件库那批在生成文件 data/effects-kit.ts 里，是纯 JSON 数组 —— 直接 parse。 */
+function loadKit() {
+  const src = readFileSync(join(ROOT, "data/effects-kit.ts"), "utf8");
+  const a = src.indexOf("export const kitEffects: Effect[] = ") + "export const kitEffects: Effect[] = ".length;
+  const b = src.indexOf(";\n\nexport const kitBlurbs");
+  return JSON.parse(src.slice(a, b)).map((e) => ({ slug: e.slug, category: e.category, plays: e.plays, bundleDir: false, height: e.height }));
 }
 
 function demoUrl(e) {
@@ -189,6 +244,7 @@ async function drive(page, e) {
   const scope = showcase ? "[data-showcase]" : e.category === "dashboard" ? "nav, aside, .sidebar, .rail" : ".stage, .win, .room, main, body";
   const t = (await findTarget(page, W, H, scope)) || { x: W / 2, y: H / 2, w: 0, h: 0 };
   const cx = t.x, cy = t.y;
+  if (KIT_DRIVE[e.slug]) { await runSteps(page, KIT_DRIVE[e.slug], W, H); return; }
   if (LONG_SELF[e.slug]) { await sleep(secsOf(e.slug) * 1000 + 800); return; }
   switch (DRIVE_OVERRIDE[e.slug] ?? e.plays) {
     case "hover": {

@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var i=e(t(),1),{NotificationBellShowcase:s}=o,m={id:"notification-bell",aliases:[]};async function p(){await Promise.all([o.NotificationBellShowcase.preload()])}function r(a){let{demoKey:n}=a;return(0,i.jsx)(s,{},n)}export{m as a,p as b,r as c};

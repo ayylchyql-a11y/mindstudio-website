@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as t,c as s}from"./chunk-EN3SAVJI.js";var e=t(s(),1),{ToastDemo:i}=o,p={id:"velocity-toast",aliases:[]};async function n(){await Promise.all([o.ToastDemo.preload()])}function m(a){return(0,e.jsx)("div",{className:"py-12 flex flex-col items-center justify-center",children:(0,e.jsx)(i,{})})}export{p as a,n as b,m as c};

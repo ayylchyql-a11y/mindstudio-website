@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as r}from"./chunk-EN3SAVJI.js";var m=e(r(),1),{BreadcrumbDemo:p}=o,d={id:"breadcrumb",aliases:[]};async function c(){await Promise.all([o.BreadcrumbDemo.preload()])}function s(t){let{demoKey:a}=t;return(0,m.jsx)(p,{},a)}export{d as a,c as b,s as c};

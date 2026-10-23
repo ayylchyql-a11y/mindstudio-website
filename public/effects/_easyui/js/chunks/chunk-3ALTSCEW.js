@@ -1,0 +1,1 @@
+import{a as r}from"./chunk-5TL3NGWZ.js";import{b as o,c as e}from"./chunk-EN3SAVJI.js";var p=o(e(),1),{SparklesCoreLiveShowcase:s}=r,i={id:"sparkles-core",aliases:["sparklescore","sparkles"]};async function l(){await Promise.all([s.preload()])}function m(t){let{demoKey:a}=t;return(0,p.jsx)(s,{},a)}export{i as a,l as b,m as c};

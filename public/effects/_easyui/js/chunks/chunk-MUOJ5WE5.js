@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var r=e(t(),1),{AlertDemo:s}=o,i={id:"alert",aliases:[]};async function l(){await Promise.all([o.AlertDemo.preload()])}function a(m){let{demoKey:p}=m;return(0,r.jsx)(s,{},p)}export{i as a,l as b,a as c};

@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var m=e(t(),1),{AnimatedNumberShowcase:n}=o,p={id:"animated-number",aliases:[]};async function d(){await Promise.all([o.AnimatedNumberShowcase.preload()])}function s(a){let{demoKey:r}=a;return(0,m.jsx)(n,{},r)}export{p as a,d as b,s as c};

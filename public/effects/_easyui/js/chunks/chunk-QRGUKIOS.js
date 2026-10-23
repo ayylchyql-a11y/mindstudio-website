@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var m=e(t(),1),{PhotoBoxDemo:s}=o,i={id:"photo-box",aliases:[]};async function d(){await Promise.all([o.PhotoBoxDemo.preload()])}function n(p){let{demoKey:r}=p;return(0,m.jsx)(s,{},r)}export{i as a,d as b,n as c};

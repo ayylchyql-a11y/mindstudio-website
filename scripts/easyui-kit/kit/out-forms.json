@@ -1,0 +1,331 @@
+[
+  {
+    "id": "advanced-data-table",
+    "plays": "click",
+    "accent": "#f2f2f3",
+    "title": { "en": "Advanced data table", "zh": "高级数据表格", "zh-tw": "進階資料表格" },
+    "gist": {
+      "en": "A rounded panel holding a title, a search field, view and column toggles, a strip of filter chips and a table of twelve records shown five at a time. Ticking a row slides open a bar with Export and Delete; the chevron at the start of a row turns a quarter-turn and drops a detail drawer underneath. Column headers cycle ascending, descending and back to unsorted, and on a narrow window the table re-flows into a stack of cards.",
+      "zh": "一块圆角面板：标题、搜索框、视图和列切换按钮、一排筛选标签，下面是 12 条记录的表格，每页 5 条。勾选任意一行，顶部滑出带「导出」「删除」的操作条；点行首的小箭头，它转 90 度，下方展开一格详情抽屉。表头点一下升序、再点降序、第三下取消排序；窗口变窄时整张表自动改成一叠卡片。",
+      "zh-tw": "一塊圓角面板：標題、搜尋框、檢視與欄位切換按鈕、一排篩選標籤，下面是 12 筆資料的表格，每頁 5 筆。勾選任一列，上方滑出含「匯出」「刪除」的操作列；點列首的小箭頭，它轉 90 度，下方展開一格詳細資訊抽屜。表頭點一下遞增、再點遞減、第三下取消排序；視窗變窄時整張表會自動改成一疊卡片。"
+    },
+    "anatomy": [
+      "<b>One state store, four slots.</b> A context provider owns sort column/direction, search text, per-column filter values, selected and expanded row ids, hidden columns, page and page size. Toolbar, filter strip, body and pager each read from it, so they can be reordered or swapped. Data flows search (any string or number field, case-insensitive) → filters (OR inside a column, AND across columns) → sort → slice to the page.",
+      "<b>Everything that opens uses one spring.</b> The bulk-action bar and each row drawer go from <code>height: 0, opacity: 0</code> to <code>height: auto</code> on stiffness 300, damping 32, mass 0.6; the row chevron rotates 0 → 90° on the same spring. Toolbar and pager buttons shrink to 0.96 while pressed.",
+      "<b>Header sort and select-all.</b> First click sorts ascending (up chevron), second descending, third clears; unsorted sortable headers show an up-down glyph at 30% opacity. The header checkbox only covers the rows on the current page and turns indeterminate when some of them are ticked. Filter chips invert to a solid light pill when active, and a Reset (n) link appears.",
+      "<b>Table ↔ cards.</b> In auto mode the window width is checked on mount and on resize: under 640 px the body renders as cards (first column as the card title, the rest in a two-column grid), otherwise as a table. A grid/list button in the toolbar forces either view. Shell: 16 px radius, 1 px border at white 10%, toolbar padding 28 × 20 px, cells 24 × 14 px, 12 px type.",
+      "<b>Accessibility.</b> Native checkboxes labelled per row and \"Select all rows\", <code>aria-expanded</code> on row toggles and the column menu, labelled first/previous/next/last buttons and rows-per-page select. Under <code>prefers-reduced-motion</code> the press-scale on buttons is switched off."
+    ],
+    "tokens": [
+      { "label": "Spring", "value": "stiffness 300 · damping 32 · mass 0.6" },
+      { "label": "Chevron", "value": "rotate 0 → 90°" },
+      { "label": "Press", "value": "scale 0.96" },
+      { "label": "Cards below", "value": "640 px window width" },
+      { "label": "Page sizes", "value": "5 / 10 / 20 / 50" },
+      { "label": "Shell", "value": "radius 16 px · border rgba(255,255,255,0.1)" }
+    ],
+    "prompt": "Build a data table component in a dark shell: 16px radius, 1px border at rgba(255,255,255,0.1), translucent surface, 12px sans type. Top toolbar (padding 28px × 20px): title on the left with a pill \"n selected\" counter when rows are ticked; on the right a 256px search input with a magnifier icon and clear button, a square button that toggles table/cards view, and a sliders button that opens a 192px column-visibility menu of checkboxes. Under the toolbar a filter strip with grouped chips per filterable column (OR within a column, AND across columns), active chips inverted to a light fill, plus a \"Reset (n)\" link. Body table: a checkbox column, an expand-chevron column, then data cells at 24px × 14px padding with right-aligned tabular numbers; sortable headers cycle asc → desc → none with up/down chevrons (a 30%-opacity up-down glyph when unsorted). The header checkbox selects only the visible page and shows indeterminate for a partial page. When any row is selected, slide down a bulk bar with Export and a rose-tinted Delete button. Clicking a row chevron rotates it 0→90° and opens a full-width detail drawer under the row. Animate bar and drawers from height 0/opacity 0 to auto, and the chevron, with a spring of stiffness 300, damping 32, mass 0.6; buttons scale to 0.96 on press unless prefers-reduced-motion. Footer: \"Showing a–b of n records\", a rows-per-page select (5/10/20/50, resets to page 1), and first/prev/\"p/total\"/next/last buttons that disable at the ends. In auto view mode, switch to stacked cards below 640px window width (first column as title, remaining columns in a 2-column grid). Empty state: magnifier circle, title, hint and a Clear filters button. Label every checkbox and icon button.",
+    "caveats": [
+      "Sorting compares raw cell values, so numbers stored as formatted strings (the demo's installs, e.g. \"9,830\" vs \"42,100\") sort as text rather than by size.",
+      "Typing in the search box does not reset the page, so searching from page 3 can land on an empty page; drawers and the column menu disappear without an exit animation."
+    ],
+    "blurb": "A complete table for admin screens and dashboards: search, filter chips, sortable columns, multi-select with bulk actions, expandable detail rows and paging, all in one quiet dark panel. On phones it turns itself into a stack of readable cards. Use it for order lists, user directories, inventories or any back-office record view where people need to find, compare and act on many rows at once."
+  },
+  {
+    "id": "animated-file-upload",
+    "plays": "click",
+    "accent": "#34d399",
+    "title": { "en": "Animated file upload", "zh": "动态文件上传", "zh-tw": "動態檔案上傳" },
+    "gist": {
+      "en": "A dashed drop zone with an upload icon in a small tile. Drag a file over it and the whole zone swells a touch, its border brightens and the icon lifts and grows. Dropped or browsed files stack underneath as cards with a hairline progress bar along the bottom edge, count up through uploading and processing, then turn green and read Ready — or red with the size-limit message and a retry button.",
+      "zh": "一块虚线框的拖放区，中间一个小方块里放着上传图标。把文件拖到上面，整块区域微微放大、边框变亮，图标往上浮一点并放大。拖进来或选中的文件在下方叠成卡片，卡片底边一条细进度条，经过「上传中」「处理中」后变绿显示 Ready；超出大小限制的则变红，写明原因并给一个重试按钮。",
+      "zh-tw": "一塊虛線框的拖放區，中間一個小方塊裡放著上傳圖示。把檔案拖到上面，整塊區域微微放大、邊框變亮，圖示往上浮一點並放大。拖進來或選取的檔案在下方疊成卡片，卡片底邊一條細進度條，經過「上傳中」「處理中」後轉綠顯示 Ready；超過大小上限的則轉紅，寫明原因並附一個重試按鈕。"
+    },
+    "anatomy": [
+      "<b>Drop zone.</b> 1 px dashed border <code>#1F1F1F</code> on <code>#0E0E0E</code>, 12 px radius, min-height 180 px, centred 40 px icon tile. On dragover it animates to scale 1.01, border <code>#4A4A4A</code>, fill <code>#141414</code>; the tile rises 3 px and scales to 1.08 while the icon goes from <code>#525252</code> to white — all on a spring of stiffness 380, damping 30, mass 0.5. Hover alone brightens the border. Click, Enter or Space opens a hidden file input.",
+      "<b>File cards.</b> New files are inserted at the top (list capped at 10). Each card enters from y 10 px, scale 0.98, opacity 0 on a softer spring (170 / 26 / 0.9) and uses layout animation, so the stack slides up when one is removed; removal fades to scale 0.95 in 150 ms. The leading icon is picked from MIME type or extension: image, video, audio, archive, code, document or generic.",
+      "<b>Progress.</b> A 2 px white bar on a <code>#141414</code> rail sits on the card's bottom edge; its width tweens for 150 ms ease-out on each update. The built-in simulation adds 12–29% every 180 ms; if a step lands between 90 and 99 the card shows a pulsing dot and \"Processing…\" at 92% before completing. Pass an <code>uploadHandler(file, onProgress)</code> promise to drive it from a real upload.",
+      "<b>End states.</b> Complete: emerald border at 30% and fill at 5%, a check and \"Ready\"; a \"Clear completed\" link appears in the list header. Error (file over <code>maxSize</code> — 15 MB in the demo — or a rejected promise): rose border and fill, the reason in rose, and a retry icon. Each card has a remove button.",
+      "<b>Accessibility.</b> The drop zone is <code>role=\"button\"</code> with <code>tabIndex 0</code> and keyboard activation; retry and remove buttons carry file-specific <code>aria-label</code>s. There is no reduced-motion branch."
+    ],
+    "tokens": [
+      { "label": "Drag over", "value": "zone scale 1.01 · icon y −3 px, scale 1.08" },
+      { "label": "Greys", "value": "#0E0E0E · #141414 · #1F1F1F · #4A4A4A" },
+      { "label": "Springs", "value": "zone 380 / 30 / 0.5 · cards 170 / 26 / 0.9" },
+      { "label": "Progress", "value": "2 px bar · 150 ms ease-out" },
+      { "label": "Simulated tick", "value": "every 180 ms · +12–29%" },
+      { "label": "Done / failed", "value": "#34d399 · #fb7185" }
+    ],
+    "prompt": "Build a file upload widget on a dark page. Drop zone: full width, min-height 180px, 1px dashed border #1F1F1F, background #0E0E0E, 12px radius, centred 40px rounded tile (#141414, border #1F1F1F) with an upload arrow icon in #525252, a 14px title 'Drop files here' and a 12px grey subtitle with the size limit. While a file is dragged over it, animate the zone to scale 1.01, border #4A4A4A, background #141414, lift the tile 3px and scale it 1.08 and turn the icon white, using a spring of stiffness 380, damping 30, mass 0.5; hover brightens the border; click/Enter/Space opens a hidden multi-file input. Below, a 'FILES (n)' mono caption and a stack of cards (12px radius, #0E0E0E, border #1F1F1F, 12–14px padding): a 32px type icon chosen by MIME or extension, file name, size in mono, and a status line. New cards go on top and enter from y 10px, scale 0.98, opacity 0 with a spring 170/26/0.9, using layout animation so removals close the gap; removal exits to scale 0.95 in 150ms. Uploading cards show 'Uploading n%' and a 2px white progress bar on a #141414 rail along the bottom edge, width tweened 150ms ease-out. Simulate progress by adding 12–29% every 180ms, showing 'Processing…' with a pulsing dot at 92% if a step lands in 90–99, or accept an async upload handler with an onProgress callback. Complete cards turn emerald (border 30%, fill 5%, '✓ Ready'); files over the size limit or failed uploads turn rose with the reason and a retry button. Each card has a remove button; a 'Clear completed' link removes finished ones. Give the drop zone role=button and label every icon button.",
+    "caveats": [
+      "Without an upload handler the progress is only simulated — nothing is sent anywhere. Dropped files are checked against the size limit but not against the accepted types.",
+      "Colours are hard-coded dark hex values, so it ignores a light theme, and there is no reduced-motion fallback."
+    ],
+    "blurb": "A drag-and-drop uploader that tells people exactly what is happening: the target reacts as a file hovers over it, each file gets its own card with live progress, and finished or rejected files are clearly marked with a way to retry or remove them. A good fit for profile and document uploads, support forms, media libraries and any app step where users hand over files."
+  },
+  {
+    "id": "calendar",
+    "plays": "click",
+    "accent": "#ffffff",
+    "title": { "en": "Calendar", "zh": "月历", "zh-tw": "月曆" },
+    "gist": {
+      "en": "A compact month grid with the month name between two chevrons. Paging slides the title and the day grid sideways in the direction of travel while they fade, and the solid selection square travels from the old date to the newly clicked one rather than jumping. Today is marked with a small dot under its number.",
+      "zh": "一块紧凑的月份网格，月份名夹在左右两个箭头之间。翻月时标题和日期格一起朝翻页方向横向滑开并淡出淡入；点另一个日期时，实心选中方块是从旧日期一路滑过去的，而不是直接跳过去。今天的数字下面有一个小圆点。",
+      "zh-tw": "一塊精簡的月份格線，月份名稱夾在左右兩個箭頭之間。換月時標題和日期格一起朝翻頁方向橫向滑開並淡出淡入；點另一個日期時，實心選取方塊是從舊日期一路滑過去，而不是直接跳過去。今天的數字下方有一個小圓點。"
+    },
+    "anatomy": [
+      "<b>Fixed 7 × 6 grid.</b> Every month renders 42 cells of 36 × 36 px in a 216 px-high box, so the card never changes height. Weekday initials come from <code>Intl</code> (narrow), the header month from <code>Intl</code> long month + year; <code>locale</code> and <code>weekStartsOn</code> (Sunday or Monday) are props.",
+      "<b>Month slide.</b> Title and grid are keyed on <code>year × 12 + month</code> inside <code>AnimatePresence</code>; the incoming page enters from x = 24 px × direction and the outgoing one leaves to −24 px × direction, both crossfading, on a spring of stiffness 460, damping 38, mass 0.7. The title strip is 20 px high with overflow hidden and <code>aria-live=\"polite\"</code>.",
+      "<b>Travelling selection.</b> The selected day draws an 8 px-radius square behind its number with a shared <code>layoutId</code>, so picking another date animates the square across the grid on the same spring (white with dark text on dark, near-black on light). Pressing a day scales its number to 0.9 for 150 ms. Range mode keeps two squares (start, end) with a neutral band between them that previews on hover before the second click and rounds its ends at week edges and month boundaries.",
+      "<b>Keyboard.</b> Roving tabindex on day buttons: arrows move a day or a week, Home/End jump to the week's start/end, PageUp/PageDown change month (with Shift, year); stepping into another month slides the grid. <code>minDate</code>, <code>maxDate</code> and <code>isDateDisabled</code> clamp navigation and dim days to 30%. Each day's <code>aria-label</code> is the full spoken date, and today has <code>aria-current=\"date\"</code>."
+    ],
+    "tokens": [
+      { "label": "Spring", "value": "stiffness 460 · damping 38 · mass 0.7" },
+      { "label": "Month slide", "value": "x ±24 px + fade" },
+      { "label": "Day cell", "value": "36 × 36 px · radius 8 px" },
+      { "label": "Grid", "value": "7 × 6 · 216 px tall" },
+      { "label": "Press", "value": "number scale 0.9 · 150 ms" }
+    ],
+    "prompt": "Build a calendar card on a dark surface (#121214, 1px border at white 8%, 16px radius, 12px padding). Header 32px tall: a 32px chevron-left button, the month and year centred in 14px medium text inside a 20px overflow-hidden strip, and a 32px chevron-right button (buttons dim to 30% when min/max dates block them). Below, a row of narrow weekday initials in 12px grey, then a fixed grid of 6 rows × 7 columns of 36×36px day buttons (216px tall, empty cells for days outside the month) in 14px tabular numbers. When the month changes, slide the outgoing header and grid 24px opposite to the travel direction while the new ones enter from 24px on the travel side, crossfading, with a spring of stiffness 460, damping 38, mass 0.7. The selected day shows an 8px-radius white square (dark text) behind its number that uses a shared layout id so it glides to a newly clicked date on the same spring; today has a 4px grey dot under the number; hover fills the cell neutral-800; the number scales to 0.9 for 150ms on press. Support a range mode with separate start and end squares and a neutral-800/70 band between them that follows the hover before the end is picked and rounds at row edges. Keyboard: roving tabindex, arrows ±1/±7 days, Home/End to week bounds, PageUp/PageDown ±1 month, with Shift ±1 year, clamped to min/max, sliding the grid when crossing months. role=grid, each day labelled with the full date, aria-current on today, aria-live on the month title.",
+    "caveats": [
+      "There is no reduced-motion branch: month slides and the travelling selection always animate."
+    ],
+    "blurb": "A month calendar that keeps your eye on the date: pages slide in the direction you move, and the highlight glides to whatever day you pick instead of blinking there. It handles single days and ranges, blocked dates and full keyboard use. Drop it into booking flows, scheduling panels, report filters or any sidebar that needs a quiet, always-visible date picker."
+  },
+  {
+    "id": "combobox",
+    "plays": "click",
+    "accent": "#fafafa",
+    "title": { "en": "Combobox", "zh": "可搜索下拉框", "zh-tw": "可搜尋下拉選單" },
+    "gist": {
+      "en": "A field-sized trigger that opens a searchable list. The panel pops out of its top-left corner, the search box takes focus, and a single grey highlight slides from row to row as you hover or use the arrow keys. Typed letters are underlined inside the matching names, the chosen option shows a check that pops in, and one greyed-out option is skipped.",
+      "zh": "一个输入框大小的触发按钮，点开是一个可搜索的列表。面板从左上角弹出，光标自动落在搜索框里；鼠标移过或按方向键时，只有一块灰色高亮在行与行之间滑动。输入的字母会在匹配的名称里加下划线，已选项右侧的对勾会弹出来，灰掉的那一项会被跳过。",
+      "zh-tw": "一個輸入框大小的觸發按鈕，點開是一個可搜尋的清單。面板從左上角彈出，游標自動落在搜尋框；滑鼠移過或按方向鍵時，只有一塊灰色反白在列與列之間滑動。輸入的字母會在符合的名稱裡加底線，已選項目右側的勾勾會彈出來，反灰的那一項會被跳過。"
+    },
+    "anatomy": [
+      "<b>Trigger.</b> 256 × 40 px, 8 px radius, 1 px neutral-800 border on neutral-950, selected label (or grey placeholder) and an up-down chevron icon. Its border lightens to neutral-600 while open; ArrowUp/ArrowDown also open it.",
+      "<b>Popover.</b> Animates from opacity 0, scale 0.96 to 1 on a spring of stiffness 520, damping 38, mass 0.7, with <code>transform-origin</code> at the corner touching the trigger; exits to 0.97 in 100 ms. It flips above the trigger when less than 330 px remain below and there is more room above. Outside pointerdown or Escape closes it; Escape returns focus to the trigger.",
+      "<b>One gliding highlight.</b> Instead of styling each hovered row, a single absolutely positioned 8 px-radius block is measured from the active row's <code>offsetTop</code>/<code>offsetHeight</code> and animated to that y and height (spring 520 / 40 / 0.6), so it slides between rows and survives scrolling. Keyboard moves wrap around, skip disabled options and scroll the 256 px list with a 4 px margin.",
+      "<b>Search.</b> The panel remounts on every open, so the query resets. Filtering is a case-insensitive substring match on label, description and extra keywords; the matched run is underlined. The check on the selected option pops from scale 0.4. No results shows a centred fading message.",
+      "<b>Accessibility.</b> Trigger <code>role=\"combobox\"</code> with <code>aria-expanded</code> and <code>aria-controls</code>; the search input uses <code>aria-activedescendant</code> to point at the highlighted <code>role=\"option\"</code>, which carry <code>aria-selected</code> and <code>aria-disabled</code>. Home/End jump to the first/last enabled option; Enter selects."
+    ],
+    "tokens": [
+      { "label": "Popover", "value": "scale 0.96 → 1 · spring 520 / 38 / 0.7" },
+      { "label": "Exit", "value": "scale 0.97 · 100 ms" },
+      { "label": "Highlight", "value": "spring 520 / 40 / 0.6" },
+      { "label": "Trigger", "value": "256 × 40 px · radius 8 px" },
+      { "label": "List", "value": "max-height 256 px · panel radius 12 px" },
+      { "label": "Flip", "value": "< 330 px below → open upward" }
+    ],
+    "prompt": "Build a searchable select (combobox) for a dark UI. Trigger: 256×40px button, 8px radius, 1px neutral-800 border on neutral-950, 14px text showing the selected label or a grey placeholder, an up-down chevron on the right; border neutral-600 while open; ArrowUp/Down open it. Popover: absolutely positioned 8px below (or above if under 330px of space below and more above), full trigger width (min 224px), 12px radius, neutral-800 border, neutral-950 fill, soft black shadow; enter from opacity 0 and scale 0.96 with a spring of stiffness 520, damping 38, mass 0.7, transform-origin at the trigger-side corner; exit to scale 0.97 over 100ms; close on outside pointerdown or Escape (Escape refocuses the trigger). Inside: a 40px search row with a magnifier icon and autofocused input separated by a bottom border, then a scrollable list (max 256px, 4px padding) of rows with label and optional grey description, 10×8px padding, 8px radius. Draw ONE highlight block behind the rows, measured from the active row's offsetTop/offsetHeight and animated to its y and height with a spring 520/40/0.6. Hovering sets the active row; ArrowUp/Down wrap and skip disabled rows, Home/End jump, Enter selects; keyboard moves keep the active row in view with a 4px margin. Filter case-insensitively by label, description and keywords, underline the matched substring, show 'No results.' fading in when empty. The selected row shows a check that pops in from scale 0.4. Selecting closes the panel and returns focus to the trigger. ARIA: role=combobox, aria-expanded, aria-controls, aria-activedescendant on the input, role=listbox/option with aria-selected and aria-disabled.",
+    "caveats": [
+      "Both the trigger and the search input carry role=\"combobox\", so assistive tech meets two comboboxes for one control; there is also no reduced-motion branch."
+    ],
+    "blurb": "A dropdown you can type into: open it, start typing, and the list narrows instantly while a single highlight glides to the best match. Ideal when a plain select would be too long to scroll — choosing a country, a project, a team member, a category or a product variant — in forms, settings pages and filters where speed matters more than browsing."
+  },
+  {
+    "id": "date-picker",
+    "plays": "click",
+    "accent": "#fafafa",
+    "title": { "en": "Date picker", "zh": "日期选择器", "zh-tw": "日期選擇器" },
+    "gist": {
+      "en": "Two input-style buttons, one for a single date and one for a date range, each opening the month calendar in a floating card that pops from its corner by the trigger. Pick a day and the selection square lands first; a beat later the card closes and the trigger shows the formatted date. The range version stays open until the end date is chosen, previewing the band as you hover.",
+      "zh": "两个像输入框一样的按钮，一个选单日、一个选日期区间，点开都会从按钮那一角弹出一张浮动的月历卡片。点中某天后，选中方块先落定，停顿一拍卡片才收起，按钮上显示格式化好的日期。区间版要等选完结束日才收起，鼠标移动时会先预览出区间色带。",
+      "zh-tw": "兩個像輸入框的按鈕，一個選單日、一個選日期區間，點開都會從按鈕那一角彈出一張浮動的月曆卡片。點選某天後，選取方塊先落定，停頓一拍卡片才收起，按鈕上顯示格式化好的日期。區間版要等選完結束日才收起，滑鼠移動時會先預覽出區間色帶。"
+    },
+    "anatomy": [
+      "<b>Trigger.</b> 288 × 40 px in the demo, 8 px radius, neutral-800 border on neutral-950, calendar icon plus the date (or a grey placeholder). <code>aria-haspopup=\"dialog\"</code> and <code>aria-expanded</code>; border lightens while open.",
+      "<b>Popover.</b> A <code>role=\"dialog\"</code> card (12 px radius, neutral-800 border, neutral-950 fill, black 40% shadow) that animates from opacity 0, scale 0.96 to 1 on a spring of stiffness 520, damping 38, mass 0.7, with its transform-origin on the trigger-side corner; it exits to 0.97 in 100 ms. On desktop it flips upward only when under 340 px remain below and at least 340 px exist above; under 640 px window width it always opens downward.",
+      "<b>Delayed close.</b> After a pick a 160 ms timer lets the calendar's selection square finish travelling before the card closes. Focus goes back to the trigger only if it hasn't moved somewhere else in the meantime. Escape closes and refocuses; a pointerdown outside closes.",
+      "<b>Range.</b> The trigger reads \"start – …\" until the second date is picked; clicking a day before the start restarts the range. The embedded calendar brings its month slide (spring 460 / 38 / 0.7), hover-previewed band and full keyboard model. Dates are formatted with <code>Intl</code> medium style and an optional locale; min, max and disabled-day rules pass straight through."
+    ],
+    "tokens": [
+      { "label": "Popover", "value": "spring 520 / 38 / 0.7 · scale 0.96 → 1" },
+      { "label": "Exit", "value": "scale 0.97 · 100 ms" },
+      { "label": "Close delay", "value": "160 ms after pick" },
+      { "label": "Flip rule", "value": "340 px · always down < 640 px" },
+      { "label": "Trigger", "value": "288 × 40 px · radius 8 px" }
+    ],
+    "prompt": "Build a date picker and a date-range picker for a dark UI, side by side with a 24px gap. Each trigger is a 288×40px button, 8px radius, 1px neutral-800 border on neutral-950, a 16px calendar icon and 14px text (grey placeholder 'Pick a date' / 'Pick a range', or the date formatted with Intl dateStyle 'medium'; ranges as 'start – end' or 'start – …'). Clicking opens a role=dialog card 8px below, aligned left: 12px radius, neutral-800 border, neutral-950 fill, black 40% shadow, entering from opacity 0 and scale 0.96 with a spring of stiffness 520, damping 38, mass 0.7, transform-origin at the top-left corner (bottom-left when flipped), exiting to scale 0.97 over 100ms. Flip it above the trigger on desktop only if less than 340px is free below and at least 340px above; under 640px viewport width always open downward. Inside, render a month calendar with 36px day cells, a sliding month transition (±24px, spring 460/38/0.7) and a selection square that glides between dates via a shared layout id. Single mode: picking a date updates the trigger and closes the card after a 160ms delay so the selection animation lands, then returns focus to the trigger unless focus moved elsewhere. Range mode: first click sets the start, hover previews the band, second click sets the end (an earlier day restarts) and then closes after 160ms. Escape closes and refocuses the trigger; pointerdown outside closes. Expose aria-haspopup='dialog' and aria-expanded on triggers.",
+    "caveats": [
+      "The card is positioned inside the trigger's wrapper rather than portalled to the body, so an ancestor with overflow hidden will clip it."
+    ],
+    "blurb": "A form-field date picker that opens a small calendar right where you are typing, lets the selection settle visibly, then tucks itself away and fills in the date. It comes in single-date and range versions, so it covers check-in and check-out, delivery slots, report periods, event dates and any filter that needs a start and an end."
+  },
+  {
+    "id": "draw-checkbox",
+    "plays": "click",
+    "accent": "#f2f2f3",
+    "title": { "en": "Draw checkbox", "zh": "手绘勾选框", "zh-tw": "手繪核取方塊" },
+    "gist": {
+      "en": "A 16 px checkbox whose tick is drawn as a stroke rather than appearing all at once: the line traces from the short arm into the long one while the mark overshoots slightly in size and settles, and the box itself dips and springs back as it fills. The third box in the demo shows a mixed state as a short bar that grows out from the left.",
+      "zh": "一个 16 像素的勾选框，对勾不是直接出现，而是像笔一样画出来：线从短的那一笔描到长的那一笔，同时整个对勾稍微放大过头再回落；方框本身在填色时先往里缩一下再弹回来。示例里第三个框是「部分选中」状态，一条短横线从左往右长出来。",
+      "zh-tw": "一個 16 像素的核取方塊，勾勾不是直接出現，而是像筆一樣畫出來：線從短的那一筆描到長的那一筆，同時整個勾勾稍微放大過頭再回落；方框本身在填色時先往內縮一下再彈回來。範例裡第三個框是「部分選取」狀態，一條短橫線從左往右長出來。"
+    },
+    "anatomy": [
+      "<b>Box.</b> 16 px square, 4 px radius, 1 px border. A visually hidden native checkbox holds the state and the visible box forwards clicks to it; the label is linked with <code>htmlFor</code>. Checked or mixed: fill and border take <code>var(--accent)</code> (zinc #27272A in this build); unchecked: <code>#18181A</code> with a white-10% border. On every change the box runs scale keyframes [0.9, 1.04, 1] over 320 ms with <code>cubic-bezier(0.16, 1, 0.3, 1)</code>, colours on the same tween.",
+      "<b>Drawn tick.</b> A 12 px SVG (viewBox 16) with the path <code>M3.5 8.5 L6.5 11.5 L12.5 5</code>, 2.4 stroke, round caps and joins. <code>pathLength</code> goes 0 → 1 in 280 ms with <code>cubic-bezier(0.65, 0, 0.35, 1)</code> while the whole glyph scales [0.6, 1.18, 1] over 360 ms on the out-curve and fades in over 120 ms. Unchecking removes the tick immediately.",
+      "<b>Mixed state.</b> A 10 × 2 px rounded bar whose <code>scaleX</code> springs from 0 to 1 with its origin on the left (stiffness 380, damping 30, mass 0.5).",
+      "<b>States.</b> Disabled dims the whole row to 30% and blocks clicks. Label is 12 px medium, optional description 11 px muted. No reduced-motion branch."
+    ],
+    "tokens": [
+      { "label": "Box pop", "value": "scale [0.9, 1.04, 1] · 320 ms" },
+      { "label": "Out curve", "value": "cubic-bezier(0.16, 1, 0.3, 1)" },
+      { "label": "Tick draw", "value": "280 ms · cubic-bezier(0.65, 0, 0.35, 1)" },
+      { "label": "Tick overshoot", "value": "scale [0.6, 1.18, 1] · 360 ms" },
+      { "label": "Size", "value": "16 px box · radius 4 · stroke 2.4" }
+    ],
+    "prompt": "Build an animated checkbox: a visually hidden native input plus a 16×16px visible box with 4px radius and 1px border, followed by a 12px medium label (optional 11px muted description) with 10px gap. Unchecked: fill #18181A, border rgba(255,255,255,0.1). Checked: fill and border #27272A (an accent token). Whenever the state changes, animate the box's scale through keyframes [0.9, 1.04, 1] over 320ms with cubic-bezier(0.16,1,0.3,1), tweening the colours on the same timing. When checked, render a 12px white SVG tick (viewBox 0 0 16 16, path M3.5 8.5 L6.5 11.5 L12.5 5, stroke-width 2.4, round caps and joins) whose pathLength animates 0→1 over 280ms with cubic-bezier(0.65,0,0.35,1), while the svg scales [0.6, 1.18, 1] over 360ms with cubic-bezier(0.16,1,0.3,1) and fades in over 120ms; remove it instantly on uncheck. Support an indeterminate look: a 10×2px white rounded bar that grows with scaleX 0→1 from the left using a spring of stiffness 380, damping 30, mass 0.5. Clicking the box or label toggles the hidden input; disabled dims the row to 30%. Also set the native input's indeterminate property, show a focus ring on the box when the hidden input has keyboard focus, and skip the motion under prefers-reduced-motion.",
+    "caveats": [
+      "The mixed state is visual only: the native input's indeterminate flag is never set, so assistive tech hears \"unchecked\", and clicking it does not clear the bar.",
+      "Keyboard focus lands on the visually hidden input and nothing on the visible box reacts to it, so tabbing gives no visible focus ring."
+    ],
+    "blurb": "A checkbox that writes its own tick, giving each click a small, satisfying moment of confirmation. It suits places where ticking something should feel deliberate: to-do lists, onboarding checklists, consent and preference panels, or settings with a few clear choices. Includes a mixed state for parent items that are only partly selected."
+  },
+  {
+    "id": "form",
+    "plays": "click",
+    "accent": "#fafafa",
+    "title": { "en": "Form kit", "zh": "表单组件套件", "zh-tw": "表單元件組" },
+    "gist": {
+      "en": "A dark settings card assembled from a family of form parts: a required text field with a helper line, a region dropdown, a checkbox and a switch, and a full-width save button. The checkbox tick pops in from nothing, the switch knob springs across its track, and the button sinks slightly while pressed.",
+      "zh": "一张深色设置卡片，由一整套表单零件拼成：带说明文字的必填输入框、地区下拉框、一个勾选框、一个开关，最下面一颗通栏保存按钮。勾选框的对勾从无到有弹出来，开关的圆钮带弹性滑到另一头，按钮按下时会轻轻往下沉。",
+      "zh-tw": "一張深色設定卡片，由一整組表單零件拼成：附說明文字的必填輸入框、地區下拉選單、一個核取方塊、一個開關，最下面一顆滿版儲存按鈕。核取方塊的勾勾從無到有彈出來，開關的圓鈕帶彈性滑到另一頭，按鈕按下時會輕輕往下沉。"
+    },
+    "anatomy": [
+      "<b>Layout parts.</b> <code>Form</code> (native form, <code>noValidate</code>, 16 px vertical rhythm), <code>FormItem</code> (6 px gap), <code>FormLabel</code> (12 px medium <code>#FAFAFA</code>, a <code>#FF7A7A</code> asterisk hidden from screen readers when required), <code>FormControl</code>, <code>FormDescription</code> (11 px <code>#6B6B6B</code>) and <code>FormMessage</code>. The kit also ships Textarea and RadioGroup.",
+      "<b>Fields.</b> Input and select are 40 px tall, 8 px radius, 12 px text on <code>#141414</code> with a <code>#1F1F1F</code> border that goes to <code>#4A4A4A</code> on hover and focus over 150 ms; errors switch to a rose border. The select is native with its arrow hidden and a chevron icon overlaid; password inputs can show an eye toggle.",
+      "<b>Toggles.</b> Checkbox: 16 px, 4 px radius, checked fills <code>#FAFAFA</code> and the dark tick scales 0 → 1. Switch: 36 × 20 px track that turns <code>#FAFAFA</code> over 200 ms, 14 px knob moving x 2 → 16 px and turning dark. Radio: the inner dot shares a layout id per group, so it slides from the old option to the new one. All on a spring of stiffness 380, damping 30, mass 0.5; the button scales to 0.97 while pressed.",
+      "<b>Messages.</b> <code>FormMessage</code> is <code>role=\"alert\"</code> and opens from height 0, y −4 px, opacity 0 on the same spring, collapsing back out when the error clears. Validation logic is left to you."
+    ],
+    "tokens": [
+      { "label": "Spring", "value": "stiffness 380 · damping 30 · mass 0.5" },
+      { "label": "Field", "value": "40 px · radius 8 · #141414 / #1F1F1F → #4A4A4A" },
+      { "label": "Switch", "value": "36 × 20 track · 14 px knob · x 2 → 16" },
+      { "label": "Press", "value": "button scale 0.97" },
+      { "label": "Required / error", "value": "#FF7A7A" }
+    ],
+    "prompt": "Build a dark form kit and demo it in a 448px-wide card (#0E0E0E, 1px #1F1F1F border, 16px radius, 24px padding) titled 'Interactive Form System' in 14px semibold. Parts: a native form with noValidate and 16px spacing; items with 6px gap; labels 12px medium #FAFAFA with an optional #FF7A7A asterisk (aria-hidden); helper text 11px #6B6B6B; an error message row in 11px #FF7A7A with an alert icon, role=alert, animating in from height 0, y −4px, opacity 0. Text inputs and selects: 40px tall, 14px horizontal padding, 8px radius, 12px #FAFAFA text, #141414 fill, 1px #1F1F1F border turning #4A4A4A on hover/focus over 150ms, rose border on error; the select is native with appearance none and a 14px chevron overlay at right 12px; password fields can show an eye/eye-off toggle. Checkbox: 16px box, 4px radius, #141414 with #1F1F1F border, checked fills #FAFAFA and shows a dark 12px tick scaling from 0 to 1. Switch: 36×20px pill, unchecked #141414 with #1F1F1F border and a #6B6B6B 14px knob at x=2px, checked #FAFAFA track (200ms colour) and a #050505 knob at x=16px. Radio group: 16px rings with an 8px dot that slides between options via a shared layout id per group. Use one spring for all motion: stiffness 380, damping 30, mass 0.5. Demo content: required 'Project Name' input with helper text, 'Deployment Region' select with three regions, a divider, an 'Enable Edge Caching' checkbox and an 'Automatic TLS Certificates' switch (both on), and a full-width light primary button 'Save Configuration' that scales to 0.97 while pressed. Link every label to its control with id/htmlFor and give the switch role=switch with aria-checked and an accessible name.",
+    "caveats": [
+      "Labels are not wired automatically: FormItem generates no ids and ignores its error prop, so you must pass htmlFor/id yourself (the demo does not), and the switch's text is not attached to the switch button."
+    ],
+    "blurb": "A matching set of form building blocks — labels, inputs, selects, checkboxes, switches, radios and inline errors — that share one look and one gentle motion. Use it to build settings pages, sign-up and checkout steps, project configuration screens or admin panels quickly, with every control already styled to sit together on a dark interface."
+  },
+  {
+    "id": "lock-input",
+    "plays": "click",
+    "accent": "#f2f2f3",
+    "title": { "en": "Lock-in input", "zh": "聚焦锁定输入框", "zh-tw": "聚焦鎖定輸入框" },
+    "gist": {
+      "en": "A labelled email field. When it gains focus, a soft outer halo grows from slightly smaller than the box out to its edge while a fine inner outline fades in, so the frame seems to close in and lock onto the field. Clicking away reverses both.",
+      "zh": "一个带标签的邮箱输入框。获得焦点时，外圈一道柔和的光晕从比框略小的位置扩到框边，同时内侧一条细描边淡入，看上去像边框往里一合、扣住了输入框。点到别处时两层一起退回去。",
+      "zh-tw": "一個附標籤的電子郵件輸入框。取得焦點時，外圈一道柔和的光暈從比框略小的位置擴到框邊，同時內側一條細描邊淡入，看起來像邊框往內一合、扣住了輸入框。點到別處時兩層一起退回去。"
+    },
+    "anatomy": [
+      "<b>Field.</b> 44 px tall, 8 px radius, 14 px horizontal padding, 16 px text (large enough that mobile browsers don't zoom on focus), fill <code>#18181A</code>, 1 px border, 14 px medium label above. Optional leading/trailing icons switch from subtle to primary colour over 200 ms on focus.",
+      "<b>Two overlay rings.</b> Absolutely positioned layers with the same radius, <code>pointer-events: none</code> and <code>aria-hidden</code>. Outer halo: <code>box-shadow: 0 0 0 2px var(--accent-ring)</code> (#F2F2F3 at 20%) animating opacity 0 → 1 and scale 0.94 → 1. Inner edge: <code>inset 0 0 0 1px var(--border-hover)</code> (#343438), opacity only. Both on a spring of stiffness 380, damping 30, mass 0.5, driven by focus/blur state.",
+      "<b>Error state.</b> Border goes rose at 50%, the halo becomes <code>rgba(244, 63, 94, 0.45)</code>, the inner edge <code>rgba(244, 63, 94, 0.6)</code>, and the message appears below with <code>role=\"alert\"</code>, fading in from y −2 px. <code>aria-invalid</code> is set; a description is linked through <code>aria-describedby</code>."
+    ],
+    "tokens": [
+      { "label": "Halo", "value": "2 px · rgba(242, 242, 243, 0.2)" },
+      { "label": "Halo scale", "value": "0.94 → 1" },
+      { "label": "Inner edge", "value": "1 px inset · #343438" },
+      { "label": "Spring", "value": "stiffness 380 · damping 30 · mass 0.5" },
+      { "label": "Field", "value": "44 px · radius 8 · 16 px text" },
+      { "label": "Error", "value": "rgba(244, 63, 94, 0.45 / 0.6)" }
+    ],
+    "prompt": "Build a text input with a 'locking' focus effect on a dark page, max width 384px. A 14px medium label sits 6px above a 44px-tall input with 8px radius, 14px horizontal padding, 16px text in #F2F2F3, grey placeholder, #18181A fill and a 1px rgba(255,255,255,0.1) border. Layer two absolutely positioned, pointer-events-none, aria-hidden overlays over the input with the same radius: (1) an outer halo box-shadow 0 0 0 2px rgba(242,242,243,0.2) that animates from opacity 0 and scale 0.94 to opacity 1 and scale 1 on focus; (2) an inner edge box-shadow inset 0 0 0 1px #343438 that only fades 0→1. Drive both from focus/blur state with a spring of stiffness 380, damping 30, mass 0.5, and reverse on blur. Optional leading and trailing icons inset 12px change from #4D4D52 to #F2F2F3 over 200ms on focus (pad the text to 36px on that side). Error state: border rgba(244,63,94,0.5) (solid rose on focus), halo rgba(244,63,94,0.45), inner edge rgba(244,63,94,0.6), aria-invalid, and a 12px rose message with role=alert that fades in from y −2px; otherwise show an optional 12px muted description linked by aria-describedby. Make sure consumer onFocus/onBlur handlers are called in addition to, not instead of, the internal ones.",
+    "caveats": [
+      "Passing your own onFocus or onBlur replaces the internal handlers (the props are spread after them), so the rings stop animating; aria-describedby never points at the error message."
+    ],
+    "blurb": "A text field that answers the moment you click into it: its frame visibly tightens around the box, so people always know where they are typing. Works anywhere precision matters — login and sign-up, checkout details, account settings, search bars in dashboards — and shows errors in the same language with a red frame and a message underneath."
+  },
+  {
+    "id": "otp-input",
+    "plays": "click",
+    "accent": "#7c3aed",
+    "title": { "en": "OTP input", "zh": "验证码输入框", "zh-tw": "驗證碼輸入框" },
+    "gist": {
+      "en": "Six separate boxes for a one-time code. Each digit you type makes its box bounce up in size and back, focus hops to the next box, and the focused box's border turns violet. Backspace walks backwards, the arrow keys move between boxes, and pasting a code fills every box at once.",
+      "zh": "六个独立的小格子，用来输入一次性验证码。每输入一位数字，那一格就弹一下放大再回来，焦点自动跳到下一格，当前格的边框变成紫色。退格键会往回删，方向键在格子之间移动，直接粘贴验证码则一次填满所有格。",
+      "zh-tw": "六個獨立的小格子，用來輸入一次性驗證碼。每輸入一位數字，那一格就彈一下放大再回來，焦點自動跳到下一格，目前格的邊框變成紫色。退格鍵會往回刪，方向鍵在格子之間移動，直接貼上驗證碼則一次填滿所有格子。"
+    },
+    "anatomy": [
+      "<b>Boxes.</b> One text input per digit, 40 × 48 px, 6 px radius, 8 px gap, 1 px <code>#1F1F1F</code> border on <code>#0E0E0E</code>, digit centred in 18 px medium. The focused box's border turns <code>#7C3AED</code>. Light theme uses a gray-200 fill with a white border.",
+      "<b>Pop.</b> The box that just received (or lost) a character runs scale keyframes [1, 1.25, 1] on a spring of stiffness 500, damping 15; the marker clears when the animation completes. After a paste only the last filled box pops.",
+      "<b>Input rules.</b> Digits only (single-character regex), one per box; the box's content is selected on focus so typing overwrites. Backspace clears the current box, or if it is already empty moves back and clears the previous one. Left/Right arrows move focus. Paste strips non-digits, truncates to the code length, fills from the start and focuses the next empty slot. <code>onComplete</code> fires when every box holds a digit.",
+      "<b>Accessibility.</b> The row is <code>role=\"group\"</code> labelled \"One-time passcode\"; each box is labelled \"Digit n of 6\", uses <code>inputMode=\"numeric\"</code>, and the first box has <code>autocomplete=\"one-time-code\"</code> so phone keyboards can offer a code received by SMS."
+    ],
+    "tokens": [
+      { "label": "Box", "value": "40 × 48 px · radius 6 · gap 8" },
+      { "label": "Pop", "value": "scale [1, 1.25, 1] · spring 500 / 15" },
+      { "label": "Focus", "value": "#7C3AED" },
+      { "label": "Fill / border", "value": "#0E0E0E · #1F1F1F" },
+      { "label": "Digit", "value": "18 px medium, centred" }
+    ],
+    "prompt": "Build a 6-digit one-time-code input centred on a dark page. Render a role=group row (aria-label 'One-time passcode') of six text inputs, each 40×48px with 8px gaps, 6px radius, 1px #1F1F1F border, #0E0E0E fill, white 18px medium centred digit, no outline, border #7C3AED on focus; maxLength 1, inputMode numeric, aria-label 'Digit n of 6', autocomplete 'one-time-code' on the first box. Autofocus the first box. Accept only 0–9; typing a digit stores it and moves focus to the next box; selecting the box content on focus lets new typing overwrite. Backspace clears the current box, or if empty moves to the previous box and clears it; ArrowLeft/ArrowRight move focus. On paste, strip non-digits, take up to 6, fill from the first box, and focus the box after the last pasted digit. Each time a box's value changes, animate that box with scale keyframes [1, 1.25, 1] using a spring of stiffness 500 and damping 15 (after a paste, pop only the last filled box). Call onChange with the joined string and onComplete when all six are filled. Handle multi-character values arriving through the change event (OS autofill) by distributing them like a paste, and honour prefers-reduced-motion by skipping the pop.",
+    "caveats": [
+      "Only the paste path spreads a multi-digit string across the boxes; a whole code arriving through a change event (some autofill implementations) keeps just its last digit.",
+      "No reduced-motion branch, and the violet focus colour is hard-coded rather than themed."
+    ],
+    "blurb": "A verification-code field split into individual boxes, so people can see exactly how many digits are left and which one they are on. Each keystroke gives a small bounce, and pasting the whole code works in one go. Use it for two-factor sign-in, phone or email verification, payment confirmation and PIN entry screens."
+  },
+  {
+    "id": "spring-select",
+    "plays": "click",
+    "accent": "#f2f2f3",
+    "title": { "en": "Spring select", "zh": "弹簧下拉选择", "zh-tw": "彈簧下拉選單" },
+    "gist": {
+      "en": "A compact dropdown labelled Workspace. Opening it swings the chevron a little past upside-down and drops the option list a few pixels into place while it grows to full size; the current option carries a check and the row under the pointer gets a soft fill. Choosing an option closes the list and puts focus back on the trigger.",
+      "zh": "一个紧凑的下拉框，标签写着 Workspace。点开时右侧箭头转过头一点、停在比倒过来再多一点的角度，选项列表往下落几像素、同时放大到正常尺寸；当前选项带一个对勾，鼠标所在行有一层淡淡的底色。选中后列表收起，焦点回到按钮上。",
+      "zh-tw": "一個精簡的下拉選單，標籤寫著 Workspace。點開時右側箭頭轉過頭一點、停在比倒過來再多一點的角度，選項清單往下落幾像素、同時放大到正常尺寸；目前選項帶一個勾勾，滑鼠所在列有一層淡淡的底色。選定後清單收起，焦點回到按鈕上。"
+    },
+    "anatomy": [
+      "<b>Trigger.</b> Full-width button, 40 px tall, 8 px radius, 14 px left / 36 px right padding, 12 px text, fill <code>#18181A</code>, border white 10% that turns <code>#343438</code> on hover and while open (150 ms). A 12 px label sits 6 px above, linked with <code>htmlFor</code>.",
+      "<b>Chevron.</b> A 14 px chevron 12 px from the right edge rotates 0 → 192° on open — it comes to rest 12° past upside-down rather than at 180° — and back to 0 on close, on a spring of stiffness 380, damping 30, mass 0.5.",
+      "<b>List.</b> Absolutely positioned 6 px below the trigger, max-height 240 px with scrolling, 8 px radius, fill <code>#1C1C1F</code>, elevated shadow. Enters from opacity 0, y −6 px, scale 0.98 and exits to y −4 px, scale 0.98 on the same spring. Rows: 12 px text, 12 × 8 px padding, 4 px side margin, 6 px radius; hover/active row fills <code>#18181A</code>; selected row shows a 14 px check; options can carry a 10 px description or be disabled at 30%.",
+      "<b>Behaviour.</b> ArrowDown, Enter or Space on the trigger opens it; outside mousedown or Escape closes it (Escape refocuses the trigger); selecting closes and refocuses. ARIA: <code>aria-haspopup=\"listbox\"</code>, <code>aria-expanded</code>, <code>role=\"listbox\"</code> / <code>role=\"option\"</code> with <code>aria-selected</code>. An error string fades in from y −2 px with <code>role=\"alert\"</code>."
+    ],
+    "tokens": [
+      { "label": "Spring", "value": "stiffness 380 · damping 30 · mass 0.5" },
+      { "label": "Chevron", "value": "rotate 0 → 192°" },
+      { "label": "List enter", "value": "y −6 px · scale 0.98 → 1" },
+      { "label": "Trigger", "value": "40 px · radius 8 · #18181A" },
+      { "label": "List", "value": "max 240 px · #1C1C1F · radius 8" }
+    ],
+    "prompt": "Build a custom select on a dark page, max width 384px. A 12px medium label 'Workspace' sits 6px above a full-width 40px trigger button: 8px radius, 14px left and 36px right padding, 12px #F2F2F3 text, #18181A fill, 1px rgba(255,255,255,0.1) border that becomes #343438 on hover and while open (150ms colour transition). A 14px grey chevron at right 12px rotates from 0 to 192° when open (resting 12° past upside-down) and back to 0 when closed, using a spring of stiffness 380, damping 30, mass 0.5. The option list is absolutely positioned 6px below, full width, max-height 240px with scroll, 4px vertical padding, 8px radius, #1C1C1F fill, 1px border and a soft drop shadow; it enters from opacity 0, y −6px, scale 0.98 and exits to opacity 0, y −4px, scale 0.98 with the same spring. Rows: 12px text, 12px × 8px padding, 4px side margin, 6px radius, secondary grey text with the selected row in primary colour and a 14px check on the right, #18181A fill on the hovered/active row, optional 10px description, disabled rows at 30%. ArrowDown/Enter/Space open it; Escape or a click outside closes it; picking a row selects, closes and returns focus to the trigger. Use aria-haspopup='listbox', aria-expanded, role=listbox/option and aria-selected, and keep keyboard focus (or aria-activedescendant) on the list so ArrowUp/ArrowDown/Enter move and choose options. Show an optional rose error line fading in from y −2px with role=alert.",
+    "caveats": [
+      "When opened from the keyboard, focus stays on the trigger while the arrow-key handler lives on the list, so arrow keys cannot move through options unless the list itself is focused."
+    ],
+    "blurb": "A dropdown with a bit of physical character: the arrow swings open and the list drops into place, so the change of state is easy to follow without being loud. Built for short lists of choices — switching workspace, team or plan, picking a sort order, setting a status — in settings screens, toolbars and forms."
+  },
+  {
+    "id": "stretch-switch",
+    "plays": "click",
+    "accent": "#f2f2f3",
+    "title": { "en": "Stretch switch", "zh": "拉伸开关", "zh-tw": "拉伸開關" },
+    "gist": {
+      "en": "Two small pill switches, each with a title and a one-line description. Press and hold and the knob squashes — wider and flatter, like a soft bead under a finger; let go and it springs to the other end while the track fills near-white and the knob turns dark.",
+      "zh": "两个小号胶囊开关，每个旁边有标题和一行说明。按住不放时圆钮会被压扁——变宽变矮，像手指按住一颗软珠子；松手后它带弹性滑到另一头，同时轨道填满近白色、圆钮变成深色。",
+      "zh-tw": "兩個小型膠囊開關，每個旁邊有標題和一行說明。按住不放時圓鈕會被壓扁——變寬變矮，像手指按住一顆軟珠子；放開後它帶彈性滑到另一頭，同時軌道填滿近白色、圓鈕變成深色。"
+    },
+    "anatomy": [
+      "<b>Track.</b> A <code>role=\"switch\"</code> button with <code>aria-checked</code>, 36 × 20 px, fully rounded, 1 px border, 2 px inline padding. Off: fill <code>#18181A</code>, border white 10%. On: fill and border <code>#F2F2F3</code>. Colours transition over 200 ms.",
+      "<b>Squash on press.</b> Pointer down sets a pressed flag that scales the 14 px knob to <code>scaleX 1.18</code>, <code>scaleY 0.86</code> around its centre; pointer up, cancel or leave restores 1 × 1.",
+      "<b>Spring travel.</b> The knob's x is a motion value animated between 0 and 18 px (36 − 14 − 2 × 2) on a spring of stiffness 380, damping 30, mass 0.5 whenever the checked state changes. Knob colour: <code>#A1A1A6</code> when off, the page background <code>#111113</code> when on.",
+      "<b>Label block.</b> 12 px medium title and 11 px muted description to the left with 16 px gap; clicking the text also toggles. Disabled dims the row to 30%. Works controlled or uncontrolled."
+    ],
+    "tokens": [
+      { "label": "Squash", "value": "scaleX 1.18 · scaleY 0.86" },
+      { "label": "Spring", "value": "stiffness 380 · damping 30 · mass 0.5" },
+      { "label": "Travel", "value": "0 → 18 px" },
+      { "label": "Size", "value": "track 36 × 20 · knob 14 px" },
+      { "label": "Colours", "value": "on #F2F2F3 / knob #111113 · off #18181A / knob #A1A1A6" }
+    ],
+    "prompt": "Build a toggle switch with a squash-and-stretch knob for a dark page. Row layout: on the left a 12px medium title (#F2F2F3) over an 11px muted description (#6F6F75), 16px gap, then the switch on the right; clicking the text toggles too. Switch: a button with role=switch and aria-checked, 36×20px, fully rounded, 1px border, 2px horizontal padding; off = #18181A fill with rgba(255,255,255,0.1) border, on = #F2F2F3 fill and border, colours transitioning over 200ms. Inside, a 14px round knob (#A1A1A6 off, #111113 on, tiny shadow) whose x is animated between 0 and 18px with a spring of stiffness 380, damping 30, mass 0.5 whenever the state changes. While the pointer is down on the switch, scale the knob to scaleX 1.18 and scaleY 0.86 around its centre; restore to 1 on pointerup, pointercancel or pointerleave. Disabled: 30% opacity, not-allowed cursor. Support controlled and uncontrolled use. Demo two rows stacked with a 16px gap: 'Reduce motion — Disable spring animations' (on) and 'Dark mode — Toggle dark theme' (off). Give the switch an accessible name by linking it to the title with aria-labelledby, and skip the squash under prefers-reduced-motion.",
+    "caveats": [
+      "The title and description are not linked to the switch button, so screen readers announce an unnamed switch; the squash only appears for pointer presses, not for Space or Enter."
+    ],
+    "blurb": "A settings toggle with a tactile touch: the knob gives way under your finger and then springs across, so flipping an option feels like pressing something real. It pairs a clear title and short explanation with each switch, making it a natural fit for preference lists, notification settings, privacy controls and feature toggles in apps and dashboards."
+  }
+]

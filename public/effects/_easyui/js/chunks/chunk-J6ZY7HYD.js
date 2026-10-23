@@ -1,0 +1,1 @@
+import{a as t}from"./chunk-5TL3NGWZ.js";import{b as e,c as n}from"./chunk-EN3SAVJI.js";var o=e(n(),1),{BranchingSubmenu:r}=t,p={id:"branching-submenu",aliases:[]};async function c(){await Promise.all([r.preload()])}function a(s){let{demoKey:m}=s;return(0,o.jsx)("div",{className:"py-8 flex justify-center w-full",children:(0,o.jsx)(r,{},m)})}export{p as a,c as b,a as c};

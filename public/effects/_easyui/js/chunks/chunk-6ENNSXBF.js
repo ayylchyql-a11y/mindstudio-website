@@ -1,0 +1,1 @@
+import{a as e}from"./chunk-F474P2UG.js";import{b as o,c as t}from"./chunk-EN3SAVJI.js";var r=o(t(),1),{InteractiveAreaChartDemo:n}=e,s={id:"interactive-area-chart",aliases:[]};async function c(){await Promise.all([e.InteractiveAreaChartDemo.preload()])}function i(a){let{demoKey:m}=a;return(0,r.jsx)(n,{},m)}export{s as a,c as b,i as c};

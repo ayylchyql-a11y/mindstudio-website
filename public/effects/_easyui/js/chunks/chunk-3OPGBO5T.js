@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var p=e(t(),1),{StepperDemo:s}=o,i={id:"stepper",aliases:[]};async function d(){await Promise.all([o.StepperDemo.preload()])}function n(r){let{demoKey:m}=r;return(0,p.jsx)(s,{},m)}export{i as a,d as b,n as c};

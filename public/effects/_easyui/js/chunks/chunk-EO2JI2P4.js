@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var m=e(t(),1),{SheetDemo:p}=o,i={id:"sheet",aliases:[]};async function d(){await Promise.all([o.SheetDemo.preload()])}function n(r){let{demoKey:s}=r;return(0,m.jsx)(p,{},s)}export{i as a,d as b,n as c};

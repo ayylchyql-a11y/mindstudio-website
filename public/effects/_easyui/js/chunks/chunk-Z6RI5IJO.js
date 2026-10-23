@@ -1,0 +1,1 @@
+import{a as i}from"./chunk-5TL3NGWZ.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var o=e(t(),1),{PillNavigation:a}=i,m={id:"pill-navigation",aliases:[]};async function l(){await Promise.all([a.preload()])}function p(n){let{demoKey:s}=n;return(0,o.jsx)("div",{className:"py-12 flex justify-center",children:(0,o.jsx)(a,{},s)})}export{m as a,l as b,p as c};

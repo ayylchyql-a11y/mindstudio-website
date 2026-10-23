@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var m=e(t(),1),{SkeletonDemo:s}=o,i={id:"skeleton",aliases:[]};async function l(){await Promise.all([o.SkeletonDemo.preload()])}function p(n){let{demoKey:r}=n;return(0,m.jsx)(s,{},r)}export{i as a,l as b,p as c};

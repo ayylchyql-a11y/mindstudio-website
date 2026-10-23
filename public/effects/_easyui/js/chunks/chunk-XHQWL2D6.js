@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as r}from"./chunk-EN3SAVJI.js";var a=e(r(),1),{IOSSearchBarShowcase:m}=o,n={id:"ios-search-bar",aliases:[]};async function i(){await Promise.all([o.IOSSearchBarShowcase.preload()])}function p(s){let{demoKey:t}=s;return(0,a.jsx)(m,{},t)}export{n as a,i as b,p as c};

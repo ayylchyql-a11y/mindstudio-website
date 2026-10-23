@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var r=e(t(),1),{ProductTourDemoShowcase:p}=o,n={id:"product-tour",aliases:[]};async function d(){await Promise.all([o.ProductTourDemoShowcase.preload()])}function a(m){let{demoKey:s}=m;return(0,r.jsx)(p,{},s)}export{n as a,d as b,a as c};

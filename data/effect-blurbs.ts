@@ -10,7 +10,11 @@
  * 只有英文：跟 anatomy / prompt 一个口径，目标查询本来就只有英文有量。
  * 每条一段，80 词上下；缺了哪条构建直接红（blurbOf 会抛）。
  */
+import { kitBlurbs } from "./effects-kit";
+
 const blurbs: Record<string, string> = {
+  // 组件库（EasyUI）那批由 scratchpad/easyui/ms/assemble.mjs 生成，见 data/effects-kit.ts
+  ...kitBlurbs,
   // ── animated icons (Lucide + original motions; trigger model after Lordicon) ──
   "frosted-glass-sheet":
     "A pass that floats up as frosted glass while the page behind goes soft, with twelve month cells that fill in turn to show how much of the year has gone. A calm way to show 'where am I in this plan' without leaving the screen.",

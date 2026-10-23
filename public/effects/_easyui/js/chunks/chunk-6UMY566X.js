@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as m}from"./chunk-EN3SAVJI.js";var n=e(m(),1),{MorphingMegaMenuDemo:p}=o,s={id:"morphing-mega-menu",aliases:[]};async function M(){await Promise.all([o.MorphingMegaMenuDemo.preload()])}function a(r){let{demoKey:t}=r;return(0,n.jsx)(p,{},t)}export{s as a,M as b,a as c};

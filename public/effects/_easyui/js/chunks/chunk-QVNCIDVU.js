@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as r}from"./chunk-EN3SAVJI.js";var m=e(r(),1),{HamburgerMenuShowcase:n}=o,i={id:"hamburger-menu",aliases:[]};async function u(){await Promise.all([o.HamburgerMenuShowcase.preload()])}function s(t){let{demoKey:a}=t;return(0,m.jsx)(n,{},a)}export{i as a,u as b,s as c};

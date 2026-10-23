@@ -1,0 +1,1 @@
+import{a as r}from"./chunk-5TL3NGWZ.js";import{b as o,c as t}from"./chunk-EN3SAVJI.js";var e=o(t(),1),{ParticleDelete:a}=r,m={id:"particle-delete",aliases:[]};async function n(){await Promise.all([a.preload()])}function i(p){let{demoKey:s}=p;return(0,e.jsx)("div",{className:"py-2 w-full",children:(0,e.jsx)(a,{},s)})}export{m as a,n as b,i as c};

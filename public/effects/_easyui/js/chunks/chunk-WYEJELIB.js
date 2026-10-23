@@ -1,0 +1,1 @@
+import{a as m}from"./chunk-5TL3NGWZ.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var o=e(t(),1),{FocusMode:s}=m,i={id:"focus-mode",aliases:[]};async function n(){await Promise.all([s.preload()])}function r(a){let{demoKey:p}=a;return(0,o.jsx)("div",{className:"py-4 w-full max-w-2xl mx-auto",children:(0,o.jsx)(s,{},p)})}export{i as a,n as b,r as c};

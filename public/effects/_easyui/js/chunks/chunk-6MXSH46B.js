@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as t}from"./chunk-EN3SAVJI.js";var r=e(t(),1),{TorqueDialShowcase:i}=o,n={id:"torque-dial",aliases:[]};async function l(){await Promise.all([o.TorqueDialShowcase.preload()])}function m(a){let{demoKey:s}=a;return(0,r.jsx)(i,{},s)}export{n as a,l as b,m as c};

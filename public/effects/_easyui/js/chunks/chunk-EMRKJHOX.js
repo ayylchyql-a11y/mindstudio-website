@@ -1,0 +1,1 @@
+import{a as t}from"./chunk-5TL3NGWZ.js";import{b as o,c as e}from"./chunk-EN3SAVJI.js";var r=o(e(),1),{ScrollVelocityTextLiveShowcase:l}=t,p={id:"scrollvelocitytext",aliases:["scroll-velocity-text","velocity-text"]};async function a(){await Promise.all([l.preload()])}function i(s){let{demoKey:c}=s;return(0,r.jsx)(l,{},c)}export{p as a,a as b,i as c};

@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-F474P2UG.js";import{b as e,c as r}from"./chunk-EN3SAVJI.js";var t=e(r(),1),{SidebarDemo:s}=o,n={id:"sidebar",aliases:[]};async function d(){await Promise.all([o.SidebarDemo.preload()])}function i(m){let{demoKey:a}=m;return(0,t.jsx)(s,{},a)}export{n as a,d as b,i as c};
