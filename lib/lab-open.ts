@@ -13,5 +13,15 @@ export const OPEN_SLUGS: readonly string[] = [
   "aurora-drift",
 ];
 
+/**
+ * 橱窗开不开。
+ *   · true  = 橱窗模式（09-20 起）：/xx/lab 公开页人人能看（标题+介绍+8 秒录屏），进 sitemap；
+ *             OPEN_SLUGS 那几条完整公开。
+ *   · false = 整个封闭（2026-10-23 用户定「不开放给外人」）：/xx/lab 全部页面、所有样板 .html、
+ *             /lab-video/ 录屏都要密码；sitemap 不列、robots 禁抓；OPEN_SLUGS 不生效。
+ * 想重新开橱窗就改回 true（录屏、介绍、两棵路由树都还在）。
+ */
+export const LAB_SHOWCASE = false;
+
 /** 完整版那棵路由树的路径段（`/[lang]/lab-unlocked/...`）。公开树是 `lab`。 */
 export const LAB_FULL_SEGMENT = "lab-unlocked";

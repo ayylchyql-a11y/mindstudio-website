@@ -24,8 +24,8 @@
  * 这是「先别让人白拿」级别的门，不是安全边界：静态站、Edge 上比对一个哈希、
  * cookie 90 天。够挡住路过的人，挡不住认真的人。
  */
-import { LAB_FULL_SEGMENT, OPEN_SLUGS } from "@/lib/lab-open";
-export { LAB_FULL_SEGMENT };
+import { LAB_FULL_SEGMENT, LAB_SHOWCASE, OPEN_SLUGS } from "@/lib/lab-open";
+export { LAB_FULL_SEGMENT, LAB_SHOWCASE };
 
 export const LAB_LOCKED = true;
 export const LAB_COOKIE = "lab_key";
@@ -62,6 +62,8 @@ export function toFullPath(pathname: string): string | null {
  */
 export function isGatedPath(pathname: string): boolean {
   if (new RegExp(`^/[a-z-]+/${LAB_FULL_SEGMENT}(/|$)`).test(pathname)) return true;
+  // 封闭模式（LAB_SHOWCASE=false）：公开树 /xx/lab/** 和橱窗录屏也一起关在门里
+  if (!LAB_SHOWCASE && (/^\/[a-z-]+\/lab(\/|$)/.test(pathname) || pathname.startsWith("/lab-video/"))) return true;
   const slug = demoSlugOf(pathname);
-  return slug !== null && !OPEN_SLUGS.includes(slug);
+  return slug !== null && (!LAB_SHOWCASE || !OPEN_SLUGS.includes(slug));
 }

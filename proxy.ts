@@ -39,10 +39,10 @@ function negotiate(header: string | null): Locale {
 function gatePage(pathname: string, wrong: boolean): string {
   const lang = pathname.split("/")[1] || "en";
   const t = ({
-    zh: { title: "完整版设计库", body: "可交互样板、参数、提示词与源码是客户专享。输入密码继续。", ph: "密码", btn: "进入", wrong: "密码不对" },
-    "zh-tw": { title: "完整版設計庫", body: "可互動樣板、參數、提示詞與原始碼是客戶專享。輸入密碼繼續。", ph: "密碼", btn: "進入", wrong: "密碼不對" },
-    it: { title: "Libreria completa", body: "Sample interattivi, numeri, prompt e sorgente sono riservati ai clienti. Inserisci la password per continuare.", ph: "Password", btn: "Entra", wrong: "Password errata" },
-  } as Record<string, { title: string; body: string; ph: string; btn: string; wrong: string }>)[lang] ?? { title: "Full library", body: "Live samples, numbers, prompts and source are for clients. Enter the password to continue.", ph: "Password", btn: "Enter", wrong: "Wrong password" };
+    zh: { title: "AI 设计库", body: "设计库目前不对外开放。输入密码继续。", ph: "密码", btn: "进入", wrong: "密码不对" },
+    "zh-tw": { title: "AI 設計庫", body: "設計庫目前不對外開放。輸入密碼繼續。", ph: "密碼", btn: "進入", wrong: "密碼不對" },
+    it: { title: "AI Library", body: "La libreria al momento è privata. Inserisci la password per continuare.", ph: "Password", btn: "Entra", wrong: "Password errata" },
+  } as Record<string, { title: string; body: string; ph: string; btn: string; wrong: string }>)[lang] ?? { title: "AI Library", body: "This library is private for now. Enter the password to continue.", ph: "Password", btn: "Enter", wrong: "Wrong password" };
   const esc = (v: string) => v.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
   return `<!doctype html><html lang="${esc(lang)}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${esc(t.title)} · Mind Studio</title>
 <style>*{box-sizing:border-box;margin:0}body{min-height:100vh;display:grid;place-items:center;padding:24px;background:#f5f5f7;color:#1d1d1f;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;-webkit-font-smoothing:antialiased}
@@ -83,7 +83,7 @@ export async function proxy(req: NextRequest) {
   }
   // 样板文件本来不经过 proxy（matcher 排除带点号的路径），只为这道门才进来的：
   // 过了门（或不归门管的 js/css/图片）一律放行，别被下面的语言重定向带去 /en/effects/…
-  if (pathname.startsWith("/effects/")) return NextResponse.next();
+  if (pathname.startsWith("/effects/") || pathname.startsWith("/lab-video/")) return NextResponse.next();
 
   const hasLocale = locales.some(
     (loc) => pathname === `/${loc}` || pathname.startsWith(`/${loc}/`)
@@ -97,6 +97,6 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  // 第二条是给密码门的：样板文件 /effects/*.html 带点号，第一条排除了它们
-  matcher: ["/((?!api|_next|.*\\..*).*)", "/effects/:path*"],
+  // 后两条是给密码门的：样板文件 /effects/*.html 和录屏 /lab-video/* 带点号，第一条排除了它们
+  matcher: ["/((?!api|_next|.*\\..*).*)", "/effects/:path*", "/lab-video/:path*"],
 };
