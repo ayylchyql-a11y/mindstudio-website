@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#E8392B" />
+  <meta name="description" content="Legna E Farina, Vimercate — pizza al forno a legna, kebab, panini e piade. Piazzale Marconi 7/D, asporto e consegna, aperti tutti i giorni fino alle 3." />
+  <title>Legna E Farina — Pizza, kebab e panini · Vimercate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Serif:ital@1&family=DM+Mono:wght@400;500&display=swap" />
+  <link rel="preload" as="image" href="../assets/margherita-top.webp" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="../assets/menu.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+
+  <!-- the bar floats as a pill over everything; one colour of its own, so it reads on red and on white -->
+  <header class="bar" data-bar>
+    <a class="brand press" href="#top" aria-label="Legna E Farina, torna all'inizio">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="#E9B872" /><circle cx="20" cy="20" r="14" fill="#E8392B" /><circle cx="14.5" cy="15" r="3.6" fill="#FFF8EC" /><circle cx="25.5" cy="17.5" r="3.2" fill="#FFF8EC" /><circle cx="18" cy="26" r="3.4" fill="#FFF8EC" /><path d="M24 26.5c2-.4 3.4-2 3.6-3.8" stroke="#2F8F4E" stroke-width="2.6" stroke-linecap="round" fill="none" /></svg>
+      <span>Legna <i>e</i> Farina</span>
+    </a>
+    <nav aria-label="Sezioni">
+      <a href="#pizze">Le pizze</a>
+      <a href="#scegli">Pizza o kebab</a>
+      <a href="#menu">Il resto</a>
+      <a href="#tavolata">Quanti siete?</a>
+      <a href="#orari">Orari</a>
+    </nav>
+    <span class="status" data-status><i></i><span data-status-text>…</span></span>
+    <button class="cart-pill press" type="button" data-cart-open aria-label="Apri il carrello">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 11a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z" /><path d="M9 8V6.5a3 3 0 0 1 6 0V8" /></svg>
+      <b data-cart-count aria-live="polite">0</b>
+    </button>
+  </header>
+
+  <main id="main">
+    <!-- ① HERO — a whole Margherita on tomato red.
+         Library: floating-parallax-field (each ingredient has a depth; the pointer and a slow sine move it by that depth),
+         scroll-pinned-hero-recomposition (the pizza stays put while the scroll takes it apart: eight slices slide out
+         along their own bisectors and a fact lands in every gap). -->
+    <section class="hero" id="top" data-hero>
+      <div class="hero-pin">
+        <div class="floaters" data-floaters aria-hidden="true"></div>
+        <div class="hero-copy">
+          <p class="hello">Vimercate · piazzale Marconi 7/D</p>
+          <h1 class="wordmark"><span>Legna</span> <span class="amp">e</span> <span>Farina</span></h1>
+          <p class="lead">Pizza cotta nel forno a legna, kebab tagliato dallo spiedo, panini e piade. <em>Tutti i giorni, fino alle 3.</em></p>
+          <div class="hero-cta">
+            <button class="btn cream press" type="button" data-mode-go="asporto">Ordina d'asporto <span aria-hidden="true">→</span></button>
+            <button class="btn outline press" type="button" data-mode-go="domicilio">A domicilio · da 1 €</button>
+          </div>
+        </div>
+        <div class="pie-wrap">
+          <div class="pie" data-pie aria-label="Una Margherita" role="img"></div>
+          <div class="facts" data-facts aria-hidden="true"></div>
+          <div class="seal" data-seal aria-hidden="true">
+            <svg viewBox="0 0 120 120"><defs><path id="seal-ring" d="M60 60 m-46 0 a46 46 0 1 1 92 0 a46 46 0 1 1 -92 0" /></defs>
+              <circle cx="60" cy="60" r="58" /><text><textPath href="#seal-ring" data-seal-text>APERTO ORA · FINO ALLE 03:00 · APERTO ORA · FINO ALLE 03:00 ·</textPath></text></svg>
+            <b data-seal-big>3:00</b>
+          </div>
+        </div>
+        <p class="hero-cue" aria-hidden="true">scorri, la tagliamo</p>
+      </div>
+    </section>
+
+    <!-- ② COSA TI VA? — 44 pizzas, filtered by what you fancy. Tap ingredients; the pizzas that have all of them
+         come forward (FLIP: each card is measured before and after and slides from where it was). -->
+    <section class="pizze" id="pizze" data-pizze>
+      <header class="sec-head">
+        <p class="eyebrow">Le pizze</p>
+        <h2>Cosa ti <em>va</em> stasera?</h2>
+        <p class="sec-lead">Tocca gli ingredienti che vuoi: le pizze che li hanno tutti vengono avanti.</p>
+      </header>
+      <div class="chips" role="group" aria-label="Ingredienti" data-chips></div>
+      <p class="hits" aria-live="polite" data-hits></p>
+      <div class="grid" data-grid></div>
+      <p class="note">Pizze, calzoni e focacce: prezzi del listino online. Il resto: prezzi al banco.</p>
+    </section>
+
+    <!-- ③ PIZZA O KEBAB? — one seam you drag. Whichever side has more of the screen shows its picks; leave it in the
+         middle and the shop answers for you. -->
+    <section class="scegli" id="scegli" data-scegli>
+      <div class="split" data-split style="--s:.68">
+        <div class="pane pizza" aria-hidden="true">
+          <div class="pane-in">
+            <img src="../assets/diavola-top.webp" alt="" class="pane-img round" loading="lazy" />
+            <b class="pane-word">Pizza</b>
+            <div class="pane-picks" data-picks="pizza"></div>
+          </div>
+        </div>
+        <div class="pane kebab" aria-hidden="true">
+          <div class="pane-in">
+            <img src="../assets/piatto-kebab.webp" alt="" class="pane-img" loading="lazy" />
+            <b class="pane-word">Kebab</b>
+            <div class="pane-picks" data-picks="kebab"></div>
+          </div>
+        </div>
+        <div class="seam" data-seam role="slider" tabindex="0" aria-label="Pizza o kebab?" aria-valuemin="0" aria-valuemax="100" aria-valuenow="68">
+          <span class="seam-knob"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6" /></svg></span>
+        </div>
+        <div class="both" data-both aria-live="polite">
+          <p>Perché scegliere?</p>
+          <h3>La nostra <em>pizza kebab</em></h3>
+          <small>Doppia pasta, pomodoro, mozzarella, kebab, insalata, cipolla e salse</small>
+          <button class="btn red press" type="button" data-add="kebab-pizza">Aggiungi · 11,00 €</button>
+        </div>
+        <p class="split-hint" data-split-hint>trascina la linea</p>
+      </div>
+      <h2 class="split-title">Pizza <em>o</em> kebab?</h2>
+    </section>
+
+    <!-- ④ IL RESTO — every other category as a solid block of its own colour. -->
+    <section class="resto" id="menu">
+      <header class="sec-head">
+        <p class="eyebrow">Il resto del menù</p>
+        <h2>Panini, piade, kebab <em>e fritti</em></h2>
+        <p class="sec-lead">Prezzi al banco. Il panino kebab costa 4 euro, da sempre.</p>
+      </header>
+      <div class="blocks" data-blocks></div>
+    </section>
+
+    <!-- ⑤ QUANTI SIETE? — inertia-wheel-picker: flick it, it keeps turning, slows down, lands on a notch. -->
+    <section class="tavolata" id="tavolata" data-tavolata>
+      <div class="tav-left">
+        <p class="eyebrow">Fantacalcio, compleanni, cena di famiglia</p>
+        <h2>Quanti <em>siete?</em></h2>
+        <div class="picker">
+          <span class="band" aria-hidden="true"></span>
+          <div class="wheel" data-wheel tabindex="0" role="spinbutton" aria-label="Quante persone" aria-valuemin="1" aria-valuemax="12"></div>
+          <span class="picker-unit" data-unit>persone</span>
+        </div>
+      </div>
+      <div class="tav-right">
+        <div class="ticket" data-ticket>
+          <p class="ticket-head">La tavolata per <b data-n>6</b></p>
+          <ul data-tav-lines></ul>
+          <div class="ticket-sum"><span>Totale</span><b data-tav-tot>0,00 €</b></div>
+          <p class="ticket-each" data-tav-each></p>
+          <button class="btn red wide press" type="button" data-tav-add>Aggiungi tutto al carrello</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ⑥ ORARI — seven bars on a night that runs from 6 in the morning to 6 the next morning (closing at 3 is late
+         evening here, not early morning), with a line on now. -->
+    <section class="orari" id="orari">
+      <div class="orari-chart">
+        <header class="sec-head">
+          <p class="eyebrow">Orari</p>
+          <h2>Aperti tutti i giorni. <em>Fino a tardi.</em></h2>
+        </header>
+        <div class="tl" data-tl></div>
+      </div>
+      <aside class="dove">
+        <h3>Piazzale Marconi <em>7/D</em></h3>
+        <p>20871 Vimercate (MB). Sotto i portici, con i tavoli anche fuori.</p>
+        <ul class="dove-facts">
+          <li><b>Asporto</b> pronto in 5–15 minuti</li>
+          <li><b>Consegna</b> 1 € a Vimercate · 2 € fuori</li>
+        </ul>
+        <div class="dove-actions">
+          <a class="btn red press" href="tel:+39039668840">Chiama 039 668840</a>
+          <a class="btn outline-ink press" href="https://www.google.com/maps/dir/?api=1&destination=Legna+E+Farina+Piazzale+Guglielmo+Marconi+7D+Vimercate" target="_blank" rel="noopener">Indicazioni</a>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <b class="foot-word">Legna <i>e</i> Farina</b>
+    <p>Pizzeria · kebab · forno a legna — Piazzale Guglielmo Marconi 7/D, Vimercate · <a href="tel:+39039668840">039 668840</a></p>
+    <p class="fine">Sito dimostrativo: l'ordine non viene inviato. Foto da Unsplash e Pexels. · <a href="/templates/pizzeria" target="_top">← Tutti gli stili</a></p>
+  </footer>
+
+  <div class="dock" data-dock>
+    <span class="status" data-status><i></i><span data-status-text>…</span></span>
+    <button class="btn red press" type="button" data-cart-open>Il tuo ordine · <b data-cart-total>0,00 €</b></button>
+  </div>
+
+  <!-- product sheet -->
+  <div class="scrim" data-scrim hidden></div>
+  <div class="sheet" data-sheet role="dialog" aria-modal="true" aria-labelledby="sheet-name" aria-hidden="true" inert>
+    <button class="x press" type="button" data-sheet-close aria-label="Chiudi">×</button>
+    <div class="sheet-img"><img alt="" data-s-img src="../assets/margherita-top.webp" width="1000" height="1000" /></div>
+    <p class="sheet-cat" data-s-cat></p>
+    <h3 id="sheet-name" data-s-name></h3>
+    <p class="sheet-desc" data-s-desc></p>
+    <div class="sheet-foot">
+      <!-- drag-stepper: tap for one, hold and drag sideways to sweep -->
+      <div class="stp" data-stp><button type="button" data-d="-1" aria-label="Uno in meno">−</button><b class="val" data-s-qty aria-live="polite">1</b><button type="button" data-d="1" aria-label="Uno in più">+</button></div>
+      <button class="btn red press grow" type="button" data-s-add>Aggiungi · <b data-s-price>0,00 €</b></button>
+    </div>
+  </div>
+
+  <!-- cart -->
+  <aside class="cart" data-cart aria-label="Il tuo ordine" aria-hidden="true" inert>
+    <header>
+      <h2>Il tuo ordine</h2>
+      <button class="x press" type="button" data-cart-close aria-label="Chiudi">×</button>
+    </header>
+    <div class="cart-flip" data-flip>
+      <div class="cart-front">
+        <div class="cart-scroll">
+          <div class="seg" role="radiogroup" aria-label="Modalità" data-mode>
+            <button type="button" role="radio" data-m="asporto">Asporto</button>
+            <button type="button" role="radio" data-m="domicilio">Domicilio</button>
+          </div>
+          <ul class="lines" data-lines></ul>
+          <p class="empty" data-empty>Ancora niente. Una <button type="button" class="link" data-add="margherita">Margherita</button> o un <button type="button" class="link" data-add="panino-kebab">panino kebab da 4 €</button>?</p>
+          <div class="fields" data-fields>
+            <label><span>Nome</span><input type="text" autocomplete="name" data-f="name" placeholder="Come ti chiamiamo" /></label>
+            <label><span>Telefono</span><input type="tel" autocomplete="tel" data-f="tel" placeholder="Per avvisarti quando è pronto" /></label>
+            <div class="only-dom">
+              <label><span>Indirizzo</span><input type="text" autocomplete="street-address" data-f="addr" placeholder="Via e numero civico" /></label>
+              <div class="seg small" role="radiogroup" aria-label="Zona" data-zone>
+                <button type="button" role="radio" data-z="vimercate">Vimercate · 1 €</button>
+                <button type="button" role="radio" data-z="fuori">Fuori Vimercate · 2 €</button>
+              </div>
+            </div>
+            <label><span data-when-label>Ritiro alle</span><select data-f="when"></select></label>
+            <p class="closed-note" data-closed hidden></p>
+          </div>
+          <dl class="sum">
+            <div><dt>Subtotale</dt><dd data-sub>0,00 €</dd></div>
+            <div class="only-dom"><dt>Consegna</dt><dd data-fee>1,00 €</dd></div>
+            <div class="tot"><dt>Totale</dt><dd data-tot>0,00 €</dd></div>
+          </dl>
+          <p class="form-err" data-err role="alert"></p>
+        </div>
+        <footer class="cart-foot">
+          <!-- done-burst: the pill squeezes into a circle, a check draws itself, then the toppings burst out -->
+          <button class="confirm" type="button" data-confirm><span data-confirm-label>Conferma ordine</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 12.5l3.6 3.6L17.5 8.5" /></svg></button>
+        </footer>
+      </div>
+      <!-- flip-to-reveal: the drawer turns over and the back is the order -->
+      <div class="cart-back" data-back aria-live="polite"></div>
+    </div>
+    <canvas class="burst" data-burst aria-hidden="true"></canvas>
+  </aside>
+</body>
+</html>

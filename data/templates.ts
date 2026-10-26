@@ -14,7 +14,7 @@ import type { Locale, Localized } from "@/lib/i18n";
  */
 
 export type GroupId = "food" | "retail" | "supply" | "services";
-export type StyleId = "original" | "editorial" | "night-glass" | "pop" | "claude" | "abisso" | "mercato" | "kaiten" | "tavolo" | "ukiyo" | "yoru" | "shizuka" | "yatai" | "manga" | "loop" | "showa" | "app" | "kraft" | "carta";
+export type StyleId = "original" | "editorial" | "night-glass" | "pop" | "claude" | "abisso" | "mercato" | "kaiten" | "tavolo" | "ukiyo" | "yoru" | "shizuka" | "yatai" | "manga" | "loop" | "showa" | "app" | "kraft" | "carta" | "margherita";
 
 export interface TemplateGroup {
   id: GroupId;
@@ -278,6 +278,17 @@ export const styles: { id: StyleId; title: Localized; gist: Localized }[] = [
       it: "Chiaro e stampato: carta washi, onde indaco, un sigillo che si timbra da solo, un titolo la cui ultima riga gira tra domicilio, asporto e app, e tre ristoranti come biglietti il cui colore tinge tutta la sezione.",
     },
   },
+  // 10-26 Legna E Farina 的明亮版（原版 = 深色炉火那套）
+  {
+    id: "margherita",
+    title: { en: "Margherita", zh: "玛格丽特", "zh-tw": "瑪格麗特", it: "Margherita", ja: "マルゲリータ", ko: "마르게리타" },
+    gist: {
+      en: "The palette is the pizza: tomato red, mozzarella cream, basil green, and every section one ingredient laid flat. A whole Margherita that the scroll cuts into eight slices, with a fact in every gap; pizzas filtered by the ingredients you tap; a seam you drag between pizza and kebab; a wheel that plans the order for a table of twelve.",
+      zh: "配色就是这张披萨：番茄红、马苏里拉白、罗勒绿，每一屏是一种配料铺平。一整张玛格丽特被滚动切成八块、每道缝里落一句话；点配料筛披萨；在披萨和 kebab 之间拖一条分界线；转一下滚轮就给十二个人配好一桌。",
+      "zh-tw": "配色就是這張披薩：番茄紅、莫札瑞拉白、羅勒綠，每一屏是一種配料鋪平。一整張瑪格麗特被捲動切成八塊、每道縫裡落一句話；點配料篩披薩；在披薩和 kebab 之間拖一條分界線；轉一下滾輪就給十二個人配好一桌。",
+      it: "La palette è la pizza: rosso pomodoro, crema di mozzarella, verde basilico, e ogni sezione è un ingrediente steso. Una Margherita intera che lo scroll taglia in otto spicchi, con un fatto in ogni fessura; pizze filtrate dagli ingredienti che tocchi; una linea da trascinare tra pizza e kebab; una ruota che prepara l’ordine per una tavolata da dodici.",
+    },
+  },
 ];
 
 export interface SiteTemplate {
@@ -483,6 +494,35 @@ export const templates: SiteTemplate[] = [
     ],
     variants: { carta: "Mumi Sushi" },
     accent: "#d4a24c",
+    lang: "it",
+  },
+  {
+    slug: "pizzeria",
+    group: "food",
+    date: "2026-10-26",
+    name: "Legna E Farina",
+    industry: { en: "Pizzeria and kebab", zh: "披萨 · kebab 店", "zh-tw": "披薩 · kebab 店", it: "Pizzeria e kebab", ja: "ピッツェリア・ケバブ", ko: "피자 · 케밥" },
+    city: "Vimercate",
+    gist: {
+      en: "A neighbourhood pizzeria with a wood oven and a kebab spit, open until three in the morning, in two designs built on the real menu. The dark one is the oven: heat haze over the name, a menu that takes the colour of the dish you point at, an evening scrolled from lunch to the last bake on a 24-hour dial, the house kebab pizza pulled apart layer by layer, and an order you push into the oven on a peel. The bright one is the Margherita itself.",
+      zh: "一家有柴火炉也有 kebab 烤肉架、营业到凌晨三点的街坊披萨店，两套设计，用的是真实菜单。深色那套是炉膛：店名上的热浪、指到哪道菜整块就染成哪道菜的颜色、在 24 小时表盘上从午饭滚到最后一炉、招牌 kebab 披萨一层层拆开、把订单用铲子推进炉口。明亮那套就是一张玛格丽特。",
+      "zh-tw": "一家有柴火爐也有 kebab 烤肉架、營業到凌晨三點的街坊披薩店，兩套設計，用的是真實菜單。深色那套是爐膛：店名上的熱浪、指到哪道菜整塊就染成哪道菜的顏色、在 24 小時錶盤上從午飯捲到最後一爐、招牌 kebab 披薩一層層拆開、把訂單用鏟子推進爐口。明亮那套就是一張瑪格麗特。",
+      it: "Una pizzeria di quartiere con forno a legna e spiedo del kebab, aperta fino alle tre di notte, in due design costruiti sul menù vero. Quello scuro è il forno: un calore che fa tremare il nome, un menù che prende il colore del piatto che indichi, una serata scorsa dal pranzo all’ultima infornata su un quadrante di 24 ore, la pizza kebab della casa smontata strato per strato, e un ordine che spingi nel forno con la pala. Quello chiaro è la Margherita stessa.",
+    },
+    features: [
+      "One menu file shared by both designs: 85 items, prices from the board above the counter (online prices where the board has none)",
+      "Live open / closed state and closing time in Europe/Rome, including nights that run past midnight",
+      "Original: heat-haze headline (SVG turbulence through a pointer-following lens), drifting ember glow and sparks",
+      "Original: hover-tinted menu with a spinning plate preview, tabs and search across 13 categories",
+      "Original: 'Fino alle 3' — a pinned evening on a 24-hour dial, headline roller, hue that follows the hour",
+      "Original: the house kebab pizza in seven canvas-painted layers pulled apart by scroll; slide the peel into the oven to order, a kitchen ticket prints and gets stamped",
+      "Margherita: a whole pizza cut into eight slices by scroll, a fact in every gap, floating ingredients with pointer parallax",
+      "Margherita: ingredient filter over 44 pizzas with FLIP reordering and spring-tilted cards; product sheet with a drag stepper",
+      "Margherita: pizza-or-kebab seam (drag or arrow keys), inertia wheel that plans a table for 1–12, a 06:00→06:00 opening-hours chart with a now line",
+      "Margherita: confirm squeezes into a check, toppings burst, the cart flips over to the order",
+    ],
+    variants: { margherita: "Legna E Farina" },
+    accent: "#ff5a1f",
     lang: "it",
   },
   {
