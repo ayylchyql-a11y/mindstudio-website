@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Mumi Sushi — Sushi e cucina fusion a Vimercate, Cernusco e Saronno</title>
+  <meta name="description" content="Mumi Sushi: sushi, crudi e cucina fusion preparati al momento. A domicilio o da asporto a Vimercate, Cernusco sul Naviglio e Saronno. Ordina online." />
+  <meta name="theme-color" content="#f3e9d2" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.webp" />
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.webp" />
+  <link rel="preload" href="../assets/shippori-800.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="washi" aria-hidden="true"></div>
+  <a class="skip" href="#ristoranti">Vai ai ristoranti</a>
+
+  <header id="top">
+    <a class="logo" href="#top" aria-label="Mumi Sushi">
+      <img src="../assets/enso-ink.webp" alt="" width="40" height="39" />
+      <span class="logo-word">Mumi<small>sushi · fusion</small></span>
+    </a>
+    <nav class="nav" aria-label="Sezioni">
+      <a href="#ristoranti">Ristoranti</a>
+      <a href="#menu">Menu</a>
+      <a href="#chi-siamo">Chi siamo</a>
+      <a href="#app">App</a>
+    </nav>
+    <a class="btn btn-red sm press" href="https://ordina.mumisushi.it/">Ordina online</a>
+  </header>
+
+  <main>
+    <!-- ── hero ── -->
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="kicker">Vimercate · Cernusco · Saronno</p>
+        <h1>
+          <span class="h1-a">Non il solito sushi,</span>
+          <span class="roller" id="roller" aria-live="off">
+            <span class="sr">a domicilio, da asporto, nell’app.</span>
+          </span>
+        </h1>
+        <p class="lead">Sushi, crudi e cucina fusion preparati al momento, in tre ristoranti a nord di Milano. Ordini online in due minuti.</p>
+        <div class="hero-actions">
+          <a class="btn btn-red press" href="https://ordina.mumisushi.it/">Ordina online <span aria-hidden="true">→</span></a>
+          <a class="btn btn-ghost press" href="#ristoranti">I ristoranti</a>
+        </div>
+      </div>
+      <figure class="hero-plate">
+        <div class="torn"><img src="../assets/nigiri-tondo-s.webp" alt="Nigiri di salmone su piatto bianco" width="960" height="640" /></div>
+        <div class="seal" id="seal" aria-hidden="true"><b>鮨</b><small>Mumi</small></div>
+        <figcaption><span>鮭</span> Nigiri di salmone, fotografato in sala.</figcaption>
+      </figure>
+      <p class="tate" aria-hidden="true">三つの店、ひとつの味</p>
+      <div class="waves" aria-hidden="true">
+        <svg class="wave w3" viewBox="0 0 1440 220" preserveAspectRatio="none"><path d="M0 120 C 180 60 300 170 480 120 S 780 40 960 110 S 1260 180 1440 100 V220 H0Z"/></svg>
+        <svg class="wave w2" viewBox="0 0 1440 220" preserveAspectRatio="none"><path d="M0 150 C 200 90 340 200 540 150 S 860 80 1040 140 S 1300 200 1440 140 V220 H0Z"/></svg>
+        <svg class="wave w1" viewBox="0 0 1440 220" preserveAspectRatio="none"><path d="M0 180 C 220 130 380 220 600 180 S 920 130 1120 175 S 1340 215 1440 180 V220 H0Z"/></svg>
+        <div class="foam"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+    </section>
+
+    <!-- ── restaurants: ambient hue follows focus ── -->
+    <section class="stores" id="ristoranti">
+      <div class="section-head reveal">
+        <p class="eyebrow">店 · I ristoranti</p>
+        <h2>Tre ristoranti, <em>un solo gusto.</em></h2>
+        <p class="sub">Stato e orari di oggi aggiornati in tempo reale. Scegli il più vicino e ordina direttamente da lui.</p>
+      </div>
+      <ol class="tickets" id="tickets"></ol>
+    </section>
+
+    <!-- ── menu plates ── -->
+    <section class="menu" id="menu">
+      <div class="section-head reveal">
+        <p class="eyebrow">品 · Dal menu</p>
+        <h2>Quello che esce <em>dalla cucina.</em></h2>
+        <p class="sub">Alcuni dei nostri piatti. Menu e prezzi di ogni ristorante sono sul suo sito d’ordine.</p>
+      </div>
+      <ul class="plates">
+        <li class="plate reveal"><a href="https://ordina.mumisushi.it/"><span class="ph"><img src="../assets/p-nigiri-salmone.webp" alt="" loading="lazy" /></span><h3>Nigiri di salmone</h3><p>Salmone fresco su riso</p><span class="kj">鮭</span></a></li>
+        <li class="plate reveal"><a href="https://ordina.mumisushi.it/"><span class="ph"><img src="../assets/p-dragon-maki.webp" alt="" loading="lazy" /></span><h3>Dragon maki</h3><p>Gambero fritto e maionese, fuori carpaccio di anguilla</p><span class="kj">龍</span><span class="tag">Firma</span></a></li>
+        <li class="plate reveal"><a href="https://ordina.mumisushi.it/"><span class="ph"><img src="../assets/p-sashimi-salmone.webp" alt="" loading="lazy" /></span><h3>Sashimi di salmone</h3><p>Fette di salmone crudo</p><span class="kj">刺</span></a></li>
+        <li class="plate reveal"><a href="https://ordina.mumisushi.it/"><span class="ph"><img src="../assets/p-tartare-tonno.webp" alt="" loading="lazy" /></span><h3>Tartare di tonno</h3><p>Tonno e avocado in salsa ponzu</p><span class="kj">鮪</span></a></li>
+        <li class="plate reveal"><a href="https://ordina.mumisushi.it/"><span class="ph"><img src="../assets/p-special-salmon-maki.webp" alt="" loading="lazy" /></span><h3>Special salmon maki</h3><p>Salmone, philadelphia, avocado, fuori salmone teriyaki</p><span class="kj">特</span></a></li>
+        <li class="plate reveal"><a href="https://ordina.mumisushi.it/"><span class="ph"><img src="../assets/p-gyoza.webp" alt="" loading="lazy" /></span><h3>Chicken gyoza</h3><p>Ravioli di pollo al vapore</p><span class="kj">餃</span></a></li>
+        <li class="plate reveal"><a href="https://ordina.mumisushi.it/"><span class="ph"><img src="../assets/p-ebi-kataifi.webp" alt="" loading="lazy" /></span><h3>Ebi kataifi</h3><p>Gamberoni in pasta fillo fritta</p><span class="kj">海</span></a></li>
+        <li class="plate reveal"><a href="https://ordina.mumisushi.it/"><span class="ph"><img src="../assets/p-mochi.webp" alt="" loading="lazy" /></span><h3>Mochi</h3><p>Semifreddo avvolto in sfoglia di riso</p><span class="kj">餅</span></a></li>
+      </ul>
+      <p class="more reveal"><a class="btn btn-ink press" href="https://ordina.mumisushi.it/">Sfoglia il menu completo <span aria-hidden="true">→</span></a></p>
+    </section>
+
+    <!-- ── how to order: three prints ── -->
+    <section class="how">
+      <div class="section-head reveal">
+        <p class="eyebrow">注文 · Come ordinare</p>
+        <h2>Come ti piace <em>mangiare?</em></h2>
+      </div>
+      <ul class="prints">
+        <li class="print p-home reveal"><span class="kanji" aria-hidden="true">届</span><h3>A domicilio</h3><p>Scegli il ristorante più vicino e inserisci l’indirizzo: arriva a casa caldo e appena preparato.</p><small>Consegna</small></li>
+        <li class="print p-take reveal"><span class="kanji" aria-hidden="true">持</span><h3>Da asporto</h3><p>Ordina online e passa a ritirare all’orario che preferisci, senza fare la fila.</p><small>Ritiro</small></li>
+        <li class="print p-app reveal"><span class="kanji" aria-hidden="true">携</span><h3>Con l’app</h3><p>Riordina in un tocco, segui l’ordine e accumula punti fedeltà.</p><small>iOS · Android</small></li>
+      </ul>
+    </section>
+
+    <!-- ── about ── -->
+    <section class="about" id="chi-siamo">
+      <div class="about-card reveal" aria-hidden="true">
+        <img src="../assets/logo-white.webp" alt="" width="260" height="270" loading="lazy" />
+        <small>寿司 · fusion</small>
+      </div>
+      <div class="about-copy reveal">
+        <p class="eyebrow light">人 · Chi siamo</p>
+        <h2>Un’esperienza fusion, <em>per il palato.</em></h2>
+        <p>Per Mumi tutto parte dalle materie prime: sono il punto di partenza di ogni piatto che esce dalla nostra cucina.</p>
+        <p>Piatti giapponesi e cinesi, dal sushi ai fritti, preparati nel rispetto delle ricette tradizionali e con ingredienti di prima scelta.</p>
+        <p class="strong">Non un semplice sushi delivery, ma il delivery fusion d’eccellenza.</p>
+        <div class="about-photos">
+          <img src="../assets/tartare-s.webp" alt="Tartare e crudi su ardesia" loading="lazy" width="960" height="641" />
+          <img src="../assets/cucchiai-s.webp" alt="Assaggi in cucchiaio" loading="lazy" width="960" height="640" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ── app ── -->
+    <section class="app" id="app">
+      <div class="app-ticket reveal">
+        <div class="stub"><b>アプリ</b><small>App</small></div>
+        <div class="body">
+          <h2>Mumi, <em>in tasca.</em></h2>
+          <p>Un’unica app per tutti e tre i ristoranti: ordini più veloci, offerte riservate e punti fedeltà.</p>
+          <div class="hero-actions">
+            <a class="btn btn-ink press store" href="https://apps.apple.com/it/app/mumi-sushi/id1459226797" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.64.8-3.33.8-.69 0-1.74-.78-2.87-.76-1.47.02-2.83.86-3.59 2.18-1.53 2.66-.39 6.6 1.1 8.75.73 1.05 1.6 2.24 2.73 2.2 1.1-.05 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.07 2.65-2.13.84-1.22 1.18-2.4 1.2-2.46-.03-.01-2.3-.88-2.32-3.5zM14.2 6.13c.6-.73 1.01-1.75.9-2.76-.87.04-1.92.58-2.54 1.31-.56.64-1.05 1.68-.92 2.67.97.08 1.96-.49 2.56-1.22z"/></svg>
+              <span><small>Scarica su</small>App Store</span>
+            </a>
+            <a class="btn btn-ink press store" href="https://play.google.com/store/apps/details?id=com.foodrunner.mumi&amp;hl=it" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 2.3 13.4 12l-9.8 9.7c-.35-.2-.6-.6-.6-1.1V3.4c0-.5.25-.9.6-1.1zm11 8.5 2.6-2.6 3.2 1.8c.9.5.9 1.8 0 2.3l-3.2 1.8-2.6-2.6-.9-.9.9-.8zM4.7 1.7l10.9 6.2-2.4 2.4-8.5-8.6zm8.5 12 2.4 2.4-10.9 6.2 8.5-8.6z"/></svg>
+              <span><small>Disponibile su</small>Google Play</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot-top">
+      <div class="foot-brand"><img src="../assets/logo-ink.webp" alt="Mumi Sushi Delivery" width="120" height="125" loading="lazy" /></div>
+      <ul class="legal" id="legal"></ul>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="year">2026</span> Mumi Sushi</span>
+      <span><a href="/templates/sushi-chain" target="_top">Altri design</a><a href="https://ordina.mumisushi.it/privacy">Privacy</a><a href="https://ordina.mumisushi.it/cookie">Cookie</a></span>
+    </div>
+  </footer>
+
+  <script src="../assets/mumi.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

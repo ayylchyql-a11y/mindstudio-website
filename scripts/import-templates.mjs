@@ -33,6 +33,7 @@ const FOLDERS = {
   "Fiorista模版": "florist", // 09-18 自己写的（Petalo），花束/种子都是 CSS + canvas
   "Enoteca模版": "enoteca", // 09-18 自己写的（Vinaia），酒杯/酒瓶/会员卡全 CSS
   "Sushi模版": "sushi", // 09-18 自己写的（Mumi Sushi），照片是 Mumi 线上 API 的真菜品图
+  "Mumi三店官网模版": "sushi-chain", // 10-26 Mumi 三家店的真官网两套稿（源在 ~/Desktop/Mumi-official，tools/export-template.mjs 导出到这里）；店铺状态实时读 Mumi API
 };
 const STYLES = {
   "风格A-编辑杂志": "editorial",
@@ -53,6 +54,8 @@ const STYLES = {
   "风格E-昭和": "showa",
   "风格D-应用": "app",
   "风格E-牛皮纸": "kraft",
+  // 10-26 Mumi 三店官网的第二套（原版 = Sera 深色实拍）
+  "风格I-和纸": "carta",
 };
 /**
  * 09-18 用户拍板：生成器出的同款变体不再一律上站 ——「夜间玻璃」只留 Vinaia（enoteca），

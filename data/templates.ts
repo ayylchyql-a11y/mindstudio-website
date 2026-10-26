@@ -14,7 +14,7 @@ import type { Locale, Localized } from "@/lib/i18n";
  */
 
 export type GroupId = "food" | "retail" | "supply" | "services";
-export type StyleId = "original" | "editorial" | "night-glass" | "pop" | "claude" | "abisso" | "mercato" | "kaiten" | "tavolo" | "ukiyo" | "yoru" | "shizuka" | "yatai" | "manga" | "loop" | "showa" | "app" | "kraft";
+export type StyleId = "original" | "editorial" | "night-glass" | "pop" | "claude" | "abisso" | "mercato" | "kaiten" | "tavolo" | "ukiyo" | "yoru" | "shizuka" | "yatai" | "manga" | "loop" | "showa" | "app" | "kraft" | "carta";
 
 export interface TemplateGroup {
   id: GroupId;
@@ -267,6 +267,17 @@ export const styles: { id: StyleId; title: Localized; gist: Localized }[] = [
       it: "L’imballo come marchio: kraft, una scatola CSS con coperchio ed etichetta con codice a barre, timbri di gomma che battono sulla pagina, finestre fustellate sulle card delle scatole, e un foglio d’ordine a macchina da scrivere: spunti le righe, il timbro arriva all’invio.",
     },
   },
+  // 10-26 Mumi 三店官网的第二套（原版 = 深色店内实拍那套）
+  {
+    id: "carta",
+    title: { en: "Washi print", zh: "和纸版画", "zh-tw": "和紙版畫", it: "Carta", ja: "和紙", ko: "와시" },
+    gist: {
+      en: "Light and printed: washi cream, indigo waves, a seal that stamps itself, a headline whose last line rolls through delivery, takeaway and app, and three restaurants as tickets whose colour tints the whole section.",
+      zh: "浅色版画：和纸米色、靛蓝海浪、自己盖下去的朱印、标题最后一行在外送/自取/App 之间滚动，三家店做成票根，停在哪张整段就染成那家店的颜色。",
+      "zh-tw": "淺色版畫：和紙米色、靛藍海浪、自己蓋下去的朱印、標題最後一行在外送/自取/App 之間捲動，三家店做成票根，停在哪張整段就染成那家店的顏色。",
+      it: "Chiaro e stampato: carta washi, onde indaco, un sigillo che si timbra da solo, un titolo la cui ultima riga gira tra domicilio, asporto e app, e tre ristoranti come biglietti il cui colore tinge tutta la sezione.",
+    },
+  },
 ];
 
 export interface SiteTemplate {
@@ -445,6 +456,32 @@ export const templates: SiteTemplate[] = [
       "Real dish photos from the restaurant’s own menu",
     ],
     variants: { editorial: "Banco & Riso", kaiten: "Mumi Sushi", tavolo: "Mumi Sushi", ukiyo: "Mumi Sushi", yoru: "Mumi Sushi", shizuka: "Mumi Sushi" },
+    accent: "#d4a24c",
+    lang: "it",
+  },
+  {
+    slug: "sushi-chain",
+    group: "food",
+    date: "2026-10-26",
+    name: "Mumi Sushi",
+    industry: { en: "Sushi chain, three restaurants", zh: "寿司连锁 · 三家店官网", "zh-tw": "壽司連鎖 · 三家店官網", it: "Catena di sushi, tre ristoranti", ja: "寿司チェーン・3店舗", ko: "스시 체인 · 3개 매장" },
+    city: "Vimercate · Cernusco · Saronno",
+    gist: {
+      en: "The real brand site for a sushi chain with three restaurants, in two designs. The opening state and today’s hours of each restaurant are read live from the ordering system, and every card leads straight to that restaurant’s own ordering site. Sera: the restaurant’s night photography, a gold that pulls toward the pointer, a list of restaurants that repaints the section in the colour of the one you are on, and a manifesto that lights up word by word as you scroll. Carta: a woodblock print with tickets for restaurants.",
+      zh: "一家三店寿司连锁的真官网，两套设计。每家店的营业状态和今天几点到几点都实时读点单系统，每张卡片直接进那家店自己的点单站。Sera：店里夜间实拍、会被指针吸过去的金色按钮、停在哪家整段就换成哪家颜色的门店列表、往下滚一个词一个词亮起来的品牌宣言。Carta：一张木版画，三家店是三张票根。",
+      "zh-tw": "一家三店壽司連鎖的真官網，兩套設計。每家店的營業狀態和今天幾點到幾點都即時讀點單系統，每張卡片直接進那家店自己的點單站。Sera：店裡夜間實拍、會被指標吸過去的金色按鈕、停在哪家整段就換成哪家顏色的門店列表、往下捲一個詞一個詞亮起來的品牌宣言。Carta：一張木版畫，三家店是三張票根。",
+      it: "Il vero sito di marca di una catena di sushi con tre ristoranti, in due design. Lo stato di apertura e gli orari di oggi di ogni ristorante arrivano dal vivo dal sistema d’ordine, e ogni card porta dritta al sito d’ordine di quel ristorante. Sera: le foto notturne scattate in sala, un oro che segue il puntatore, un elenco dei ristoranti che ridipinge la sezione col colore di quello su cui sei, e un manifesto che si accende parola per parola scorrendo. Carta: una stampa su legno, con i ristoranti come biglietti.",
+    },
+    features: [
+      "Live opening state and today's hours per restaurant, read from the ordering system's public API",
+      "Sera: staggered character hero over the restaurant's night photography, magnetic CTA, live status strip",
+      "Sera: hover-tinted restaurant list with a leaning photo panel (inline details on phones)",
+      "Sera: scroll-snap dish gallery, scroll-brightened manifesto",
+      "Carta: headline roller (delivery / takeaway / app), self-stamping seal, drifting woodblock waves",
+      "Carta: restaurant tickets whose hue tints the section (pointer on desktop, centre of screen on phones)",
+      "Per-restaurant legal footer: each restaurant is its own company",
+    ],
+    variants: { carta: "Mumi Sushi" },
     accent: "#d4a24c",
     lang: "it",
   },
