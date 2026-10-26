@@ -57,6 +57,7 @@ const STYLES = {
   "风格E-牛皮纸": "kraft",
   // 10-26 Mumi 三店官网的第二套（原版 = Sera 深色实拍）
   "风格I-和纸": "carta",
+  "风格J-石板": "ardesia",
   "风格D-玛格丽特": "margherita", // 10-26 pizzeria 的明亮版：颜色就是配料
 };
 /**

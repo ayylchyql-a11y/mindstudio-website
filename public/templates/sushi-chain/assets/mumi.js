@@ -15,7 +15,7 @@
     { slug: 'cernusco', name: 'Cernusco', city: 'Cernusco sul Naviglio', prov: 'MI', host: 'cernusco.mumisushi.it', hue: 5, color: '#c8473a',
       address: 'Via Pontida 13', cap: '20063 Cernusco sul Naviglio (MI)', phone: '366 373 9346',
       legal: { name: 'Zhou Guangxu', vat: '12192460967' } },
-    { slug: 'saronno', name: 'Saronno', city: 'Saronno', prov: 'VA', host: 'saronno.mumisushi.it', hue: 222, color: '#3d5fb0', isNew: true,
+    { slug: 'saronno', name: 'Saronno', city: 'Saronno', prov: 'VA', host: 'saronno.mumisushi.it', hue: 222, color: '#3d5fb0',
       address: 'Via Solferino 1', cap: '21047 Saronno (VA)', phone: '344 689 8916',
       legal: { name: 'Mumi Sushi Poke di Ahmad Shabeer', vat: '13887300963' } },
   ];

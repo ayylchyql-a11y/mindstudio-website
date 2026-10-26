@@ -14,7 +14,7 @@ import type { Locale, Localized } from "@/lib/i18n";
  */
 
 export type GroupId = "food" | "retail" | "supply" | "services";
-export type StyleId = "original" | "editorial" | "night-glass" | "pop" | "claude" | "abisso" | "mercato" | "kaiten" | "tavolo" | "ukiyo" | "yoru" | "shizuka" | "yatai" | "manga" | "loop" | "showa" | "app" | "kraft" | "carta" | "margherita";
+export type StyleId = "original" | "editorial" | "night-glass" | "pop" | "claude" | "abisso" | "mercato" | "kaiten" | "tavolo" | "ukiyo" | "yoru" | "shizuka" | "yatai" | "manga" | "loop" | "showa" | "app" | "kraft" | "carta" | "ardesia" | "margherita";
 
 export interface TemplateGroup {
   id: GroupId;
@@ -278,6 +278,16 @@ export const styles: { id: StyleId; title: Localized; gist: Localized }[] = [
       it: "Chiaro e stampato: carta washi, onde indaco, un sigillo che si timbra da solo, un titolo la cui ultima riga gira tra domicilio, asporto e app, e tre ristoranti come biglietti il cui colore tinge tutta la sezione.",
     },
   },
+  {
+    id: "ardesia",
+    title: { en: "Slate", zh: "石板", "zh-tw": "石板", it: "Ardesia", ja: "スレート", ko: "슬레이트" },
+    gist: {
+      en: "Light paper with the dark slate photos of the restaurant’s first site: a full-bleed hero that pulls back into a framed slab as you scroll, tall condensed caps, a scrolling dish band, gallery columns drifting at different speeds, red kept for the order button alone.",
+      zh: "浅色纸底配餐厅第一版官网的深色石板照片：全屏首图随滚动缩成一块带框的卡片，窄长粗体大写，滚动的菜名条，照片墙各列以不同速度漂移，红色只留给点单按钮。",
+      "zh-tw": "淺色紙底配餐廳第一版官網的深色石板照片：全螢幕首圖隨捲動縮成一塊帶框的卡片，窄長粗體大寫，捲動的菜名條，照片牆各列以不同速度漂移，紅色只留給點單按鈕。",
+      it: "Carta chiara con le foto su ardesia del primo sito del ristorante: un hero a tutto schermo che si ritira in una lastra incorniciata scorrendo, maiuscole strette e alte, una fascia di piatti che scorre, colonne della galleria a velocità diverse, il rosso solo sul tasto d’ordine.",
+    },
+  },
   // 10-26 Legna E Farina 的明亮版（原版 = 深色炉火那套）
   {
     id: "margherita",
@@ -478,10 +488,10 @@ export const templates: SiteTemplate[] = [
     industry: { en: "Sushi chain, three restaurants", zh: "寿司连锁 · 三家店官网", "zh-tw": "壽司連鎖 · 三家店官網", it: "Catena di sushi, tre ristoranti", ja: "寿司チェーン・3店舗", ko: "스시 체인 · 3개 매장" },
     city: "Vimercate · Cernusco · Saronno",
     gist: {
-      en: "The real brand site for a sushi chain with three restaurants, in two designs. The opening state and today’s hours of each restaurant are read live from the ordering system, and every card leads straight to that restaurant’s own ordering site. Sera: the restaurant’s night photography, a gold that pulls toward the pointer, a list of restaurants that repaints the section in the colour of the one you are on, and a manifesto that lights up word by word as you scroll. Carta: a woodblock print with tickets for restaurants.",
-      zh: "一家三店寿司连锁的真官网，两套设计。每家店的营业状态和今天几点到几点都实时读点单系统，每张卡片直接进那家店自己的点单站。Sera：店里夜间实拍、会被指针吸过去的金色按钮、停在哪家整段就换成哪家颜色的门店列表、往下滚一个词一个词亮起来的品牌宣言。Carta：一张木版画，三家店是三张票根。",
-      "zh-tw": "一家三店壽司連鎖的真官網，兩套設計。每家店的營業狀態和今天幾點到幾點都即時讀點單系統，每張卡片直接進那家店自己的點單站。Sera：店裡夜間實拍、會被指標吸過去的金色按鈕、停在哪家整段就換成哪家顏色的門店列表、往下捲一個詞一個詞亮起來的品牌宣言。Carta：一張木版畫，三家店是三張票根。",
-      it: "Il vero sito di marca di una catena di sushi con tre ristoranti, in due design. Lo stato di apertura e gli orari di oggi di ogni ristorante arrivano dal vivo dal sistema d’ordine, e ogni card porta dritta al sito d’ordine di quel ristorante. Sera: le foto notturne scattate in sala, un oro che segue il puntatore, un elenco dei ristoranti che ridipinge la sezione col colore di quello su cui sei, e un manifesto che si accende parola per parola scorrendo. Carta: una stampa su legno, con i ristoranti come biglietti.",
+      en: "The real brand site for a sushi chain with three restaurants, in three designs. The opening state and today’s hours of each restaurant are read live from the ordering system, and every card leads straight to that restaurant’s own ordering site. Sera: the restaurant’s night photography, a gold that pulls toward the pointer, a list of restaurants that repaints the section in the colour of the one you are on, and a manifesto that lights up word by word as you scroll. Carta: a woodblock print with tickets for restaurants. Ardesia: the photos of the first Mumi site on light paper.",
+      zh: "一家三店寿司连锁的真官网，三套设计。每家店的营业状态和今天几点到几点都实时读点单系统，每张卡片直接进那家店自己的点单站。Sera：店里夜间实拍、会被指针吸过去的金色按钮、停在哪家整段就换成哪家颜色的门店列表、往下滚一个词一个词亮起来的品牌宣言。Carta：一张木版画，三家店是三张票根。Ardesia：第一版 Mumi 官网的照片，配浅色纸底。",
+      "zh-tw": "一家三店壽司連鎖的真官網，三套設計。每家店的營業狀態和今天幾點到幾點都即時讀點單系統，每張卡片直接進那家店自己的點單站。Sera：店裡夜間實拍、會被指標吸過去的金色按鈕、停在哪家整段就換成哪家顏色的門店列表、往下捲一個詞一個詞亮起來的品牌宣言。Carta：一張木版畫，三家店是三張票根。Ardesia：第一版 Mumi 官網的照片，配淺色紙底。",
+      it: "Il vero sito di marca di una catena di sushi con tre ristoranti, in tre design. Lo stato di apertura e gli orari di oggi di ogni ristorante arrivano dal vivo dal sistema d’ordine, e ogni card porta dritta al sito d’ordine di quel ristorante. Sera: le foto notturne scattate in sala, un oro che segue il puntatore, un elenco dei ristoranti che ridipinge la sezione col colore di quello su cui sei, e un manifesto che si accende parola per parola scorrendo. Carta: una stampa su legno, con i ristoranti come biglietti. Ardesia: le foto del primo sito Mumi su carta chiara.",
     },
     features: [
       "Live opening state and today's hours per restaurant, read from the ordering system's public API",
@@ -490,9 +500,10 @@ export const templates: SiteTemplate[] = [
       "Sera: scroll-snap dish gallery, scroll-brightened manifesto",
       "Carta: headline roller (delivery / takeaway / app), self-stamping seal, drifting woodblock waves",
       "Carta: restaurant tickets whose hue tints the section (pointer on desktop, centre of screen on phones)",
+      "Ardesia: pinned hero that recomposes from full-bleed to a framed slab, scrolling dish band, four parallax gallery columns",
       "Per-restaurant legal footer: each restaurant is its own company",
     ],
-    variants: { carta: "Mumi Sushi" },
+    variants: { carta: "Mumi Sushi", ardesia: "Mumi Sushi" },
     accent: "#d4a24c",
     lang: "it",
   },
