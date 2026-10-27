@@ -119,7 +119,14 @@ const LONG_SELF = { "slate-card-order": { secs: 17, query: "?clip" }, "receipt-p
   "tick-ruler-sheet": { secs: 9, vw: 710, query: "?demo" },
   "photo-drawer-sheet": { secs: 9, vw: 710, query: "?demo" },
   "flip-to-reveal": { secs: 9, vw: 710, query: "?demo" },
-  "pull-down-reveal": { secs: 9, vw: 710, query: "?demo" } };
+  "pull-down-reveal": { secs: 9, vw: 710, query: "?demo" },
+  // 2026-10-27 六张动态图表卡：录正好一轮循环（secs = 样板里的 CYCLE），橱窗视频首尾无缝
+  "orbital-balance-ring": { secs: 6.8, vw: 710 },
+  "current-study-curve": { secs: 6.95, vw: 710 },
+  "elastic-rank-bars": { secs: 7.35, vw: 710 },
+  "target-chase-gauge": { secs: 7.53, vw: 710 },
+  "activity-field-matrix": { secs: 7.68, vw: 710 },
+  "traffic-mix-bars": { secs: 8.25, vw: 710 } };
 /** trim：开头剪掉几秒（默认 0.6）。morph-studio 首帧要先生成 250 个图标，0.6 秒时画面还是缩小的灰底。
  *  vh：录像高度另给（默认 = 样板的 height）。六个 Dashboard 是 1280×820 的整页缩放进画框：
  *  按画框 470 高录 = 960×470 的视频里 Dashboard 只有 715 宽，cover 进 710×470 的详情画框要裁掉左右圆角；

@@ -217,6 +217,13 @@ export interface Effect {
    * 2026-10-05 按访客浏览量挑的（非中文页，09-05 起）。
    */
   pin?: number;
+  /**
+   * 紧跟在哪条后面（同分类里那条的 slug）。相似的效果排在一起，参考时一眼能对比
+   * （2026-10-27 用户定的：新来的图表挨着库里长得像的那条放，不按日期跑到最前面）。
+   * 先按 pin / 日期排完，再把带 after 的挪到目标后面；同一目标挂了几条，按数组顺序依次跟上。
+   * 🩸目标不在同一分类里就构建报错 —— 写错 slug 时卡片不会悄悄回到别处。
+   */
+  after?: string;
   /** ISO date，进 sitemap 的 lastModified */
   date: string;
   title: Localized;
@@ -2550,6 +2557,208 @@ export const effects: Effect[] = [
     ],
     prompt:
       "Build a bubble chart in vanilla HTML/CSS/JS on a dark card. Items [name, minutes, colour, cx%, cy%]: Yoga 64 #a8a06e (50,50), Walk 180 #9a9be0 (22,50), Run 38 #b5c4b0 (78,30), Swim 20 #f0efe9 (40,16), Bike 26 #8a8a90 (36,84), Gym 15 #f0efe9 (82,78) in a 210px-tall field. Each bubble is an absolutely positioned circle with diameter √minutes×7px, left/top at its centre, and transform: translate(-50%,-50%) translate(var(--dx,0), var(--dy,0)) scale(var(--s,1)) with a 520ms cubic-bezier(.22,.61,.36,1) transition; name in bold, minutes line hidden (max-height 0, opacity 0). Entry: animate from translate(-50%,-50%) scale(0) over 600ms cubic-bezier(.34,1.4,.64,1) with a 60ms stagger. On click set the picked bubble's --s to 1.35 and reveal its minutes; for every other bubble compute the centre-to-centre vector in pixels, push = max(0, pickedRadius×1.35 + otherRadius + 10 − distance), and set --dx/--dy to that push along the vector (0 if no overlap); set filter brightness(.7) on the others. Clicking the picked bubble again resets everything; recompute on resize. Pick Yoga automatically 900ms after load.",
+  },
+  /* ── 2026-10-27，「6 种 App 和小程序的动态交互图表」——一套六张深色数据卡 ──
+     录屏 1290×2796、3 倍速；尺寸按卡片在录屏里的像素 ÷ 1.625 量，时序按 10fps 抽帧逐帧打表
+     （弧长 / 探针位置 / 柱子横移 / 指针角度 / 格子亮度）再拟合缓动。视频只演自动循环，
+     卡片右下角写着的交互（TAP TO SELECT / DRAG TO INSPECT …）这边都做成了真的。
+     每条用 after 挨着库里长得像的那条排。 */
+  {
+    slug: "orbital-balance-ring",
+    category: "widgets",
+    group: "charts",
+    after: "share-ring",
+    date: "2026-10-27",
+    plays: "self",
+    title: { en: "Orbital balance ring", zh: "轨道分配环", "zh-tw": "軌道分配環" },
+    gist: {
+      en: "Three parts of one total drawn as a ring: each arc grows clockwise from its own slot while the total counts to 1,280, and the centre reads out one part at a time — Growth, then Reserve, then Explore — with that arc lit and the other two dimmed. It holds, folds back to nothing and draws again. Tap an arc or a legend row to pin that part.",
+      zh: "一个总量的三个部分画成一圈：三段弧各自从自己的位置顺时针长出来，总数同时数到 1,280；圆心依次读出 Growth、Reserve、Explore 的占比，读到哪段哪段亮、另外两段压暗。停一会儿，整圈收回去，再画一遍。点某段弧或某行图例就停在那一项。",
+      "zh-tw": "一個總量的三個部分畫成一圈：三段弧各自從自己的位置順時針長出來，總數同時數到 1,280；圓心依次讀出 Growth、Reserve、Explore 的占比，讀到哪段哪段亮、另外兩段壓暗。停一會兒，整圈收回去，再畫一遍。點某段弧或某列圖例就停在那一項。",
+    },
+    height: 440,
+    previewHeight: 311,
+    accent: "#bce03e",
+    anatomy: [
+      "<b>Every arc owns a slot and grows inside it.</b> The three parts (48 / 32 / 20) are laid out once as fixed angular slots with a 4° seam between neighbours; each frame an arc is drawn from the start of its slot to <code>start + length × p</code>. All three grow at once, so the ring reads as one system filling up rather than a pie being dealt out slice by slice.",
+      "<b>One progress value drives everything.</b> <code>p</code> runs 0 → 1 over 3 s on an ease-in-out sine (fitted to the counter in the reference: total = 1,280 × p hits 626 at the half-way frame), holds 2.45 s, then folds back over 1.35 s on the same curve. The total, the arcs and the centre percentage are all read off <code>p</code>, so they can never disagree.",
+      "<b>The centre steps through the parts on a clock, not on the drawing.</b> Growth from 0 s, Reserve from 1.8 s, Explore from 3.6 s — so the reading is caught mid-growth (23% Growth, 21% Reserve…) and settles on Explore during the hold. The centre number is <code>round(value × p)</code> of whichever part is active.",
+      "<b>Active vs. resting is opacity, not a second colour.</b> The two arcs that are not being read sit at 0.82 opacity on the dark card; sampled from the recording, that is exactly how #36c8c9 becomes #2ea6a7 and #9b8bfe becomes #8374dc.",
+      "<b>Arcs are SVG paths computed in JS</b> (<code>M … A r r 0 large 1 …</code> with <code>stroke-width 27</code>, butt caps) — nothing is rotated with CSS. A dotted circle (<code>stroke-dasharray: 0 5.24</code> with round caps) sits 6 px outside the ring.",
+      "<b>Tap to select:</b> a tap on an arc or a legend row finishes the drawing in 420 ms if it was mid-way and pins that part in the centre; after 4 s idle the loop carries on from the fold, keeping the pick until the next draw.",
+    ],
+    tokens: [
+      { label: "Parts", value: "Growth 48 #bce03e · Reserve 32 #37c9ca · Explore 20 #9b8bfe" },
+      { label: "Ring", value: "r 80.5 · stroke 27 · seam 4° · dotted guide r 100" },
+      { label: "Loop", value: "draw 3 s sine · hold 2.45 s · fold 1.35 s · 6.8 s cycle" },
+      { label: "Centre", value: "Growth 0 s → Reserve 1.8 s → Explore 3.6 s · resting arcs 0.82 opacity" },
+      { label: "Type", value: "Helvetica Neue · total 60px/300 −0.075em · centre 32px · labels 10px" },
+    ],
+    prompt:
+      "Build a dark 720×405 card (radius 24, gradient #131419→#0f1014, 1px #ffffff0d border) titled '01 / ORBITAL BALANCE' (10px caps, .19em, #d4e264 with a 5px dot) and 'LIVE LOOP' at the right; a big total in Helvetica Neue 300 60px with letter-spacing −0.075em and 'total allocation' beside it; 'THREE PARTS / ONE BALANCED SYSTEM' right-aligned in #d4e264. Centre-left (274, 237) draw a donut of three SVG arc paths (radius 80.5, stroke-width 27, butt caps) for Growth 48 #bce03e, Reserve 32 #37c9ca, Explore 20 #9b8bfe: compute each part's fixed slot (start = cumulative share × 3.6°, 2° trimmed from each end for a 4° seam) and each frame draw it from slot start to start + length × p, end points computed in JS. Add a dotted guide circle r 100 (#ffffff12, dasharray 0 5.24, round caps). A legend on the right: dot, name, bold %. Loop: p = ease-in-out sine 0→1 over 3 s, hold until 5.45 s, back to 0 over 1.35 s, repeat every 6.8 s; total = round(1280 × p) with thousands separators. The centre shows round(part × p)% and the part name, stepping Growth (0 s) → Reserve (1.8 s) → Explore (3.6 s); the active arc is full opacity, the other two 0.82. Footer under a hairline: 'Drawing a balanced system' while moving, 'Allocation settled · explore each segment' when full, and 'TAP TO SELECT ↗'. Tapping an arc or legend row completes the ring in 420 ms (ease-out cubic) and pins that part; after 4 s idle resume from the fold. Under prefers-reduced-motion show the full ring with Explore selected.",
+  },
+  {
+    slug: "current-study-curve",
+    category: "widgets",
+    group: "charts",
+    after: "range-line-morph",
+    date: "2026-10-27",
+    plays: "self",
+    title: { en: "Current study · flowing curve with a probe", zh: "流量曲线", "zh-tw": "流量曲線" },
+    gist: {
+      en: "A day of flow readings as a glowing line. A probe walks it from 06:00 to 18:00 with a value tag and a dashed drop line while the curve itself rises out of a flat floor and keeps drifting, so it never looks like a still picture; the headline reads whatever the probe is on. At 18:00 the line settles flat, the probe jumps home and it begins again. Drag across the chart to inspect any moment.",
+      zh: "一天的流量读数画成一条发光的线。探针带着数值气泡和一条竖虚线，从 06:00 走到 18:00；同时曲线从一条平线慢慢鼓起来，而且一直在缓缓流动，不像一张静态图。左上的大数字跟着探针读数走。走到 18:00 后曲线压回平线，探针跳回起点重来。在图上拖动可以查看任意时刻。",
+      "zh-tw": "一天的流量讀數畫成一條發光的線。探針帶著數值氣泡和一條直虛線，從 06:00 走到 18:00；同時曲線從一條平線慢慢鼓起來，而且一直在緩緩流動，不像一張靜態圖。左上的大數字跟著探針讀數走。走到 18:00 後曲線壓回平線，探針跳回起點重來。在圖上拖動可以查看任意時刻。",
+    },
+    height: 440,
+    previewHeight: 311,
+    accent: "#62c6f2",
+    anatomy: [
+      "<b>The curve is 13 hourly readings, not a formula.</b> Values above a 20 L/min floor at 06:00 … 18:00, joined with Catmull-Rom and sampled every 3 px. The same interpolation answers the probe, so the dot always sits exactly on the line and the tag shows the value under it. The readings were fitted to ~1,000 points traced off the reference frames (3.4 px RMS).",
+      "<b>It drifts while you watch.</b> Each reading has its own slow drift (−5 … +2 L/min per second over a 3.4 s window), which is what makes the hollows deepen and the peak lean left in the reference. A sum of sines could not reproduce it (6 px RMS at best) — the source animates the data points themselves.",
+      "<b>Amplitude and probe are separate clocks.</b> The probe crosses the day on an ease-in-out sine over 4.6 s; the curve rises from flat on an ease-out sine over 3.75 s (so it is near full height by the time the probe reaches the middle); at 5.02 s the curve settles back to the floor over 1.35 s, and only when it is flat does the probe jump home — the reset is invisible.",
+      "<b>Area under the line</b> is the same path closed to y 300 and filled with a vertical gradient in <code>objectBoundingBox</code> units (#3a9fd6 at .26 → 0), so even the flat line keeps a thin glowing band under it. The line is 2.6 px #62c6f2 with a 3 px drop-shadow glow.",
+      "<b>The tag rides the dot</b> (translate only, 23 px above it) and is clamped 29 px inside the plot so it never hangs over the edge at 06:00 or 18:00.",
+      "<b>Drag to inspect:</b> pointer capture on the plot; the probe follows the pointer, the curve eases to full height and keeps flowing. 2.5 s after release the sweep resumes from the probe's current position (the sine is inverted to find the matching time).",
+    ],
+    tokens: [
+      { label: "Plot", value: "x 90–628 · floor y 288 = 20 L/min · 2.372 px per L/min · grid y 158/213/268" },
+      { label: "Sweep", value: "probe 4.6 s ease-in-out sine · rise 3.75 s ease-out sine · fall 1.35 s · 6.95 s cycle" },
+      { label: "Line", value: "#62c6f2 2.6px · glow drop-shadow 3px #3fb6f066 · area #3a9fd6 .26 → 0" },
+      { label: "Probe", value: "dot r 4.6 white + halo r 9 · tag 61×24 #39c1fb · dashed drop #4b8fb2" },
+    ],
+    prompt:
+      "Build a dark 720×405 card (same shell as a dashboard tile: '02 / CURRENT STUDY' 10px caps in #5ec4f0, 'LIVE LOOP', headline value in Helvetica Neue 300 60px −0.075em with 'L / min', right-aligned 'RIVER STATION 04 / FLOW VELOCITY'). Plot x 90–628, value 20 at y 288 rising 2.372 px per unit, three dotted gridlines (dasharray 0 7, #ffffff17) at y 158/213/268, x labels 06:00 (left), 12:00 (centred), 18:00 (right). Data: 13 hourly readings above 20 — base [37.3,37.4,24.1,18.9,20.9,14.7,8.9,21.6,41.1,44.7,36.0,35.8,36.3] plus drift [−0.9,−3.5,−4.9,−5.0,−4.0,−1.4,1.5,2.2,0.5,−1.5,−2.0,−2.1,−2.3] × clamp(t − 3.36, −1.8, 1.6) — joined with Catmull-Rom, value = 20 + amplitude × spline. Draw a 2.6px #62c6f2 line with a soft glow and an area to y 300 filled with an objectBoundingBox gradient #3a9fd6 .26→0. A probe: white dot r 4.6 with a faint halo, dashed drop line to y 312, a 61×24 #39c1fb tag 23px above showing the value (clamped inside the plot). Loop (6.95 s): probe x = ease-in-out sine over 4.6 s; amplitude = ease-out sine over 3.75 s; from 5.02 s amplitude falls to 0 over 1.35 s (ease-in-out sine); at 6.55 s the probe jumps back to 06:00 while the line is flat. Headline = probe value, one decimal. Dragging on the plot moves the probe (pointer capture), eases amplitude to 1; 2.5 s after release resume the sweep from the probe's position. Footer 'A moving cross-section of the day' / 'DRAG TO INSPECT ↗'.",
+  },
+  {
+    slug: "elastic-rank-bars",
+    category: "widgets",
+    group: "charts",
+    after: "bar-chart-period-switch",
+    date: "2026-10-27",
+    plays: "self",
+    title: { en: "Elastic ranks · bars that sort themselves", zh: "弹性排序柱", "zh-tw": "彈性排序柱" },
+    gist: {
+      en: "A week as five bars that grow in day order and, while still growing, slide past each other into rank order — the tallest in front, each value and day letter riding along with its own bar. Wednesday, the busiest, is the pale one. It holds ranked, sinks back into Monday-to-Friday and grows again. Tap to flip between day order and rank order yourself.",
+      zh: "一周五天画成五根柱子，先按星期顺序长高，长到一半就开始互相穿过、滑到按大小排好的位置——高的在前，每根柱顶的数字和下面的星期字母都跟着自己的柱子走。最忙的周三用浅杏色。排好后停一会儿，缩回去同时回到周一到周五的顺序，再长一遍。点一下可以自己在按星期和按大小之间切换。",
+      "zh-tw": "一週五天畫成五根柱子，先按星期順序長高，長到一半就開始互相穿過、滑到按大小排好的位置——高的在前，每根柱頂的數字和下面的星期字母都跟著自己的柱子走。最忙的週三用淺杏色。排好後停一會兒，縮回去同時回到週一到週五的順序，再長一遍。點一下可以自己在按星期和按大小之間切換。",
+    },
+    height: 500,
+    previewHeight: 354,
+    accent: "#ff8838",
+    anatomy: [
+      "<b>A column is one moving unit</b> — bar, value above, day below — positioned with a single <code>translate()</code>. That is why the reference's labels \"follow their own bar\" through the shuffle: there is nothing to keep in sync.",
+      "<b>Two progress values, overlapping.</b> Height <code>p</code>: 0 → 1 over 3 s on an ease-in-out sine (all bars together, proportional — measured, not staggered). Order <code>q</code>: starts 1.86 s in and runs 1.45 s, so the bars are already two-thirds tall when they start to slide. x = slot(day) + (slot(rank) − slot(day)) × q.",
+      "<b>Taller passes in front.</b> <code>z-index = value</code>, so when Wednesday (94) crosses Tuesday and Monday it covers them, and the shorter bars peek out at the sides — exactly what the overlapping frames in the recording show.",
+      "<b>On the way out both reverse together:</b> height and order fall back over 1.35 s on the same eased value (<code>q = q₀ × (1 − e)</code>), so the bars sink into day order without a second motion.",
+      "Bars 41 px wide on a 63 px pitch, 1.67 px per session, radius 7; #ff8838 with the week's maximum in #fecb8e. Dotted guides at three heights, labels Helvetica Neue 12px.",
+      "<b>Tap to sort</b> flips <code>q</code> between 0 and 1 over 1.45 s (finishing the growth in 500 ms first if needed). After 4 s idle the loop resumes from the shrink, starting from whichever order is on screen.",
+    ],
+    tokens: [
+      { label: "Data", value: "M 48 · T 75 · W 94 · T 57 · F 68 → W T F T M" },
+      { label: "Bars", value: "41px · pitch 63 · 1.67 px/session · radius 7 · #ff8838 / max #fecb8e" },
+      { label: "Loop", value: "grow 3 s sine · slide at 1.86 s for 1.45 s · hold to 5.9 s · shrink 1.35 s · 7.35 s cycle" },
+      { label: "Overlap", value: "z-index = value (taller in front)" },
+    ],
+    prompt:
+      "Build a dark 470×470 card ('03 / ELASTIC RANKS' 12.5px caps in #f7a65c, 'LIVE LOOP', total in Helvetica Neue 300 54px with 'sessions', 'WEEK 42' right). Five columns for M 48, T 75, W 94, T 57, F 68, each a single absolutely-positioned element moved with translate() containing a 41px bar (radius 7, #ff8838; the max in #fecb8e) growing up from a baseline at y 338 by 1.67px per unit, its value 12px/600 above the bar and its day letter below. Slots start at x 84 with a 63px pitch; rank order = by value descending. Each frame: height progress p = ease-in-out sine over 3 s; order progress q = ease-in-out sine starting at 1.86 s over 1.45 s; x = slot(day) + (slot(rank) − slot(day)) × q; labels show round(value × p); total = round(342 × p). Give each column z-index = value so taller bars pass in front. Hold until 5.9 s, then over 1.35 s set p and q to (1 − sine) × their values so they shrink and return to day order together; repeat every 7.35 s. Three dotted guides (dasharray 0 7) at y 192/265/338. Footer 'Growing into a new order' / 'Ranked by activity' and 'TAP TO SORT ↗'. A tap toggles q to the other order over 1.45 s (finishing growth in 500 ms if needed); after 4 s idle resume at the shrink.",
+  },
+  {
+    slug: "target-chase-gauge",
+    category: "widgets",
+    group: "charts",
+    after: "score-gauge",
+    date: "2026-10-27",
+    plays: "self",
+    title: { en: "Target chase · two-needle gauge", zh: "双针目标仪表", "zh-tw": "雙針目標儀表" },
+    gist: {
+      en: "A half-circle gauge with two needles: a cream target marker and a violet actual needle. The actual drops to zero, the target sweeps up and plants itself at 86, then the actual chases it — the progress arc and the ticks it passes light up as it goes — until it is on target and holds. Tap to set a new target and watch the needle go after it.",
+      zh: "一个半圆仪表，两根针：奶白色的目标针和紫色的实际针。实际针先落回 0，目标针扫上去定在 86，然后实际针去追它，一路经过的刻度和进度弧逐段点亮，追上后停住。点一下换一个新目标，看指针再追过去。",
+      "zh-tw": "一個半圓儀表，兩根針：奶白色的目標針和紫色的實際針。實際針先落回 0，目標針掃上去定在 86，然後實際針去追它，一路經過的刻度和進度弧逐段點亮，追上後停住。點一下換一個新目標，看指針再追過去。",
+    },
+    height: 500,
+    previewHeight: 354,
+    accent: "#a596ee",
+    anatomy: [
+      "<b>Three beats, each with its own curve</b> (measured on the needle angles frame by frame): the actual falls from the target to 0 over 1.35 s (ease-in-out sine); at 1.5 s the target marker resets and sweeps 0 → 86 over 1.3 s on ease-in-out quad; the actual starts at 2.25 s and reaches the target over 2.58 s on ease-out quad. The chase overlaps the sweep, so the needle sets off before the target has landed.",
+      "<b>Everything is one value on one geometry.</b> <code>P(v, r)</code> maps 0–100 onto a half circle around the hub at (235, 319); the 21 px band (r 130.5), the 4.2 px progress arc (r 130), the 31 ticks (6° apart, every fifth long) and both needles are all drawn from it, so nothing can drift out of register.",
+      "<b>Ticks light behind the needle:</b> a tick turns from #3a3c3b to #a99ef0 once <code>actual ≥ tick value</code> — the \"half-circle ticks light up segment by segment\" in the reference is just that comparison every frame.",
+      "<b>The needle is a wedge polygon</b> from r 8 (3.6 px half-width) to r 115 (0.6 px), rebuilt each frame from the angle; the target is a 2.6 px cream line from r 100 to 133.5 with a 4.6 px dot on the band.",
+      "<b>Tap to retarget:</b> a new goal (40–96, at least 12 away from the current one) — the marker moves first (0.9 s), the actual follows from wherever it is (1.9 s, starting 0.35 s later); 'TARGET n%' and the footer update. The loop then carries on with the new goal.",
+    ],
+    tokens: [
+      { label: "Geometry", value: "hub (235, 319) · band r 130.5 / 21px #242922 · arc r 130 / 4.2px #a596ee" },
+      { label: "Ticks", value: "31 × 6° · long every 5th (12px) · off #3a3c3b · on #a99ef0" },
+      { label: "Loop", value: "drop 1.35 s sine · target 1.3 s in-out quad from 1.5 s · chase 2.58 s out quad from 2.25 s · 7.53 s" },
+      { label: "Needles", value: "actual #bca8fa wedge r 8→115 · target #f1e8d0 line r 100→133.5 + dot 4.6" },
+    ],
+    prompt:
+      "Build a dark 470×470 card ('04 / TARGET CHASE' 12.5px caps in #ab9cf6, 'LIVE LOOP', headline 'n%' in Helvetica Neue 300 54px with 'efficiency', 'TARGET 86%' right in #ab9cf6). Draw a half-circle gauge around (235, 319) where value v maps to angle π(1 − v/100): a 21px band #242922 at r 130.5, a 4.2px round-capped progress arc #a596ee at r 130 from 0 to the actual value, 31 ticks every 6° from r 141 (long ones every fifth, 12px; short 6px from r 143) that turn from #3a3c3b to #a99ef0 when actual ≥ their value, a violet wedge needle (#bca8fa, half-width 3.6px at r 8 tapering to 0.6px at r 115), a hub circle r 9.6 with a 2.6px violet ring, and a cream target marker (#f1e8d0 line r 100→133.5 plus a 4.6px dot). Labels 0 and 100 under the ends, 'ACTUAL / TARGET' centred. Loop 7.53 s: actual = target × (1 − ease-in-out sine) over 1.35 s; target marker jumps to 0 at 1.5 s and sweeps to the target on ease-in-out quad over 1.3 s (timed from 1.32 s); actual rises from 2.25 s to the target on ease-out quad over 2.58 s; hold. Footer 'Actual follows the target' / 'Target met · holding steady' and 'TAP TO RETARGET ↗'. A tap picks a new target, moves the marker in 0.9 s and the needle in 1.9 s (starting 0.35 s later), then the loop continues with it.",
+  },
+  {
+    slug: "activity-field-matrix",
+    category: "widgets",
+    group: "charts",
+    after: "streak-heatmap",
+    date: "2026-10-27",
+    plays: "self",
+    title: { en: "Activity field · ripple and expand", zh: "活动热力矩阵", "zh-tw": "活動熱力矩陣" },
+    gist: {
+      en: "Twenty-eight days as a 7 × 4 field of squares that light up in a diagonal ripple from the top-left while the total counts to 684. Then a mint card zooms out of the middle with the busiest region's number and a little trend line, and the field opens around it — the squares step back, dim and soften. It closes, fades, and the ripple runs again. Tap any square to open its own column.",
+      zh: "二十八天铺成 7×4 的格子，从左上角沿对角线一波一波亮起来，总数同时数到 684。然后一张薄荷绿的卡片从中间放大弹出，写着最活跃那一列的数字和一条小趋势线，四周的格子往外让开、变暗变虚。卡片收回、格子熄灭，波纹再来一遍。点任意一格，展开它所在那一列。",
+      "zh-tw": "二十八天鋪成 7×4 的格子，從左上角沿對角線一波一波亮起來，總數同時數到 684。然後一張薄荷綠的卡片從中間放大彈出，寫著最活躍那一列的數字和一條小趨勢線，四周的格子往外讓開、變暗變虛。卡片收回、格子熄滅，波紋再來一遍。點任意一格，展開它所在那一列。",
+    },
+    height: 500,
+    previewHeight: 354,
+    accent: "#52d9a8",
+    anatomy: [
+      "<b>The ripple is a delay per diagonal.</b> Each cell starts at 0.4 s + 0.12 s × (column + row) and fades from the empty colour to its own over 1.7 s on an ease-in-out sine — fitted to the brightness of all 28 cells across ten frames. Because the fades are long and overlap, it reads as a wave rather than a sequence; the last corner is still filling when the card opens.",
+      "<b>Three shades on a diagonal pattern:</b> the shade is <code>(column + row) % 3</code> → #24594e, #35977b, #172123, which is what gives the field its woven look. The colours are flat values sampled from the recording, mixed in RGB from the empty #131b1d.",
+      "<b>Columns are weekdays, so a region is a column.</b> MON / THU / SUN sit under the columns; 'REGION 04' is Thursday, the centre column, and its 128 is that column's total. Tapping a cell opens its column's card ('ACTIVE' above the weekly average, 'QUIET' below), centred on that column and kept inside the field.",
+      "<b>The field makes room by scaling positions, not cells.</b> On open each cell translates away from the card centre by 27.7 % horizontally and 40 % vertically (measured), drops to 0.42 opacity and blurs 0.6 px, while the card goes from scale .45 / opacity 0 to 1 over 0.5 s. Closing takes 0.4 s on ease-out quad, then all cells fade together with the counter over 1.35 s.",
+      "Loop 7.68 s: count 0 → 684 over 3.1 s; card open at 2.65 s; close at 6.0 s; fade from 6.15 s. A tap pauses the loop; after 4 s idle it closes the card (if open) and carries on into the fade.",
+    ],
+    tokens: [
+      { label: "Field", value: "7 × 4 · cell 36px radius 7 · pitch 47 · origin (77, 153)" },
+      { label: "Shades", value: "(c + r) % 3 → #24594e · #35977b · #172123 · empty #131b1d" },
+      { label: "Ripple", value: "delay 0.4 s + 0.12 s × (c + r) · fade 1.7 s ease-in-out sine" },
+      { label: "Open", value: "cells × (1.277, 1.40) about the card · opacity .42 · blur .6px · card .45 → 1 in 0.5 s" },
+      { label: "Card", value: "226×95 radius 14 #52d9a8 · ink #0b241e · 128 in 32px" },
+    ],
+    prompt:
+      "Build a dark 470×470 card ('05 / ACTIVITY FIELD' 12.5px caps in #5cd2ad, 'LIVE LOOP', a total in Helvetica Neue 300 54px with 'events', 'LAST 28 DAYS' right). A 7×4 field of 36px squares (radius 7, pitch 47, first at (77,153)); weekday labels MON / THU / SUN under columns 1, 4, 7. Each cell's shade is ['#24594e','#35977b','#172123'][(col+row)%3], blended in RGB from the empty colour #131b1d by a fade f. Give each cell a count so each column sums to a region total (Thursday = 128 of 684). Loop 7.68 s: total = round(684 × ease-in-out sine(t/3.1)); f = ease-in-out sine((t − 0.4 − 0.12·(col+row)) / 1.7). At 2.65 s open a 226×95 mint card (#52d9a8, radius 14) at the centre: 'REGION 04 / ACTIVE' 10.5px, '128' 32px and 'events', and a 2.4px dark polyline sparkline; it scales .45→1 and fades in over 0.5 s (sine) while every cell translates away from the card centre by 0.277×dx and 0.40×dy, goes to 0.42 opacity and blur(0.6px). At 6.0 s close it over 0.4 s (ease-out quad); from 6.15 s fade all cells and the total out over 1.35 s. Footer 'Activity ripples across the field' / 'Region 04 · 128 events recorded' and 'TAP TO EXPAND ↗'. Tapping a cell opens that column's region (card centred on the column, clamped inside the field); tapping the card closes it; resume the loop after 4 s idle.",
+  },
+  {
+    slug: "traffic-mix-bars",
+    category: "widgets",
+    group: "charts",
+    after: "stacked-share-bar",
+    date: "2026-10-27",
+    plays: "self",
+    title: { en: "Traffic mix · three shares that always add up", zh: "流量占比条", "zh-tw": "流量占比條" },
+    gist: {
+      en: "Three traffic sources as three bars and three percentages that glide between a busy mix (240 req/s: 28 / 49 / 23) and a quiet one (80 req/s: 48 / 32 / 20). The total and the shares move on their own clocks — the total climbs back first, the shares follow — and at every frame the three numbers still add up to exactly 100. Tap to remix the sources.",
+      zh: "三个流量来源画成三根进度条和三个百分比，在繁忙配比（240 req/s：28 / 49 / 23）和清闲配比（80 req/s：48 / 32 / 20）之间平滑往返。总数和占比各走各的节奏——总数先涨回去，占比随后跟上——而且任何一帧三个数加起来都正好是 100。点一下随机换一组配比。",
+      "zh-tw": "三個流量來源畫成三根進度條和三個百分比，在繁忙配比（240 req/s：28 / 49 / 23）和清閒配比（80 req/s：48 / 32 / 20）之間平滑往返。總數和占比各走各的節奏——總數先漲回去，占比隨後跟上——而且任何一幀三個數加起來都正好是 100。點一下隨機換一組配比。",
+    },
+    height: 500,
+    previewHeight: 354,
+    accent: "#ff7a93",
+    anatomy: [
+      "<b>Always 100 %.</b> The shares are interpolated as floats and the bars use them directly; only the printed numbers are rounded, by largest remainder, so 33.4 / 33.3 / 33.3 never shows as 33 / 33 / 33. Read frame by frame, the reference never shows a sum other than 100 either.",
+      "<b>The total and the shares are decoupled.</b> A → B moves both together over 1.6 s; on the way back the total climbs from 1.72 s over 3.35 s while the shares wait at B, then slide back from 3.0 s over 3.0 s — so for a moment the requests are rising but the mix is still the quiet one. All ease-in-out sine, measured off the counter and the Direct share.",
+      "<b>Bar width is the share of the track,</b> not of the largest bar: the 317 px track is 100 %, the fill is <code>share %</code> wide with a 7.5 px radius and the track clips it, so 49 % really is half the bar.",
+      "Rows on a 73 px rhythm: dot, label (15px), percentage (18.5px bold in the source colour), then the 15 px track — Direct #ff7a93, Search #3dc7c0, Referral #a98cf6 on #222228.",
+      "<b>Tap to remix:</b> three new shares (each 12–60 %) and a new total animate in from whatever is on screen over 1.6 s; 4 s later the loop picks up from that mix.",
+    ],
+    tokens: [
+      { label: "Mixes", value: "A 240 req/s · 28 / 49 / 23 ↔ B 80 req/s · 48 / 32 / 20" },
+      { label: "Loop", value: "A→B 1.6 s · total back 1.72 s + 3.35 s · shares back 3.0 s + 3.0 s · 8.25 s" },
+      { label: "Bars", value: "track 317×15 radius 7.5 #222228 · Direct #ff7a93 · Search #3dc7c0 · Referral #a98cf6" },
+      { label: "Rounding", value: "largest remainder → always 100" },
+    ],
+    prompt:
+      "Build a dark 470×470 card ('06 / TRAFFIC MIX' 12.5px caps in #ff7f97, 'LIVE LOOP', total in Helvetica Neue 300 54px with 'requests / s', 'LIVE SHARE' right in pink). Three rows 73px apart from y 141: a colour dot, the source name (15px), the percentage right-aligned (18.5px bold, source colour), and under it a 317×15 track (#222228, radius 7.5, overflow hidden) with a fill whose width is the share in % — Direct #ff7a93, Search #3dc7c0, Referral #a98cf6. Caption 'PROPORTION OF TOTAL TRAFFIC' (11px, .1em). Mix A = 240 req/s with 28/49/23, mix B = 80 req/s with 48/32/20. Loop 8.25 s, all ease-in-out sine: 0–1.6 s total and shares A→B together; total B→A from 1.72 s over 3.35 s; shares B→A from 3.0 s over 3.0 s; hold A. Interpolate shares as floats for the bar widths but print whole numbers with largest-remainder rounding so they always sum to 100. Footer 'Balancing three sources' while moving, 'Traffic mix updated' when settled, and 'TAP TO REMIX ↗'. A tap animates from the current state to a random mix (each share 12–60 %, total 60–300) over 1.6 s; resume the loop from that mix after 4 s idle.",
   },
   /* ── 2026-09-19，AI 产品设计师「别再让 AI 做“高级网站”了，先学会拆解高级动效」──
      录屏只有 15 秒且一半是 3 倍速，时长曲线量不出来，这四条的数值是按录屏节奏定的、不是量的。
@@ -5366,7 +5575,7 @@ export const effects: Effect[] = [
 ];
 
 export function effectsIn(category: CategoryId): Effect[] {
-  return effects
+  const sorted = effects
     .filter((e) => e.category === category)
     .sort((a, b) => {
       // 置顶的在前（pin 小的更前），其余按日期倒序
@@ -5375,6 +5584,19 @@ export function effectsIn(category: CategoryId): Effect[] {
       // 同一天的按数组顺序：主样板写在前面就排在前面（之前平局返回 -1，同日会整批倒序）
       return a.date === b.date ? 0 : a.date < b.date ? 1 : -1;
     });
+  // `after`：挪到目标条目后面（已经跟在那条后面的几条之后）
+  const followers = sorted.filter((e) => e.after);
+  if (!followers.length) return sorted;
+  const out = sorted.filter((e) => !e.after);
+  const tail = new Map<string, string>(); // 目标 slug → 目前排在它这一串最后的 slug
+  for (const e of followers) {
+    const anchor = tail.get(e.after!) ?? e.after!;
+    const i = out.findIndex((x) => x.slug === anchor);
+    if (i < 0) throw new Error(`[lab] ${category}: ${e.slug} is set after "${e.after}", which is not in this category`);
+    out.splice(i + 1, 0, e);
+    tail.set(e.after!, e.slug);
+  }
+  return out;
 }
 
 /**

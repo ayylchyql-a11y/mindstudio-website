@@ -210,6 +210,18 @@ const blurbs: Record<string, string> = {
     "A donut for a handful of categories, drawn slice by slice clockwise on load with the total in the hole. Hover a slice or its legend row and the slice pushes outward while the centre swaps to that category's name and share. The everyday breakdown chart for budgets, portfolios, storage and survey results — this version does the hover and legend linking that most implementations skip.",
   "bubble-chart-nudge":
     "One circle per category, area by amount, packed together. Tap one and it grows to show its number while the neighbours it now overlaps are pushed straight away from it — only as far as they need, and the rest stay put. A friendly way to compare a dozen categories in a finance, nutrition or analytics app; the nudge keeps everything readable while one bubble is being inspected.",
+  "orbital-balance-ring":
+    "Three parts of one budget drawn as a ring that fills as a whole: every arc grows from its own place while the total counts up, and the centre reads out one part at a time with that arc lit. It settles, folds away and draws again, and a tap on any arc or legend row holds that part. A calm way to show how one total is divided on a dashboard or a finance screen.",
+  "current-study-curve":
+    "A day of readings as a glowing line that never sits still: a probe walks it from morning to evening with the value floating above it while the curve rises out of a flat line and keeps drifting. At the end of the day it settles flat and starts over, and you can drag along it to read any moment. Made for live monitoring — flow, load, traffic — where the shape of the day matters.",
+  "elastic-rank-bars":
+    "Five days as five bars that grow in calendar order and, while still growing, slide past each other into ranking order — the tallest in front, each label travelling with its own bar. The best day stands out in a paler tone. A tap flips between calendar order and ranking order, so the same week answers both 'when' and 'which was best'.",
+  "target-chase-gauge":
+    "A half-circle gauge with two needles — the goal and the actual. The goal swings up and plants itself, then the actual chases it, lighting the scale as it climbs, and settles on target. Tap to set a new goal and the needle goes after it again. A clear way to show progress against a target in fitness, sales or operations dashboards.",
+  "activity-field-matrix":
+    "Four weeks of activity as a grid of squares that lights up in a diagonal wave. Then the busiest weekday opens as a card in the middle while the rest of the grid steps back, dims and softens around it. Tap any square to open its own weekday instead. A heatmap that shows the pattern first and the detail second, without leaving the card.",
+  "traffic-mix-bars":
+    "Three sources as three bars and three percentages that glide between a busy hour and a quiet one. The total and the mix move on their own timing — volume returns first, the split follows — and the three numbers always add up to exactly one hundred. Tap to try a different mix. For analytics screens where the share matters as much as the size.",
 
   // ── dashboard ──
   "dashboard-floating-panel":

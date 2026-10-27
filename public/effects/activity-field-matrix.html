@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Activity field · 活动热力矩阵</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: #0a0a0c; display: grid; place-items: center; overflow: hidden;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #f4f4f6;
+    -webkit-font-smoothing: antialiased; -webkit-user-select: none; user-select: none; }
+
+  /* Laid out at a fixed 470 × 470 and scaled to fit, so every number below is in card pixels. */
+  .fit { width: calc(470px * var(--k, 1)); height: calc(470px * var(--k, 1)); }
+  .card { position: relative; width: 470px; height: 470px; transform: scale(var(--k, 1)); transform-origin: 0 0;
+    border-radius: 28px; background: linear-gradient(135deg, #131419, #0f1014 70%); border: 1px solid #ffffff0d; overflow: hidden; }
+
+  .kicker { position: absolute; left: 32px; top: 29px; display: flex; align-items: center; gap: 10px;
+    font-size: 12.5px; letter-spacing: .125em; text-transform: uppercase; color: #5cd2ad; }
+  .kicker i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .live { position: absolute; right: 34px; top: 30px; font-size: 11.5px; letter-spacing: .16em; color: #6c6c70; }
+  .num { position: absolute; left: 32px; top: 71px; display: flex; align-items: baseline; gap: 13px; }
+  .num b { font-size: 54px; font-weight: 300; letter-spacing: -.075em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .num span { position: relative; top: -3px; font-size: 12.5px; color: #a9a9ae; }
+  .tag { position: absolute; right: 34px; top: 87px; font-size: 12.5px; letter-spacing: .03em; color: #5cd2ad; }
+
+  .field { position: absolute; left: 0; top: 0; width: 470px; height: 345px; }
+  .cell { position: absolute; left: 0; top: 0; width: 36px; height: 36px; border-radius: 7px; background: #131b1d; cursor: pointer; will-change: transform, opacity; }
+  .day { position: absolute; top: 355px; font-size: 12px; letter-spacing: .04em; color: #b9b9bf; }
+
+  .detail { position: absolute; left: 0; top: 0; width: 226px; height: 95px; margin: -47.5px 0 0 -113px; border-radius: 14px;
+    background: #52d9a8; color: #0b241e; cursor: pointer; will-change: transform, opacity; opacity: 0; pointer-events: none; }
+  .detail.on { pointer-events: auto; }
+  .detail small { position: absolute; left: 21px; top: 19px; font-size: 10.5px; letter-spacing: 0; color: #0f3a2f; }
+  .detail b { position: absolute; left: 22px; top: 41px; font-size: 32px; font-weight: 400; letter-spacing: -.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .detail em { position: absolute; left: 91px; top: 58px; font-style: normal; font-size: 12px; color: #0f3a2f; }
+  .detail svg { position: absolute; left: 0; top: 0; width: 226px; height: 95px; overflow: visible; }
+
+  .rule { position: absolute; left: 34px; right: 34px; top: 390px; height: 1px; background: #ffffff14; }
+  .foot { position: absolute; left: 34px; right: 34px; top: 409px; display: flex; justify-content: space-between; font-size: 13px; color: #b3b3b8; }
+  .foot span:last-child { font-size: 11.5px; letter-spacing: .03em; color: #a5a5aa; }
+</style>
+</head>
+<body>
+<div class="fit">
+  <div class="card" id="card">
+    <div class="kicker"><i></i>05 / Activity field</div>
+    <div class="live">LIVE LOOP</div>
+    <div class="num"><b id="total">0</b><span>events</span></div>
+    <div class="tag">LAST 28 DAYS</div>
+    <div class="field" id="field"></div>
+    <span class="day" style="left:75px">MON</span><span class="day" style="left:229px;transform:translateX(-50%)">THU</span><span class="day" style="right:80px">SUN</span>
+    <div class="detail" id="detail" role="button" aria-label="Close">
+      <small id="dTitle">REGION 04 / ACTIVE</small><b id="dNum">128</b><em>events</em>
+      <svg viewBox="0 0 226 95"><polyline id="dSpark" fill="none" stroke="#0d3a2e" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/></svg>
+    </div>
+    <div class="rule"></div>
+    <div class="foot"><span id="status">Activity ripples across the field</span><span>TAP TO EXPAND ↗</span></div>
+  </div>
+</div>
+<script>
+(() => {
+  // 7 weekday columns × 4 weeks. Three shades step diagonally across the field; a column is a
+  // "region" — the expanded card shows that column's total (Thursday, region 04, is the busiest: 128).
+  const VALUES = [
+    [24, 37,  6, 38, 39,  5, 26],
+    [39,  7, 27, 46,  6, 25, 37],
+    [ 5, 28, 44,  8, 27, 40,  7],
+    [25, 34,  5, 36, 35,  6, 22],
+  ];
+  const SPARK = [[71, 60, 64, 48, 52], [71, 52, 58, 44, 36], [71, 66, 54, 60, 50], [71, 53, 60, 34, 42],
+                 [71, 58, 46, 52, 38], [71, 64, 68, 56, 60], [71, 56, 62, 50, 46]];   // y in card px, x 150 → 204
+  const LEVEL = ["#24594e", "#35977b", "#172123"];        // (column + row) % 3 → mid · bright · faint
+  const EMPTY = [0x13, 0x1b, 0x1d];
+  const X0 = 77, Y0 = 153, PITCH = 47, GX = 236, GY = 241.5;   // GX/GY: centre of the field
+  const SPREAD_X = 0.277, SPREAD_Y = 0.40, DIM = 0.42;          // how far the field opens around the card
+
+  // The loop (seconds): count up 3.1 s; each cell starts 0.4 s + 0.12 s per diagonal step and fades in
+  // over 1.7 s (ease-in-out); the card opens at 2.65 s (0.5 s); closes at 6.0 s (0.4 s); everything fades out from 6.15 s (1.35 s).
+  const COUNT = 3.1, RIP0 = 0.4, RIP_STEP = 0.12, RIP_DUR = 1.7, OPEN_AT = 2.65, OPEN = 0.5, CLOSE_AT = 6.0, CLOSE = 0.4, OUT_AT = 6.15, OUT = 1.35, CYCLE = 7.68;
+  const IDLE = 4000;
+
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = (id) => document.getElementById(id);
+  const clamp = (x) => Math.min(1, Math.max(0, x));
+  const sine = (x) => (1 - Math.cos(Math.PI * clamp(x))) / 2;
+  const outQuad = (x) => (x = clamp(x), 1 - (1 - x) * (1 - x));
+  const outCubic = (x) => 1 - Math.pow(1 - clamp(x), 3);
+  const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+
+  const TOTAL = VALUES.flat().reduce((a, b) => a + b, 0);
+  const colSum = (c) => VALUES.reduce((s, row) => s + row[c], 0);
+  const AVG = TOTAL / 7;
+
+  const field = $("field"), detail = $("detail"), total = $("total"), status = $("status");
+  const cells = [];
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 7; c++) {
+    const el = document.createElement("div");
+    el.className = "cell"; el.dataset.c = c; field.appendChild(el);
+    cells.push({ el, c, r, x: X0 + c * PITCH, y: Y0 + r * PITCH, rgb: hex(LEVEL[(c + r) % 3]), last: "" });
+  }
+
+  function setRegion(c) {
+    const n = colSum(c);
+    $("dTitle").textContent = `REGION ${String(c + 1).padStart(2, "0")} / ${n >= AVG ? "ACTIVE" : "QUIET"}`;
+    $("dNum").textContent = n;
+    $("dSpark").setAttribute("points", SPARK[c].map((y, i) => `${150 + i * 13.5},${y}`).join(" "));
+  }
+  // the card sits on its column, kept inside the field
+  const cardX = (c) => Math.min(327, Math.max(143, X0 + c * PITCH + 18));
+
+  let region = 3, lastRegion = -1;
+  function draw(p, fades, e, out) {
+    if (region !== lastRegion) { setRegion(region); lastRegion = region; }
+    const cx = cardX(region), cy = 244.5;
+    cells.forEach((cell, i) => {
+      const f = fades[i] * (1 - out);
+      const rgb = cell.rgb.map((v, k) => Math.round(EMPTY[k] + (v - EMPTY[k]) * f));
+      const dx = (cell.x + 18 - cx) * SPREAD_X * e, dy = (cell.y + 18 - GY) * SPREAD_Y * e;
+      cell.el.style.transform = `translate(${(cell.x + dx).toFixed(2)}px, ${(cell.y + dy).toFixed(2)}px)`;
+      const bg = `rgb(${rgb})`;
+      if (bg !== cell.last) { cell.el.style.background = bg; cell.last = bg; }
+      cell.el.style.opacity = (1 - (1 - DIM) * e).toFixed(3);
+      cell.el.style.filter = e > 0.01 ? `blur(${(0.6 * e).toFixed(2)}px)` : "";
+    });
+    detail.style.transform = `translate(${cx}px, ${cy}px) scale(${(0.45 + 0.55 * e).toFixed(4)})`;
+    detail.style.opacity = e.toFixed(3);
+    detail.classList.toggle("on", e > 0.5);
+    const t = String(Math.round(TOTAL * p * (1 - out)));
+    if (total.textContent !== t) total.textContent = t;
+    const s = e > 0.5 ? `Region ${String(region + 1).padStart(2, "0")} · ${colSum(region)} events recorded` : "Activity ripples across the field";
+    if (status.textContent !== s) status.textContent = s;
+  }
+
+  const fadesAt = (tau) => cells.map(({ c, r }) => sine((tau - RIP0 - (c + r) * RIP_STEP) / RIP_DUR));
+  function loopAt(tau) {
+    const e = tau < CLOSE_AT ? sine((tau - OPEN_AT) / OPEN) : eClose * (1 - outQuad((tau - CLOSE_AT) / CLOSE));
+    return { p: sine(tau / COUNT), fades: fadesAt(tau), e, out: sine((tau - OUT_AT) / OUT) };
+  }
+
+  let t0 = null, manual = null, eClose = 1, cur = loopAt(0);
+  function frame(now) {
+    if (t0 === null) t0 = now;
+    if (manual) {
+      const k = (now - manual.at) / 1000, fill = outCubic(k / 0.35);
+      const target = manual.open ? 1 : 0;
+      cur = { p: manual.s.p + (1 - manual.s.p) * fill, fades: manual.s.fades.map((f) => f + (1 - f) * fill),
+              e: manual.s.e + (target - manual.s.e) * outCubic(k / OPEN), out: manual.s.out * (1 - fill) };
+      if (k * 1000 > IDLE) {                   // carry on: close (if open), then fade out with the loop
+        eClose = cur.e; manual = null; t0 = now - (cur.e > 0.5 ? CLOSE_AT : OUT_AT) * 1000;
+      }
+    } else {
+      let tau = (now - t0) / 1000;
+      if (tau >= CYCLE) { t0 += CYCLE * 1000; tau -= CYCLE; region = 3; eClose = 1; }
+      cur = loopAt(tau);
+    }
+    draw(cur.p, cur.fades, cur.e, cur.out);
+    requestAnimationFrame(frame);
+  }
+
+  // TAP TO EXPAND: a cell opens its column; the card (or the same column again) closes it.
+  function tap(c) {
+    const open = !(cur.e > 0.5 && (c === undefined || c === region));
+    if (c !== undefined && open) region = c;
+    if (reduce) { cur = { p: 1, fades: cells.map(() => 1), e: open ? 1 : 0, out: 0 }; return draw(cur.p, cur.fades, cur.e, 0); }
+    manual = { at: performance.now(), s: cur, open };
+  }
+  field.addEventListener("click", (ev) => { const el = ev.target.closest(".cell"); if (el) tap(+el.dataset.c); });
+  detail.addEventListener("click", () => tap());
+
+  if (reduce) draw(1, cells.map(() => 1), 0, 0);
+  else requestAnimationFrame(frame);
+
+  const fit = () => document.documentElement.style.setProperty("--k", Math.min(1, (innerWidth - 24) / 470, (innerHeight - 24) / 470));
+  addEventListener("resize", fit); fit();
+})();
+</script>
+</body>
+</html>

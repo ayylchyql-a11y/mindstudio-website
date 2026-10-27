@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orbital balance · 轨道分配环</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: #0a0a0c; display: grid; place-items: center; overflow: hidden;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #f4f4f6;
+    -webkit-font-smoothing: antialiased; -webkit-user-select: none; user-select: none; }
+
+  /* The card is laid out at a fixed 720 × 405 and scaled to fit the frame,
+     so every measurement below is in the card's own pixels. */
+  .fit { width: calc(720px * var(--k, 1)); height: calc(405px * var(--k, 1)); }
+  .card { position: relative; width: 720px; height: 405px; transform: scale(var(--k, 1)); transform-origin: 0 0;
+    border-radius: 24px; background: linear-gradient(135deg, #131419, #0f1014 70%); border: 1px solid #ffffff0d; overflow: hidden; }
+
+  .kicker { position: absolute; left: 22px; top: 23px; display: flex; align-items: center; gap: 8px;
+    font-size: 10px; letter-spacing: .19em; text-transform: uppercase; color: #d4e264; }
+  .kicker i { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+  .live { position: absolute; right: 25px; top: 24px; font-size: 9.5px; letter-spacing: .18em; color: #6c6c70; }
+  .num { position: absolute; left: 24px; top: 54px; display: flex; align-items: baseline; gap: 10px; }
+  .num b { font-size: 60px; font-weight: 300; letter-spacing: -.075em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .num span { font-size: 11px; color: #a9a9ae; }
+  .tag { position: absolute; right: 25px; top: 70px; text-align: right; font-size: 10px; line-height: 15.4px; color: #d4e264; }
+
+  svg.ring { position: absolute; left: 164px; top: 127px; width: 220px; height: 220px; overflow: visible; }
+  .seg { fill: none; stroke-width: 27; cursor: pointer; transition: opacity .28s ease; }
+  .seg.dim { opacity: .82; }
+  .center { position: absolute; left: 214px; top: 205px; width: 120px; text-align: center; pointer-events: none; }
+  .center b { display: block; font-size: 32px; font-weight: 400; letter-spacing: -.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .center span { display: block; margin-top: 7px; font-size: 10.5px; color: #c4c4c9; }
+
+  .legend { position: absolute; left: 432px; top: 181px; width: 180px; }
+  .legend button { display: flex; align-items: center; width: 100%; height: 22px; margin-bottom: 23px;
+    font: inherit; font-size: 10.5px; color: #c9c9ce; background: none; border: 0; cursor: pointer; text-align: left; }
+  .legend i { width: 8px; height: 8px; border-radius: 50%; margin: 0 13px 0 2px; }
+  .legend em { margin-left: auto; font-style: normal; font-weight: 700; color: #fff; }
+
+  .rule { position: absolute; left: 25px; right: 25px; top: 354px; height: 1px; background: #ffffff14; }
+  .foot { position: absolute; left: 25px; right: 25px; top: 367px; display: flex; justify-content: space-between; font-size: 10px; color: #b3b3b8; }
+  .foot span:last-child { font-size: 9.5px; letter-spacing: .06em; color: #a5a5aa; }
+</style>
+</head>
+<body>
+<div class="fit" id="fit">
+  <div class="card" id="card">
+    <div class="kicker"><i></i>01 / Orbital balance</div>
+    <div class="live">LIVE LOOP</div>
+    <div class="num"><b id="total">0</b><span>total allocation</span></div>
+    <div class="tag">THREE PARTS<br>ONE BALANCED SYSTEM</div>
+
+    <!-- viewBox centred on the ring: (0,0) is the ring centre. Arcs are SVG paths
+         whose end points are computed in JS — no CSS rotation on SVG. -->
+    <svg class="ring" viewBox="-110 -110 220 220" aria-label="Allocation ring">
+      <circle r="100" fill="none" stroke="#ffffff12" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="0 5.24"/>
+      <path class="seg" data-i="0" stroke="#bce03e"/>
+      <path class="seg" data-i="1" stroke="#37c9ca"/>
+      <path class="seg" data-i="2" stroke="#9b8bfe"/>
+    </svg>
+    <div class="center"><b id="pct">0%</b><span id="name">Growth</span></div>
+
+    <div class="legend" id="legend">
+      <button data-i="0"><i style="background:#bce03e"></i>Growth<em>48%</em></button>
+      <button data-i="1"><i style="background:#37c9ca"></i>Reserve<em>32%</em></button>
+      <button data-i="2"><i style="background:#9b8bfe"></i>Explore<em>20%</em></button>
+    </div>
+
+    <div class="rule"></div>
+    <div class="foot"><span id="status">Drawing a balanced system</span><span>TAP TO SELECT ↗</span></div>
+  </div>
+</div>
+<script>
+(() => {
+  const PARTS = [["Growth", 48], ["Reserve", 32], ["Explore", 20]];
+  const TOTAL = 1280, R = 80.5, GAP = 4;           // GAP: degrees between neighbouring arcs
+  // One loop, read off the reference frame by frame (seconds):
+  const GROW = 3.0, HOLD_END = 5.45, SHRINK = 1.35, CYCLE = 6.8;
+  const PICK = [0, 1.8, 3.6];                       // the centre reading moves on to the next part at these times
+  const IDLE = 4000;                                // after a tap, the loop waits this long before carrying on
+
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = (id) => document.getElementById(id);
+  const segs = [...document.querySelectorAll(".seg")];
+  const total = $("total"), pct = $("pct"), name = $("name"), status = $("status");
+
+  const sine = (x) => (1 - Math.cos(Math.PI * Math.min(1, Math.max(0, x)))) / 2;
+  const pt = (deg) => { const a = (deg - 90) * Math.PI / 180; return [R * Math.cos(a), R * Math.sin(a)]; };
+  const arc = (from, to) => {
+    if (to - from < 0.05) return "";
+    const [x1, y1] = pt(from), [x2, y2] = pt(to);
+    return `M${x1.toFixed(2)} ${y1.toFixed(2)}A${R} ${R} 0 ${to - from > 180 ? 1 : 0} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+  };
+  // Each part owns a fixed slot on the circle and grows clockwise from the start of its slot.
+  let acc = 0;
+  const slots = PARTS.map(([, v]) => { const a = acc * 3.6 + GAP / 2, b = (acc + v) * 3.6 - GAP / 2; acc += v; return [a, b]; });
+
+  const fmt = new Intl.NumberFormat("en-US");
+  let lastText = "";
+  function draw(p, active, settled) {
+    segs.forEach((s, i) => {
+      const [a, b] = slots[i];
+      s.setAttribute("d", arc(a, a + (b - a) * p));
+      s.classList.toggle("dim", i !== active);
+    });
+    const t = fmt.format(Math.round(TOTAL * p)) + "|" + Math.round(PARTS[active][1] * p) + "|" + active + "|" + settled;
+    if (t === lastText) return;
+    lastText = t;
+    total.textContent = fmt.format(Math.round(TOTAL * p));
+    pct.textContent = Math.round(PARTS[active][1] * p) + "%";
+    name.textContent = PARTS[active][0];
+    status.textContent = settled ? "Allocation settled · explore each segment" : "Drawing a balanced system";
+  }
+
+  // ── the loop ────────────────────────────────────────────────────────────
+  // grow 0 → GROW (ease-in-out sine) · hold · shrink HOLD_END → +SHRINK · restart at CYCLE
+  const loopAt = (tau) => {
+    const p = tau < GROW ? sine(tau / GROW) : tau < HOLD_END ? 1 : 1 - sine((tau - HOLD_END) / SHRINK);
+    const active = tau >= PICK[2] ? 2 : tau >= PICK[1] ? 1 : 0;
+    return { p, active, settled: tau >= GROW - 0.05 && tau < HOLD_END };
+  };
+
+  let t0 = null, tau = 0, manual = null, override = null;
+  // manual = { from, at, active }: a tap pins one part; the ring finishes drawing if it hasn't.
+  function frame(now) {
+    if (t0 === null) t0 = now;
+    if (manual) {
+      const k = Math.min(1, (now - manual.at) / 420);
+      const p = manual.from + (1 - manual.from) * (1 - Math.pow(1 - k, 3));
+      draw(p, manual.active, k === 1);
+      if (now - manual.at > IDLE) {            // carry on from the start of the shrink, keeping the pick
+        override = manual.active; manual = null; t0 = now - HOLD_END * 1000;
+      }
+    } else {
+      tau = ((now - t0) / 1000) % CYCLE;
+      if ((now - t0) / 1000 >= CYCLE) { override = null; t0 = now - tau * 1000; }
+      const s = loopAt(tau);
+      draw(s.p, override ?? s.active, s.settled);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function pick(i, now = performance.now()) {
+    const cur = manual ? 1 : loopAt(tau).p;
+    manual = { from: reduce ? 1 : cur, at: now - (reduce ? 1000 : 0), active: i };
+  }
+  segs.forEach((s) => s.addEventListener("pointerdown", () => pick(+s.dataset.i)));
+  document.querySelectorAll(".legend button").forEach((b) => b.addEventListener("click", () => pick(+b.dataset.i)));
+
+  if (reduce) { draw(1, 2, true); segs.forEach((s) => s.addEventListener("pointerdown", () => draw(1, +s.dataset.i, true)));
+    document.querySelectorAll(".legend button").forEach((b) => b.addEventListener("click", () => draw(1, +b.dataset.i, true))); }
+  else requestAnimationFrame(frame);
+
+  // fit the 720 × 405 card into whatever frame it is shown in
+  const fit = () => document.documentElement.style.setProperty("--k", Math.min(1, (innerWidth - 24) / 720, (innerHeight - 24) / 405));
+  addEventListener("resize", fit); fit();
+})();
+</script>
+</body>
+</html>
