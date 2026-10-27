@@ -987,6 +987,49 @@ export const effects: Effect[] = [
       url: "https://www.shadertoy.com/view/N3dGRM",
     },
   },
+  /* ── 2026-10-27，「用 AI 把敦煌壁画做成能走进去的网页」——最终网页复刻 ──
+     素材全部重新生成（Gemini 网页版，用户账号），绿幕抠成透明层，脚本 scratchpad/dunhuang/key.py。
+     镜头推进 / 层错开 / 经过身边时放大糊开淡出 / 六幕 + 首页 / 自动穿行，照录屏里网页本身的片段做。 */
+  {
+    slug: "dunhuang-walk-in",
+    category: "creative",
+    date: "2026-10-27",
+    plays: "self",
+    bundleDir: true,
+    poster: "/effects/dunhuang-walk-in/poster.jpg",
+    title: { en: "Walk into a Dunhuang mural", zh: "一眼千年 · 走进敦煌壁画", "zh-tw": "一眼千年 · 走進敦煌壁畫" },
+    gist: {
+      en: "A web page you walk into. Each scroll takes you one step deeper through a painted cave mouth — the rock you pass swells, smears and fades around you while the next opening is already waiting behind it — through seven scenes of the Nine-Coloured Deer story: a Silk Road caravan, the boy in red at the water's edge, the deer, the climb, a fawn in the reeds, stepping stones across the clouds, and a flying apsara at the end.",
+      zh: "一个能走进去的网页。每滚一下就往壁画深处迈一步：穿过的洞口岩壁在你身边放大、糊开、淡出，下一层洞口早已在后面等着。一路七幕九色鹿的故事——丝路商队、水边的红衣少年、初遇神鹿、随鹿前行、芦苇里的幼鹿、踏石渡云，最后仰望飞天。",
+      "zh-tw": "一個能走進去的網頁。每捲動一下就往壁畫深處邁一步：穿過的洞口岩壁在你身邊放大、糊開、淡出，下一層洞口早已在後面等著。一路七幕九色鹿的故事——絲路商隊、水邊的紅衣少年、初遇神鹿、隨鹿前行、蘆葦裡的幼鹿、踏石渡雲，最後仰望飛天。",
+    },
+    height: 560,
+    previewHeight: 400,
+    accent: "#c46a3a",
+    anatomy: [
+      "<b>Not 3D, not a video: stacked transparent PNG layers.</b> Each chapter is three things at one depth — a cave-mouth frame (painted rock with a cut-out opening), the landscape seen through the opening, and the figures standing in it. That is the whole trick from the reference: a stage set of flats, not a tunnel model (which bent the figures) and not a cross-fade (which ghosted them).",
+      "<b>One number, the camera depth.</b> Chapter <i>i</i>'s frame sits at depth <i>i</i>, its landscape at <i>i</i> + 0.55, its figures at <i>i</i> + 0.5. On screen a layer is scaled by <code>0.6^(depth − camera)</code> about the centre, so one chapter deeper is ×0.6 smaller. Moving the camera from <i>i</i> to <i>i</i> + 1 is the only animation; everything else follows from it.",
+      "<b>The next stage is already there.</b> Because the next chapter's frame is at camera + 1, it is visible through the current opening the whole time — the middle layer arrives early, which is what keeps the sense of direction. A landscape fades in between −0.75 and −0.35 chapters away and out between +0.25 and +0.65, so nothing pops.",
+      "<b>Passing through.</b> A frame the camera has walked past keeps growing and fades over 0.7 chapters while a zoom blur is applied: the same image drawn ten times at scales 1 … 1 + 0.15·speed about the vanishing point, copy <i>j</i> at alpha 1/(<i>j</i>+1) so the stack is an even average. Speed comes from the derivative of the move's ease-in-out cubic, so the smear is longest mid-move and gone the instant it settles.",
+      "<b>One gesture, one chapter.</b> Wheel, arrow keys, swipe or a dot on the timeline moves exactly one stage (1.5 s ease-in-out cubic; a jump of several takes up to 3.2 s), and a 650 ms lock stops a trackpad flick from skipping three. 'Auto walk' steps through on its own and rests 4.2 s on each scene; the walkers and the caravan move slowly the whole time they're in view.",
+      "<b>The art</b> was generated fresh for this page in the reference's palette — cinnabar, burnt orange, malachite teal, azurite, ochre — on flat #00FF00 so it could be keyed: three cave frames, seven landscapes, the boy in red in three poses, the Nine-Coloured Deer in two plus a fawn, the caravan, an apsara, clouds and petals. The key is greenness = G − max(R, B) with soft thresholds set from each image's own screen colour, so the murals' malachite survives.",
+      "Portrait screens show the stage at twice the screen width, centred and faded into the cave colour above and below, so the figures stay in view. Under prefers-reduced-motion there is no flight at all: the old view is cross-faded into the new one in place.",
+    ],
+    tokens: [
+      { label: "Depth", value: "frame i · figures i + 0.5 · landscape i + 0.55 · scale 0.6^(depth − camera)" },
+      { label: "Move", value: "1.5 s ease-in-out cubic per chapter · up to 3.2 s for a jump · wheel lock 650 ms" },
+      { label: "Pass-through", value: "fade over 0.7 chapters · zoom blur 10 taps, scale 1 → 1 + 0.15·speed" },
+      { label: "Landscape fade", value: "in −0.75 → −0.35 · out +0.25 → +0.65 chapters" },
+      { label: "Layers", value: "3 frames · 7 landscapes · 12 figure cut-outs · WebP, 3.3 MB total" },
+      { label: "Palette", value: "#c46a3a cinnabar · #2f6f68 malachite · #e9c98a gold · #132124 cave" },
+    ],
+    prompt:
+      "Build a single-page 'walk into the mural' experience on one full-screen Canvas 2D. Content: N chapters, each = a cave-mouth frame PNG (painted rock, transparent opening, 16:9), a landscape image, and a few transparent figure PNGs placed in landscape coordinates (x, y in 0–1, width as a fraction). Camera depth `cam` (0 … N−1). For chapter i draw, far to near: the landscape at depth i+0.55 (drawn 1.2× the stage width so the opening never shows an edge, alpha = smoothstep(−0.75,−0.35,u)·(1−smoothstep(0.25,0.65,u)) with u = cam−i), its figures at depth i+0.5 with the same alpha, then the frame at depth i (alpha 1 until it is 0.12 behind the camera, then fading out over 0.7). A layer at depth d is scaled by 0.6^(d−cam) about the screen centre; the stage is 16:9 covering the window (in portrait: 2× the screen width, centred, edges faded into #132124). Add a small pointer parallax (14px × scale). While moving apply zoom blur: redraw each layer 10 times at scale 1 + j·0.017·speed about the centre with alpha 1/(j+1) into an offscreen canvas, then composite; speed = the analytic derivative of the ease-in-out cubic. Input: wheel (accumulate 40px, then lock 650ms), arrow keys, swipe, and a timeline of dots (one per chapter, labels under) all move exactly one chapter over 1.5s ease-in-out cubic. UI: a title '一眼千年' + subtitle in the first opening that scales up and fades by cam 0.3; the chapter name centred near the bottom when settled; a progress percentage; '自动穿行' (auto, 4.2s hold per chapter) and '重来' on the last chapter. Under prefers-reduced-motion jump instantly and cross-fade a snapshot of the previous frame over 450ms.",
+    caveats: [
+      "Ten-tap zoom blur on full-screen layers is fill-rate heavy: Chromium and Safari hold 60 fps on an M-series Mac, Firefox drops to about 30 during a move (it is smooth again the moment it settles).",
+      "The reference's two short videos (a walking caravan and a dancing apsara keyed from a green screen) are stills here, moved gently by the page — the page logic for a keyed video layer is the same, only the asset differs.",
+    ],
+  },
   {
     slug: "holo-card",
     category: "creative",

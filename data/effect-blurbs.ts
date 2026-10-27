@@ -84,6 +84,8 @@ const blurbs: Record<string, string> = {
   // ── creative ──
   "cyclone-369":
     "A real-time volumetric storm rendered entirely on the GPU, ported from a famous 369-character shader. It is the kind of piece that belongs on a landing page for a creative studio, an audio tool or anything that wants a living, slightly dangerous backdrop behind a single headline. Because it is a shader and not a video, it never loops visibly and costs nothing in bandwidth — the price is paid in GPU, which is why the sample also shows how to keep it cheap on phones.",
+  "dunhuang-walk-in":
+    "A web page you walk into rather than scroll past: every step takes you through another painted cave mouth, the rock you pass swelling and fading around you while the next scene already waits behind it. Seven scenes of the Nine-Coloured Deer legend in Dunhuang mural colours, ending with a flying apsara. A storytelling format for museums, cultural brands and launches that want visitors to arrive somewhere, not just read.",
   "holo-card":
     "A collectible trading card you can turn in your hands: the artwork has real depth, and the foil reacts to the angle you hold it at instead of shimmering on a timer. Built for product reveals, membership tiers, NFT-style drops and loyalty cards — anywhere a single object has to feel valuable. The same technique carries over to credit-card mockups and premium subscription pages, where a card that responds to the pointer does more than any badge or gradient.",
   "liquid-orb":

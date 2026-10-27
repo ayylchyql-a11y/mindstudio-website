@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>一眼千年 · 走进敦煌壁画</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; background: #0d1517; overflow: hidden; }
+  body { color: #f3eadb; font-family: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", "SimSun", serif;
+    -webkit-font-smoothing: antialiased; -webkit-user-select: none; user-select: none; touch-action: none; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+
+  /* text that lives in the picture — positioned in stage coordinates by the renderer */
+  .title { position: fixed; left: 50%; top: 0; transform-origin: 50% 50%; text-align: center; pointer-events: none; will-change: transform, opacity; }
+  .title h1 { font-weight: 400; font-size: clamp(30px, 5vw, 64px); white-space: nowrap; letter-spacing: .5em; margin-right: -.5em; text-shadow: 0 2px 18px #0008; }
+  .title p { margin-top: 18px; font-size: clamp(11px, 1.1vw, 14px); white-space: nowrap; letter-spacing: .32em; margin-right: -.32em; color: #e9dcc5cc; text-shadow: 0 1px 10px #000a; }
+
+  /* chrome */
+  .ui { position: fixed; inset: 0; pointer-events: none; font-size: 12px; }
+  .ui > * { pointer-events: auto; }
+  .brand { position: absolute; left: 22px; top: 18px; letter-spacing: .3em; color: #efe3cdcc; text-shadow: 0 1px 8px #000c; pointer-events: none; }
+  .top-r { position: absolute; right: 18px; top: 14px; display: flex; gap: 8px; }
+  .chip { font: inherit; font-size: 12px; letter-spacing: .18em; color: #f1e6d2; background: #0d151799; border: 1px solid #f1e6d233;
+    border-radius: 999px; padding: 6px 13px 6px 15px; cursor: pointer; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    transition: background .2s, border-color .2s, transform .12s; }
+  .chip:hover { background: #1b2a2ccc; border-color: #f1e6d266; }
+  .chip:active { transform: scale(.96); }
+  .chip.on { background: #e9c98a; color: #2a1c0e; border-color: #e9c98a; }
+
+  .chapter { position: absolute; left: 50%; bottom: 62px; transform: translateX(-50%); font-size: 17px; letter-spacing: .6em; margin-right: -.6em;
+    color: #f6ecd9; text-shadow: 0 1px 12px #000; pointer-events: none; transition: opacity .45s ease, transform .45s ease; white-space: nowrap; }
+  .chapter.out { opacity: 0; transform: translate(-50%, 6px); }
+
+  .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 54px; display: flex; align-items: center; gap: 18px; padding: 0 22px;
+    background: linear-gradient(#0d151700, #0d1517d9 70%); }
+  .hint { color: #e9dcc5aa; letter-spacing: .18em; white-space: nowrap; pointer-events: none; }
+  .track { position: relative; flex: 1; height: 30px; }
+  .rail, .fill { position: absolute; left: 0; top: 9px; height: 1px; background: #f1e6d233; width: 100%; }
+  .fill { background: #e9c98a; width: 0; transform-origin: 0 0; }
+  .dot { position: absolute; top: 0; width: 18px; height: 18px; margin-left: -9px; border: 0; background: none; cursor: pointer; }
+  .dot::before { content: ""; position: absolute; left: 5px; top: 5px; width: 8px; height: 8px; border-radius: 50%; border: 1px solid #f1e6d299; background: #0d1517;
+    transition: background .3s, border-color .3s, transform .3s; }
+  .dot.done::before { background: #e9c98a; border-color: #e9c98a; }
+  .dot.cur::before { transform: scale(1.5); background: #f6ecd9; border-color: #f6ecd9; box-shadow: 0 0 0 2px #0d1517, 0 0 0 3px #f6ecd955; }
+  .dot span { position: absolute; top: 17px; left: 50%; transform: translateX(-50%); font-size: 10px; letter-spacing: .12em; color: #e9dcc599; white-space: nowrap; transition: color .3s; }
+  .dot.cur span { color: #f6ecd9; }
+  .pct { width: 40px; text-align: right; font-variant-numeric: tabular-nums; color: #e9dcc5cc; letter-spacing: .06em; pointer-events: none; }
+  .again { display: none; }
+  .again.show { display: inline-block; }
+
+  .loading { position: fixed; inset: 0; display: grid; place-items: center; background: #0d1517; letter-spacing: .4em; font-size: 14px; color: #e9dcc5; transition: opacity .8s; z-index: 5; }
+  .loading.gone { opacity: 0; pointer-events: none; }
+
+  @media (max-width: 720px) {
+    .hint, .dot span { display: none; }
+    .chapter { bottom: 58px; font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div class="title" id="title"><h1>一眼千年</h1><p>沿壁上山河，走入飞天之境</p></div>
+<div class="ui">
+  <div class="brand">敦煌 · 入画</div>
+  <div class="top-r">
+    <button class="chip" id="auto" type="button">自动穿行</button>
+    <button class="chip again" id="again" type="button">重来</button>
+  </div>
+  <div class="chapter" id="chapter"></div>
+  <div class="bar">
+    <div class="hint">滚动前行 · 反向回望</div>
+    <div class="track" id="track"><div class="rail"></div><div class="fill" id="fill"></div></div>
+    <div class="pct" id="pct">00%</div>
+  </div>
+</div>
+<div class="loading" id="loading">入画中</div>
+<script>
+(() => {
+  // ── scene graph ───────────────────────────────────────────────────────────────
+  // Every chapter is a little stage at its own depth: a cave-mouth frame (painted rock with a
+  // transparent opening), the landscape seen through it, and the figures standing in that
+  // landscape. The camera walks down the z axis one chapter at a time; whatever it has walked
+  // past grows, smears outward and fades, and the next stage is already waiting behind.
+  const IMG = "img/";
+  const CH = [
+    { name: "丝路商队", frame: "f1", flip: false, scene: "s1",
+      actors: [{ img: "caravan", x: .50, y: .755, w: .78, walk: .006, bob: 1.6 }],
+      decor: [{ img: "clouds", x: -.34, y: -.21, w: .22, drift: .004, z: .22 }] },
+    { name: "水边发现", frame: "f3", flip: false, scene: "s2",
+      actors: [{ img: "boy-look", x: .30, y: .73, w: .062 }, { img: "deer-look", x: .73, y: .60, w: .075 }],
+      decor: [{ img: "petals", x: .30, y: -.12, w: .06, fall: true, z: .18 }] },
+    { name: "初遇神鹿", frame: "f2", flip: true, scene: "s3",
+      actors: [{ img: "boy-walk", x: .33, y: .66, w: .085, walk: .004, bob: 2.2 }, { img: "deer-walk", x: .66, y: .615, w: .16, walk: -.003, bob: 1.7 }],
+      decor: [] },
+    { name: "随鹿前行", frame: "f1", flip: true, scene: "s4",
+      actors: [{ img: "deer-walk", x: .62, y: .53, w: .12, flip: true, walk: .004, bob: 1.7 }, { img: "boy-walk", x: .40, y: .70, w: .085, walk: .004, bob: 2.2 }],
+      decor: [{ img: "clouds", x: .36, y: -.18, w: .2, flip: true, drift: -.004, z: .22 }] },
+    { name: "救护幼鹿", frame: "f3", flip: true, scene: "s5",
+      actors: [{ img: "boy-kneel", x: .27, y: .78, w: .11 }, { img: "fawn", x: .40, y: .82, w: .075 }, { img: "deer-look", x: .74, y: .62, w: .07 }],
+      decor: [] },
+    { name: "踏石渡云", frame: "f2", flip: false, scene: "s6",
+      actors: [{ img: "deer-walk", x: .55, y: .55, w: .12, flip: true, walk: .003, bob: 1.7 }, { img: "boy-walk", x: .35, y: .66, w: .08, walk: .003, bob: 2.2 }],
+      decor: [{ img: "petals", x: -.32, y: -.14, w: .06, fall: true, z: .18 }] },
+    { name: "仰望飞天", frame: "f1", flip: false, scene: "s7",
+      actors: [{ img: "apsara", x: .52, y: .40, w: .26, float: true }, { img: "clouds", x: .40, y: .90, w: .50 },
+               { img: "boy-look", x: .35, y: .80, w: .045 }, { img: "deer-look", x: .47, y: .775, w: .055 }],
+      decor: [{ img: "petals", x: .28, y: -.16, w: .07, fall: true, z: .18 }] },
+  ];
+  const N = CH.length;
+  const SCENE_Z = .55, ACTOR_Z = .5;          // depth of the landscape and its figures behind each frame
+  const SCENE_W = 1.2;                         // landscapes are drawn wider than the stage so the opening never shows an edge
+  const L = Math.log(1 / .6);                  // one chapter of depth = ×0.6 in size
+  const DEMO = new URLSearchParams(location.search).has("demo");
+  const STEP = 1.5, AUTO_HOLD = DEMO ? 1.7 : 4.2; // seconds per chapter move · seconds the auto walk lingers (shorter in the recorded demo)
+
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = (id) => document.getElementById(id);
+  const cv = $("cv"), ctx = cv.getContext("2d");
+  const off = document.createElement("canvas"), octx = off.getContext("2d");
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+  const ease = (t) => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const easeD = (t) => t < .5 ? 12 * t * t : 3 * Math.pow(-2 * t + 2, 2);
+
+  // ── images ────────────────────────────────────────────────────────────────────
+  const names = new Set();
+  CH.forEach((c) => { names.add(c.frame); names.add(c.scene); c.actors.concat(c.decor).forEach((a) => names.add(a.img)); });
+  const img = {};
+  let loaded = 0;
+  const loadAll = Promise.all([...names].map((n) => new Promise((res) => {
+    const im = new Image(); im.decoding = "async"; im.src = IMG + n + ".webp";
+    im.onload = () => { img[n] = im; loaded++; $("loading").textContent = `入画中 · ${loaded}/${names.size}`; res(); };
+    im.onerror = res;
+  })));
+
+  // ── sizing ────────────────────────────────────────────────────────────────────
+  // The stage is a 16:9 picture scaled to COVER the window (like a full-bleed background).
+  // Portrait screens can't cover a 16:9 picture without cutting the figures off, so there the stage
+  // is twice the screen width, centred, and fades into the cave colour above and below.
+  let VW = 0, VH = 0, W = 0, CY = 0, DPR = 1, portrait = false;
+  function resize() {
+    DPR = Math.min(devicePixelRatio || 1, innerWidth > 1200 ? 1.5 : 2);
+    VW = innerWidth; VH = innerHeight;
+    portrait = VW / VH < 1.1;
+    W = portrait ? VW * 2 : Math.max(VW, VH * 16 / 9);
+    CY = portrait ? VH * .46 : VH / 2;
+    for (const c of [cv, off]) { c.width = Math.round(VW * DPR); c.height = Math.round(VH * DPR); }
+    layoutTrack();
+  }
+
+  // ── camera ────────────────────────────────────────────────────────────────────
+  let cam = 0, from = 0, to = 0, t0 = 0, dur = STEP, vel = 0;
+  // Reduced motion: no flight down the cave — the old view is kept as a still and cross-faded away.
+  const snap = document.createElement("canvas"), sctx = snap.getContext("2d");
+  let fadeAt = -1;
+  function go(target, d) {
+    target = clamp(Math.round(target), 0, N - 1);
+    if (target === to && Math.abs(cam - to) < 1e-3) return;
+    if (reduce) {
+      snap.width = cv.width; snap.height = cv.height; sctx.drawImage(cv, 0, 0);
+      cam = from = to = target; fadeAt = performance.now(); return;
+    }
+    from = cam; to = target; t0 = performance.now(); dur = d ?? (reduce ? .45 : Math.min(3.2, STEP + .38 * (Math.abs(target - cam) - 1)));
+  }
+  const moving = () => Math.abs(cam - to) > 1e-3;
+
+  // ── pointer parallax (and a slow breath when idle) ──────────────────────────────
+  let px = 0, py = 0, tpx = 0, tpy = 0;
+  addEventListener("pointermove", (e) => { tpx = (e.clientX / VW - .5) * 2; tpy = (e.clientY / VH - .5) * 2; });
+
+  // ── drawing ───────────────────────────────────────────────────────────────────
+  // project(depth d, stage-unit offset ox/oy, width w) → screen box. Nearer layers move further with the pointer.
+  function project(d, ox, oy, w, im) {
+    const s = Math.exp(-d * L);
+    const par = 14 * s;
+    const cx = VW / 2 + (ox * W) * s - px * par, cy = CY + (oy * W) * s - py * par * .6;
+    const sw = w * W * s, sh = sw * im.height / im.width;
+    return { x: cx - sw / 2, y: cy - sh / 2, w: sw, h: sh, s };
+  }
+  // Draw one image with optional zoom blur. Zoom blur = the same image redrawn at growing scales about
+  // the vanishing point; copy j at alpha 1/(j+1) makes the stack an equal-weight average.
+  function draw(im, box, alpha, flip, blur) {
+    if (alpha <= .003 || !im) return;
+    blur = Math.min(blur, 1.8);
+    const taps = blur > .03 && !reduce ? 10 : 1;
+    const g = taps > 1 || alpha < 1 ? octx : ctx;
+    if (g === octx) { octx.setTransform(1, 0, 0, 1, 0, 0); octx.clearRect(0, 0, off.width, off.height); }
+    g.setTransform(DPR, 0, 0, DPR, 0, 0);
+    for (let j = 0; j < taps; j++) {
+      const k = 1 + j * blur * .017;
+      const w = box.w * k, h = box.h * k;
+      const x = VW / 2 + (box.x - VW / 2) * k, y = CY + (box.y - CY) * k;
+      g.globalAlpha = 1 / (j + 1);
+      if (flip) { g.save(); g.translate(x + w, y); g.scale(-1, 1); g.drawImage(im, 0, 0, w, h); g.restore(); }
+      else g.drawImage(im, x, y, w, h);
+    }
+    g.globalAlpha = 1;
+    if (g === octx) { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = alpha; ctx.drawImage(off, 0, 0); ctx.globalAlpha = 1; }
+  }
+
+  const title = $("title");
+  function render(now, time) {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = "#132124"; ctx.fillRect(0, 0, cv.width, cv.height);
+    const speed = Math.abs(vel);
+    // far → near: chapters from the back, and inside each chapter scene → figures → decor → frame
+    for (let i = Math.min(N - 1, Math.floor(cam) + 2); i >= Math.max(0, Math.floor(cam) - 1); i--) {
+      const c = CH[i], u = cam - i;
+      const sceneA = smooth(-.75, -.35, u) * (1 - smooth(.25, .65, u));
+      if (sceneA > 0) {
+        const ds = i + SCENE_Z - cam, sIm = img[c.scene];
+        const sb = project(ds, 0, 0, SCENE_W, sIm);
+        draw(sIm, sb, sceneA, false, speed * .6);
+        for (const a of c.actors) {
+          const im = img[a.img]; if (!im) continue;
+          const life = time - (enterAt[i] ?? time);
+          let ax = a.x + (a.walk || 0) * life, ay = a.y;
+          if (a.bob) ay -= Math.abs(Math.sin(life * a.bob * Math.PI)) * .0035;
+          if (a.float) ay += Math.sin(time * .9) * .012;
+          const da = i + ACTOR_Z - cam;
+          const s = Math.exp(-da * L);
+          // figures are placed in the landscape's own coordinates (0–1 across the picture)
+          const ox = (ax - .5) * SCENE_W, oy = (ay - .5) * SCENE_W * 9 / 16;
+          const b = project(da, ox, oy, a.w * SCENE_W, im);
+          draw(im, b, sceneA, a.flip, speed * .6);
+        }
+      }
+      for (const dct of c.decor) {
+        const im = img[dct.img]; if (!im) continue;
+        const dd = i + dct.z - cam;
+        const a = smooth(-.6, -.2, u) * (1 - smooth(.1, .45, u));
+        let ox = dct.x + (dct.drift || 0) * Math.sin(time * .4) * 6, oy = dct.y;
+        if (dct.fall) oy += ((time * .018) % .3);
+        draw(im, project(dd, ox, oy, dct.w, im), a * (dct.fall ? .9 : 1), dct.flip, speed);
+      }
+      const df = i - cam, fIm = img[c.frame];
+      if (fIm) {
+        const fa = (df < -.12 ? clamp(1 - (-df - .12) / .7) : 1) * (1 - smooth(1.4, 1.9, df));
+        draw(fIm, project(df, 0, 0, 1, fIm), fa, c.flip, speed * (1 + Math.max(0, -df) * 2.5));
+      }
+    }
+    if (portrait) {                              // soften the stage's top and bottom edge into the cave
+      const hh = W * 9 / 16, top = CY - hh / 2, bot = CY + hh / 2, f = 70;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      let g = ctx.createLinearGradient(0, top - 1, 0, top + f); g.addColorStop(0, "#132124"); g.addColorStop(1, "#13212400");
+      ctx.fillStyle = "#132124"; ctx.fillRect(0, 0, VW, top); ctx.fillStyle = g; ctx.fillRect(0, top - 1, VW, f + 1);
+      g = ctx.createLinearGradient(0, bot + 1, 0, bot - f); g.addColorStop(0, "#132124"); g.addColorStop(1, "#13212400");
+      ctx.fillStyle = "#132124"; ctx.fillRect(0, bot, VW, VH - bot); ctx.fillStyle = g; ctx.fillRect(0, bot - f, VW, f + 1);
+    }
+    // the title belongs to the first frame's opening: it scales and fades with it
+    const tA = 1 - smooth(.02, .3, cam), ts = Math.exp(cam * L * 1.1);
+    title.style.opacity = tA.toFixed(3);
+    title.style.transform = `translate(-50%, ${(CY - W * .1 - 40).toFixed(1)}px) scale(${ts.toFixed(4)})`;
+    title.style.visibility = tA < .01 ? "hidden" : "visible";
+    if (fadeAt >= 0) {
+      const k = clamp((now - fadeAt) / 450);
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1 - k; ctx.drawImage(snap, 0, 0); ctx.globalAlpha = 1;
+      if (k >= 1) fadeAt = -1;
+    }
+  }
+
+  // ── chrome: timeline, chapter label, auto walk ─────────────────────────────────
+  const track = $("track"), fill = $("fill"), pct = $("pct"), chapter = $("chapter"), autoBtn = $("auto"), again = $("again");
+  const dots = CH.map((c, i) => {
+    const b = document.createElement("button");
+    b.className = "dot"; b.type = "button"; b.setAttribute("aria-label", c.name);
+    b.innerHTML = `<span>${c.name}</span>`;
+    b.addEventListener("click", () => { stopAuto(); go(i); });
+    track.appendChild(b); return b;
+  });
+  function layoutTrack() { dots.forEach((d, i) => { d.style.left = (i / (N - 1) * 100) + "%"; }); }
+  let shownChapter = -1;
+  function updateChrome() {
+    const p = cam / (N - 1);
+    fill.style.width = (p * 100).toFixed(2) + "%";
+    const t = String(Math.round(p * 100)).padStart(2, "0") + "%";
+    if (pct.textContent !== t) pct.textContent = t;
+    const cur = Math.round(cam);
+    dots.forEach((d, i) => { d.classList.toggle("cur", i === cur); d.classList.toggle("done", i < cur); });
+    const settled = !moving();
+    const want = settled ? to : -1;
+    if (want !== shownChapter) {
+      shownChapter = want;
+      if (want < 0) chapter.classList.add("out");
+      else { chapter.textContent = CH[want].name; chapter.classList.remove("out"); }
+    }
+    again.classList.toggle("show", settled && to === N - 1);
+  }
+
+  let auto = false, autoNext = 0;
+  function startAuto() { auto = true; autoBtn.classList.add("on"); autoBtn.textContent = "暂停"; autoNext = performance.now() + 900; if (to === N - 1 && !moving()) go(0, 2.6); }
+  function stopAuto() { auto = false; autoBtn.classList.remove("on"); autoBtn.textContent = "自动穿行"; }
+  autoBtn.addEventListener("click", () => auto ? stopAuto() : startAuto());
+  again.addEventListener("click", () => { stopAuto(); go(0, 2.6); });
+
+  // ── input: wheel / keys / swipe — one gesture = one chapter ────────────────────
+  let wheelAcc = 0, wheelLock = 0;
+  addEventListener("wheel", (e) => {
+    e.preventDefault();
+    const now = performance.now();
+    if (now < wheelLock) return;
+    wheelAcc += e.deltaY + e.deltaX;
+    if (Math.abs(wheelAcc) > 40) {
+      stopAuto();
+      go(to + Math.sign(wheelAcc)); wheelAcc = 0;
+      wheelLock = now + 650;          // a trackpad flick fires dozens of events; take one step per flick
+    }
+  }, { passive: false });
+  addEventListener("keydown", (e) => {
+    if (["ArrowDown", "ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); stopAuto(); go(to + 1); }
+    if (["ArrowUp", "ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); stopAuto(); go(to - 1); }
+    if (e.key === "Home") { stopAuto(); go(0); } if (e.key === "End") { stopAuto(); go(N - 1); }
+  });
+  let tx = null, ty = null;
+  addEventListener("touchstart", (e) => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+  addEventListener("touchend", (e) => {
+    if (tx == null) return;
+    const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+    const m = Math.abs(dy) > Math.abs(dx) ? -dy : -dx;
+    if (Math.abs(m) > 36) { stopAuto(); go(to + Math.sign(m)); }
+    tx = ty = null;
+  });
+
+  // ── loop ──────────────────────────────────────────────────────────────────────
+  const enterAt = {};                         // when each chapter last came into view, for the walkers
+  let prev = 0, clock = 0;
+  function frame(now) {
+    const dt = Math.min(.05, (now - (prev || now)) / 1000); prev = now; clock += dt;
+    vel = 0;
+    if (moving()) {
+      const k = clamp((now - t0) / (dur * 1000));
+      cam = from + (to - from) * (reduce ? k : ease(k));
+      // speed straight from the curve's derivative, so the smear is exactly as long as the move
+      vel = reduce ? 0 : (to - from) * easeD(k) / dur;
+      if (k >= 1) { cam = to; vel = 0; }
+    }
+    for (let i = 0; i < N; i++) if (Math.abs(cam - i) < 1.6) { if (enterAt[i] == null) enterAt[i] = clock; } else delete enterAt[i];
+    if (!reduce) { px += (tpx - px) * .06; py += (tpy - py) * .06; }
+    if (auto && !moving() && now > autoNext) {
+      if (to < N - 1) { go(to + 1); autoNext = now + (STEP + AUTO_HOLD) * 1000; } else stopAuto();
+    }
+    render(now, clock);
+    updateChrome();
+    requestAnimationFrame(frame);
+  }
+
+  addEventListener("resize", resize);
+  resize();
+  loadAll.then(() => {
+    $("loading").classList.add("gone");
+    if (DEMO) setTimeout(startAuto, 600);
+    requestAnimationFrame(frame);
+  });
+})();
+</script>
+</body>
+</html>
