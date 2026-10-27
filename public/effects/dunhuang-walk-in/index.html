@@ -64,6 +64,7 @@
 <div class="ui">
   <div class="brand">敦煌 · 入画</div>
   <div class="top-r">
+    <button class="chip" id="music" type="button" aria-pressed="false">音乐 · 关</button>
     <button class="chip" id="auto" type="button">自动穿行</button>
     <button class="chip again" id="again" type="button">重来</button>
   </div>
@@ -75,6 +76,7 @@
   </div>
 </div>
 <div class="loading" id="loading">入画中</div>
+<script src="music.js"></script>
 <script>
 (() => {
   // ── scene graph ───────────────────────────────────────────────────────────────
@@ -159,9 +161,12 @@
     if (target === to && Math.abs(cam - to) < 1e-3) return;
     if (reduce) {
       snap.width = cv.width; snap.height = cv.height; sctx.drawImage(cv, 0, 0);
-      cam = from = to = target; fadeAt = performance.now(); return;
+      cam = from = to = target; fadeAt = performance.now(); window.Music?.setChapter(target); return;
     }
+    const dir = Math.sign(target - cam);
     from = cam; to = target; t0 = performance.now(); dur = d ?? (reduce ? .45 : Math.min(3.2, STEP + .38 * (Math.abs(target - cam) - 1)));
+    window.Music?.setChapter(target);
+    if (dir) window.Music?.step(dir, dur);
   }
   const moving = () => Math.abs(cam - to) > 1e-3;
 
@@ -288,8 +293,38 @@
     again.classList.toggle("show", settled && to === N - 1);
   }
 
+  // ── music: on by default, but browsers only allow sound after a click / key / tap ─────────
+  const musicBtn = $("music");
+  let musicWanted = !DEMO;          // the recorded demo has no sound track
+  const paintMusic = () => {
+    const on = !!window.Music?.running;
+    musicBtn.textContent = on ? "音乐 · 开" : "音乐 · 关";
+    musicBtn.classList.toggle("on", on); musicBtn.setAttribute("aria-pressed", String(on));
+  };
+  async function musicOn() { musicWanted = true; await window.Music?.start(); paintMusic(); }
+  function musicOff() { musicWanted = false; window.Music?.stop(); paintMusic(); }
+  musicBtn.addEventListener("click", (e) => { e.stopPropagation(); window.Music?.running ? musicOff() : musicOn(); });
+  // the music button handles itself; any other first click / key / tap starts the sound once
+  const GESTURES = ["pointerdown", "keydown", "touchend"];
+  const firstGesture = (e) => {
+    if (e.target === musicBtn) return;
+    GESTURES.forEach((ev) => removeEventListener(ev, firstGesture, true));
+    if (musicWanted && !window.Music?.running) musicOn();
+  };
+  GESTURES.forEach((ev) => addEventListener(ev, firstGesture, true));
+
+  // auto walk follows the music: with sound on it steps on a downbeat, every other bar
+  let barTick = 0, autoFirst = false;      // the first step goes on the very next bar, then every other bar
+  window.Music?.onBar(() => {
+    barTick++;
+    if (auto && window.Music.running && !moving() && performance.now() > autoNext && (autoFirst || barTick % 2 === 0)) {
+      autoFirst = false; barTick = 0;
+      if (to < N - 1) { go(to + 1); autoNext = performance.now() + STEP * 1000 + 800; } else stopAuto();
+    }
+  });
+
   let auto = false, autoNext = 0;
-  function startAuto() { auto = true; autoBtn.classList.add("on"); autoBtn.textContent = "暂停"; autoNext = performance.now() + 900; if (to === N - 1 && !moving()) go(0, 2.6); }
+  function startAuto() { auto = true; autoFirst = true; autoBtn.classList.add("on"); autoBtn.textContent = "暂停"; autoNext = performance.now() + 900; if (to === N - 1 && !moving()) go(0, 2.6); }
   function stopAuto() { auto = false; autoBtn.classList.remove("on"); autoBtn.textContent = "自动穿行"; }
   autoBtn.addEventListener("click", () => auto ? stopAuto() : startAuto());
   again.addEventListener("click", () => { stopAuto(); go(0, 2.6); });
@@ -337,7 +372,7 @@
     }
     for (let i = 0; i < N; i++) if (Math.abs(cam - i) < 1.6) { if (enterAt[i] == null) enterAt[i] = clock; } else delete enterAt[i];
     if (!reduce) { px += (tpx - px) * .06; py += (tpy - py) * .06; }
-    if (auto && !moving() && now > autoNext) {
+    if (auto && !window.Music?.running && !moving() && now > autoNext) {
       if (to < N - 1) { go(to + 1); autoNext = now + (STEP + AUTO_HOLD) * 1000; } else stopAuto();
     }
     render(now, clock);

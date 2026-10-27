@@ -1014,6 +1014,7 @@ export const effects: Effect[] = [
       "<b>One gesture, one chapter.</b> Wheel, arrow keys, swipe or a dot on the timeline moves exactly one stage (1.5 s ease-in-out cubic; a jump of several takes up to 3.2 s), and a 650 ms lock stops a trackpad flick from skipping three. 'Auto walk' steps through on its own and rests 4.2 s on each scene; the walkers and the caravan move slowly the whole time they're in view.",
       "<b>The art</b> was generated fresh for this page in the reference's palette — cinnabar, burnt orange, malachite teal, azurite, ochre — on flat #00FF00 so it could be keyed: three cave frames, seven landscapes, the boy in red in three poses, the Nine-Coloured Deer in two plus a fawn, the caravan, an apsara, clouds and petals. The key is greenness = G − max(R, B) with soft thresholds set from each image's own screen colour, so the murals' malachite survives.",
       "Portrait screens show the stage at twice the screen width, centred and faded into the cave colour above and below, so the figures stay in view. Under prefers-reduced-motion there is no flight at all: the old view is cross-faded into the new one in place.",
+      "<b>The score is synthesised in the page</b> (<code>music.js</code>, no audio files): plucked strings by Karplus–Strong with a pluck-position comb for a guzheng edge, a slow random-walk melody on the D gong pentatonic at 66 bpm with occasional slides and vibrato, a breathing two-note drone, and a 3.4 s generated cave reverb. Each chapter moves the drone and the melody's centre to another note of the same scale (B, D, A, E…), the last one adds bells. Every move forward plays an upward glissando and a band-passed breath of wind timed to the camera; with sound on, Auto walk steps on the downbeat every other bar. Sound starts on the first click, key or tap (browsers block it before that) and can be switched off top right.",
     ],
     tokens: [
       { label: "Depth", value: "frame i · figures i + 0.5 · landscape i + 0.55 · scale 0.6^(depth − camera)" },
@@ -1021,6 +1022,7 @@ export const effects: Effect[] = [
       { label: "Pass-through", value: "fade over 0.7 chapters · zoom blur 10 taps, scale 1 → 1 + 0.15·speed" },
       { label: "Landscape fade", value: "in −0.75 → −0.35 · out +0.25 → +0.65 chapters" },
       { label: "Layers", value: "3 frames · 7 landscapes · 12 figure cut-outs · WebP, 3.3 MB total" },
+      { label: "Score", value: "D gong pentatonic · 66 bpm · Karplus–Strong pluck · 3.4 s cave reverb · gliss + wind per move" },
       { label: "Palette", value: "#c46a3a cinnabar · #2f6f68 malachite · #e9c98a gold · #132124 cave" },
     ],
     prompt:
@@ -1028,6 +1030,7 @@ export const effects: Effect[] = [
     caveats: [
       "Ten-tap zoom blur on full-screen layers is fill-rate heavy: Chromium and Safari hold 60 fps on an M-series Mac, Firefox drops to about 30 during a move (it is smooth again the moment it settles).",
       "The reference's two short videos (a walking caravan and a dancing apsara keyed from a green screen) are stills here, moved gently by the page — the page logic for a keyed video layer is the same, only the asset differs.",
+      "No sound until the visitor clicks, presses a key or taps — the browser's autoplay rule; a wheel-only visitor hears nothing until then.",
     ],
   },
   {
