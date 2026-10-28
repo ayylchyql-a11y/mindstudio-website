@@ -110,8 +110,24 @@ header nav { display: none; }
 .row.on .row-btn { transform: translateX(6px); }
 .row .det { display: none; padding: 0 0 26px 46px; }
 .row.on .det { display: block; animation: fadeUp 420ms var(--ease) both; }
-.det-photo { position: relative; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 3px; margin-bottom: 18px; background: var(--nero-3); }
-.det-photo img { width: 100%; height: 100%; object-fit: cover; }
+/* store map (assets/map.js draws the streets; pin, label and credit are DOM on top) */
+.det-map { position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 3px; margin-bottom: 18px; background: #17130f; box-shadow: inset 0 0 0 1px var(--line); isolation: isolate; }
+.det-map canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity 320ms var(--soft); }
+.det-map.ready canvas { opacity: 1; }
+.det-map::after { content: ""; position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 60px 6px rgba(14, 12, 11, .75); border-radius: inherit; }
+.det-map .pin { position: absolute; left: 50%; top: var(--tip, 60%); z-index: 2; width: 30px; color: var(--oro); transform: translate(-50%, -100%); opacity: 0; filter: drop-shadow(0 8px 10px rgba(0, 0, 0, .55)); transition: opacity 200ms; }
+.det-map .pin svg { display: block; width: 100%; height: auto; }
+.det-map .pin path { fill: currentColor; }
+.det-map .pin circle { fill: #17130f; }
+.det-map .pin::after { content: ""; position: absolute; left: 50%; bottom: -4px; width: 22px; height: 8px; margin-left: -11px; border-radius: 50%; background: radial-gradient(closest-side, rgba(212, 162, 76, .45), transparent); z-index: -1; }
+.det-map.ready .pin { opacity: 1; }
+.det-map.drop .pin { animation: pinDrop 420ms var(--ease) both; }
+@keyframes pinDrop { from { opacity: 0; transform: translate(-50%, calc(-100% - 14px)); } to { opacity: 1; transform: translate(-50%, -100%); } }
+.det-map .go { position: absolute; left: 12px; bottom: 12px; z-index: 2; display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px 6px 9px; border-radius: 999px; background: rgba(14, 12, 11, .78); box-shadow: inset 0 0 0 1px var(--line); color: var(--carta); font-size: 12.5px; font-weight: 500; letter-spacing: .02em; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: background-color 200ms, color 200ms; }
+.det-map .go svg { width: 13px; height: 13px; fill: none; stroke: var(--oro); stroke-width: 2; stroke-linejoin: round; transition: stroke 200ms; }
+.det-map .attr { position: absolute; right: 8px; bottom: 5px; z-index: 2; font-size: 10px; color: var(--carta-3); }
+.det-map:hover .go, .det-map:focus-visible .go { background: var(--oro); color: var(--nero); }
+.det-map:hover .go svg, .det-map:focus-visible .go svg { stroke: var(--nero); }
 .det dl, .store-panel dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; font-size: 14.5px; margin: 0 0 20px; }
 .det dt, .store-panel dt { color: var(--carta-3); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; padding-top: 2px; }
 .det dd, .store-panel dd { margin: 0; }
@@ -214,8 +230,8 @@ footer { border-top: 1px solid var(--line); padding: 56px var(--pad) max(28px, e
   .row .det, .row.on .det { display: none; }
   .row-btn { padding: 26px 0; }
   .store-panel { display: block; position: sticky; top: 110px; }
-  .store-panel .det-photo { aspect-ratio: 4 / 3; transform: rotate(var(--r, 0deg)); transition: transform 500ms var(--soft); box-shadow: 0 40px 70px -40px #000; }
-  .store-panel .det-photo img { transition: opacity 260ms; }
+  .store-panel .det-map { aspect-ratio: 4 / 3; transform: rotate(var(--r, 0deg)); transition: transform 500ms var(--soft); box-shadow: inset 0 0 0 1px var(--line), 0 40px 70px -40px #000; }
+  .store-panel .det-map.swap canvas, .store-panel .det-map.swap .pin { opacity: 0; transition-duration: 200ms; }
   .store-panel .fade { transition: opacity 220ms, transform 220ms; }
   .store-panel .fade.swap { opacity: 0; transform: translateY(5px); }
   .store-panel h3 { font-family: var(--serif); font-weight: 500; font-size: 30px; margin-bottom: 14px; }

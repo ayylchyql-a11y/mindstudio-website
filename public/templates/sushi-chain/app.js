@@ -2,7 +2,6 @@
 (function () {
   'use strict';
   var M = window.Mumi, esc = M.esc, reduce = M.reduce;
-  var PHOTO = { vimercate: 'sashimi-box', cernusco: 'sashimi-piatto', saronno: 'nigiri-tondo' };
   var live = {};
 
   /* ── header: solid once scrolled ── */
@@ -59,16 +58,23 @@
       '<span class="st unknown"><i></i><span>…</span></span></a></li>';
   }).join('');
 
-  /* ── restaurants: hover-tinted list (+ inline details on phones) ── */
+  /* ── restaurants: hover-tinted list (+ inline details on phones) ──
+   * Al posto della foto: la piccola mappa delle vie intorno al ristorante (assets/map.js). */
   var list = document.getElementById('storeList'), panel = document.getElementById('storePanel'), section = document.getElementById('ristoranti');
+  var PIN = '<svg viewBox="0 0 34 44"><path d="M17 43S3 29.4 3 17.5a14 14 0 0 1 28 0C31 29.4 17 43 17 43z"/><circle cx="17" cy="17.5" r="5.2"/></svg>';
   function hoursRow(s) {
     var h = M.todayHours(live[s.slug]);
     if (!h) return '';
     return '<dt>Oggi</dt><dd>' + (h === 'closed' ? 'Chiuso' : esc(h)) + '</dd>';
   }
-  function detail(s) {
-    return '<div class="det-photo"><img src="assets/' + PHOTO[s.slug] + '-s.webp" alt="" loading="lazy" width="960" height="640" /></div>' +
-      '<dl><dt>Indirizzo</dt><dd><a href="' + M.maps(s) + '" target="_blank" rel="noopener">' + esc(s.address) + '<br>' + esc(s.cap) + '</a></dd>' +
+  function mapHtml(s) {
+    return '<a class="det-map" data-s="' + s.slug + '" href="' + M.maps(s) + '" target="_blank" rel="noopener" aria-label="Mumi Sushi ' + esc(s.name) + ' sulla mappa: apri Google Maps">' +
+      '<canvas aria-hidden="true"></canvas><span class="pin" aria-hidden="true">' + PIN + '</span>' +
+      '<span class="go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 11 21 3l-8 18-2-8z"/></svg>Apri la mappa</span>' +
+      '<span class="attr">© OpenStreetMap</span></a>';
+  }
+  function info(s) {
+    return '<dl><dt>Indirizzo</dt><dd><a href="' + M.maps(s) + '" target="_blank" rel="noopener">' + esc(s.address) + '<br>' + esc(s.cap) + '</a></dd>' +
       hoursRow(s) +
       '<dt>Telefono</dt><dd><a href="' + M.tel(s.phone) + '">' + esc(s.phone) + '</a></dd></dl>' +
       '<div class="acts"><a class="btn oro press" href="' + M.orderUrl(s) + '">Ordina da ' + esc(s.name) + ' <span aria-hidden="true">→</span></a>' +
@@ -78,8 +84,37 @@
     return '<li class="row" data-s="' + s.slug + '">' +
       '<button class="row-btn" type="button" aria-expanded="false"><span class="n">0' + (i + 1) + '</span><span class="nm">' + esc(s.name) + '</span>' +
       '<span class="st unknown"><i></i><span>…</span></span></button>' +
-      '<div class="det">' + detail(s) + '</div></li>';
+      '<div class="det">' + mapHtml(s) + '<div class="det-info">' + info(s) + '</div></div></li>';
   }).join('');
+
+  /* mappe: si disegnano solo quelle visibili (un canvas nascosto ha larghezza 0) */
+  var FONT = getComputedStyle(document.body).fontFamily;
+  function paintMap(el) {
+    var cv = el.querySelector('canvas'), W = cv.clientWidth, H = cv.clientHeight;
+    if (!W || !H || !window.MumiMap) return;
+    var lift = 18, tip = H / 2 + lift;
+    var ok = MumiMap.draw(cv, el.getAttribute('data-s'), {
+      lift: lift, font: FONT,
+      keepOut: [[W / 2 - 24, tip - 50, W / 2 + 24, tip + 8], [0, H - 46, 160, H], [W - 112, H - 22, W, H]],
+    });
+    if (!ok) return;
+    el.style.setProperty('--tip', tip + 'px');
+    el.classList.add('ready');
+  }
+  function paintMaps() { [].forEach.call(section.querySelectorAll('.det-map'), paintMap); }
+  var mapsWanted = false;
+  function wantMaps() {
+    if (mapsWanted || !window.MumiMap) return; mapsWanted = true;
+    MumiMap.load(paintMaps);
+    if (document.fonts && document.fonts.load) document.fonts.load('500 10.5px "DM Sans"').then(function () { if (MumiMap.ready()) paintMaps(); });
+  }
+  if ('IntersectionObserver' in window) {
+    var mio = new IntersectionObserver(function (es) { if (es.some(function (e) { return e.isIntersecting; })) { wantMaps(); mio.disconnect(); } }, { rootMargin: '600px 0px' });
+    mio.observe(section);
+  } else wantMaps();
+  var rT = 0;
+  addEventListener('resize', function () { clearTimeout(rT); rT = setTimeout(function () { if (mapsWanted && MumiMap.ready()) paintMaps(); }, 120); });
+
   var rows = [].slice.call(list.children), cur = -1, swapT = 0;
   function select(i, fromHover) {
     if (i === cur) return;
@@ -87,31 +122,38 @@
     var s = M.STORES[i];
     section.style.setProperty('--tint', s.hue);
     rows.forEach(function (r, k) { r.classList.toggle('on', k === i); r.querySelector('.row-btn').setAttribute('aria-expanded', k === i ? 'true' : 'false'); });
-    // desktop panel: photo leans the way the pointer travelled, text cross-fades
+    // phones: the row just opened has a map that was hidden until now
+    if (mapsWanted && MumiMap.ready()) paintMap(rows[i].querySelector('.det-map'));
+    // desktop panel: map leans the way the pointer travelled, map and text cross-fade
     if (getComputedStyle(panel).display === 'none') return;
-    var photo = panel.querySelector('.det-photo');
-    if (!photo || reduce) { renderPanel(); return; }
-    photo.style.setProperty('--r', dir * 3 + 'deg');
-    setTimeout(function () { photo.style.setProperty('--r', '0deg'); }, 70);
-    var fades = panel.querySelectorAll('.fade');
-    [].forEach.call(fades, function (f) { f.classList.add('swap'); });
+    var map = panel.querySelector('.det-map');
+    if (!map || reduce) { renderPanel(); return; }
+    map.style.setProperty('--r', dir * 3 + 'deg');
+    setTimeout(function () { map.style.setProperty('--r', '0deg'); }, 70);
+    map.classList.add('swap');
+    [].forEach.call(panel.querySelectorAll('.fade'), function (f) { f.classList.add('swap'); });
     clearTimeout(swapT);
     swapT = setTimeout(function () { renderPanel(true); }, 220);
   }
-  function renderPanel(keepPhoto) {
+  function renderPanel(keepMap) {
     var s = M.STORES[Math.max(0, cur)];
-    var photo = panel.querySelector('.det-photo');
-    var src = 'assets/' + PHOTO[s.slug] + '-s.webp';
-    if (keepPhoto && photo) {
-      photo.querySelector('img').src = src;
+    var map = panel.querySelector('.det-map');
+    if (keepMap && map) {
+      map.setAttribute('data-s', s.slug);
+      map.setAttribute('href', M.maps(s));
+      map.setAttribute('aria-label', 'Mumi Sushi ' + s.name + ' sulla mappa: apri Google Maps');
       panel.querySelector('.panel-body').innerHTML = panelBody(s);
-      return;
+    } else {
+      panel.innerHTML = mapHtml(s) + '<div class="panel-body">' + panelBody(s) + '</div>';
+      map = panel.querySelector('.det-map');
     }
-    panel.innerHTML = '<div class="det-photo"><img src="' + src + '" alt="" width="960" height="640" /></div><div class="panel-body">' + panelBody(s) + '</div>';
+    if (mapsWanted && MumiMap.ready()) paintMap(map);
+    if (map.classList.contains('swap')) {
+      map.classList.remove('swap', 'drop'); void map.offsetWidth; map.classList.add('drop');
+    }
   }
   function panelBody(s) {
-    var d = detail(s).replace(/^<div class="det-photo">.*?<\/div>/, '');
-    return '<div class="fade"><h3>' + esc(s.city) + '</h3>' + d + '</div>';
+    return '<div class="fade"><h3>' + esc(s.city) + '</h3>' + info(s) + '</div>';
   }
   rows.forEach(function (r, i) {
     var b = r.querySelector('.row-btn');
@@ -133,8 +175,8 @@
     paintState(ticker.querySelector('[data-s="' + s.slug + '"] .st'), st);
     var row = list.querySelector('[data-s="' + s.slug + '"]');
     paintState(row.querySelector('.row-btn .st'), st);
-    row.querySelector('.det').innerHTML = detail(s);
-    if (M.STORES[cur] === s) renderPanel(true);
+    row.querySelector('.det-info').innerHTML = info(s);
+    if (M.STORES[cur] === s && panel.querySelector('.panel-body')) panel.querySelector('.panel-body').innerHTML = panelBody(s);
   });
 
   /* ── menu rail: dots + arrows ── */
