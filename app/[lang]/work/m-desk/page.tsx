@@ -10,7 +10,7 @@ import { altsFor, defaultLocale, getDictionary, isLocale, locales, pick, type Lo
 
 /**
  * M Desk 专页。静态段 `m-desk` 优先于同级的 `[id]`，所以不会和 work 案例页打架。
- * 结构：hero → 事实条 → 两段 intro → 16 个模块段（图文交替）→ 三条设计取向 → 技术栈 → 回链案例 → 招揽。
+ * 结构：hero → 事实条 → 两段 intro → 16 个模块段（图文交替）→ 「为什么换成 M Desk」三张卡 → 回链案例 → 招揽。
  */
 
 /** data/mdesk.ts 写了 en / zh / it 三份原文，其余九种语言读到的是英文。 */
@@ -149,14 +149,6 @@ export default async function MDeskPage({ params }: { params: Promise<{ lang: st
         </div>
       </section>
 
-      <section className="work-stack">
-        <p className="section-label">{pick(mdesk.stackLabel, lang)}</p>
-        <div className="stack-row">
-          {mdesk.stack.map((s) => (
-            <span className="stack-chip" key={s}>{s}</span>
-          ))}
-        </div>
-      </section>
 
       <section className="desk-tail">
         <div className="desk-case">

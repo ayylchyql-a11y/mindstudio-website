@@ -1,7 +1,8 @@
 import type { Localized } from "@/lib/i18n";
 
 /**
- * M Desk —— Mumi Sushi 背后的餐厅后台，工作室最难的项目，首页旗舰位。
+ * M Desk —— 餐厅管理软件（Mumi Sushi 三家店 + Ming·E 在用），按月订阅的产品页，首页旗舰位。
+ * 10-30 用户定：面向老板写，不讲「一个人做的 / 工作室最难」；原则段改成「为什么换成 M Desk」；去掉技术栈。
  *
  * 文案只写 en / zh / it：意大利餐厅老板是这页的第二读者，其余语言按 pick() 回落到英文。
  * 截图按模块挂在 shot 上：没有截图时模块压成一栏文字，不画空窗框。
@@ -46,28 +47,23 @@ export const mdesk = {
   gradientTextCss: "linear-gradient(100deg, #d9481a, #b8331f)",
   accent: "#e8551f",
   since: "2026-06",
-  /** 报价页最低一档里含 M Desk 的月费（/servizi 第 2 档「Ordini online」） */
-  fromMonthly: 129,
+  /** 对外写的起步月费：用户 10-30 定写 49（= /servizi 最低一档）。🩸那一档本身不含后台，后台从 129 那档起 */
+  fromMonthly: 49,
   tagline: {
     en: "The back office a restaurant actually runs its day on.",
     zh: "一家餐厅每天真正在用的后台。",
     it: "Il gestionale su cui un ristorante lavora davvero, ogni giorno.",
   } as Localized,
   facts: [
-    { en: "Running at 4 restaurants in Lombardy and Liguria", zh: "伦巴第和利古里亚 4 家餐厅每天在用", it: "In servizio in 4 ristoranti tra Lombardia e Liguria" },
-    { en: "16 modules · one monthly subscription", zh: "16 个模块 · 一个月费", it: "16 moduli · un solo abbonamento mensile" },
-    { en: "Designed and built by one person", zh: "一个人设计与开发", it: "Progettato e costruito da una sola persona" },
+    { en: "Used every day at 4 restaurants", zh: "4 家餐厅每天在用", it: "Usato ogni giorno in 4 ristoranti" },
+    { en: "16 modules", zh: "16 个模块", it: "16 moduli" },
+    { en: "From €49 a month", zh: "€49/月起", it: "Da 49 € al mese" },
   ] as Localized[],
   intro: [
     {
-      en: "M Desk is the back office behind Mumi Sushi's three restaurants and Ming·E Poke & Sushi — the screen they run every service on. It replaced a cloud till, an aggregator dashboard and the delivery-platform tablets with one system that takes every order, prints every ticket, issues every fiscal receipt and settles every rider.",
-      zh: "M Desk 是 Mumi Sushi 三家店和 Ming·E Poke & Sushi 背后的后台 —— 每一餐都靠它开门做生意。它取代了一套云收银、一个聚合中台和外卖平台的平板，用一套系统接下每一张单、打出每一张票、出好每一张税务小票、算清每一个骑手的账。",
-      it: "M Desk è il gestionale dietro i tre ristoranti Mumi Sushi e Ming·E Poke & Sushi: lo schermo su cui mandano avanti ogni servizio. Ha sostituito una cassa in cloud, un aggregatore e i tablet delle piattaforme con un unico sistema che riceve ogni ordine, stampa ogni comanda, emette ogni scontrino e chiude i conti di ogni rider.",
-    },
-    {
-      en: "It has been in production since June 2026 and is the hardest thing built at this workshop. Every feature below was shaped by something that actually went wrong on a Friday night — and had to be fixed before Saturday. Today any restaurant can have it, as a monthly subscription.",
-      zh: "它从 2026 年 6 月起在生产环境运行，是这间工作室做过最难的东西。下面每一个功能，都来自某个周五晚上真的出过的问题 —— 而且必须在周六之前修好。现在任何一家餐厅都可以按月订阅使用。",
-      it: "È in produzione da giugno 2026 ed è la cosa più difficile uscita da questo laboratorio. Ogni funzione qui sotto nasce da qualcosa che è andato storto davvero un venerdì sera — e andava sistemato prima del sabato. Oggi qualsiasi ristorante può averlo, con un abbonamento mensile.",
+      en: "M Desk is management software for restaurants, sushi bars, pizzerias and delivery kitchens. One back office brings together orders from every channel, the till with fiscal receipts and e-invoices, the dining room, the kitchen screen and printers, the riders and the delivery platforms. It runs in the browser on a computer, an iPad or a phone, and it is used every service at Mumi Sushi's three restaurants and at Ming·E Poke & Sushi.",
+      zh: "M Desk 是给餐厅、寿司店、披萨店和外卖店用的管理软件。一套后台管齐所有渠道的订单、收银与税务小票和电子发票、堂食、厨房屏和打印机、骑手，以及外卖平台。电脑、iPad、手机的浏览器都能用；Mumi Sushi 的三家店和 Ming·E Poke & Sushi 每一餐都在用它。",
+      it: "M Desk è il gestionale per ristoranti, sushi bar, pizzerie e cucine da asporto. Un unico pannello riunisce gli ordini da ogni canale, la cassa con scontrino RT e fattura elettronica, la sala, lo schermo cucina e le stampanti, i rider e le piattaforme di consegna. Funziona dal browser su computer, iPad e telefono, ed è usato a ogni servizio nei tre ristoranti Mumi Sushi e da Ming·E Poke & Sushi.",
     },
   ] as Localized[],
   modulesLabel: { en: "What's inside", zh: "里面有什么", it: "Cosa c'è dentro" } as Localized,
@@ -332,45 +328,43 @@ export const mdesk = {
     },
   ] as DeskModule[],
   principlesLabel: {
-    en: "Decisions you only make after running it",
-    zh: "只有真的跑过才会做的决定",
-    it: "Decisioni che prendi solo dopo averci lavorato",
+    en: "Why restaurants switch to M Desk",
+    zh: "为什么换成 M Desk",
+    it: "Perché passare a M Desk",
   } as Localized,
   principles: [
     {
-      title: { en: "A hesitating customer is not a ticket", zh: "犹豫中的顾客不是一张票", it: "Un cliente indeciso non è una comanda" },
+      title: { en: "One system instead of five", zh: "一套系统，替掉五样东西", it: "Un solo sistema al posto di cinque" },
       body: {
-        en: "The board hides card orders until the payment is confirmed. Someone still deciding on the payment page should not be a card in the kitchen — and if they walk away, the order quietly expires.",
-        zh: "看板会把卡付单藏到付款确认为止。还在支付页犹豫的人，不该已经是厨房里的一张卡；他要是走了，那张单就静静过期。",
-        it: "La bacheca nasconde gli ordini con carta finché il pagamento non è confermato. Chi sta ancora decidendo sulla pagina di pagamento non deve essere una scheda in cucina; se se ne va, l'ordine scade in silenzio.",
+        en: "Cloud till, the fiscal printer's software, the platform tablets, an aggregator and the rider notebook — all on one screen. When you start, we import your menu and connect the printers, the RT and the delivery platforms.",
+        zh: "云收银、税控机配套软件、外卖平台平板、聚合中台、手写的骑手账本，全部收进一块屏。上线时由我们导入菜单，接好打印机、税控机和外卖平台。",
+        it: "Cassa in cloud, software del registratore, tablet delle piattaforme, aggregatore e quaderno dei rider: tutto su un solo schermo. All'avvio importiamo noi il menu e colleghiamo stampanti, registratore telematico e piattaforme.",
       },
     },
     {
-      title: { en: "Never edit a punch in place", zh: "打卡记录绝不原地改", it: "Mai modificare una timbratura sul posto" },
+      title: { en: "No money lost along the way", zh: "钱不会在路上漏掉", it: "Nessun soldo perso per strada" },
       body: {
-        en: "Clock-in and clock-out are stored as pressed. A manager's correction lives in a second column with a note. Pay disputes are about trust, not minutes — the original must always be visible.",
-        zh: "上下班时间按按下那一刻存。老板的调整写在另一列并附原因。工资争议争的是信任不是分钟 —— 原值必须一直看得见。",
-        it: "Entrata e uscita restano come premute. La correzione del responsabile vive in una seconda colonna con una nota. Le discussioni sulla paga riguardano la fiducia, non i minuti: l'originale deve restare sempre visibile.",
+        en: "Card orders reach the kitchen only once they are paid. Refunds can't exceed what was actually collected. Riders' end-of-shift cash adds up to the cent, and platform orders show what you keep after commission.",
+        zh: "刷卡单付款成功才进厨房；退款只能退真正收到的钱；骑手收工交账精确到分；平台单直接显示扣完佣金到手多少。",
+        it: "Gli ordini con carta arrivano in cucina solo se pagati. Non si rimborsa più di quanto incassato. Il versamento dei rider a fine turno torna al centesimo, e per gli ordini delle piattaforme vedi quanto ti resta dopo la commissione.",
       },
     },
     {
-      title: { en: "Say what a button cannot do", zh: "按钮做不到的事要说出来", it: "Dire ciò che un pulsante non può fare" },
+      title: { en: "When something goes wrong, you know at once", zh: "出了状况，马上就知道", it: "Se qualcosa si blocca, lo sai subito" },
       body: {
-        en: "Cancelling a Just Eat order from here changes nothing on Just Eat. Rather than pretend, the screen says so and points staff to where it actually works.",
-        zh: "从这里取消一张 Just Eat 的单，Just Eat 那边什么都不会变。与其装作可以，界面直接说明，并告诉店员真正该去哪里操作。",
-        it: "Annullare un ordine Just Eat da qui non cambia nulla su Just Eat. Invece di fingere, lo schermo lo dice e indica al personale dove farlo davvero.",
+        en: "A printer goes offline and tickets move to the backup; nothing printed for 3 minutes raises an alert. Riders without signal keep working and their actions are sent when it returns. When something has to be done on the platform's side, the screen tells staff where.",
+        zh: "打印机掉线，单子自动转到备用机；3 分钟没打出来就报警。骑手没信号照常操作，有网自动补发。平台那边要另外处理的事，界面直接告诉店员去哪里操作。",
+        it: "Se una stampante va offline le comande passano alla riserva; dopo 3 minuti senza stampa scatta l'avviso. I rider senza campo continuano a lavorare e le azioni partono al ritorno del segnale. Quando serve intervenire sulla piattaforma, lo schermo dice al personale dove farlo.",
       },
     },
   ] as DeskPrinciple[],
-  stackLabel: { en: "Built with", zh: "技术栈", it: "Costruito con" } as Localized,
-  stack: ["Next.js", "NestJS", "Prisma", "PostgreSQL (Neon)", "Stripe", "HubRise", "ESC/POS", "Web Audio"],
   caseLabel: { en: "Part of the Mumi Sushi system", zh: "Mumi Sushi 系统的一部分", it: "Parte del sistema Mumi Sushi" } as Localized,
   caseCta: { en: "See the whole case study", zh: "看完整案例", it: "Vedi il caso completo" } as Localized,
   contactTitle: { en: "Running a restaurant?", zh: "你也开餐厅？", it: "Hai un ristorante?" } as Localized,
   contactBody: {
-    en: "M Desk runs every service at four restaurants, and yours can have it too: a monthly subscription from €129, no setup fee, cancel any time with 30 days' notice. See what each plan includes, or write and tell me about your place.",
-    zh: "M Desk 每一餐都在 4 家餐厅里跑，你的店也可以用：按月订阅，€129 起，没有开通费，提前 30 天说一声随时可停。看看每一档包含什么，或者写封信聊聊你的店。",
-    it: "M Desk lavora a ogni servizio in quattro ristoranti, e può farlo anche nel tuo: abbonamento mensile da 129 €, nessun costo iniziale, disdici quando vuoi con 30 giorni di preavviso. Guarda cosa include ogni livello, oppure scrivimi e raccontami del tuo locale.",
+    en: "M Desk runs every service at four restaurants, and yours can have it too: a monthly subscription from €49, no setup fee, cancel any time with 30 days' notice. See what each plan includes, or write and tell me about your place.",
+    zh: "M Desk 每一餐都在 4 家餐厅里跑，你的店也可以用：按月订阅，€49 起，没有开通费，提前 30 天说一声随时可停。看看每一档包含什么，或者写封信聊聊你的店。",
+    it: "M Desk lavora a ogni servizio in quattro ristoranti, e può farlo anche nel tuo: abbonamento mensile da 49 €, nessun costo iniziale, disdici quando vuoi con 30 giorni di preavviso. Guarda cosa include ogni livello, oppure scrivimi e raccontami del tuo locale.",
   } as Localized,
   pricingCta: { en: "See the plans", zh: "看价目表", it: "Vedi i prezzi" } as Localized,
   contactCta: { en: "Write to me", zh: "写信给我", it: "Scrivimi" } as Localized,
