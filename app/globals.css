@@ -1212,6 +1212,36 @@
 .desk-contact h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
 .desk-contact p { margin: 12px auto 22px; max-width: 520px; font-size: 16px; line-height: 1.6; color: var(--ink-2); }
 .piece-link { display: inline-block; margin-top: 10px; font-size: 14px; font-weight: 600; }
+/* 10-30 手机截图（骑手网页版 / 顾客点单站）：沿用作品页的 .phone 手机框，按比例缩小 */
+.desk-module-shot { position: relative; }
+.desk-phones { display: flex; justify-content: center; gap: 14px; }
+.desk-phone.phone { width: 188px; height: 395px; border-radius: 32px; padding: 6px; }
+.desk-phone .screen { border-radius: 27px; }
+.desk-phone .shot { object-position: top; }
+/* 后台窗框 + 手机：两台小一号的手机压在窗框右下角，窗框主体（后台在途面板）要露出来 */
+.desk-module-shot.with-phones { padding-bottom: 96px; }
+.desk-module-shot.with-phones .desk-phones { position: absolute; right: -22px; bottom: 0; gap: 10px; }
+.desk-module-shot.with-phones .desk-phone.phone { width: 132px; height: 277px; border-radius: 24px; padding: 4px; }
+.desk-module-shot.with-phones .desk-phone .screen { border-radius: 20px; }
+.desk-module-shot.with-phones .desk-phone { box-shadow: 0 0 0 1.5px rgba(255,255,255,0.08), 0 24px 50px -12px rgba(29,29,31,0.45); }
+.desk-module-shot.phones-only .desk-phone.phone { width: 236px; height: 496px; border-radius: 40px; padding: 8px; }
+.desk-module-shot.phones-only .desk-phone .screen { border-radius: 33px; }
+.desk-contact-row { display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; }
+.desk-contact-ghost {
+  display: inline-block; padding: 10px 19px; border-radius: 999px; font-weight: 600; font-size: 15px;
+  border: 1px solid var(--hairline); color: var(--ink);
+  transition: transform 160ms var(--ease-out-strong), background 160ms var(--ease-out-strong);
+}
+.desk-contact-ghost:hover { background: var(--ground-elev); }
+.desk-contact-ghost:active { transform: scale(0.97); }
+@media (max-width: 860px) {
+  /* 窄屏不叠放：手机排到窗框下面，窗框整张看得见 */
+  .desk-module-shot.with-phones { padding-bottom: 0; }
+  .desk-module-shot.with-phones .desk-phones { position: static; margin-top: 16px; }
+  .desk-module-shot.with-phones .desk-phone.phone { width: 150px; height: 315px; }
+}
+
+
 
 @media (max-width: 860px) {
   .desk-feature { padding: 84px 20px; }

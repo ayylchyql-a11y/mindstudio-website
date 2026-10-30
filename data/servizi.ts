@@ -79,13 +79,13 @@ export const tiers: Tier[] = [
   {
     id: "piattaforme",
     name: { it: "Piattaforme e rider", en: "Platforms and riders", zh: "平台对接与骑手" },
-    who: { it: "Per chi riceve ordini da Just Eat, Deliveroo o Glovo e vuole un solo schermo.", en: "For Just Eat, Deliveroo or Glovo orders on one screen.", zh: "给 Just Eat / Deliveroo / Glovo 都在接、只想盯一块屏的店。" },
+    who: { it: "Per chi riceve ordini da Just Eat e Deliveroo e vuole un solo schermo.", en: "For Just Eat and Deliveroo orders on one screen.", zh: "给 Just Eat、Deliveroo 都在接、只想盯一块屏的店。" },
     monthly: 239,
     includes: [
       { it: "Tutto di App e chiosco", en: "Everything in App and kiosk", zh: "App 与自助点单的全部" },
-      { it: "Just Eat, Deliveroo, Glovo nella stessa dashboard", en: "Just Eat, Deliveroo, Glovo in the same dashboard", zh: "三大平台的单进同一个后台" },
+      { it: "Just Eat e Deliveroo nella stessa dashboard", en: "Just Eat and Deliveroo in the same dashboard", zh: "Just Eat 和 Deliveroo 的单进同一个后台" },
       { it: "Menù e orari sincronizzati su tutte le piattaforme", en: "Menu and hours synced across platforms", zh: "菜单与营业时间同步到各平台" },
-      { it: "App per i rider con mappa in tempo reale", en: "Rider app with live map", zh: "骑手 App，实时地图" },
+      { it: "Web app per i rider sul loro telefono, con i conti di fine turno", en: "Rider web app on their own phone, with end-of-shift cash-up", zh: "骑手用自己手机上的网页 App，收工自动算账" },
       { it: "Tracciamento della consegna per il cliente", en: "Delivery tracking for the customer", zh: "顾客端配送追踪" },
     ],
     time: { it: "Online in 6 settimane", en: "Live in 6 weeks", zh: "6 周上线" },
