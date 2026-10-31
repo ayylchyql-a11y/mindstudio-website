@@ -10,3 +10,5 @@ Fonts in this folder are distributed under the SIL Open Font License 1.1
 - Italiana — Copyright 2011 Santiago Orozco (https://github.com/googlefonts/italiana)
 - Syncopate — Copyright 2011 Astigmatic (AOETI) (https://fonts.google.com/specimen/Syncopate)
 - Abril Fatface — Copyright 2011 TypeTogether (www.type-together.com), with Reserved Font Names "Abril" and "Abril Fatface"
+- Montserrat — Copyright 2011 The Montserrat Project Authors (https://github.com/JulietaUla/Montserrat)
+- Cormorant Garamond — Copyright 2015 The Cormorant Project Authors (https://github.com/CatharsisFonts/Cormorant)

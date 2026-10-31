@@ -104,6 +104,8 @@ const blurbs: Record<string, string> = {
     "A time picker that behaves like a real wheel: flick it and it keeps turning, slows down by itself and clicks into place, stretching like a rubber band if you push it past the end. The difference between choosing a time and fighting a form.",
   "circle-reveal-tabs":
     "Changing tabs as a circle that grows from your fingertip until the new page fills the screen, and grows back the same way when you return. It keeps people oriented — the new screen visibly comes from what they touched.",
+  "pizza-builder":
+    "A friend's working ordering prototype for a real pizzeria: choose a base, tap toppings from the shop's own price list and watch every portion fall onto the pizza in its own place while the price climbs. Adding to the order puts the pizza through a burst of fire and into the cart, and the order ends on a big-type screen for the waiter. Everything is drawn in code, with no photos. A reference for build-your-own menus — pizza, poke, burgers, salads — where seeing the dish fill up does the selling.",
   "m-alpha-relax":
     "My own relaxation app, rebuilt as a working replica of all five screens in light and dark: a calm, soft-light design where every card and button is pressed out of or into one grey-blue surface, with a single indigo colour for anything active. It really plays: binaural beats and isochronic tones sound in the browser, the ambient-sound dials turn under your finger, and the statistics are worked out from months of sample listening. A reference for wellness, meditation and sleep products that want to feel quiet rather than flat.",
   "slate-card-order":

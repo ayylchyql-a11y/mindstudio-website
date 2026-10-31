@@ -4503,6 +4503,49 @@ export const effects: Effect[] = [
     ],
     source: { label: "M Alpha Relax — my own app on the App Store (SwiftUI source: NeuTheme, NeuComponents, HomeView, SessionView, MixerView, StatsView, SettingsView)", url: "https://apps.apple.com/app/id6787405665" },
   },
+  /* ── 手机UI · 2026-10-31，朋友做的 Pizzeria Hobby「自己配披萨」原型，原样收录（只自己看） ── */
+  {
+    slug: "pizza-builder",
+    category: "mobile-ui",
+    after: "m-alpha-relax",
+    date: "2026-10-31",
+    plays: "click",
+    title: { en: "Pizzeria Hobby · Build your own pizza", zh: "Pizzeria Hobby · 自己配披萨", "zh-tw": "Pizzeria Hobby · 自己配披薩" },
+    gist: {
+      en: "A friend's ordering prototype for a real pizzeria, kept exactly as built: pick a red or white base, tap any of the 37 toppings from the shop's own price list, and watch each portion rain onto the pizza in its own fixed spot while the price flies into the total. Up to six portions, at most a double of each, sixty steps of undo. Adding to the order sets the pizza on fire and flies it into the cart; the order lets you swipe a pizza away or tap it to edit, and ends on a big-type screen to show the waiter. No images at all: the bases are painted on a canvas and every topping is generated SVG.",
+      zh: "朋友给一家真实披萨店做的点单原型，原样收录：选红底或白底，从店里收银系统的 37 种加料里点，每一份配料都会落在饼上自己固定的位置，价格同时飞进总价。一张最多 6 份、每种最多双份，可撤销 60 步。加进订单时饼周围爆一圈火，再转着圈飞进购物车；订单页可以左滑删掉一张、点一下回去改，最后一屏是给服务员看的大字清单。全页没有一张图片：饼底是 canvas 现画的，每种配料都是代码生成的 SVG。",
+      "zh-tw": "朋友給一家真實披薩店做的點餐原型，原樣收錄：選紅底或白底，從店裡收銀系統的 37 種加料裡點，每一份配料都會落在餅上自己固定的位置，價格同時飛進總價。一張最多 6 份、每種最多雙份，可復原 60 步。加進訂單時餅周圍爆一圈火，再轉著圈飛進購物車；訂單頁可以左滑刪掉一張、點一下回去改，最後一屏是給服務生看的大字清單。全頁沒有一張圖片：餅底是 canvas 現畫的，每種配料都是程式生成的 SVG。",
+    },
+    height: 844,
+    previewHeight: 597,
+    accent: "#cb1c1f",
+    anatomy: [
+      "<b>One column, four bands.</b> A 480px-max app column: header, a fixed pizza stage <code>clamp(200px, 36vh, 330px)</code> tall with an orange radial glow behind it, a base switch and an “Aggiunte n di 6” counter, then the only scrolling area — a 4-column grid of topping tiles — and a price bar pinned at the bottom. Night black #121110 / #1C1A18 / #28241F, paper #F6F4F0, the pizzeria's red #CB1C1F, cream #F3E2C2 for prices; Montserrat for UI, italic Cormorant Garamond for titles.",
+      "<b>Nothing is an image.</b> Both bases are painted once at load onto an 800px canvas and turned into WebP data URLs: a jagged 28-point crust with a radial gradient #F0CF98 → #93592B, 110 charred specks and 50 flour highlights on the rim, a sauce disc at 0.8r with 1,100 speckles (or a cream disc for the white base), then 9 (or 14) mozzarella blobs placed by rejection sampling so they don't overlap. Every topping is an SVG drawn by a small function per shape — disc, leaf, slice, crumb, cheese, mushroom, shrimp… — fed by a spec table: size as % of the pizza, pieces per portion and layer.",
+      "<b>Seeded, so it never jumps.</b> All randomness is a mulberry32 generator seeded by an FNV-1a hash of strings like <code>\"Funghi#2\"</code>. A portion always lands in the same places with the same shapes, so undo, edit and the mini pizzas in the order show exactly what you built. Placement is rejection sampling within 35% of the radius (17% for the egg) with a minimum gap of 0.55 × the piece size.",
+      "<b>Three layers.</b> Soft cheeses go under (layer 0), most toppings in the middle, and rocket, radicchio, grana, walnuts, pear, chips and bresaola on top (layer 2), each layer with its own small drop shadow, so a new portion of mozzarella slides under the rocket that is already there.",
+      "<b>The drop.</b> Each piece falls from 70px above, rotated −55° and at 1.9× scale, lands at 0.88× at 65% of the time and settles: 440ms, cubic-bezier(.3,.7,.4,1), pieces 34ms apart, portions 110ms apart; 330ms in, the whole pizza bumps to 1.018. Removing shrinks pieces to 0.15 and lifts them 14px in 230ms. The diff is per portion: only what changed is added or removed.",
+      "<b>Price feedback.</b> A “+1,50 €” pill flies from the tile to the total in 720ms (rising to −110% first, then cubic-bezier(.5,0,.3,1)); the total counts up in 380ms with an ease-out cubic and pops to 1.12× as the pill arrives. Selected tiles get a red inset ring, a ✓ (×2 for a double) badge on the left and a white “−” on the right, both springing in with cubic-bezier(.3,1.6,.5,1). Over the limit, the tile shakes (380ms) and a toast explains why.",
+      "<b>Into the oven.</b> “Aggiungi” fires a 1.75× glow, 16 alternating flame tongues that spin from −12° to 22°, and 26 embers thrown outward and upward; 430ms later a clone of the pizza flies into the cart icon, rotating −160° and shrinking to 0.1 in 680ms (a timer finishes the job if the tab is hidden). The badge pops from 1.8×, and an empty base springs back in.",
+      "<b>The order.</b> A full-screen sheet slides up in 380ms (cubic-bezier(.2,.8,.2,1)). Each row has a mini pizza rendered from the same seeds; dragging left more than 46px snaps it open at −92px over a red “Togli”, a tap opens the pizza back on the stage with the button reading “Salva”. “Mostra al cameriere” opens a paper-coloured sheet in 19–28px type listing every addition.",
+    ],
+    tokens: [
+      { label: "Palette", value: "#121110 / #1C1A18 / #28241F · paper #F6F4F0 · red #CB1C1F · cream #F3E2C2" },
+      { label: "Type", value: "Montserrat 400–800 · Cormorant Garamond italic 500/600" },
+      { label: "Rules", value: "base 6,00 € · max 6 portions · max ×2 each · undo 60" },
+      { label: "Drop", value: "440ms · cubic-bezier(.3,.7,.4,1) · 34ms per piece · 110ms per portion" },
+      { label: "Price", value: "pill 720ms · count 380ms ease-out cubic · pop 1.12" },
+      { label: "Oven", value: "glow 950ms · 16 tongues 900ms · 26 embers · fly 680ms, −160°" },
+      { label: "Sheet", value: "380ms cubic-bezier(.2,.8,.2,1) · swipe open −92px at −46px" },
+    ],
+    prompt:
+      "Build a single-file mobile web app 'Crea la tua pizza' in Italian, max-width 480px, dark (#121110 background, #1C1A18 cards, rgba(255,255,255,.11) hairlines, paper #F6F4F0 text, red #CB1C1F accent, cream #F3E2C2 prices), Montserrat for UI and italic Cormorant Garamond for titles. Layout: header (round back button, eyebrow 'PIZZERIA HOBBY · PROVA', title, round cart button with a red count badge), a fixed stage clamp(200px,36vh,330px) with a radial orange glow rgba(255,128,36,.3) and the pizza, a row with a Rossa/Bianca pill switch and 'Aggiunte n di 6', a scrolling 4-column grid of topping tiles (46px icon, name, '+1,50 €'), and a bottom bar with the total in 25px/800, Annulla and Svuota icon buttons and a red pill 'Aggiungi all'ordine'. No images: paint each base once on an 800px canvas (jagged crust with radial gradient #F0CF98→#E6B878→#CF914F→#93592B, charred specks, a sauce disc at 0.8r with speckles, mozzarella blobs by rejection sampling) and export a WebP data URL; draw every topping as SVG in a -50..50 viewBox from a spec table {shape, size % of pizza, pieces per portion, layer 0/1/2}. Use a mulberry32 RNG seeded with an FNV-1a hash of 'name#portion' so every portion always lands in the same spots (radius ≤35%, min gap 0.55×size). 37 toppings priced 1–3.5 €, base 6 €, max 6 portions, max 2 per topping (shake 380ms + toast when refused), undo stack of 60. Adding a portion: pieces fall from translateY(-70px) rotate(-55°) scale(1.9) to scale(.88) at 65% then rest, 440ms cubic-bezier(.3,.7,.4,1), 34ms per piece, 110ms per portion, pizza bump 1.018. A price pill flies from the tile to the total in 720ms; the total counts up 380ms ease-out cubic and pops 1.12. Selected tile: red inset ring, ✓/×2 badge and a '−' button springing in with cubic-bezier(.3,1.6,.5,1). 'Aggiungi': fire burst (glow 1.75× the pizza, 16 flame tongues, 26 embers), then the pizza clone flies into the cart rotating -160° to scale .1 in 680ms, badge pops from 1.8. Order sheet slides up 380ms cubic-bezier(.2,.8,.2,1): rows with seeded mini pizzas, swipe left past 46px to reveal a red 'Togli' at -92px, tap to edit (CTA becomes 'Salva la pizza'), 'Mostra al cameriere' opens a paper-coloured big-type list. Respect prefers-reduced-motion and vibrate 8ms on each change.",
+    caveats: [
+      "The fire is wider than the screen; the original clears it after 1.4s so a phone does not widen the page. Kept as is.",
+      "In the lab the page stays Italian whatever the site language — it is the original prototype, not a translation.",
+    ],
+    source: { label: "Pizzeria Hobby · Crea la tua pizza — a friend's prototype, kept 1:1 (fonts self-hosted)", url: "https://hobby-crea-pizza.vercel.app" },
+  },
   /* ── 手机UI · 2026-10-14，六个交互共用一个小 App（_xg14/）── */
   {
     slug: "done-burst-button",
