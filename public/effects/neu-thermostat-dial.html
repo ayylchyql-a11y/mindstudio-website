@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neumorphic thermostat dial · 新拟态温控旋钮</title>
+<style>
+  /* Soft Matter 02 — a raised thermostat dial with fine ticks and a lavender progress arc, plus a slider
+     under it. One value (16–30 °C, continuous) drives four things at once: the arc (270° from −135°),
+     the indicator pill inside the rim, the big number (rounded) and the slider thumb.
+     Card 322×286 CSS px — the reference frame ÷ 3; geometry measured on the frames. */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { overflow: hidden; display: grid; place-items: center; background: #e5eaf1;
+    font-family: Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+
+  .fit { transform: scale(var(--s, 1)); }
+  .card { position: relative; width: 322px; height: 286px; border-radius: 23px;
+    background: linear-gradient(180deg, #f0f4f7 0%, #ecf1f6 55%, #e7edf4 100%);
+    box-shadow: 8px 9px 22px rgb(148 162 184 / .5), -7px -7px 18px rgb(255 255 255 / .75),
+      inset 1px 1px 0 rgb(255 255 255 / .9), inset -1px -1px 0 rgb(206 214 226 / .7); }
+  .hd { position: absolute; left: 24px; right: 25px; top: 24px; display: flex; justify-content: space-between;
+    font-size: 8.8px; line-height: 10px; font-weight: 700; letter-spacing: .12em; color: #646d75; }
+  .ft { position: absolute; left: 24px; top: 249.7px; font-size: 10.75px; line-height: 13px; color: #5f6571; }
+
+  /* ── the dial: rim (r 63) → groove the arc runs in → raised disc (r 56) ── */
+  .dial { position: absolute; left: 98px; top: 61.7px; width: 126px; height: 126px; border-radius: 50%;
+    touch-action: none; cursor: grab; outline: none;
+    background: linear-gradient(135deg, #dfe5ee, #d3dbe6);
+    box-shadow: 7px 8px 15px rgb(140 156 180 / .62), -6px -6px 13px rgb(255 255 255 / .95), inset 1px 1px 2px rgb(140 156 180 / .35); }
+  .dial:active { cursor: grabbing; }
+  .dial:focus-visible { box-shadow: 7px 8px 15px rgb(146 161 184 / .6), -6px -6px 13px rgb(255 255 255 / .95), 0 0 0 2px #a498cf; }
+  .disc { position: absolute; inset: 7px; border-radius: 50%;
+    background: linear-gradient(135deg, #f2f5f9 0%, #ebf0f5 45%, #e1e8f1 100%);
+    box-shadow: 3px 4px 7px rgb(150 166 188 / .5), -2px -2px 5px rgb(255 255 255 / .9); }
+  .dial svg { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+  .num { position: absolute; left: 0; right: 0; top: 50%; translate: -2px -50%; text-align: center; pointer-events: none;
+    font-size: 33.5px; line-height: 1; font-weight: 400; letter-spacing: -.01em; color: #2f3640; font-variant-numeric: tabular-nums; }
+  .num sup { position: absolute; margin-left: 1px; top: 3px; font-size: 0; }
+  .num sup::before { content: ""; display: block; width: 4px; height: 4px; border: 1.2px solid #2f3640; border-radius: 50%; translate: 0 9px; }
+
+  /* ── the slider ── */
+  .sl { position: absolute; left: 32.5px; top: 202.3px; width: 259px; height: 17px; touch-action: none; cursor: pointer; }
+  .sl .track { position: absolute; left: 7.5px; right: 7.5px; top: 5.5px; height: 6px; border-radius: 3px;
+    background: #dde3ec; box-shadow: inset 1px 1.5px 2px rgb(150 165 188 / .55), 0 1px 0 rgb(255 255 255 / .9); }
+  .sl .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; background: #a498cf; }
+  .sl .thumb { position: absolute; top: 0; width: 17px; height: 17px; margin-left: -8.5px; border-radius: 50%;
+    background: #f4f6fa; border: 3.2px solid #a498cf; box-shadow: 1.5px 2px 3px rgb(120 120 170 / .35); }
+</style>
+</head>
+<body>
+<div class="fit" id="fit">
+  <article class="card">
+    <div class="hd"><span>02 / CLIMATE</span><span>HOME</span></div>
+    <div class="dial" id="dial" role="slider" tabindex="0" aria-label="Temperature" aria-valuemin="16" aria-valuemax="30" aria-valuenow="22">
+      <div class="disc"></div>
+      <svg viewBox="0 0 126 126" aria-hidden="true">
+        <g id="ticks" stroke="#737c88" stroke-width="1" stroke-linecap="round"></g>
+        <path id="arc" fill="none" stroke="#a498cf" stroke-width="6.4" stroke-linecap="butt"/>
+        <line id="pip" x1="63" y1="14.6" x2="63" y2="20.2" stroke="#8d7fbf" stroke-width="3.6" stroke-linecap="round"/>
+      </svg>
+      <div class="num" id="num">22<sup>°</sup></div>
+    </div>
+    <div class="sl" id="sl"><div class="track"><div class="fill" id="fill"></div></div><div class="thumb" id="thumb"></div></div>
+    <div class="ft">Drag the dial · Find your comfort zone</div>
+  </article>
+</div>
+<script>
+(() => {
+  const MIN = 16, MAX = 30, A0 = -135, SWEEP = 270, R = 59.6, C = 63;
+  const $ = (id) => document.getElementById(id);
+  const dial = $("dial"), arc = $("arc"), pip = $("pip"), num = $("num"), sl = $("sl"), fill = $("fill"), thumb = $("thumb");
+
+  // 24 ticks every 15°, r 48.6 → 51.6
+  const ticks = $("ticks");
+  for (let i = 0; i < 24; i++) {
+    const a = i * 15 * Math.PI / 180, s = Math.sin(a), c = -Math.cos(a);
+    const l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    l.setAttribute("x1", C + s * 48.6); l.setAttribute("y1", C + c * 48.6);
+    l.setAttribute("x2", C + s * 51.6); l.setAttribute("y2", C + c * 51.6);
+    ticks.append(l);
+  }
+  const pt = (deg, r) => { const a = deg * Math.PI / 180; return [C + Math.sin(a) * r, C - Math.cos(a) * r]; };
+
+  let value = 22;
+  function render() {
+    const k = (value - MIN) / (MAX - MIN), end = A0 + k * SWEEP;
+    const [x0, y0] = pt(A0, R), [x1, y1] = pt(end, R);
+    arc.setAttribute("d", k <= 0 ? "" : `M${x0} ${y0} A${R} ${R} 0 ${end - A0 > 180 ? 1 : 0} 1 ${x1} ${y1}`);
+    pip.setAttribute("transform", `rotate(${end} 63 63)`);
+    num.firstChild.nodeValue = Math.round(value);
+    dial.setAttribute("aria-valuenow", Math.round(value));
+    fill.style.width = 1 + k * 242 + "px";
+    thumb.style.left = 8.5 + k * 242 + "px";
+  }
+  const set = (v) => { value = Math.min(MAX, Math.max(MIN, v)); render(); };
+
+  // drag the dial: angle around its centre, clamped to the 270° range (no wrap-around through the gap)
+  let last = null;
+  dial.addEventListener("pointerdown", (e) => { dial.setPointerCapture(e.pointerId); last = null; turn(e); });
+  dial.addEventListener("pointermove", (e) => { if (dial.hasPointerCapture(e.pointerId)) turn(e); });
+  function turn(e) {
+    const r = dial.getBoundingClientRect();
+    let a = Math.atan2(e.clientX - (r.left + r.width / 2), -(e.clientY - (r.top + r.height / 2))) * 180 / Math.PI;
+    if (Math.abs(a) > 135) a = last ?? (a > 0 ? 135 : -135); // in the gap at the bottom: hold the nearer end
+    last = a > 0 ? 135 : -135;
+    set(MIN + (a - A0) / SWEEP * (MAX - MIN));
+  }
+  dial.addEventListener("keydown", (e) => {
+    const d = { ArrowUp: 1, ArrowRight: 1, ArrowDown: -1, ArrowLeft: -1 }[e.key];
+    if (d) { e.preventDefault(); stop(); set(Math.round(value) + d); }
+  });
+  // drag the slider
+  const slide = (e) => { const r = sl.getBoundingClientRect(), s = r.width / 259; set(MIN + ((e.clientX - r.left) / s - 8.5) / 242 * (MAX - MIN)); };
+  sl.addEventListener("pointerdown", (e) => { sl.setPointerCapture(e.pointerId); slide(e); });
+  sl.addEventListener("pointermove", (e) => { if (sl.hasPointerCapture(e.pointerId)) slide(e); });
+
+  const q = location.search, fitEl = $("fit");
+  const fit = () => fitEl.style.setProperty("--s", /[?&]cmp\b/.test(q) ? 1 : Math.min(1.5, (innerWidth - 48) / 322, (innerHeight - 48) / 286));
+  addEventListener("resize", fit); fit();
+  render();
+  window.setTemp = set;
+
+  // ?demo: the recording sweeps 22 → 26 → 18 → 26 → 22, ~1.2 s per full sweep, eased in and out
+  let raf = 0;
+  function stop() { cancelAnimationFrame(raf); raf = 0; }
+  if (/[?&]demo\b/.test(q) && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const legs = [[22, 26, 600], [26, 18, 1170], [18, 26, 1150], [26, 22, 600]];
+    const ease = (t) => -(Math.cos(Math.PI * t) - 1) / 2;
+    let i = 0, t0 = performance.now() + 500;
+    const step = (now) => {
+      const [a, b, ms] = legs[i], t = (now - t0) / ms;
+      if (t >= 1) { set(b); i = (i + 1) % legs.length; t0 = now + 60; }
+      else if (t > 0) set(a + (b - a) * ease(t));
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    addEventListener("pointerdown", (e) => { if (e.isTrusted) stop(); }, { capture: true });
+  }
+})();
+</script>
+</body>
+</html>

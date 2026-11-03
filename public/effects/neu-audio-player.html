@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neumorphic audio player · 新拟态播放器</title>
+<style>
+  /* Soft Matter 03 — a pale neumorphic player. A raised round play button (it dents in while pressed,
+     the state flips on release). Playing: 23 copper bars ride a travelling sine wave (9-bar wavelength,
+     2 cycles a second, right to left) and the progress line creeps; paused: the bars fold back into dots.
+     Card 322×286 CSS px — the reference frame ÷ 3; the wave was fitted to the bar heights frame by frame. */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { overflow: hidden; display: grid; place-items: center; background: #e5eaf1;
+    font-family: Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+
+  .fit { transform: scale(var(--s, 1)); }
+  .card { position: relative; width: 322px; height: 286px; border-radius: 23px;
+    background: linear-gradient(180deg, #f0f4f7 0%, #ecf1f6 55%, #e7edf4 100%);
+    box-shadow: 8px 9px 22px rgb(148 162 184 / .5), -7px -7px 18px rgb(255 255 255 / .75),
+      inset 1px 1px 0 rgb(255 255 255 / .9), inset -1px -1px 0 rgb(206 214 226 / .7); }
+  .hd { position: absolute; left: 24px; right: 25px; top: 24px; display: flex; justify-content: space-between;
+    font-size: 8.8px; line-height: 10px; font-weight: 700; letter-spacing: .12em; color: #646d75; }
+  .ft { position: absolute; left: 24px; top: 249.7px; font-size: 10.75px; line-height: 13px; color: #5f6571; }
+  .cap { position: absolute; left: 0; right: 0; text-align: center; font-size: 11px; line-height: 13px; font-weight: 700; color: #525d68; }
+
+  /* ── the wave: 23 bars, 3.9px wide, 8.05px apart, centred on y 71.8 ── */
+  .wave { position: absolute; left: 0; top: 0; width: 322px; height: 140px; pointer-events: none; }
+  .wave i { position: absolute; top: 71.8px; width: 3.9px; height: 3.9px; margin: -1.95px 0 0 -1.95px; border-radius: 1.95px; background: #c68558; }
+
+  /* ── the button ── */
+  .play { position: absolute; left: 125.8px; top: 102.3px; width: 71px; height: 71px; border-radius: 50%; outline: none;
+    background: linear-gradient(135deg, #f3f6fa 0%, #ecf0f5 50%, #e2e8f0 100%);
+    box-shadow: 6px 7px 13px rgb(146 161 184 / .55), -6px -6px 12px rgb(255 255 255 / .95), inset 1px 1px 1px rgb(255 255 255 / .8);
+    transition: box-shadow 90ms ease-out, background 90ms ease-out; }
+  .play:focus-visible { outline: 2px solid #c68558; outline-offset: 4px; }
+  .play.down { background: linear-gradient(135deg, #e1e7ef 0%, #e7ecf3 55%, #eef2f7 100%);
+    box-shadow: 0 0 0 rgb(146 161 184 / 0), 0 0 0 rgb(255 255 255 / 0), inset 5px 6px 10px rgb(146 161 184 / .55), inset -4px -4px 9px rgb(255 255 255 / .95); }
+  .play svg { position: absolute; left: 50%; top: 50%; overflow: visible; }
+  .play .ico-play { translate: calc(-50% - 1px) calc(-50% - 2.7px); }
+  .play .ico-pause { translate: -50% calc(-50% - 1.6px); }
+  .play .ico-pause { display: none; }
+  .play[aria-pressed="true"] .ico-play { display: none; }
+  .play[aria-pressed="true"] .ico-pause { display: block; }
+
+  /* ── progress ── */
+  .bar { position: absolute; left: 40px; top: 217.3px; width: 189.5px; height: 6.6px; border-radius: 3.3px; overflow: hidden;
+    background: linear-gradient(180deg, #c3cddb 0%, #d4dce6 45%, #e6ebf2 100%);
+    box-shadow: inset 1px 1.5px 2px rgb(140 155 180 / .45), 0 1px 0 rgb(255 255 255 / .95); }
+  .bar b { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3.3px; background: #5b97a0; }
+  .time { position: absolute; left: 239px; top: 214.6px; font-size: 9.1px; line-height: 12px; color: #616a75; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div class="fit" id="fit">
+  <article class="card">
+    <div class="hd"><span>03 / AUDIO</span><span>STEREO</span></div>
+    <div class="wave" id="wave" aria-hidden="true"></div>
+    <button class="play" id="play" aria-pressed="false" aria-label="Play">
+      <svg class="ico-play" width="15.6" height="17.7" viewBox="0 0 15.6 17.7"><path d="M1.6 1.4 L14.6 8.85 L1.6 16.3 Z" fill="#c68558" stroke="#c68558" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <svg class="ico-pause" width="9" height="16.3" viewBox="0 0 9 16.3"><rect x="0" y="0" width="3" height="16.3" rx=".6" fill="#c68558"/><rect x="6" y="0" width="3" height="16.3" rx=".6" fill="#c68558"/></svg>
+    </button>
+    <div class="cap" id="cap" style="top:187.8px" aria-live="polite">Quiet hours · Paused</div>
+    <div class="bar"><b id="fill"></b></div>
+    <div class="time" id="time">0:00 / 3:24</div>
+    <div class="ft">Make room for a little rhythm</div>
+  </article>
+</div>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const play = $("play"), cap = $("cap"), fill = $("fill"), time = $("time"), wave = $("wave");
+  const N = 23, X0 = 71.8, DX = 8.05, TOTAL = 204, CLOCK = 2.5; // the demo clock runs 2.5× (0:00 → 0:04 in 1.6 s)
+  const bars = Array.from({ length: N }, (_, i) => { const b = document.createElement("i"); b.style.left = X0 + i * DX + "px"; wave.append(b); return b; });
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  let playing = false, amp = 0, elapsed = 0, last = performance.now();
+  const mm = (s) => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
+  function frame(now) {
+    const dt = Math.min(64, now - last) / 1000; last = now;
+    // envelope: dots ↔ wave in 120 ms
+    amp = playing ? Math.min(1, amp + dt / .12) : Math.max(0, amp - dt / .12);
+    if (playing) elapsed = Math.min(TOTAL, elapsed + dt * CLOCK);
+    const e = 1 - (1 - amp) ** 2, t = window.__freezeT ?? now / 1000;
+    bars.forEach((b, i) => {
+      const h = reduce ? 18 : 18 + 12 * Math.sin(2 * Math.PI * (i / 9 + 2 * t)); // 6 … 30 px
+      const H = 3.9 + e * (h - 3.9);
+      b.style.height = H + "px"; b.style.marginTop = -H / 2 + "px";
+    });
+    fill.style.width = elapsed / TOTAL * 189.5 + "px";
+    time.textContent = mm(elapsed) + " / " + mm(TOTAL);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  const press = () => play.classList.add("down");
+  const release = (commit) => {
+    if (!play.classList.contains("down")) return;
+    play.classList.remove("down");
+    if (!commit) return;
+    playing = !playing;
+    play.setAttribute("aria-pressed", playing);
+    play.setAttribute("aria-label", playing ? "Pause" : "Play");
+    cap.textContent = "Quiet hours · " + (playing ? "Playing" : "Paused");
+  };
+  play.addEventListener("pointerdown", (e) => { if (e.button === 0) { play.setPointerCapture(e.pointerId); press(); } });
+  play.addEventListener("pointerup", (e) => {
+    const r = play.getBoundingClientRect();
+    release(e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom);
+  });
+  play.addEventListener("pointercancel", () => release(false));
+  play.addEventListener("keydown", (e) => { if ((e.key === " " || e.key === "Enter") && !e.repeat) { e.preventDefault(); press(); } });
+  play.addEventListener("keyup", (e) => { if (e.key === " " || e.key === "Enter") release(true); });
+  play.addEventListener("click", (e) => { if (e.detail === 0 && !e.isTrusted) { press(); setTimeout(() => release(true), 167); } });
+
+  const q = location.search, fitEl = $("fit");
+  const fit = () => fitEl.style.setProperty("--s", /[?&]cmp\b/.test(q) ? 1 : Math.min(1.5, (innerWidth - 48) / 322, (innerHeight - 48) / 286));
+  addEventListener("resize", fit); fit();
+  window.__player = { set(p, el) { playing = p; amp = p ? 1 : 0; elapsed = el ?? elapsed; play.setAttribute("aria-pressed", p); cap.textContent = "Quiet hours · " + (p ? "Playing" : "Paused"); }, press, release };
+
+  // ?demo: the recording — play, pause after 1.6 s, play again 0.66 s later
+  if (/[?&]demo\b/.test(q)) {
+    const ids = [], tap = (at) => ids.push(setTimeout(press, at), setTimeout(() => release(true), at + 167));
+    [600, 2200, 2870, 5200, 5870].forEach(tap);
+    addEventListener("pointerdown", (e) => { if (e.isTrusted) ids.forEach(clearTimeout); }, { once: true, capture: true });
+  }
+})();
+</script>
+</body>
+</html>

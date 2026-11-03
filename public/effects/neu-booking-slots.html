@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neumorphic booking · 新拟态预约组件</title>
+<style>
+  /* Soft Matter 05 — four raised day keys. Pick a day: it dents while pressed, then turns sage green and
+     lifts 3px, and two time slots open below while the whole group glides up 23.5px (140 ms). Pick a time:
+     that slot stays pressed in with green text, and a "Session booked" strip slides in under it as the group
+     rises another 16.5px. Tap the chosen day again to fold everything away.
+     Card 322×286 CSS px — the reference frame ÷ 3; positions per state measured on the frames. */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { overflow: hidden; display: grid; place-items: center; background: #e5eaf1;
+    font-family: Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+
+  .fit { transform: scale(var(--s, 1)); }
+  .card { position: relative; width: 322px; height: 286px; border-radius: 23px; overflow: hidden;
+    background: linear-gradient(180deg, #f0f4f7 0%, #ecf1f6 55%, #e7edf4 100%);
+    box-shadow: 8px 9px 22px rgb(148 162 184 / .5), -7px -7px 18px rgb(255 255 255 / .75),
+      inset 1px 1px 0 rgb(255 255 255 / .9), inset -1px -1px 0 rgb(206 214 226 / .7); }
+  .hd { position: absolute; left: 24px; right: 25px; top: 24px; display: flex; justify-content: space-between;
+    font-size: 8.8px; line-height: 10px; font-weight: 700; letter-spacing: .12em; color: #646d75; z-index: 2; }
+  .ft { position: absolute; left: 24px; top: 249.7px; font-size: 10.75px; line-height: 13px; color: #5f6571; z-index: 2; }
+
+  /* ── the group: its top moves with the state (idle 103 · day picked 79.5 · booked 63) ── */
+  .grp { position: absolute; left: 0; top: 0; width: 322px; translate: 0 103px; transition: translate 140ms cubic-bezier(.25, .1, .45, 1); }
+  .s1 .grp { translate: 0 79.5px; }
+  .s2 .grp { translate: 0 63px; }
+
+  .days { position: relative; height: 53.5px; }
+  .day { position: absolute; top: 0; width: 42.5px; height: 53.5px; border-radius: 11px; outline: none;
+    display: flex; flex-direction: column; align-items: center; padding-top: 7.2px; gap: 9.6px;
+    font-size: 12.3px; line-height: 14px; letter-spacing: .01em; color: #313943;
+    background: linear-gradient(160deg, #f6f8fb 0%, #eff3f7 55%, #e6ebf2 100%);
+    box-shadow: 5px 7px 11px rgb(138 154 178 / .6), -4px -4px 9px rgb(255 255 255 / .95), inset 1px 1px 1px rgb(255 255 255 / .9);
+    transition: translate 120ms ease-out, background 120ms ease-out, box-shadow 90ms ease-out, color 120ms ease-out; }
+  .day:nth-child(1) { left: 63px; } .day:nth-child(2) { left: 113.9px; } .day:nth-child(3) { left: 164.8px; } .day:nth-child(4) { left: 215.7px; }
+  .day:focus-visible { outline: 2px solid #9fbb94; outline-offset: 3px; }
+  .day[aria-pressed="true"] { translate: 0 -3px; color: #2b4321;
+    background: linear-gradient(180deg, #a8c399 0%, #b0c9a1 55%, #b9d1aa 100%);
+    box-shadow: 5px 6px 10px rgb(146 161 184 / .45), -4px -4px 9px rgb(255 255 255 / .9), inset 1px 1px 1px rgb(255 255 255 / .35), inset -1px -2px 3px rgb(120 150 105 / .25); }
+  .day.down { translate: 0 0; padding-top: 8.7px; background: linear-gradient(160deg, #e0e6ee 0%, #e7ecf2 60%, #edf1f6 100%);
+    box-shadow: 0 0 0 rgb(146 161 184 / 0), 0 0 0 rgb(255 255 255 / 0), inset 3px 4px 7px rgb(146 161 184 / .55), inset -3px -3px 6px rgb(255 255 255 / .95); }
+  .day b { font-weight: 400; }
+
+  /* ── time slots ── */
+  .slots { position: absolute; left: 0; top: 76px; width: 322px; height: 30px; opacity: 0; scale: .96; pointer-events: none;
+    transition: opacity 110ms ease-out, scale 150ms cubic-bezier(.3, .7, .4, 1); }
+  .s1 .slots, .s2 .slots { opacity: 1; scale: 1; pointer-events: auto; }
+  .slot { position: absolute; top: 0; width: 129px; height: 30px; border-radius: 9px; outline: none;
+    font-size: 9.65px; line-height: 30px; text-align: center; color: #3b434d;
+    background: linear-gradient(180deg, #f5f7fa 0%, #eef2f6 55%, #e8edf3 100%);
+    box-shadow: 5px 6px 10px rgb(146 161 184 / .5), -4px -4px 9px rgb(255 255 255 / .95), inset 1px 1px 1px rgb(255 255 255 / .9);
+    transition: box-shadow 90ms ease-out, background 90ms ease-out, color 120ms ease-out; }
+  .slot:nth-child(1) { left: 27.3px; } .slot:nth-child(2) { left: 165.5px; }
+  .slot:focus-visible { outline: 2px solid #9fbb94; outline-offset: 3px; }
+  .slot.down, .slot[aria-pressed="true"] { background: linear-gradient(180deg, #e0e6ee 0%, #e6ebf2 55%, #ecf0f6 100%);
+    box-shadow: 0 0 0 rgb(146 161 184 / 0), 0 0 0 rgb(255 255 255 / 0), inset 3px 4px 7px rgb(146 161 184 / .55), inset -3px -3px 6px rgb(255 255 255 / .95); }
+  .slot[aria-pressed="true"] { color: #55704e; }
+
+  /* ── the result strip ── */
+  .booked { position: absolute; left: 23.5px; top: 127.5px; width: 274px; height: 32px; border-radius: 10px;
+    display: flex; justify-content: space-between; align-items: center; padding: 0 11.8px 1px 11.8px;
+    font-size: 9.85px; color: #4f6849; background: #dbe1ea;
+    box-shadow: inset 1px 1px 2px rgb(146 161 184 / .3), 0 1px 0 rgb(255 255 255 / .8);
+    opacity: 0; translate: 0 6px; transition: opacity 100ms ease-out, translate 150ms cubic-bezier(.3, .7, .4, 1); }
+  .s2 .booked { opacity: 1; translate: 0 0; }
+
+  @media (prefers-reduced-motion: reduce) { .grp, .day, .slots, .slot, .booked { transition: none; } }
+</style>
+</head>
+<body>
+<div class="fit" id="fit">
+  <article class="card" id="card">
+    <div class="hd"><span>05 / BOOKING</span><span>NOVEMBER</span></div>
+    <div class="grp">
+      <div class="days" role="group" aria-label="Day">
+        <button class="day" aria-pressed="false" data-d="Mon 09">MON<b>09</b></button>
+        <button class="day" aria-pressed="false" data-d="Tue 10">TUE<b>10</b></button>
+        <button class="day" aria-pressed="false" data-d="Wed 11">WED<b>11</b></button>
+        <button class="day" aria-pressed="false" data-d="Thu 12">THU<b>12</b></button>
+      </div>
+      <div class="slots" role="group" aria-label="Time">
+        <button class="slot" aria-pressed="false" tabindex="-1">10:30 AM</button>
+        <button class="slot" aria-pressed="false" tabindex="-1">2:00 PM</button>
+      </div>
+      <div class="booked" aria-live="polite"><span>Session booked</span><span id="res"></span></div>
+    </div>
+    <div class="ft">A moment worth saving</div>
+  </article>
+</div>
+<script>
+(() => {
+  const card = document.getElementById("card"), res = document.getElementById("res");
+  const days = [...document.querySelectorAll(".day")], slots = [...document.querySelectorAll(".slot")];
+  let day = -1, slot = -1;
+
+  function render() {
+    card.classList.toggle("s1", day >= 0 && slot < 0);
+    card.classList.toggle("s2", day >= 0 && slot >= 0);
+    days.forEach((d, i) => d.setAttribute("aria-pressed", i === day));
+    slots.forEach((s, i) => { s.setAttribute("aria-pressed", i === slot); s.tabIndex = day >= 0 ? 0 : -1; });
+    if (day >= 0 && slot >= 0) res.textContent = days[day].dataset.d.replace(/^(\w)(\w+)/, (m, a, b) => a + b.toLowerCase()) + " · " + slots[slot].textContent + " ✓";
+  }
+  // picking: a different day starts over (slot cleared); the chosen day again folds everything away
+  const pickDay = (i) => { if (i === day) { day = -1; slot = -1; } else { day = i; slot = -1; } render(); };
+  const pickSlot = (i) => { if (day < 0) return; slot = i === slot ? -1 : i; render(); };
+
+  // press-and-release, like every key in the set: the dent shows while held, the choice lands on release
+  function key(el, act) {
+    const up = (commit) => { if (!el.classList.contains("down")) return; el.classList.remove("down"); if (commit) act(); };
+    el.addEventListener("pointerdown", (e) => { if (e.button === 0) { el.setPointerCapture(e.pointerId); el.classList.add("down"); } });
+    el.addEventListener("pointerup", (e) => { const r = el.getBoundingClientRect(); up(e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom); });
+    el.addEventListener("pointercancel", () => up(false));
+    el.addEventListener("keydown", (e) => { if ((e.key === " " || e.key === "Enter") && !e.repeat) { e.preventDefault(); el.classList.add("down"); } });
+    el.addEventListener("keyup", (e) => { if (e.key === " " || e.key === "Enter") up(true); });
+    el.addEventListener("click", (e) => { if (e.detail === 0 && !e.isTrusted) { el.classList.add("down"); setTimeout(() => up(true), 167); } });
+    return { press: () => el.classList.add("down"), release: () => up(true) };
+  }
+  const dk = days.map((d, i) => key(d, () => pickDay(i)));
+  const sk = slots.map((s, i) => key(s, () => pickSlot(i)));
+
+  const q = location.search, fitEl = document.getElementById("fit");
+  const fit = () => fitEl.style.setProperty("--s", /[?&]cmp\b/.test(q) ? 1 : Math.min(1.5, (innerWidth - 48) / 322, (innerHeight - 48) / 286));
+  addEventListener("resize", fit); fit();
+  window.__book = { set(d, s) { day = d; slot = s; render(); } };
+
+  // ?demo: the recording — Tue, Wed, 10:30 (booked), fold away after 1.03 s, Tue, Wed …
+  if (/[?&]demo\b/.test(q)) {
+    const ids = [], at = (ms, fn) => ids.push(setTimeout(fn, ms));
+    const tap = (ms, k) => { at(ms, k.press); at(ms + 167, k.release); };
+    const loop = (o) => {
+      tap(o + 0, dk[1]); tap(o + 434, dk[2]); tap(o + 900, sk[0]);
+      at(o + 2167, () => { day = -1; slot = -1; render(); });
+      tap(o + 2467, dk[1]); tap(o + 2900, dk[2]);
+    };
+    loop(500); at(500 + 3700, () => { day = -1; slot = -1; render(); }); loop(4500);
+    addEventListener("pointerdown", (e) => { if (e.isTrusted) ids.forEach(clearTimeout); }, { once: true, capture: true });
+  }
+})();
+</script>
+</body>
+</html>

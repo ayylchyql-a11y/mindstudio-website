@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neumorphic light switch · 新拟态灯光开关</title>
+<style>
+  /* Soft Matter 01 — a pale neumorphic light switch. Press: the switch sinks (track .965, knob .935,
+     its shadow tightens) for as long as the finger is down; release: it springs back, the knob slides
+     60px in 225ms (linear — fitted to the frames) and turns from sage grey to leaf green, and the caption flips On/Off.
+     Card 322×286 CSS px — the reference frame ÷ 3; timings read frame by frame at 60fps. */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { overflow: hidden; display: grid; place-items: center; background: #e5eaf1;
+    font-family: Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+
+  /* ── the card every Soft Matter component sits on ── */
+  .fit { transform: scale(var(--s, 1)); }
+  .card { position: relative; width: 322px; height: 286px; border-radius: 23px;
+    background: linear-gradient(180deg, #f0f4f7 0%, #ecf1f6 55%, #e7edf4 100%);
+    box-shadow: 8px 9px 22px rgb(148 162 184 / .5), -7px -7px 18px rgb(255 255 255 / .75),
+      inset 1px 1px 0 rgb(255 255 255 / .9), inset -1px -1px 0 rgb(206 214 226 / .7); }
+  .hd { position: absolute; left: 24px; right: 25px; top: 24px; display: flex; justify-content: space-between;
+    font-size: 8.8px; line-height: 10px; font-weight: 700; letter-spacing: .12em; color: #646d75; }
+  .hd .live { color: #6e7983; }
+  .hd .live::before { content: ""; display: inline-block; width: 3.4px; height: 3.4px; margin: 0 6px 1.6px 0; border-radius: 50%; background: currentColor; vertical-align: middle; }
+  .ft { position: absolute; left: 24px; top: 249.7px; font-size: 10.75px; line-height: 13px; color: #5f6571; }
+
+  /* ── the switch ── */
+  .sw { position: absolute; left: 97px; top: 97px; width: 126px; height: 61px; border-radius: 30.5px; outline: none;
+    background: linear-gradient(180deg, #dfe6ef 0%, #e4eaf2 60%, #e9eef5 100%);
+    box-shadow: inset 6px 7px 10px rgb(146 163 188 / .62), inset -5px -5px 9px rgb(255 255 255 / .95),
+      0 0 0 1px rgb(255 255 255 / .35);
+    transition: transform 90ms ease-out; }
+  .sw:focus-visible { box-shadow: inset 5px 6px 9px rgb(160 175 198 / .55), inset -5px -5px 9px rgb(255 255 255 / .95), 0 0 0 2px #9fbb94; }
+  .knob { position: absolute; left: 9px; top: 8.5px; width: 48px; height: 48px; border-radius: 50%;
+    background: radial-gradient(120% 120% at 30% 25%, var(--k1) 0%, var(--k2) 60%, var(--k3) 100%);
+    box-shadow: 4px 5px 8px rgb(128 145 165 / .45), -2px -2px 5px rgb(255 255 255 / .8), inset 1px 1px 1px rgb(255 255 255 / .35);
+    --k1: #c4cec7; --k2: #b6c2bb; --k3: #a2b0a8;
+    transition: translate 225ms linear, scale 90ms ease-out, box-shadow 90ms ease-out,
+      --k1 225ms linear, --k2 225ms linear, --k3 225ms linear; }
+  @property --k1 { syntax: "<color>"; inherits: false; initial-value: #c4cec7; }
+  @property --k2 { syntax: "<color>"; inherits: false; initial-value: #b6c2bb; }
+  @property --k3 { syntax: "<color>"; inherits: false; initial-value: #a2b0a8; }
+  .sw[aria-checked="true"] .knob { translate: 60px 0; --k1: #b2cba6; --k2: #9fbb94; --k3: #8eab83; }
+  .sw.down { transform: scale(.965); }
+  .sw.down .knob { scale: .935; box-shadow: 2px 2px 4px rgb(128 145 165 / .35), -1px -1px 3px rgb(255 255 255 / .7), inset 1px 1px 1px rgb(255 255 255 / .3); }
+  .cap { position: absolute; left: 0; right: 0; top: 173.6px; text-align: center; font-size: 11px; line-height: 13px; font-weight: 700; color: #525d68; }
+
+  @media (prefers-reduced-motion: reduce) { .sw, .knob { transition: none; } }
+</style>
+</head>
+<body>
+<div class="fit" id="fit">
+  <article class="card">
+    <div class="hd"><span>01 / POWER</span><span class="live">LIVE</span></div>
+    <button class="sw" id="sw" role="switch" aria-checked="false" aria-label="Ambient light"><span class="knob"></span></button>
+    <div class="cap" id="cap" aria-live="polite">Ambient light · Off</div>
+    <div class="ft">A softer kind of switch</div>
+  </article>
+</div>
+<script>
+(() => {
+  const sw = document.getElementById("sw"), cap = document.getElementById("cap");
+  // the press is held while the finger is down; the state only changes on release (the reference's rule)
+  const press = () => sw.classList.add("down");
+  const release = (commit) => {
+    if (!sw.classList.contains("down")) return;
+    sw.classList.remove("down");
+    if (!commit) return;
+    const on = sw.getAttribute("aria-checked") !== "true";
+    sw.setAttribute("aria-checked", on);
+    cap.textContent = "Ambient light · " + (on ? "On" : "Off");
+  };
+  sw.addEventListener("pointerdown", (e) => { if (e.button === 0) { sw.setPointerCapture(e.pointerId); press(); } });
+  sw.addEventListener("pointerup", (e) => {
+    const r = sw.getBoundingClientRect();
+    release(e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom);
+  });
+  sw.addEventListener("pointercancel", () => release(false));
+  sw.addEventListener("keydown", (e) => { if ((e.key === " " || e.key === "Enter") && !e.repeat) { e.preventDefault(); press(); } });
+  sw.addEventListener("keyup", (e) => { if (e.key === " " || e.key === "Enter") release(true); });
+  sw.addEventListener("click", (e) => { if (e.detail === 0 && !e.isTrusted) { press(); setTimeout(() => release(true), 167); } }); // el.click() from scripts
+
+  const q = location.search, fitEl = document.getElementById("fit");
+  const fit = () => fitEl.style.setProperty("--s", /[?&]cmp\b/.test(q) ? 1 : Math.min(1.5, (innerWidth - 48) / 322, (innerHeight - 48) / 286));
+  addEventListener("resize", fit); fit();
+
+  // ?demo: the recording's rhythm — press 167ms, release, every 1.3s
+  if (/[?&]demo\b/.test(q)) {
+    const ids = [];
+    const tap = (at) => { ids.push(setTimeout(press, at), setTimeout(() => release(true), at + 167)); };
+    for (let i = 0; i < 6; i++) tap(700 + i * 1300);
+    addEventListener("pointerdown", (e) => { if (e.isTrusted) ids.forEach(clearTimeout); }, { once: true, capture: true });
+  }
+})();
+</script>
+</body>
+</html>

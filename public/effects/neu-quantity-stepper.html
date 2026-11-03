@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neumorphic quantity stepper · 新拟态数量调节</title>
+<style>
+  /* Soft Matter 06 — a quantity stepper: two raised round keys around a big rose numeral. A key dents while
+     pressed and the count changes on release: the new numeral appears 9px above (scale .94, faint), holds ~30 ms
+     and falls into place by 135 ms; the subtotal rises 4px into place on the same beat. At the bounds (1 and 9) the key goes flat and grey.
+     Card 322×286 CSS px — the reference frame ÷ 3; the drop was traced at 60 fps. */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { overflow: hidden; display: grid; place-items: center; background: #e5eaf1;
+    font-family: Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+
+  .fit { transform: scale(var(--s, 1)); }
+  .card { position: relative; width: 322px; height: 286px; border-radius: 23px;
+    background: linear-gradient(180deg, #f0f4f7 0%, #ecf1f6 55%, #e7edf4 100%);
+    box-shadow: 8px 9px 22px rgb(148 162 184 / .5), -7px -7px 18px rgb(255 255 255 / .75),
+      inset 1px 1px 0 rgb(255 255 255 / .9), inset -1px -1px 0 rgb(206 214 226 / .7); }
+  .hd { position: absolute; left: 24px; right: 25px; top: 24px; display: flex; justify-content: space-between;
+    font-size: 8.8px; line-height: 10px; font-weight: 700; letter-spacing: .12em; color: #646d75; }
+  .ft { position: absolute; left: 24px; top: 249.7px; font-size: 10.75px; line-height: 13px; color: #5f6571; }
+
+  /* ── the keys: 39px, centred on (104.3, 128) and (218.3, 128) ── */
+  .key { position: absolute; top: 108.5px; width: 39px; height: 39px; border-radius: 50%; outline: none;
+    background: linear-gradient(135deg, #f5f7fa 0%, #eef2f6 50%, #e5eaf1 100%);
+    box-shadow: 5px 6px 10px rgb(140 156 180 / .55), -4px -4px 9px rgb(255 255 255 / .95), inset 1px 1px 1px rgb(255 255 255 / .9);
+    transition: box-shadow 90ms ease-out, background 90ms ease-out; }
+  .key.minus { left: 84.8px; } .key.plus { left: 198.8px; }
+  .key:focus-visible { outline: 2px solid #bc7b8d; outline-offset: 3px; }
+  .key svg { position: absolute; left: 50%; top: 50%; translate: -50% -50%; }
+  .key svg path { stroke: #3f4650; transition: stroke 90ms; }
+  .key.down { background: linear-gradient(135deg, #e0e6ee 0%, #e7ecf2 60%, #eef2f7 100%);
+    box-shadow: 0 0 0 rgb(140 156 180 / 0), 0 0 0 rgb(255 255 255 / 0), inset 3px 4px 7px rgb(140 156 180 / .55), inset -3px -3px 6px rgb(255 255 255 / .95); }
+  .key:disabled { cursor: default; background: #e9eef4; box-shadow: none; }
+  .key:disabled svg path { stroke: #b4bac1; }
+
+  /* ── numeral + subtotal ── */
+  .num { position: absolute; left: 0; right: 0; top: 103px; text-align: center; font-size: 49.7px; line-height: 1;
+    font-weight: 400; color: #bc7b8d; font-variant-numeric: tabular-nums; pointer-events: none; }
+  .sub { position: absolute; left: 0; right: 0; top: 178px; text-align: center; font-size: 11px; line-height: 13px; font-weight: 700; color: #525d68; }
+  /* traced: the numeral sits 9px up and faint for ~30 ms, then falls into place linearly by 135 ms;
+     the subtotal is gone for ~60 ms, then rises 4px into place by 135 ms */
+  .num.in { animation: drop 135ms linear both; }
+  .sub.in { animation: rise 135ms linear both; }
+  @keyframes drop { 0%, 22% { translate: 0 -9px; scale: .94; opacity: .22; } 100% { translate: 0 0; scale: 1; opacity: 1; } }
+  @keyframes rise { 0%, 44% { translate: 0 4px; opacity: 0; } 45% { opacity: .5; } 100% { translate: 0 0; opacity: 1; } }
+
+  @media (prefers-reduced-motion: reduce) { .num.in, .sub.in { animation: none; } .key { transition: none; } }
+</style>
+</head>
+<body>
+<div class="fit" id="fit">
+  <article class="card">
+    <div class="hd"><span>06 / QUANTITY</span><span>YOUR BAG</span></div>
+    <button class="key minus" id="minus" aria-label="Decrease"><svg width="10" height="9" viewBox="0 0 10 9" style="margin-left:-.5px"><path d="M.6 4.5 H9.4" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+    <div class="num" id="num" aria-live="polite">1</div>
+    <button class="key plus" id="plus" aria-label="Increase"><svg width="10.4" height="10.4" viewBox="0 0 10.4 10.4"><path d="M.7 5.2 H9.7 M5.2 .7 V9.7" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+    <div class="sub" id="sub">Subtotal · $24</div>
+    <div class="ft">A little more of what you love</div>
+  </article>
+</div>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const minus = $("minus"), plus = $("plus"), num = $("num"), sub = $("sub");
+  const MIN = 1, MAX = 9, PRICE = 24;
+  let n = 1;
+
+  function render(animate) {
+    num.textContent = n; sub.textContent = "Subtotal · $" + n * PRICE;
+    minus.disabled = n <= MIN; plus.disabled = n >= MAX;
+    if (animate) for (const el of [num, sub]) { el.classList.remove("in"); void el.offsetWidth; el.classList.add("in"); }
+  }
+  const step = (d) => { const m = Math.min(MAX, Math.max(MIN, n + d)); if (m !== n) { n = m; render(true); } };
+
+  // press-and-release: the dent shows while held, the count changes on release
+  function key(el, d) {
+    const up = (commit) => { if (!el.classList.contains("down")) return; el.classList.remove("down"); if (commit) step(d); };
+    el.addEventListener("pointerdown", (e) => { if (e.button === 0 && !el.disabled) { el.setPointerCapture(e.pointerId); el.classList.add("down"); } });
+    el.addEventListener("pointerup", (e) => { const r = el.getBoundingClientRect(); up(e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom); });
+    el.addEventListener("pointercancel", () => up(false));
+    el.addEventListener("keydown", (e) => { if ((e.key === " " || e.key === "Enter") && !e.repeat) { e.preventDefault(); el.classList.add("down"); } });
+    el.addEventListener("keyup", (e) => { if (e.key === " " || e.key === "Enter") up(true); });
+    el.addEventListener("click", (e) => { if (e.detail === 0 && !e.isTrusted && !el.disabled) { el.classList.add("down"); setTimeout(() => up(true), 133); } });
+    return { press: () => { if (!el.disabled) el.classList.add("down"); }, release: () => up(true) };
+  }
+  const km = key(minus, -1), kp = key(plus, +1);
+  render(false);
+
+  const q = location.search, fitEl = $("fit");
+  const fit = () => fitEl.style.setProperty("--s", /[?&]cmp\b/.test(q) ? 1 : Math.min(1.5, (innerWidth - 48) / 322, (innerHeight - 48) / 286));
+  addEventListener("resize", fit); fit();
+  window.__qty = { set(v) { n = v; render(false); }, km, kp };
+
+  // ?demo: the recording — + + + then − − −, a tap every 400 ms (press held 133 ms), and again
+  if (/[?&]demo\b/.test(q)) {
+    const ids = [], tap = (ms, k) => ids.push(setTimeout(k.press, ms), setTimeout(k.release, ms + 133));
+    const seq = [kp, kp, kp, km, km, km];
+    for (let r = 0; r < 2; r++) seq.forEach((k, i) => tap(500 + r * 2800 + i * 400, k));
+    addEventListener("pointerdown", (e) => { if (e.isTrusted) ids.forEach(clearTimeout); }, { once: true, capture: true });
+  }
+})();
+</script>
+</body>
+</html>

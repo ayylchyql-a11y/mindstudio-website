@@ -50,6 +50,18 @@ const blurbs: Record<string, string> = {
     "A landing page for a flower brand where a glass chrysanthemum slowly opens behind the headline, and the rest of the page — menu, title, figures and cards — drifts into focus piece by piece as it blooms. Pick one of three varieties and the figures count to their new values while the matching photo lights up. Made for brands that sell something beautiful and want the first screen to feel like an exhibition rather than a website.",
   "potion-dispenser":
     "A potion picker for a game, built from three chunky plastic keys and a big red button: tap a key to change the potion, the dose or its form, watch it turn red on the strongest choice, then hit the button and the pills fly. A playful, tactile control for games, kids\u2019 apps and anything that should feel like a toy rather than a form.",
+  "neu-light-switch":
+    "A light switch that feels like soft plastic: press it and it sinks under your finger, let go and it springs back as the knob glides across and turns green. Part of a set of six pale, tactile controls for smart-home apps, settings screens and any product that wants a calm, physical feel instead of flat toggles.",
+  "neu-thermostat-dial":
+    "A thermostat dial you can turn with a finger, with a slider underneath that moves in step: the lavender arc, the little indicator and the big temperature number all follow along. A gentle, tactile control for smart-home apps, climate panels and anywhere a value should feel like a real knob.",
+  "neu-audio-player":
+    "A soft round play button with a row of copper dots that rise into a rolling waveform when the music starts and settle back into dots when it stops, while a thin progress line creeps along. A calm, tactile player for meditation, podcast and wellness apps.",
+  "neu-upload-well":
+    "An upload button set into a recessed tray: press it and three little file cards drop into a slot one by one, a thin progress line fills with a live percentage, and a green check pops up when it is done. A friendly way to show that files are on their way, for document, cloud and form-heavy products.",
+  "neu-booking-slots":
+    "A booking picker made of soft keys: choose a day and it turns green while the time slots slide open below; choose a time and a small confirmation strip appears with the result. A tidy, tactile way to book a session, a table or an appointment on one small card.",
+  "neu-quantity-stepper":
+    "A quantity picker with two soft round keys and a big number between them: each press dents the key and the new number drops into place while the subtotal updates, and a key goes flat when you reach the limit. Made for shopping bags, menus and checkout screens.",
   "neumorphic-io-switch":
     "A toggle switch that feels like a piece of hardware: a studded metal knob slides across a recessed track, an orange backing follows it in, and a small ON lamp flickers to life once the switch has landed. Built entirely in CSS, it suits product pages, settings screens and dashboards that want a tactile, premium feel instead of a flat checkbox.",
   "anim-icon-library":
