@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One clock, every value grows</title>
+<!--
+  One clock, every value grows — the value half of the spatial-glass page switch.
+  A single time t (ms since the page's contents went live) feeds every element through its
+  own window [start, end] and easing:
+    numbers   280 → 1380 ms  ease-out-quart          (count from 0)
+    bars      340 → 1240 ms  ease-out-quint, +45 ms per bar
+    ring      360 → 1360 ms  ease-out-quint
+    lines     400 → 1400 ms  ease-in-out (.45,.05,.25,1)   area fades in after the stroke
+    donut     430 → 1130 ms  linear sweep, segments fill in order
+  Because it is all derived from t, the scrubber can drag the whole page to any instant,
+  and an interrupted switch just restarts the clock — nothing has to be cancelled.
+  Background photo: Josh Davies (@mestra) on Unsplash — Unsplash License.
+-->
+<style>
+  @font-face { font-family: "Inter"; src: url("_fonts/inter-500-latin.woff2") format("woff2"); font-weight: 400 500; font-display: swap; }
+  @font-face { font-family: "Inter"; src: url("_fonts/inter-700-latin.woff2") format("woff2"); font-weight: 600 700; font-display: swap; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { overflow: hidden; background: #3b322b; font-family: "Inter", -apple-system, sans-serif; color: #1d1a17; -webkit-font-smoothing: antialiased; user-select: none; font-variant-numeric: tabular-nums; }
+  button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+  .room { position: fixed; inset: -24px; background: url("dashboard-spatial-glass/room.jpg") 68% 38% / max(128vw, 196vh) auto no-repeat; filter: blur(1.5px); }
+  .room::after { content: ""; position: absolute; inset: 0; background: radial-gradient(40% 32% at 50% 38%, rgba(40, 30, 22, .5), transparent 70%); }
+  .stage { position: absolute; left: 50%; top: 50%; width: 1000px; height: 600px; transform: translate(-50%, -50%) scale(var(--s, 1)); }
+  .glass { background: linear-gradient(180deg, rgba(255, 252, 248, .26), rgba(255, 250, 245, .14)); backdrop-filter: blur(34px) saturate(1.3); -webkit-backdrop-filter: blur(34px) saturate(1.3); border: 1px solid rgba(255, 255, 255, .34); box-shadow: 0 30px 70px rgba(38, 24, 12, .28), inset 0 1px 0 rgba(255, 255, 255, .45); }
+  .panel { position: absolute; inset: 0 0 150px 0; border-radius: 34px; padding: 20px 22px; display: grid; gap: 12px; grid-template-columns: 1.6fr 1fr 1fr; grid-template-rows: 96px 1fr; }
+  .card { border-radius: 18px; padding: 12px 14px; background: rgba(255, 255, 255, .24); border: 1px solid rgba(255, 255, 255, .42); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .4), 0 8px 24px rgba(40, 25, 10, .08); position: relative; }
+  .lbl { font-size: 10.5px; color: rgba(29, 26, 23, .55); font-weight: 500; }
+  .big { font-size: 23px; font-weight: 700; letter-spacing: -.02em; margin-top: 8px; }
+  .kpis { grid-column: 1 / 4; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .chart svg { width: 100%; height: 190px; margin-top: 6px; overflow: visible; }
+  .bars { display: flex; align-items: flex-end; gap: 9px; height: 150px; margin-top: 14px; }
+  .bars i { flex: 1; border-radius: 7px; background: rgba(255, 255, 255, .9); height: 0; }
+  .bars i:last-child { background: #ef5a2a; }
+  .stack { display: grid; gap: 12px; grid-template-rows: 1fr 1fr; }
+  .ring, .donut { display: flex; align-items: center; gap: 14px; }
+  .ring svg, .donut svg { width: 84px; height: 84px; rotate: -90deg; flex: none; }
+  .ring b, .donut b { font-size: 19px; display: block; }
+
+  .ctl { position: absolute; left: 0; right: 0; bottom: 0; height: 134px; border-radius: 24px; padding: 12px 16px; color: #fff; display: grid; grid-template-columns: 210px 1fr; gap: 16px; }
+  .ctl .l { display: flex; flex-direction: column; gap: 8px; }
+  .ctl b { font-size: 12px; }
+  .ctl .t { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+  .ctl .t small { font-size: 11px; font-weight: 500; opacity: .75; }
+  .replay { align-self: flex-start; height: 28px; padding: 0 14px; border-radius: 14px; background: #fff; color: #1d1a17; font-size: 11.5px; font-weight: 600; }
+  .gantt { position: relative; }
+  .lane { display: grid; grid-template-columns: 62px 1fr; align-items: center; height: 16px; font-size: 9.5px; font-weight: 600; color: rgba(255, 255, 255, .85); }
+  .lane .tr { position: relative; height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .12); }
+  .lane .w { position: absolute; top: 0; bottom: 0; border-radius: 4px; background: rgba(255, 255, 255, .45); }
+  .lane .w i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; background: #fff; width: 0; }
+  .scrub { position: absolute; left: 62px; right: 0; bottom: 0; }
+  .scrub input { width: 100%; -webkit-appearance: none; appearance: none; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, .25); cursor: ew-resize; }
+  .scrub input::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .3); }
+  .head { position: absolute; top: 0; bottom: 22px; width: 1.5px; background: #fff; left: 62px; pointer-events: none; }
+</style>
+<div class="room" aria-hidden="true"></div>
+<div class="stage" id="stage">
+  <main class="panel glass">
+    <div class="kpis">
+      <section class="card"><span class="lbl">Income</span><div class="big" data-n="425" data-f="k">$0k</div></section>
+      <section class="card"><span class="lbl">Expenses</span><div class="big" data-n="314" data-f="k">$0k</div></section>
+      <section class="card"><span class="lbl">Total saved</span><div class="big" data-n="18527.44" data-f="m2">$0.00</div></section>
+      <section class="card"><span class="lbl">Savings rate</span><div class="big" data-n="26.1" data-f="p1">0.0%</div></section>
+    </div>
+    <section class="card chart"><span class="lbl">Income vs expenses</span>
+      <svg viewBox="0 0 400 190" preserveAspectRatio="none" id="chart">
+        <defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ef5a2a" stop-opacity=".25"/><stop offset="1" stop-color="#ef5a2a" stop-opacity="0"/></linearGradient></defs>
+        <g stroke="rgba(255,255,255,.45)"><line x1="0" x2="400" y1="10" y2="10"/><line x1="0" x2="400" y1="60" y2="60"/><line x1="0" x2="400" y1="110" y2="110"/><line x1="0" x2="400" y1="160" y2="160"/></g>
+        <path id="area" fill="url(#ga)" opacity="0"/>
+        <path id="lb" fill="none" stroke="#1d1b1a" stroke-width="2.2" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+        <path id="la" fill="none" stroke="#ef5a2a" stroke-width="2.2" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+      </svg></section>
+    <section class="card"><span class="lbl">Monthly contributions</span><div class="bars" id="bars"></div></section>
+    <div class="stack">
+      <section class="card ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9155" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="3.4"/><circle id="ring" cx="18" cy="18" r="15.9155" fill="none" stroke="#ef5a2a" stroke-width="3.4" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/></svg><div><span class="lbl">Trip to Bali</span><b id="ringN">0%</b></div></section>
+      <section class="card donut"><svg viewBox="0 0 42 42" id="donut"></svg><div><span class="lbl">Total spent</span><b id="donN">$0.0k</b></div></section>
+    </div>
+  </main>
+  <section class="ctl glass">
+    <div class="l"><b>One clock</b><div class="t" id="tt">0 <small>ms</small></div><button class="replay" id="replay">Replay</button></div>
+    <div class="gantt" id="gantt"><i class="head" id="head"></i><div class="scrub"><input type="range" id="scrub" min="0" max="1500" step="1" value="0" aria-label="Scrub time"></div></div>
+  </section>
+</div>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const fit = () => $("stage").style.setProperty("--s", Math.min(1.1, (innerWidth - 20) / 1000, (innerHeight - 20) / 600).toFixed(4));
+  addEventListener("resize", fit); fit();
+
+  const SPAN = 1500;
+  const E = {
+    quart: (p) => 1 - Math.pow(1 - p, 4),
+    quint: (p) => 1 - Math.pow(1 - p, 5),
+    inOut: (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2),
+    lin: (p) => p,
+  };
+  const W = { numbers: [280, 1380, "quart"], bars: [340, 1240, "quint"], ring: [360, 1360, "quint"], lines: [400, 1400, "inOut"], donut: [430, 1130, "lin"] };
+  const at = (name, t, extra = 0) => { const [a, z, e] = W[name]; return E[e](Math.max(0, Math.min(1, (t - a - extra) / (z - a)))); };
+
+  // static geometry
+  const A = [20, 52, 83, 31, 61, 47, 70, 60], B = [20, 31, 45, 52, 46, 40, 45, 32];
+  const pts = (v) => v.map((y, i) => [8 + (i * 384) / (v.length - 1), 160 - y * 1.5]);
+  const smooth = (p) => p.reduce((d, c, i) => { if (!i) return `M${c[0]},${c[1]}`; const a = p[i - 2] || p[i - 1], b = p[i - 1], e = p[i + 1] || c; return d + ` C${b[0] + (c[0] - a[0]) / 6},${b[1] + (c[1] - a[1]) / 6} ${c[0] - (e[0] - b[0]) / 6},${c[1] - (e[1] - b[1]) / 6} ${c[0]},${c[1]}`; }, "");
+  $("la").setAttribute("d", smooth(pts(A))); $("lb").setAttribute("d", smooth(pts(B)));
+  $("area").setAttribute("d", smooth(pts(A)) + " L392,160 L8,160 Z");
+  const BARS = [45, 63, 50, 73, 90, 96];
+  $("bars").innerHTML = BARS.map(() => "<i></i>").join("");
+  const bars = [...$("bars").children];
+  const CATS = [[35, "#ef5a2a"], [26, "#1d1b1a"], [20, "#f2b31d"], [13, "#3b6fe0"], [6, "#1d9a6c"]];
+  let acc = 0;
+  const segs = CATS.map(([len, c]) => { const s = { start: acc, len: len - 1.2 }; acc += len; return s; });
+  $("donut").innerHTML = CATS.map(([, c], k) => `<circle cx="21" cy="21" r="15.9155" fill="none" stroke="${c}" stroke-width="5.4" pathLength="100" stroke-dashoffset="${-segs[k].start}" stroke-dasharray="0 100"/>`).join("");
+  const dsegs = [...$("donut").children];
+  const nums = [...document.querySelectorAll("[data-n]")];
+  const fmt = { k: (v, d) => "$" + (d ? Math.round(v) : v.toFixed(1)) + "k", m2: (v) => "$" + v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }), p1: (v) => v.toFixed(1) + "%" };
+
+  // gantt lanes
+  const g = $("gantt");
+  g.insertAdjacentHTML("afterbegin", Object.entries(W).map(([n, [a, z]]) => `<div class="lane"><span>${n}</span><div class="tr"><span class="w" data-w="${n}" style="left:${(a / SPAN) * 100}%;width:${((z - a) / SPAN) * 100}%"><i></i></span></div></div>`).join(""));
+  const wins = [...g.querySelectorAll(".w")];
+
+  // one function draws the whole page at time t
+  function draw(t) {
+    nums.forEach((el, i) => { const p = at("numbers", t, i * 30); el.textContent = fmt[el.dataset.f](+el.dataset.n * E.quart(1) * p / 1, p === 1); });
+    bars.forEach((b, k) => (b.style.height = BARS[k] * at("bars", t, k * 45) + "%"));
+    const r = at("ring", t); $("ring").setAttribute("stroke-dashoffset", 100 - 64 * r); $("ringN").textContent = Math.round(64 * at("numbers", t)) + "%";
+    const l = at("lines", t); $("la").setAttribute("stroke-dashoffset", 1 - l); $("lb").setAttribute("stroke-dashoffset", 1 - l); $("area").setAttribute("opacity", Math.max(0, (l - 0.6) / 0.4));
+    const sweep = at("donut", t) * 100;
+    dsegs.forEach((c, k) => { const s = segs[k]; c.setAttribute("stroke-dasharray", `${Math.max(0, Math.min(s.len, sweep - s.start))} 100`); });
+    $("donN").textContent = fmt.k(209.7 * at("numbers", t), false);
+    // timeline
+    $("tt").innerHTML = Math.round(t) + " <small>ms</small>";
+    $("scrub").value = t;
+    const gw = g.clientWidth - 62;
+    $("head").style.left = 62 + (t / SPAN) * gw + "px";
+    wins.forEach((w) => { const [a, z] = W[w.dataset.w]; w.firstChild.style.width = Math.max(0, Math.min(1, (t - a) / (z - a))) * 100 + "%"; });
+  }
+
+  let t0 = 0, raf = 0, playing = false;
+  function play() {
+    cancelAnimationFrame(raf); playing = true; t0 = performance.now();
+    const f = (now) => { const t = Math.min(SPAN, now - t0); draw(t); if (t < SPAN) raf = requestAnimationFrame(f); else playing = false; };
+    raf = requestAnimationFrame(f);
+  }
+  $("replay").addEventListener("click", play);
+  $("scrub").addEventListener("input", (e) => { cancelAnimationFrame(raf); playing = false; draw(+e.target.value); });
+
+  let demo = !reduce, loopT = 0;
+  const loop = () => { if (!demo) return; play(); loopT = setTimeout(loop, 3400); };
+  addEventListener("pointerdown", (e) => { if (e.isTrusted) { demo = false; clearTimeout(loopT); } }, true);
+  if (reduce) draw(SPAN); else { draw(0); setTimeout(loop, 400); }
+})();
+</script>
+</html>

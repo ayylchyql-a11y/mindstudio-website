@@ -131,7 +131,12 @@ const LONG_SELF = { "slate-card-order": { secs: 17, query: "?clip" }, "receipt-p
   "target-chase-gauge": { secs: 7.53, vw: 710 },
   "activity-field-matrix": { secs: 7.68, vw: 710 },
   "traffic-mix-bars": { secs: 8.25, vw: 710 },
-  "dunhuang-walk-in": { secs: 14, vw: 710, query: "?demo", trim: 1.2 } };
+  "dunhuang-walk-in": { secs: 14, vw: 710, query: "?demo", trim: 1.2 },
+  // 2026-11-07 空间玻璃两条自己循环切页（Savings→Reports→Overview / 三个标签），中途重载会截断循环
+  // 舞台 1280×760 / 1040×640 / 1000×600 定比例缩放：按 960×640（3:2）录，cover 进 710×470 不裁边
+  "dashboard-spatial-glass": { secs: 8.6, query: "?demo", vh: 640 },
+  "dash-glass-skeleton-switch": { secs: 8.6, query: "?demo", vh: 640 },
+  "dash-count-draw-in": { vh: 640 } };
 /** trim：开头剪掉几秒（默认 0.6）。morph-studio 首帧要先生成 250 个图标，0.6 秒时画面还是缩小的灰底。
  *  vh：录像高度另给（默认 = 样板的 height）。六个 Dashboard 是 1280×820 的整页缩放进画框：
  *  按画框 470 高录 = 960×470 的视频里 Dashboard 只有 715 宽，cover 进 710×470 的详情画框要裁掉左右圆角；

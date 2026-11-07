@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spatial glass · Finance dashboard</title>
+<!--
+  Spatial glass dashboard — a visionOS-style personal-finance window floating in a room.
+  Rebuilt from a screen recording; all code here is original. Icons are hand-drawn in the
+  lucide style (24 grid, 1.8 stroke).
+  Background photo: Josh Davies (@mestra) on Unsplash — free under the Unsplash License.
+-->
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="room" aria-hidden="true"></div>
+<div class="stage" id="stage">
+  <header class="top glass">
+    <div class="who"><span class="avatar" aria-hidden="true"></span><b>Welcome, Code XR</b></div>
+    <label class="ask" id="askWrap">
+      <span class="orb" aria-hidden="true"></span>
+      <span class="typed" id="typed" aria-hidden="true"></span>
+      <input id="ask" autocomplete="off" spellcheck="false" aria-label="Ask the assistant">
+    </label>
+    <button class="round" id="bell" aria-label="Notifications"></button>
+  </header>
+
+  <nav class="rail glass" id="rail" aria-label="Sections"></nav>
+
+  <main class="panel glass">
+    <div class="scroll" id="scroll"><div class="view" id="view"></div></div>
+  </main>
+
+  <nav class="dock glass" id="dock" aria-label="Pages">
+    <i class="pill" id="pill" aria-hidden="true"></i>
+  </nav>
+  <div class="quick glass" id="quick" role="menu"></div>
+  <div class="toast glass" id="toast" role="status"></div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
