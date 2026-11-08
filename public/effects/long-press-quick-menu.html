@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Long press · the card lifts and its actions open beside it</title>
+<link rel="stylesheet" href="_glass/glass.css">
+<link rel="stylesheet" href="_glass/ep28.css">
+<style>
+  /* Measured off the recording at 3 frame px = 1 CSS px; times are real time (the clip plays at 3×). */
+  .card { --accent: #e6824a; }
+  .card.f28 .dot { top: 19px; }
+  .stage { position: relative; margin-top: 16px; height: 154px; }
+  .ph { position: absolute; left: 0; top: 0; width: 194px; height: 154px; border-radius: 13px; overflow: hidden; cursor: pointer;
+    touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+    transition: transform .45s cubic-bezier(.22,.61,.36,1), box-shadow .45s cubic-bezier(.22,.61,.36,1);
+    box-shadow: 0 8px 18px -12px rgb(0 0 0 / .45); }
+  .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; -webkit-user-drag: none; }
+  .ph::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 52%, rgb(0 0 0 / .42)); pointer-events: none; }
+  .ph .cap { position: absolute; left: 11px; bottom: 10px; z-index: 1; pointer-events: none; }
+  .ph .cap small { display: block; font-size: 8px; line-height: 11px; font-weight: 700; letter-spacing: .12em; opacity: .85; }
+  .ph .cap b { display: block; margin-top: 3px; font-size: 16px; line-height: 20px; font-weight: 700; letter-spacing: -.01em; }
+  .ph.lift { transform: translateY(-6px) scale(1.03); box-shadow: 0 18px 30px -14px rgb(0 0 0 / .55); }
+  .ph.land { transition-duration: .35s; }
+
+  /* the menu: 126 × 106, opens from its left edge beside the lifted card */
+  .menu { position: absolute; left: min(207px, calc(100% - 126px)); top: 10px;   /* on a narrow card it overlaps the lifted photo instead of being cut off */
+    width: 126px; padding: 3.5px 0; border-radius: 12px; z-index: 2;
+    background: rgb(62 55 50 / .92); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 16px 34px -18px rgb(0 0 0 / .6);
+    opacity: 0; transform: scale(.9); transform-origin: 0 50%; visibility: hidden;
+    transition: opacity .15s ease-out, transform .15s ease-out, visibility 0s .15s; }
+  .menu.open { opacity: 1; transform: none; visibility: visible; transition: opacity .15s ease-out, transform .15s ease-out, visibility 0s; }
+  .menu.closing { opacity: 0; transform: scale(.96); transition: opacity .3s ease-in, transform .3s ease-in, visibility 0s .3s; visibility: hidden; }
+  .menu button { display: flex; align-items: center; gap: 9px; width: 100%; height: 33px; padding: 0 12px; text-align: left; font-size: 11.5px; font-weight: 600; }
+  .menu button svg { width: 12.5px; height: 12.5px; flex: none; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .menu button.hot { background: rgb(255 255 255 / .13); }
+  .menu button:focus-visible { outline: none; background: rgb(255 255 255 / .13); }
+</style>
+</head>
+<body>
+<main class="card f28" aria-label="Saved places">
+  <i class="dot" aria-hidden="true"></i>
+  <header><h2>Saved places</h2><p>Your collection</p></header>
+  <div class="stage">
+    <div class="ph" tabindex="0" role="button" aria-haspopup="menu" aria-expanded="false" aria-label="Santorini, Greece. Press and hold for actions">
+      <img src="_travel/santorini.jpg" alt="" draggable="false">
+      <span class="cap"><small>GREECE</small><b>Santorini</b></span>
+    </div>
+    <div class="menu" role="menu" aria-label="Santorini actions">
+      <button type="button" role="menuitem" tabindex="-1" data-a="Shared"><svg viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>Share</button>
+      <button type="button" role="menuitem" tabindex="-1" data-a="Duplicated"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M4 16V5a2 2 0 0 1 2-2h11"/></svg>Duplicate</button>
+      <button type="button" role="menuitem" tabindex="-1" data-a="Moved to trip"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Move to trip</button>
+    </div>
+  </div>
+  <p class="sr-only" role="status"></p>
+</main>
+<script>
+(() => {
+  const ph = document.querySelector(".ph"), menu = document.querySelector(".menu"), items = [...menu.querySelectorAll("button")], sr = document.querySelector("[role=status]");
+  const HOLD = 800, MENU_AT = 450, SLOP = 10;   // hold measured 0.8 s from touch to lift; the menu follows 450 ms into the lift
+  let holdT = 0, menuT = 0, start = null, open = false, dragging = false, closeT = 0;
+
+  function lift() {
+    clearTimeout(closeT); ph.classList.remove("land"); ph.classList.add("lift"); ph.setAttribute("aria-expanded", "true");
+    navigator.vibrate?.(8);
+    menuT = setTimeout(() => { menu.classList.remove("closing"); menu.classList.add("open"); open = true; }, MENU_AT);
+  }
+  function close(label) {
+    clearTimeout(menuT); clearTimeout(holdT); if (!ph.classList.contains("lift")) return;
+    items.forEach((b) => b.classList.remove("hot"));
+    menu.classList.remove("open"); menu.classList.add("closing"); open = false;
+    ph.classList.add("land"); ph.classList.remove("lift"); ph.setAttribute("aria-expanded", "false");
+    closeT = setTimeout(() => menu.classList.remove("closing"), 320);
+    if (label) sr.textContent = `${label}: Santorini`;
+  }
+  const itemAt = (x, y) => { const el = document.elementFromPoint(x, y); return el && el.closest(".menu.open button"); };
+  const hot = (b) => items.forEach((i) => i.classList.toggle("hot", i === b));
+
+  /* press, hold 0.8 s, and either release (menu stays) or slide onto an action and release (picks it) */
+  ph.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0) return;
+    if (ph.classList.contains("lift")) { close(); return; }          // tapping the lifted card puts it back
+    ph.setPointerCapture(e.pointerId); start = [e.clientX, e.clientY]; dragging = true;
+    holdT = setTimeout(lift, HOLD);
+  });
+  ph.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    if (!ph.classList.contains("lift")) { if (Math.hypot(e.clientX - start[0], e.clientY - start[1]) > SLOP) { clearTimeout(holdT); dragging = false; } return; }
+    hot(itemAt(e.clientX, e.clientY));
+  });
+  ph.addEventListener("pointerup", (e) => {
+    if (!dragging) return; dragging = false; clearTimeout(holdT);
+    const b = open && itemAt(e.clientX, e.clientY); if (b) close(b.dataset.a);
+  });
+  ph.addEventListener("pointercancel", () => { dragging = false; clearTimeout(holdT); });
+  ph.addEventListener("contextmenu", (e) => { e.preventDefault(); if (!ph.classList.contains("lift")) { clearTimeout(holdT); dragging = false; lift(); } });
+  ph.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " " || e.key === "ContextMenu") { e.preventDefault(); if (ph.classList.contains("lift")) close(); else { lift(); setTimeout(() => items[0].focus(), MENU_AT + 20); } }
+  });
+
+  /* a separate tap on an action works too */
+  items.forEach((b, i) => {
+    b.addEventListener("pointerdown", () => hot(b));
+    b.addEventListener("pointerleave", () => b.classList.remove("hot"));
+    b.addEventListener("click", () => { close(b.dataset.a); ph.focus({ preventScroll: true }); });
+    b.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); items[(i + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length].focus(); }
+      if (e.key === "Escape") { close(); ph.focus(); }
+    });
+  });
+  document.addEventListener("pointerdown", (e) => { if (open && !e.target.closest(".menu, .ph")) close(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && ph.classList.contains("lift")) { close(); ph.focus(); } });
+  window.__lp = { lift, close, hot: (i) => hot(items[i]) };
+
+  /* ?demo (recording only): hold → menu → slide to Duplicate → release, like the reference; twice */
+  if (/[?&]demo\b/.test(location.search)) {
+    const run = () => { setTimeout(lift, HOLD); setTimeout(() => hot(items[1]), 2900); setTimeout(() => close("Duplicated"), 4100); };
+    setTimeout(run, 500); setTimeout(run, 6000);
+  }
+})();
+</script>
+</body>
+</html>

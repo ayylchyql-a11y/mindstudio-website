@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Send button · the button folds into a paper plane</title>
+<link rel="stylesheet" href="_glass/glass.css">
+<link rel="stylesheet" href="_glass/ep28.css">
+<style>
+  /* Measured off the recording at 3 frame px = 1 CSS px; times are real time (the clip plays at 3×). */
+  .card { --accent: #479488; }
+  .card.f28 .dot { top: 19px; }
+  .trip { display: flex; align-items: flex-start; margin-top: 16px; height: 68px; }
+  .trip img { width: 70px; height: 68px; border-radius: 11px; object-fit: cover; flex: none; box-shadow: 0 6px 14px -8px rgb(0 0 0 / .45); }
+  .trip .txt { flex: 1; min-width: 0; margin-left: 12px; margin-top: 5px; }
+  .trip .txt > * { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .trip b { display: block; font-size: 16px; line-height: 20px; font-weight: 600; letter-spacing: -.01em; }
+  .trip .txt span { display: block; margin-top: 3px; font-size: 10.75px; line-height: 16px; font-weight: 500; opacity: .8; }
+  .tag { margin-top: 8px; height: 19px; padding: 0 7px; border-radius: 10px; background: rgb(76 65 80); font-size: 8px; line-height: 19px; font-weight: 700; letter-spacing: .02em; }
+  hr { border: 0; height: 1px; background: rgb(255 255 255 / .3); margin-top: 12px; }
+
+  /* the button: white → pressed (.975) → ghost → dark plum once it has been folded away */
+  .send { position: relative; display: block; width: 100%; height: 49px; margin-top: 14px; border-radius: 25px; isolation: isolate;
+    transition: transform .3s cubic-bezier(.22,.61,.36,1); }
+  .send::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: #f6f4f7; z-index: -1; transition: background-color .15s, opacity .15s; }
+  .send .lbl { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: #1f1d22;
+    transition: opacity .15s; }
+  .send .lbl svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .send.down { transform: scale(.975); }
+  .send.down.ghost::before { opacity: .38; }          /* after ~300 ms held the face goes translucent */
+  .send.down.ghost .lbl.idle { opacity: .35; }
+  .send.dark::before { background: #3c3344; opacity: 1; transition: none; }
+  .send.dark { transform: none; transition: none; }
+  .send .lbl.sending, .send .lbl.sent { color: #fff; opacity: 0; }
+  .send .lbl.sent svg { width: 16px; height: 16px; stroke-width: 2.4; }
+  .send.dark .lbl.idle { opacity: 0; transition: none; }
+  .send[data-s="sending"] .lbl.sending, .send[data-s="sent"] .lbl.sent { opacity: 1; }
+  .send .lbl.sent { transition: opacity .15s, transform .15s; transform: scale(.96); }
+  .send[data-s="sent"] .lbl.sent { transform: none; }
+
+  /* the folding paper + the plane live in one overlay above the card */
+  svg.fx { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; z-index: 5; }
+</style>
+</head>
+<body>
+<main class="card f28" aria-label="Share your trip">
+  <i class="dot" aria-hidden="true"></i>
+  <header><h2>Share your trip</h2><p>A little something to send</p></header>
+  <div class="trip">
+    <img src="_travel/lisbon-tram.jpg" alt="" draggable="false">
+    <div class="txt"><b>Lisbon getaway</b><span>Portugal · 3 days of exploring</span></div>
+    <span class="tag">TRIP GUIDE</span>
+  </div>
+  <hr>
+  <button type="button" class="send" data-s="idle">
+    <span class="lbl idle">Share trip <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    <span class="lbl sending" aria-hidden="true">Sending…</span>
+    <span class="lbl sent" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></svg>Trip sent</span>
+  </button>
+  <p class="sr sr-only" role="status"></p>
+  <svg class="fx" aria-hidden="true">
+    <g class="plane"><polygon class="pl" fill="#f4f4ef"/><polygon class="pr" fill="#dce4e0"/></g>
+    <g class="trail" fill="none" stroke="#fff" stroke-width="1.1" stroke-dasharray="6 4" stroke-linecap="round"><path/><path/><path/></g>
+  </svg>
+</main>
+<script>
+(() => {
+  const card = document.querySelector(".card"), btn = document.querySelector(".send"), sr = document.querySelector(".sr");
+  const fx = document.querySelector("svg.fx"), pl = fx.querySelector(".pl"), pr = fx.querySelector(".pr"), plane = fx.querySelector(".plane"), trail = fx.querySelector(".trail"), trails = [...trail.children];
+
+  /* Fold keyframes, in recording coordinates: the button is 356 × 49 at (18,165) inside the 391 px card.
+     Each wing keeps four points so the shapes can be interpolated point by point:
+     left  = outer corner → wing tip, inner-top → nose, inner-bottom ×2 → keel
+     right = inner-top → nose, outer corner → wing tip, inner-bottom ×2 → keel.          ms after release */
+  const K = [
+    [0,   [[22,165],[196,165],[196,214],[22,214]],   [[196,165],[370,165],[370,214],[196,214]]],
+    [150, [[53,166],[196,166],[196,212],[56,212]],   [[196,166],[360,166],[348,212],[196,212]]],
+    [250, [[115,168],[176,168],[196,204],[118,204]], [[196,168],[317,168],[300,204],[196,204]]],
+    [350, [[143,186],[186,170],[191,201],[191,201]], [[196,171],[292,186],[197,201],[197,201]]],
+    [450, [[146,192],[188,172],[192,199],[192,199]], [[193,172],[258,194],[197,199],[197,199]]],
+    [550, [[158,201],[194,173],[194,199],[194,199]], [[195,173],[236,202],[195,199],[195,199]]],
+    [700, [[165,205],[194.5,173],[194.5,199],[194.5,199]], [[194.5,173],[225,205],[194.5,199],[194.5,199]]],
+  ];
+  const C0 = [194.5, 190];                      // the finished plane's centre
+  const FLY = { lift: [800, 1000], go: [950, 2000], to: [280, 112], turn: [850, 1250], fade: [1900, 2100] };
+  // three dashed speed lines drawn once at the take-off point (they stay put; the plane flies past them)
+  const TRAIL = [[[205,166],[266,138]], [[207,172],[269,144]], [[210,178],[272,150]]], TRAIL_T = { in: [950, 1050], out: [2000, 2300] };
+  const T = { sending: 2450, sendingOut: 4050, sent: 4350 };   // label timings, measured
+  const ease = (t) => t < .5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+  const clamp = (v) => Math.max(0, Math.min(1, v));
+  const prog = (t, [a, b]) => clamp((t - a) / (b - a));
+  const bez = (x1, y1, x2, y2) => (x) => {        // CSS cubic-bezier solver (x → y)
+    let t = x; for (let i = 0; i < 6; i++) { const cx = 3 * x1 * t * (1 - t) ** 2 + 3 * x2 * t * t * (1 - t) + t ** 3 - x; const d = 3 * x1 * (1 - t) ** 2 + 6 * (x2 - x1) * t * (1 - t) + 3 * (1 - x2) * t * t; if (Math.abs(d) < 1e-6) break; t = clamp(t - cx / d); }
+    return 3 * y1 * t * (1 - t) ** 2 + 3 * y2 * t * t * (1 - t) + t ** 3; };
+  const flyEase = bez(.3, .15, .55, 1);
+
+  let map = (p) => p;
+  const measure = () => {                       // recording px → this card's px (the card can be narrower than 391)
+    const c = card.getBoundingClientRect(), b = btn.getBoundingClientRect(), sx = b.width / 356;
+    const bx = b.left - c.left, by = b.top - c.top;
+    map = ([x, y]) => [bx + (x - 18) * sx, by + (y - 165)];
+  };
+  const pts = (arr) => arr.map((p) => map(p).map((v) => v.toFixed(1)).join(",")).join(" ");
+  const lerpPts = (A, B, k) => A.map((p, i) => [p[0] + (B[i][0] - p[0]) * k, p[1] + (B[i][1] - p[1]) * k]);
+
+  function shapeAt(t) {
+    let i = 0; while (i < K.length - 2 && t > K[i + 1][0]) i++;
+    const [ta, La, Ra] = K[i], [tb, Lb, Rb] = K[i + 1], k = ease(clamp((t - ta) / (tb - ta)));
+    return [lerpPts(La, Lb, k), lerpPts(Ra, Rb, k)];
+  }
+
+  let raf = 0, t0 = 0, timers = [];
+  function frame(now) {
+    const t = now - t0;
+    if (t < 700) {
+      const [L, R] = shapeAt(t); plane.removeAttribute("transform");
+      pl.setAttribute("points", pts(L)); pr.setAttribute("points", pts(R)); plane.style.opacity = 1;
+    } else {
+      // the finished plane, drawn around its own centre and moved as one piece
+      const [L, R] = shapeAt(700), c = map(C0);
+      const rel = (arr) => arr.map((p) => { const q = map(p); return [q[0] - c[0], q[1] - c[1]]; });
+      const lift = ease(prog(t, FLY.lift)) * -5, g = flyEase(prog(t, FLY.go)), to = map(FLY.to);
+      const x = c[0] + (to[0] - c[0]) * g, y = c[1] + lift + (to[1] - c[1]) * g;
+      const turn = ease(prog(t, FLY.turn)), rot = 22 * turn, sc = 1 + .07 * turn;   // banks 22° clockwise and grows 7% as it climbs
+      plane.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot.toFixed(2)}) scale(${sc.toFixed(3)})`);
+      pl.setAttribute("points", rel(L).map((p) => p.map((v) => v.toFixed(1)).join(",")).join(" "));
+      pr.setAttribute("points", rel(R).map((p) => p.map((v) => v.toFixed(1)).join(",")).join(" "));
+      const fade = 1 - prog(t, FLY.fade); plane.style.opacity = fade;
+      TRAIL.forEach(([a, b], i) => { const p = map(a), q = map(b); trails[i].setAttribute("d", `M${p[0].toFixed(1)} ${p[1].toFixed(1)}L${q[0].toFixed(1)} ${q[1].toFixed(1)}`); });
+      trail.style.opacity = .75 * prog(t, TRAIL_T.in) * (1 - prog(t, TRAIL_T.out));
+    }
+    if (t < 2300) raf = requestAnimationFrame(frame); else { pl.removeAttribute("points"); pr.removeAttribute("points"); trails.forEach((p) => p.setAttribute("d", "")); }
+  }
+
+  const later = (ms, f) => timers.push(setTimeout(f, ms));
+  let ghostT = 0;
+  function press() { if (btn.dataset.s !== "idle") return; btn.classList.add("down"); clearTimeout(ghostT); ghostT = setTimeout(() => btn.classList.add("ghost"), 300); }
+  function cancel() { clearTimeout(ghostT); btn.classList.remove("down", "ghost"); }
+  function send() {
+    cancel(); measure();
+    btn.dataset.s = "sending-fold"; btn.classList.add("dark"); btn.disabled = true;
+    cancelAnimationFrame(raf); t0 = performance.now(); raf = requestAnimationFrame(frame);
+    later(T.sending, () => { btn.dataset.s = "sending"; sr.textContent = "Sending…"; });
+    later(T.sendingOut, () => { btn.dataset.s = "sending-out"; });
+    later(T.sent, () => { btn.dataset.s = "sent"; btn.disabled = false; btn.setAttribute("aria-label", "Trip sent. Tap to share again"); sr.textContent = "Trip sent"; });
+  }
+  function reset() {
+    timers.forEach(clearTimeout); timers = []; cancelAnimationFrame(raf);
+    btn.dataset.s = "idle"; btn.classList.remove("dark"); btn.disabled = false; btn.removeAttribute("aria-label"); sr.textContent = "";
+    pl.removeAttribute("points"); pr.removeAttribute("points"); trails.forEach((p) => p.setAttribute("d", ""));
+  }
+
+  btn.addEventListener("pointerdown", (e) => { if (e.button === 0) press(); });
+  ["pointerleave", "pointercancel"].forEach((ev) => btn.addEventListener(ev, cancel));
+  btn.addEventListener("click", () => {
+    if (btn.dataset.s === "sent") { reset(); return; }
+    if (btn.dataset.s === "idle") send();     // released outside the button = no click = no send
+  });
+  /* verification only: draw the state at a given ms after release */
+  function seek(ms) {
+    reset(); measure(); btn.classList.add("dark"); t0 = 0; frame(ms); cancelAnimationFrame(raf);
+    btn.dataset.s = ms >= T.sent ? "sent" : ms >= T.sendingOut ? "sending-out" : ms >= T.sending ? "sending" : "sending-fold";
+  }
+  window.__plane = { send, reset, press, cancel, seek };
+
+  /* ?demo (recording only): press 0.9 s like the reference, let it fly, tap "Trip sent" to reset, repeat */
+  if (/[?&]demo\b/.test(location.search)) {
+    const run = () => { press(); setTimeout(send, 900); setTimeout(reset, 7600); };
+    setTimeout(run, 600); setTimeout(run, 8600);
+  }
+})();
+</script>
+</body>
+</html>

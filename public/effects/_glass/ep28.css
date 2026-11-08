@@ -1,0 +1,13 @@
+/* Episode-28 overrides on top of glass.css: this set's card is lighter and warmer than the ep-12 one,
+   the header sits 5 px higher, and every card carries a 5 px accent dot top right.
+   Colours sampled from the recording at nine points per card, averaged over the five cards. */
+.card.f28 { height: 261px;
+  background:
+    radial-gradient(110% 85% at 100% 0%, rgb(204 164 140 / .95), transparent 62%),
+    radial-gradient(85% 75% at 100% 100%, rgb(176 154 182 / .95), transparent 62%),
+    radial-gradient(85% 85% at 0% 100%, rgb(134 180 163 / .95), transparent 62%),
+    radial-gradient(70% 60% at 0% 0%, rgb(168 178 178 / .9), transparent 70%),
+    linear-gradient(180deg, #a3a499, #97998d); }
+.card.f28 > header { margin-top: -5px; }
+.card.f28 .dot { position: absolute; top: 21px; right: 18px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

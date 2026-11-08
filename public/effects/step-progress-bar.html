@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Step progress · check, fill the line, light the next step</title>
+<link rel="stylesheet" href="_glass/glass.css">
+<link rel="stylesheet" href="_glass/ep28.css">
+<style>
+  /* Measured off the recording at 3 frame px = 1 CSS px; times are real time (the clip plays at 3×). */
+  .card { --accent: #a87fd6; --fill: #ae7cd2; }
+  .steps { position: relative; height: 66px; margin-top: 37.5px; }
+  /* node centres sit at 11.3 %, 48.6 % and 85.9 % of the row; the track runs from the first centre to 89 % */
+  .track, .fill { position: absolute; left: 11.3%; top: 15px; height: 3px; border-radius: 2px; }
+  .track { right: 11%; background: rgb(255 255 255 / .38); }
+  .fill { width: 0; background: var(--fill); transition: width .5s cubic-bezier(.45,0,.25,1); }
+  .node { position: absolute; top: 0; width: 33px; height: 33px; margin-left: -16.5px; border-radius: 50%; display: grid; place-items: center;
+    border: 1.5px solid rgb(255 255 255 / .78); background: rgb(255 255 255 / .12); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+    font-size: 15px; font-weight: 700; color: #fff; transition: background-color .15s, border-color .15s, color .15s, transform .15s; }
+  .node:nth-of-type(1) { left: 11.3%; } .node:nth-of-type(2) { left: 48.6%; } .node:nth-of-type(3) { left: 85.9%; }
+  .node.on, .node.done { background: #fdfefe; border-color: #fdfefe; color: #1f1d22; }
+  .node:not(:disabled):active { transform: scale(.92); }
+  .node:disabled { cursor: default; }
+  .node .n, .node svg { grid-area: 1 / 1; transition: opacity .15s, transform .2s cubic-bezier(.25,1,.5,1); }
+  .node svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transform: scale(.4); }
+  .node.done .n { opacity: 0; transform: scale(.6); }
+  .node.done svg { opacity: 1; transform: none; }
+  .lbl { position: absolute; top: 40px; width: 80px; margin-left: -40px; text-align: center; font-size: 10.25px; line-height: 14px; font-weight: 600; }
+  .lbl:nth-of-type(1) { left: 11.3%; } .lbl:nth-of-type(2) { left: 48.6%; } .lbl:nth-of-type(3) { left: 85.9%; }
+
+  .next { display: flex; align-items: center; height: 66px; margin-top: 5px; padding: 0 10px; border-radius: 15px; background: rgb(60 54 52 / .9); }
+  .next img { width: 45px; height: 45px; border-radius: 10px; object-fit: cover; flex: none; }
+  .next .t { flex: 1; min-width: 0; align-self: flex-start; margin-top: 13.5px; margin-left: 12px; transition: opacity .12s; }
+  .next .t.swap { opacity: 0; }
+  .next small { display: block; font-size: 8px; line-height: 10px; font-weight: 600; letter-spacing: .14em; opacity: .78; }
+  .next b { display: block; margin-top: 4px; font-size: 13.75px; line-height: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .next button { width: 25px; height: 25px; border-radius: 50%; background: #f4f3f4; color: #1f1d22; display: grid; place-items: center; flex: none; transition: transform .15s; }
+  .next button:active { transform: scale(.9); }
+  .next button svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+<main class="card f28" aria-label="Your trip plan">
+  <header><h2>Your trip plan</h2><p>One step at a time</p></header>
+  <div class="steps" role="list">
+    <i class="track"></i><i class="fill"></i>
+    <button type="button" class="node on" role="listitem"><span class="n">1</span><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></svg></button>
+    <button type="button" class="node" role="listitem" disabled><span class="n">2</span><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></svg></button>
+    <button type="button" class="node" role="listitem" disabled><span class="n">3</span><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></svg></button>
+    <span class="lbl">Choose</span><span class="lbl">Prepare</span><span class="lbl">Enjoy</span>
+  </div>
+  <div class="next">
+    <img src="_travel/lisbon-tram.jpg" alt="">
+    <div class="t" aria-live="polite"><small>UP NEXT</small><b>Choose a destination</b></div>
+    <button type="button" class="go" aria-label="Complete this step"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
+</main>
+<script>
+(() => {
+  const STEPS = ["Choose", "Prepare", "Enjoy"], NEXT = ["Choose a destination", "Make your plans", "Pack and go"];
+  const nodes = [...document.querySelectorAll(".node")], fill = document.querySelector(".fill"), t = document.querySelector(".next .t"), go = document.querySelector(".go");
+  const small = t.querySelector("small"), title = t.querySelector("b");
+  const ARROW = '<path d="M5 12h14M13 6l6 6-6 6"/>', AGAIN = '<path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4.5h4.5"/>';
+  // centres as % of the row; the fill is drawn from the first centre, so its width is a difference of centres
+  const C = [11.3, 48.6, 85.9];
+  let step = 0, busy = false, timers = [];
+  const later = (ms, f) => timers.push(setTimeout(f, ms));
+  const label = () => nodes.forEach((n, i) => n.setAttribute("aria-label", `Step ${i + 1}, ${STEPS[i]}: ${i < step ? "done" : i === step ? "current — activate to complete" : "to do"}`));
+
+  function text(sm, b) { t.classList.add("swap"); later(120, () => { small.textContent = sm; title.textContent = b; t.classList.remove("swap"); }); }
+
+  /* one completion = check (0) → line fills to the next centre (150–650 ms) → next node lights (650) → caption swaps (800) */
+  function complete() {
+    if (busy) return;
+    if (step >= 3) { reset(); return; }
+    busy = true;
+    const i = step; nodes[i].classList.add("done"); nodes[i].disabled = true; step++;
+    if (i < 2) {
+      later(150, () => { fill.style.width = `${C[i + 1] - C[0]}%`; });
+      later(650, () => { nodes[i + 1].classList.add("on"); nodes[i + 1].disabled = false; });
+      later(800, () => { text("UP NEXT", NEXT[i + 1]); });
+      later(800, () => { busy = false; label(); });
+    } else {
+      later(150, () => { text("ALL SET", "Enjoy Lisbon"); go.innerHTML = `<svg viewBox="0 0 24 24">${AGAIN}</svg>`; go.setAttribute("aria-label", "Start over"); busy = false; label(); });
+    }
+  }
+  function reset() {
+    timers.forEach(clearTimeout); timers = []; busy = false; step = 0;
+    nodes.forEach((n, i) => { n.classList.remove("done", "on"); n.disabled = i > 0; }); nodes[0].classList.add("on");
+    fill.style.transition = "width .4s cubic-bezier(.45,0,.25,1)"; fill.style.width = "0";
+    setTimeout(() => (fill.style.transition = ""), 420);
+    text("UP NEXT", NEXT[0]); go.innerHTML = `<svg viewBox="0 0 24 24">${ARROW}</svg>`; go.setAttribute("aria-label", "Complete this step"); label();
+  }
+  nodes.forEach((n, i) => n.addEventListener("click", () => { if (i === step) complete(); }));
+  go.addEventListener("click", complete);
+  label();
+  window.__sp = { complete, reset };
+
+  /* ?demo (recording only): complete all three, then start over */
+  if (/[?&]demo\b/.test(location.search)) { const run = () => { [700, 2400, 4100, 6000].forEach((ms) => setTimeout(complete, ms)); }; run(); setTimeout(run, 7600); }
+})();
+</script>
+</body>
+</html>

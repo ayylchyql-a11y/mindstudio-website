@@ -44,6 +44,16 @@ const blurbs: Record<string, string> = {
     "Form feedback that is hard to miss and quick to forgive: the empty field shakes, turns red and explains itself, and the warning disappears as soon as you type a valid answer.",
   "select-centered":
     "A dropdown that opens right where you are looking, with the current choice staying in place and the other options unfolding around it — the way good native menus behave.",
+  "paper-plane-send":
+    "A send button that shows the message leaving: the button folds itself into a paper plane and flies off, then says 'Sending…' and 'Trip sent' — a clear, cheerful confirmation for sharing a trip, sending an invite or submitting a booking.",
+  "long-press-quick-menu":
+    "A long-press menu for cards: hold a saved item and it lifts with its actions right beside it — share, duplicate, move — so common actions are one gesture away without cluttering every card with buttons.",
+  "multi-select-action-bar":
+    "Selecting several items at once without losing your place: the moment you tick something, a compact bar appears with the count and what you can do with them, and it goes away again when nothing is selected.",
+  "filter-chips-results":
+    "Search with quick category filters: tap a chip and the highlight glides to it while the results swap smoothly, so it always feels like the same list being refined rather than a page reloading.",
+  "step-progress-bar":
+    "A step-by-step progress bar that celebrates each finished step and tells you what comes next — useful for bookings, onboarding, checkouts and any task that takes a few stages.",
   "pagination-styles":
     "Eight ways to move between the pages of a list — squares, pills, dots, boxes, a sliding track, a compact counter, a progress bar and numbered steps — each one working, with its own small animation when the page changes. A quick way to choose the one that fits a table, a gallery or a checkout.",
   "crystal-bloom-hero":

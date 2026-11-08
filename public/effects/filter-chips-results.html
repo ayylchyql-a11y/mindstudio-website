@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Filter chips · the highlight slides, the results swap in turn</title>
+<link rel="stylesheet" href="_glass/glass.css">
+<link rel="stylesheet" href="_glass/ep28.css">
+<style>
+  /* Measured off the recording at 3 frame px = 1 CSS px; times are real time (the clip plays at 3×). */
+  .card { --accent: #d39a3c; }
+  .search { display: flex; align-items: center; gap: 7px; height: 28px; margin-top: 10px; padding: 0 9px; border-radius: 14px; background: var(--row); border: 1px solid var(--row-line); }
+  .search svg { width: 11px; height: 11px; flex: none; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; opacity: .85; }
+  .search input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: none; color: #fff; font: inherit; font-size: 11.25px; }
+  .search input::placeholder { color: rgb(255 255 255 / .78); }
+  .search:focus-within { border-color: rgb(255 255 255 / .6); }
+
+  .chips { position: relative; display: flex; gap: 4px; margin-top: 9px; height: 24px; }
+  .chips button { position: relative; z-index: 1; width: 62px; height: 24px; border-radius: 12px; font-size: 10px; font-weight: 600; transition: color .2s; }
+  .chips button[aria-pressed="true"] { color: #1f1d22; }
+  .pill { position: absolute; top: 0; height: 24px; border-radius: 12px; background: #f5f6f3; box-shadow: 0 4px 10px -6px rgb(0 0 0 / .35); }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 10px; }
+  .slot { position: relative; height: 105px; border-radius: 13px; overflow: hidden; background: rgb(255 255 255 / .12); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .32); }
+  .slot .in { position: absolute; inset: 0; opacity: 0; }
+  .slot .in.show { opacity: 1; filter: none; transition: opacity .25s ease-out, filter .25s ease-out; }
+  .slot .in.enter { opacity: 0; filter: blur(6px); }
+  .slot .in.leave { opacity: 0; transition: opacity .25s ease-in; }
+  .slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .slot .in::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgb(0 0 0 / .38)); }
+  .slot b { position: absolute; left: 10px; bottom: 8px; z-index: 1; display: flex; align-items: center; gap: 4px; font-size: 13.5px; line-height: 16px; font-weight: 700; letter-spacing: -.01em; transition: transform .25s ease-out; }
+  .slot .enter b { transform: translateY(4px); }
+  .slot b::before { content: ""; width: 3px; height: 13px; border-radius: 2px; background: #d39a3c; }
+  .empty { position: absolute; left: 18px; right: 18px; top: 168px; text-align: center; font-size: 12px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .empty.on { opacity: .8; }
+</style>
+</head>
+<body>
+<main class="card f28" aria-label="Explore places">
+  <header><h2>Explore places</h2><p>Find your next stop</p></header>
+  <label class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg><input type="search" placeholder="Search destinations" aria-label="Search destinations" autocomplete="off"></label>
+  <div class="chips" role="group" aria-label="Filter">
+    <i class="pill" aria-hidden="true"></i>
+    <button type="button" aria-pressed="true" data-k="all">All</button>
+    <button type="button" aria-pressed="false" data-k="coast">Coast</button>
+    <button type="button" aria-pressed="false" data-k="city">City</button>
+  </div>
+  <div class="grid" aria-live="polite"><div class="slot"></div><div class="slot"></div></div>
+  <p class="empty">No places match</p>
+</main>
+<script>
+(() => {
+  const P = { lisbon: ["Lisbon", "_travel/lisbon-tram.jpg"], prague: ["Prague", "_travel/prague.jpg"], santorini: ["Santorini", "_travel/santorini.jpg"], iceland: ["Iceland", "_travel/hiker.jpg"] };
+  const SETS = { all: ["lisbon", "prague", "santorini", "iceland"], coast: ["santorini", "iceland"], city: ["prague", "lisbon"] };
+  Object.values(P).forEach(([, src]) => { const i = new Image(); i.src = src; });   // swaps never wait on the network
+
+  const chips = [...document.querySelectorAll(".chips button")], pill = document.querySelector(".pill"), slots = [...document.querySelectorAll(".slot")];
+  const input = document.querySelector("input"), empty = document.querySelector(".empty");
+  let cat = "all", shown = [], timers = [];
+
+  /* the highlight: its leading edge leaves first (220 ms), the trailing edge follows (300 ms), so it stretches a little on the way */
+  function placePill(btn, animate) {
+    const L = btn.offsetLeft, R = btn.parentElement.clientWidth - (btn.offsetLeft + btn.offsetWidth);
+    const right = L > pill.offsetLeft;
+    pill.style.transition = !animate ? "none" : right
+      ? "right .22s cubic-bezier(.3,.7,.4,1), left .3s cubic-bezier(.5,0,.3,1) .04s"
+      : "left .22s cubic-bezier(.3,.7,.4,1), right .3s cubic-bezier(.5,0,.3,1) .04s";
+    pill.style.left = L + "px"; pill.style.right = R + "px";
+  }
+
+  const later = (ms, f) => timers.push(setTimeout(f, ms));
+  function render(keys) {
+    const next = keys.slice(0, 2);
+    if (next.join() === shown.join()) return;          // check first: an unchanged result must not cancel a swap in flight
+    timers.forEach(clearTimeout); timers = [];
+    // old cards fade out (250 ms), the glass frames stay; 150 ms later the new ones fade in from a 6 px blur, 150 ms apart
+    slots.forEach((s) => s.querySelector(".in")?.classList.replace("show", "leave"));
+    empty.classList.remove("on");
+    later(400, () => {
+      slots.forEach((s, i) => {
+        s.innerHTML = "";
+        const k = next[i]; if (!k) return;
+        const [name, src] = P[k];
+        s.insertAdjacentHTML("beforeend", `<div class="in enter"><img src="${src}" alt=""><b>${name}</b></div>`);
+      });
+      if (!next.length) empty.classList.add("on");
+      slots.forEach((s, i) => later(i * 150 + 16, () => { const el = s.querySelector(".in"); if (el) { el.getBoundingClientRect(); el.classList.replace("enter", "show"); } }));
+    });
+    shown = next;
+  }
+  const results = () => { const q = input.value.trim().toLowerCase(); return SETS[cat].filter((k) => !q || P[k][0].toLowerCase().includes(q)); };
+
+  function pick(btn) {
+    if (btn.dataset.k === cat) return;
+    chips.forEach((c) => c.setAttribute("aria-pressed", c === btn ? "true" : "false"));
+    placePill(btn, true); cat = btn.dataset.k; render(results());
+  }
+  chips.forEach((c) => c.addEventListener("click", () => pick(c)));
+  let qT = 0; input.addEventListener("input", () => { clearTimeout(qT); qT = setTimeout(() => render(results()), 220); });
+
+  // first paint: no animation
+  placePill(chips[0], false);
+  shown = SETS.all.slice(0, 2);
+  slots.forEach((s, i) => { const [name, src] = P[shown[i]]; s.innerHTML = `<div class="in show"><img src="${src}" alt=""><b>${name}</b></div>`; });
+  window.__fc = { pick: (i) => pick(chips[i]) };
+
+  /* ?demo (recording only): All → Coast → City → All */
+  if (/[?&]demo\b/.test(location.search)) [[900, 1], [3600, 2], [6300, 0], [9000, 1]].forEach(([ms, i]) => setTimeout(() => pick(chips[i]), ms));
+})();
+</script>
+</body>
+</html>

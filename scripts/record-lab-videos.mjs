@@ -27,7 +27,7 @@ const ROOT = new URL("..", import.meta.url).pathname;
 const PUBLIC = join(ROOT, "public");
 const OUT = join(PUBLIC, "lab-video");
 const TMP = join(ROOT, ".lab-video-tmp");
-const PORT = 8765;
+const PORT = +(process.env.LAB_REC_PORT || 8765);   // 被别的会话占着时：LAB_REC_PORT=8766 node …
 const WIDTH = 960;
 const SECONDS = 8;
 /** 个别样板的 plays 标的是「怎么看」不是「怎么驱动」：bin-eats-label 标 hover，真要点一下才吃标签。 */
@@ -118,6 +118,9 @@ const LONG_SELF = { "slate-card-order": { secs: 17, query: "?clip" }, "receipt-p
   "copy-button-flip": { secs: 9, vw: 710, query: "?demo" },
   "form-error-shake": { secs: 9, vw: 710, query: "?demo" },
   "select-centered": { secs: 9, vw: 710, query: "?demo" },
+  /* @叨叨AI 第 28 集（11-08）：五条都带 ?demo，照原片的点击顺序驱动。 */
+  "paper-plane-send": { secs: 9, vw: 710, query: "?demo" }, "long-press-quick-menu": { secs: 9, vw: 710, query: "?demo" }, "multi-select-action-bar": { secs: 9, vw: 710, query: "?demo" },
+  "filter-chips-results": { secs: 9, vw: 710, query: "?demo" }, "step-progress-bar": { secs: 9, vw: 710, query: "?demo" },
   "frosted-glass-sheet": { secs: 9, vw: 710, query: "?demo" },
   "ring-count-sheet": { secs: 9, vw: 710, query: "?demo" },
   "tick-ruler-sheet": { secs: 9, vw: 710, query: "?demo" },

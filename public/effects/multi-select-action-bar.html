@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Multi-select · an action bar rises with the count</title>
+<link rel="stylesheet" href="_glass/glass.css">
+<link rel="stylesheet" href="_glass/ep28.css">
+<style>
+  /* Measured off the recording at 3 frame px = 1 CSS px; times are real time (the clip plays at 3×). */
+  .card { --accent: #7f8645; }
+  .card.f28 .dot { top: 19px; }
+  .list { margin-top: 12px; display: grid; gap: 6px; }
+  .row { display: flex; align-items: center; height: 43px; padding: 0 7px; border-radius: 12px; width: 100%; text-align: left;
+    background: var(--row); border: 1px solid var(--row-line); transition: background-color .15s; }
+  .row:active { background: rgb(255 255 255 / .22); }
+  .box { position: relative; width: 17px; height: 17px; flex: none; border-radius: 5px; border: 1.5px solid rgb(255 255 255 / .75); background: rgb(255 255 255 / .1);
+    transition: background-color .15s ease-out, border-color .15s ease-out; }
+  .box svg { position: absolute; inset: 1px; width: 12px; height: 12px; fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;
+    opacity: 0; transform: scale(.6); transition: opacity .15s ease-out, transform .15s cubic-bezier(.25,1,.5,1); }
+  .row[aria-checked="true"] .box { background: #71812f; border-color: rgb(255 255 255 / .55); }
+  .row[aria-checked="true"] .box svg { opacity: 1; transform: none; }
+  .clearing .box, .clearing .box svg { transition-duration: .25s; }
+  .row img { width: 35px; height: 35px; margin-left: 8.5px; border-radius: 8px; object-fit: cover; flex: none; }
+  .row .t { margin-left: 9px; min-width: 0; }
+  .row b { display: block; font-size: 13px; line-height: 16px; font-weight: 700; }
+  .row .t > span { display: block; margin-top: 1px; font-size: 9.25px; line-height: 13px; font-weight: 500; opacity: .72; }
+
+  /* the bar: 31 px pill floating 16 px above the card's bottom edge */
+  .bar { position: absolute; left: 30px; right: 30px; bottom: 16px; height: 31px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px;
+    border-radius: 16px; background: rgb(58 54 51 / .9); font-size: 11px; font-weight: 700; z-index: 2;
+    opacity: 0; transform: translateY(8px); visibility: hidden; transition: opacity .35s ease-in, transform .35s ease-in, visibility 0s .35s; }
+  .bar.on { opacity: 1; transform: none; visibility: visible; transition: opacity .2s ease-out, transform .2s cubic-bezier(.22,.61,.36,1), visibility 0s; }
+  .bar button { display: flex; align-items: center; gap: 6px; height: 100%; font-weight: 700; }
+  .bar button:active { opacity: .6; }
+  .bar svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .bar .n { min-width: 62px; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<main class="card f28" aria-label="Your places">
+  <i class="dot" aria-hidden="true"></i>
+  <header><h2>Your places</h2><p>Select for your trip</p></header>
+  <div class="list" role="group" aria-label="Places">
+    <button type="button" class="row" role="checkbox" aria-checked="false"><i class="box"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></svg></i><img src="_travel/lisbon-tram.jpg" alt=""><span class="t"><b>Lisbon</b><span>Portugal</span></span></button>
+    <button type="button" class="row" role="checkbox" aria-checked="false"><i class="box"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></svg></i><img src="_travel/prague.jpg" alt=""><span class="t"><b>Prague</b><span>Czechia</span></span></button>
+    <button type="button" class="row" role="checkbox" aria-checked="false"><i class="box"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></svg></i><img src="_travel/santorini.jpg" alt=""><span class="t"><b>Santorini</b><span>Greece</span></span></button>
+  </div>
+  <div class="bar" role="toolbar" aria-label="Selection">
+    <span class="n" aria-live="polite">0 selected</span>
+    <button type="button" class="add"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Add to trip</span></button>
+    <button type="button" class="clr">Clear</button>
+  </div>
+</main>
+<script>
+(() => {
+  const rows = [...document.querySelectorAll(".row")], bar = document.querySelector(".bar"), n = bar.querySelector(".n"), list = document.querySelector(".list");
+  const add = bar.querySelector(".add span");
+  let doneT = 0;
+  const count = () => rows.filter((r) => r.getAttribute("aria-checked") === "true").length;
+  function sync() {
+    const c = count();
+    if (c) n.textContent = `${c} selected`;               // the number only changes while the bar is up; it fades out showing the last count
+    bar.classList.toggle("on", c > 0); bar.toggleAttribute("inert", c === 0);
+  }
+  rows.forEach((r) => r.addEventListener("click", () => { r.setAttribute("aria-checked", r.getAttribute("aria-checked") === "true" ? "false" : "true"); sync(); }));
+  function clearAll() {
+    list.classList.add("clearing"); rows.forEach((r) => r.setAttribute("aria-checked", "false")); sync();
+    setTimeout(() => list.classList.remove("clearing"), 260);
+  }
+  bar.querySelector(".clr").addEventListener("click", clearAll);
+  bar.querySelector(".add").addEventListener("click", () => {
+    clearTimeout(doneT); add.textContent = `Added ${count()}`;
+    doneT = setTimeout(() => { clearAll(); setTimeout(() => (add.textContent = "Add to trip"), 360); }, 900);
+  });
+  bar.setAttribute("inert", "");
+  window.__ms = { toggle: (i) => rows[i].click(), clearAll };
+
+  /* ?demo (recording only): Lisbon, Prague, Clear — the reference's order and spacing */
+  if (/[?&]demo\b/.test(location.search)) {
+    const run = () => { setTimeout(() => rows[0].click(), 600); setTimeout(() => rows[1].click(), 2300); setTimeout(clearAll, 5800); };
+    run(); setTimeout(run, 7200);
+  }
+})();
+</script>
+</body>
+</html>
