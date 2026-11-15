@@ -43,36 +43,62 @@ const changesSection: LegalSection = {
 
 export const privacy: Record<string, PrivacyDoc> = {
   budget: {
-    updated: { en: "Last updated: June 26, 2026", zh: "最后更新：2026 年 6 月 26 日" },
+    updated: { en: "Last updated: November 15, 2026", zh: "最后更新：2026 年 11 月 15 日" },
     intro: {
-      en: "M Budget keeps your finances private. The developer does not collect, upload, or sell any of your data — your records stay on your own device and in your own iCloud.",
-      zh: "M Budget 尊重你的财务隐私。开发者不收集、不上传、不出售你的任何数据 —— 你的记录只保存在你自己的设备和你自己的 iCloud 中。",
+      en: "M Budget (iPhone, iPad and Android) keeps your finances private. Your personal ledger stays on your own device and in your own cloud backup, needs no account, and is never uploaded to us. Only an Android shared ledger, if you choose to use one, is stored on our server so its members can sync it. We never sell your data or share it with advertisers.",
+      zh: "M Budget（iPhone、iPad 与安卓）尊重你的财务隐私。你的个人账本只保存在你自己的设备和你自己的云备份里，不需要账号，也从不上传给我们。只有当你在安卓上主动使用共享账本时，那本共享账本才会存放在我们的服务器上，供成员之间同步。我们从不出售你的数据，也不与广告商共享。",
     },
     sections: [
       {
         heading: { en: "Information we collect", zh: "我们收集的信息" },
         body: [
           {
-            en: "The developer collects no data. M Budget has no analytics, advertising, or tracking SDKs. It only stores what you enter yourself — transactions, accounts, budgets, category names, an optional display name, and any receipt photos or voice notes you attach.",
-            zh: "开发者不收集任何数据。M Budget 没有接入任何分析、广告或追踪 SDK，只保存你自己录入的内容 —— 交易、账户、预算、分类名、可选的显示名，以及你附加的收据照片或语音备注。",
+            en: "M Budget has no analytics, advertising, or tracking SDKs. It only stores what you enter yourself — transactions, accounts, budgets, category names, an optional display name, and any receipt photos or voice notes you attach.",
+            zh: "M Budget 没有接入任何分析、广告或追踪 SDK，只保存你自己录入的内容 —— 交易、账户、预算、分类名、可选的显示名，以及你附加的收据照片或语音备注。",
           },
         ],
       },
       {
-        heading: { en: "Storage & sync", zh: "数据存储与同步" },
+        heading: { en: "Storage, sync & backup", zh: "数据存储、同步与备份" },
         body: [
           {
-            en: "Your data is stored locally on your device via Apple's SwiftData. If you are signed in to iCloud, it syncs between your own devices through Apple's CloudKit private database — held in your private iCloud storage, governed by Apple's privacy policy, and not accessible to the developer.",
-            zh: "数据通过 Apple 的 SwiftData 存储在你的设备本地。若你登录了 iCloud，数据会通过 Apple 的 CloudKit 私有数据库在你自己的设备间同步 —— 存于你的私人 iCloud 空间，受 Apple 隐私政策管辖，开发者无法访问。",
+            en: "iPhone / iPad: data is stored on your device with Apple's SwiftData. If you turn on iCloud sync, it syncs between your own devices through Apple's CloudKit private database and iCloud Drive backups — held in your private iCloud storage and not accessible to the developer.",
+            zh: "iPhone / iPad：数据通过 Apple 的 SwiftData 存储在设备本地。若你开启 iCloud 同步，数据通过 Apple 的 CloudKit 私有数据库和 iCloud 云盘备份在你自己的设备间同步 —— 存于你的私人 iCloud 空间，开发者无法访问。",
+          },
+          {
+            en: "Android: data is stored on your device in a local database. If Google backup is turned on in your system settings, Android backs up the app's data, encrypted, to your own Google account so it can be restored on a new phone. The developer cannot read these backups.",
+            zh: "安卓：数据存储在设备本地数据库中。若你在系统设置里开启了 Google 备份，安卓会把 App 数据加密备份到你自己的 Google 账号，用于换机恢复。开发者无法读取这些备份。",
           },
         ],
       },
       {
-        heading: { en: "Exchange rates", zh: "货币汇率" },
+        heading: { en: "Shared ledgers", zh: "共享账本" },
         body: [
           {
-            en: "To convert currencies, M Budget fetches public exchange rates from a third-party rates API. These are standard requests that contain none of your personal data.",
-            zh: "为换算货币，M Budget 会从第三方汇率 API 获取公开的货币汇率。这些是标准请求，不包含任何你的个人数据。",
+            en: "Shared ledgers are optional. On iPhone / iPad they use Apple iCloud sharing and are not stored on our server.",
+            zh: "共享账本是可选功能。在 iPhone / iPad 上，共享账本使用 Apple iCloud 共享，不经过我们的服务器。",
+          },
+          {
+            en: "On Android, creating or joining a shared ledger requires signing in with your email address. That ledger is stored on our server, operated for us by Supabase (database hosting in London, United Kingdom), encrypted in transit, and visible only to the members you invite. We store your email address (to sign you in), the display name and avatar you choose for the ledger, and the ledger's own records (transactions, accounts, categories, budgets and rules). Photos and voice notes are not uploaded. When the owner deletes a ledger its records are deleted from the server; to delete your sign-in account and email address, contact us. iPhone and Android cannot join the same shared ledger.",
+            zh: "在安卓上，新建或加入共享账本需要用邮箱登录。这本账本存放在我们的服务器上，由 Supabase 代为托管（数据库位于英国伦敦），传输加密，只有你邀请的成员能看到。我们会保存：你的邮箱（用于登录）、你在账本里设置的显示名和头像，以及这本共享账本自身的记录（交易、账户、分类、预算和规则）。照片和语音备注不会上传。账本创建者删除账本后，服务器上的记录随之删除；如需删除你的登录账号和邮箱，请联系我们。iPhone 与安卓不能加入同一本共享账本。",
+          },
+        ],
+      },
+      {
+        heading: { en: "Third-party services", zh: "第三方服务" },
+        body: [
+          {
+            en: "Exchange rates come from ExchangeRate-API (open.er-api.com) and market prices from Yahoo Finance; these requests contain only currency codes or ticker symbols, never personal data. On iPhone / iPad the App Store lookup service is used to show what's new in an update. On Android, in-app purchases are processed by Google Play Billing — we never see your payment details.",
+            zh: "汇率来自 ExchangeRate-API（open.er-api.com），行情来自 Yahoo Finance，这些请求只包含货币代码或证券代码，不含任何个人数据。在 iPhone / iPad 上会调用 App Store 查询接口显示更新说明。在安卓上，应用内购买由 Google Play 结算处理，我们看不到你的付款信息。",
+          },
+        ],
+      },
+      {
+        heading: { en: "On-device AI", zh: "设备端 AI" },
+        body: [
+          {
+            en: "AI entry, receipt scanning and spending insights run on your device — Apple Intelligence on iPhone / iPad, Gemini Nano on supported Android phones. Your text and images are not uploaded. Speech is recognized on the device whenever possible; otherwise the system speech service (Apple or Google) converts your voice to text. On Android these features use Google ML Kit: models are downloaded from Google on first use, and Google may collect anonymous usage statistics (never your text, images or financial records).",
+            zh: "AI 记账、小票识别与消费洞察都在设备本地运行 —— iPhone / iPad 上用 Apple 智能，支持的安卓手机上用 Gemini Nano。你的文字和图片不会上传。语音尽量在设备上识别；设备不支持时，由系统语音服务（Apple 或 Google）转成文字。安卓上这些功能使用 Google ML Kit：模型首次使用时从 Google 下载，Google 可能收集匿名使用统计（绝不包括你的文字、图片或账目）。",
           },
         ],
       },
@@ -80,8 +106,8 @@ export const privacy: Record<string, PrivacyDoc> = {
         heading: { en: "Permissions", zh: "权限说明" },
         body: [
           {
-            en: "Camera and Photos — to attach a receipt image to a transaction. Microphone — to record a voice note. Face ID / Touch ID — to lock the app. All permissions are optional and processed on-device.",
-            zh: "相机与相册 —— 用于给交易附加收据图片。麦克风 —— 用于录制语音备注。Face ID / Touch ID —— 用于锁定 App。所有权限均为可选，且都在设备本地处理。",
+            en: "Camera and Photos — to attach a receipt image (on Android through the system photo picker, so the app only sees the photos you choose). Microphone and speech recognition — for voice notes and voice entries. Notifications — for budget alerts and reminders. Face ID / Touch ID, fingerprint or face unlock — to lock the app. All permissions are optional.",
+            zh: "相机与相册 —— 给交易附加收据图片（安卓上通过系统照片选择器，App 只能看到你选中的照片）。麦克风与语音识别 —— 语音备注与语音记账。通知 —— 预算提醒与到期提醒。Face ID / Touch ID、指纹或面容解锁 —— 锁定 App。所有权限均为可选。",
           },
         ],
       },
@@ -89,8 +115,8 @@ export const privacy: Record<string, PrivacyDoc> = {
         heading: { en: "Data sharing & deletion", zh: "数据共享与删除" },
         body: [
           {
-            en: "We never share your data with third parties, because we do not hold it. You can delete any record in the app at any time. Uninstalling removes local data; synced data can be cleared in system Settings → your name → iCloud.",
-            zh: "我们从不与第三方共享你的数据，因为我们根本不持有它。你可以随时在 App 内删除任意记录。卸载会移除本地数据；同步数据可在系统「设置 → 你的姓名 → iCloud」中清除。",
+            en: "We never sell or share your data with third parties. Your data only leaves your device when you choose: through your own iCloud or Google backup, or in a shared ledger, whose records are visible only to the members you invite. You can delete any record in the app at any time, or clear everything in Settings → Clear All Data. Uninstalling removes local data.",
+            zh: "我们从不出售你的数据，也不与第三方共享。只有在你主动选择时数据才会离开设备：通过你自己的 iCloud 或 Google 备份，或者放进共享账本 —— 只有你邀请的成员能看到。你可以随时在 App 内删除任意记录，或在「设置 → 清除所有数据」中全部清空。卸载会移除本地数据。",
           },
         ],
       },
@@ -99,7 +125,6 @@ export const privacy: Record<string, PrivacyDoc> = {
       contactSection,
     ],
   },
-
   relax: {
     updated: { en: "Last updated: July 4, 2026", zh: "最后更新：2026 年 7 月 4 日" },
     intro: {
