@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Marumaru · Sushi a nastro · Padova e Veneto</title>
+<meta name="description" content="Marumaru, sushi a nastro a Padova e in Veneto: il colore del piatto è il prezzo. Promozioni della settimana, numero online, asporto.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Shippori+Mincho:wght@600;800&family=Yuji+Syuku&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-menu" viewBox="0 0 32 32"><ellipse cx="16" cy="19" rx="12" ry="5.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M7 17c1.5-5 6-8 11-7.5 3.6.4 6.5 2.6 7.6 5.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M12 11.5l4 6.5M17.5 9.8l2.6 7.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 32 32"><path d="M16 29s-9-9.2-9-15.5a9 9 0 0 1 18 0C25 19.8 16 29 16 29z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="16" cy="13.5" r="3.4" fill="none" stroke="currentColor" stroke-width="2.2"/></symbol>
+    <symbol id="i-ticket" viewBox="0 0 32 32"><path d="M5 8h22v5a3 3 0 0 0 0 6v5H5v-5a3 3 0 0 0 0-6z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 8v16" stroke="currentColor" stroke-width="2" stroke-dasharray="2.2 2.4"/><path d="M16 13.5h7M16 18.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 32 32"><path d="M7 11h18l-1.4 16H8.4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M11.5 11V8.5a4.5 4.5 0 0 1 9 0V11" fill="none" stroke="currentColor" stroke-width="2.2"/><ellipse cx="16" cy="19.5" rx="5" ry="2.6" fill="currentColor"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 32 32"><rect x="9" y="3.5" width="14" height="25" rx="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M14 24.5h4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-scooter" viewBox="0 0 32 32"><circle cx="8" cy="24" r="3.4" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="25" cy="24" r="3.4" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 14h10v6H11.4M14 20h6l3-9h-4M20 20l2.6 1.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 16 16"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-x" viewBox="0 0 16 16"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-sushi" viewBox="0 0 40 28"><ellipse cx="20" cy="19" rx="17" ry="7" fill="#fff" stroke="#2a2420" stroke-width="2.4"/><path d="M6 16c2-7 9-10.5 16-10 6 .4 10 3.4 12 8" fill="#e8463a" stroke="#2a2420" stroke-width="2.4" stroke-linejoin="round"/><path d="M13 9l3 6M20 7.4l2 7M27 8.6l.4 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<!-- ============ HEADER ============ -->
+<header class="mm-head" id="top">
+  <div class="mm-head-band">
+    <div class="mm-head-left">
+      <span class="mm-city">Padova <i>·</i> Veneto</span>
+    </div>
+    <a class="mm-logo" href="#top" aria-label="Marumaru, torna su">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="50" fill="#fff" stroke="#c4161c" stroke-width="13"/>
+        <circle cx="60" cy="60" r="35.5" fill="none" stroke="#c4161c" stroke-width="2.2"/>
+        <text x="60" y="58" text-anchor="middle" font-family="Dela Gothic One, sans-serif" font-size="14" fill="#1d1a17" transform="rotate(-6 60 60)">MARU</text>
+        <text x="60" y="74" text-anchor="middle" font-family="Dela Gothic One, sans-serif" font-size="14" fill="#1d1a17" transform="rotate(-6 60 60)">MARU</text>
+      </svg>
+    </a>
+    <div class="mm-head-right">
+      <button class="mm-status" type="button" id="headStatus" data-open="0" aria-label="Stato del ristorante di Padova Centro">
+        <i></i><span>Padova Centro</span><b>—</b>
+      </button>
+      <button class="mm-burger" id="burger" type="button" aria-label="Apri il menu" aria-expanded="false" aria-controls="drawer"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <nav class="mm-nav" aria-label="Principale">
+    <a href="#menu">Il menu</a>
+    <a href="#ristoranti">Ristoranti</a>
+    <a href="#numero" data-open-queue>Prendi il numero</a>
+    <a href="#asporto" data-open-cart>Asporto e consegna</a>
+    <a href="#consigliati">Promozioni</a>
+    <a href="#faq">Domande frequenti</a>
+    <a href="#notizie">Notizie</a>
+  </nav>
+</header>
+
+<!-- mobile drawer -->
+<div class="mm-drawer" id="drawer" hidden>
+  <div class="mm-drawer-in">
+    <nav aria-label="Menu mobile">
+      <a href="#menu">Il menu <svg><use href="#i-chev"/></svg></a>
+      <a href="#ristoranti">Ristoranti <svg><use href="#i-chev"/></svg></a>
+      <a href="#numero" data-open-queue>Prendi il numero <svg><use href="#i-chev"/></svg></a>
+      <a href="#asporto" data-open-cart>Asporto e consegna <svg><use href="#i-chev"/></svg></a>
+      <a href="#consigliati">Promozioni <svg><use href="#i-chev"/></svg></a>
+      <a href="#faq">Domande frequenti <svg><use href="#i-chev"/></svg></a>
+      <a href="#notizie">Notizie <svg><use href="#i-chev"/></svg></a>
+    </nav>
+    <p class="mm-drawer-status" id="drawerStatus"></p>
+  </div>
+</div>
+
+<!-- ============ RIGHT RAIL (desktop) — magnify column ============ -->
+<aside class="mm-rail" id="rail" aria-label="Scorciatoie">
+  <a class="mm-rail-it" href="#menu"><svg><use href="#i-menu"/></svg><span>Menu</span></a>
+  <a class="mm-rail-it" href="#ristoranti"><svg><use href="#i-pin"/></svg><span>Ristoranti</span></a>
+  <a class="mm-rail-it" href="#numero" data-open-queue><svg><use href="#i-ticket"/></svg><span data-ticket-label>Prendi il<br>numero</span></a>
+  <a class="mm-rail-it" href="#asporto" data-open-cart><svg><use href="#i-bag"/></svg><span>Asporto<br>consegna</span><em class="mm-badge" data-cart-count hidden>0</em></a>
+  <a class="mm-rail-it" href="#app"><svg><use href="#i-phone"/></svg><span>Con l'app<br>risparmi</span></a>
+</aside>
+
+<main>
+
+<!-- ============ HERO · flip-stack campaign banners ============ -->
+<section class="mm-hero" aria-roledescription="carosello" aria-label="Promozioni della settimana">
+  <div class="mm-hero-stage" id="heroStage">
+    <div class="mm-stack" id="stack"></div>
+  </div>
+  <div class="mm-hero-ctl">
+    <a class="mm-ul" href="#consigliati">Tutte le promozioni</a>
+    <div class="mm-dots" id="heroDots" role="tablist" aria-label="Scegli la promozione"></div>
+    <div class="mm-hero-ctl-r">
+      <span class="mm-count" id="heroCount">01 / 04</span>
+      <button class="mm-play" id="heroPlay" type="button" aria-label="Metti in pausa" data-state="play"><i></i></button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONSIGLIATI (wood) ============ -->
+<section class="mm-wood" id="consigliati">
+  <h2 class="mm-ttl"><i class="mm-px" aria-hidden="true"></i>Consigliati della settimana<i class="mm-px mm-px-r" aria-hidden="true"></i></h2>
+  <div class="mm-rec" id="rec" aria-roledescription="carosello" aria-label="Piatti consigliati">
+    <div class="mm-rec-track" id="recTrack"></div>
+    <button class="mm-rec-arrow mm-rec-prev" id="recPrev" type="button" aria-label="Precedente"><svg><use href="#i-chev"/></svg></button>
+    <button class="mm-rec-arrow mm-rec-next" id="recNext" type="button" aria-label="Successivo"><svg><use href="#i-chev"/></svg></button>
+  </div>
+  <div class="mm-rec-ctl">
+    <a class="mm-ul" href="#menu" data-filter-limited>Tutti i piatti a tempo</a>
+    <div class="mm-dots mm-dots-sm" id="recDots" role="tablist" aria-label="Scegli il piatto"></div>
+    <button class="mm-play mm-play-sm" id="recPlay" type="button" aria-label="Metti in pausa" data-state="play"><i></i></button>
+  </div>
+</section>
+
+<!-- ============ YELLOW CAPSULE ============ -->
+<section class="mm-cap-wrap">
+  <button class="mm-capsule" type="button" id="capsule"><svg class="mm-cap-ic" viewBox="0 0 40 28" aria-hidden="true"><use href="#i-sushi"/></svg>Scegli il ristorante e vedi il suo menu</button>
+  <a class="mm-ul mm-ul-red" href="#menu" id="soldoutLink">Cosa è esaurito oggi</a>
+</section>
+
+<!-- ============ THREE CONVERSION CARDS ============ -->
+<section class="mm-cv" id="numero">
+  <button class="mm-cv-card" type="button" data-open-queue>
+    <span class="mm-cv-top">Prendi il numero<svg><use href="#i-chev"/></svg></span>
+    <span class="mm-cv-bot">
+      <svg viewBox="0 0 80 56" aria-hidden="true" class="mm-cv-art"><rect x="14" y="8" width="10" height="34" rx="3" fill="#fff" stroke="#1d1a17" stroke-width="2.4"/><rect x="56" y="8" width="10" height="34" rx="3" fill="#fff" stroke="#1d1a17" stroke-width="2.4"/><rect x="24" y="22" width="32" height="7" rx="2" fill="#f2b51d" stroke="#1d1a17" stroke-width="2.4"/><path d="M40 29v15M30 46h20" stroke="#1d1a17" stroke-width="3" stroke-linecap="round"/><path d="M10 42h18M52 42h18" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>
+      <small id="cvWait">Attesa adesso: —</small>
+    </span>
+  </button>
+  <button class="mm-cv-card" type="button" data-open-cart>
+    <span class="mm-cv-top">Asporto<svg><use href="#i-chev"/></svg></span>
+    <span class="mm-cv-bot">
+      <svg viewBox="0 0 80 56" aria-hidden="true" class="mm-cv-art"><path d="M24 14h32l-2.6 38H26.6z" fill="#fff" stroke="#1d1a17" stroke-width="2.6" stroke-linejoin="round"/><path d="M31 14V9a9 9 0 0 1 18 0v5" fill="none" stroke="#1d1a17" stroke-width="2.6"/><ellipse cx="40" cy="36" rx="9" ry="5" fill="#fff" stroke="#1d1a17" stroke-width="2.2"/><path d="M31.4 34.5c1.4-4.6 5-6.8 9.5-6.4 3.3.3 6 2.2 7.4 5" fill="#e8463a" stroke="#1d1a17" stroke-width="2.2"/></svg>
+      <small>Ritiri quando vuoi tu</small>
+    </span>
+  </button>
+  <button class="mm-cv-card" type="button" data-open-cart="consegna">
+    <span class="mm-cv-top">Consegna<br>a domicilio<svg><use href="#i-chev"/></svg></span>
+    <span class="mm-cv-bot">
+      <svg viewBox="0 0 80 56" aria-hidden="true" class="mm-cv-art"><rect x="10" y="10" width="22" height="20" rx="3" fill="#fff" stroke="#1d1a17" stroke-width="2.4"/><circle cx="21" cy="20" r="6" fill="none" stroke="#c4161c" stroke-width="2.6"/><circle cx="24" cy="44" r="6" fill="#fff" stroke="#1d1a17" stroke-width="2.6"/><circle cx="60" cy="44" r="6" fill="#fff" stroke="#1d1a17" stroke-width="2.6"/><path d="M14 36h24v-6h10l6-12h8M48 30l6 8h6" fill="none" stroke="#1d1a17" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/><path d="M14 36c0-4 3-6 6-6h18" fill="#fff" stroke="#1d1a17" stroke-width="2.4"/></svg>
+      <small>Stessi prezzi del nastro</small>
+    </span>
+  </button>
+</section>
+<p class="mm-cv-links"><a class="mm-ul mm-ul-red" href="#faq" data-faq="2">Come funziona la consegna</a></p>
+
+<!-- ============ BELT · sul nastro adesso ============ -->
+<section class="mm-belt-sec" aria-labelledby="beltTtl">
+  <h2 class="mm-ttl" id="beltTtl"><i class="mm-px" aria-hidden="true"></i>Sul nastro, adesso<i class="mm-px mm-px-r" aria-hidden="true"></i></h2>
+  <p class="mm-lede">Il colore del piatto è il prezzo. Trascina il nastro, tocca un piatto per metterlo nell'asporto.</p>
+  <div class="mm-belt" id="belt">
+    <svg class="mm-belt-svg" id="beltSvg" aria-hidden="true"><path id="beltBand" class="mm-belt-band"/><path id="beltSlats" class="mm-belt-slats"/><path id="beltRail" class="mm-belt-rail"/></svg>
+    <div class="mm-belt-plates" id="beltPlates"></div>
+    <div class="mm-belt-mid">
+      <p class="mm-belt-kicker">un piatto</p>
+      <ul class="mm-legend" id="legend"></ul>
+      <p class="mm-belt-note">Prezzi IVA inclusa, uguali in sala, all'asporto e in consegna.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MENU · filter chips ============ -->
+<section class="mm-menu" id="menu" aria-labelledby="menuTtl">
+  <div class="mm-menu-head">
+    <h2 class="mm-ttl mm-ttl-left" id="menuTtl">Il menu</h2>
+    <button class="mm-store-chip" type="button" id="menuStore"><svg><use href="#i-pin"/></svg><span>Tutti i ristoranti</span><svg class="mm-chev-d"><use href="#i-chev"/></svg></button>
+  </div>
+  <div class="mm-chips" id="chipsPlate" role="group" aria-label="Filtra per colore del piatto"><i class="mm-chip-pill" aria-hidden="true"></i></div>
+  <div class="mm-chips mm-chips-cat" id="chipsCat" role="group" aria-label="Filtra per categoria"><i class="mm-chip-pill" aria-hidden="true"></i></div>
+  <p class="mm-menu-count"><b id="menuCount">0</b> piatti <span id="menuStoreNote"></span></p>
+  <ul class="mm-grid" id="menuGrid" aria-live="polite"></ul>
+  <p class="mm-empty" id="menuEmpty" hidden>Nessun piatto con questi filtri. <button type="button" class="mm-ul mm-ul-red" id="menuReset">Togli i filtri</button></p>
+</section>
+
+<!-- ============ STORE SEARCH ============ -->
+<section class="mm-stores" id="ristoranti" aria-labelledby="storeTtl">
+  <i class="mm-px mm-px-big mm-px-tl" aria-hidden="true"></i><i class="mm-px mm-px-big mm-px-br" aria-hidden="true"></i>
+  <div class="mm-store-frame">
+    <svg class="mm-fish mm-fish-1" viewBox="0 0 180 80" aria-hidden="true"><path d="M8 40c22-26 70-34 112-22 14 4 24 10 32 18l20-16-6 22 6 22-20-16c-8 8-18 14-32 18C78 78 30 66 8 40z"/><circle cx="34" cy="36" r="4"/><path d="M50 22c6 10 6 26 0 36M84 18l6 8M100 20l6 8M92 54l6 8M78 58l6 6"/></svg>
+    <svg class="mm-fish mm-fish-2" viewBox="0 0 90 120" aria-hidden="true"><path d="M45 8c18 0 28 14 28 30 0 12-6 20-12 24M45 8C27 8 17 22 17 38c0 12 6 20 12 24"/><path d="M29 62c-4 12-14 22-22 30M37 64c-2 16-8 30-16 44M45 64v48M53 64c2 16 8 30 16 44M61 62c4 12 14 22 22 30"/><circle cx="36" cy="38" r="3"/><circle cx="54" cy="38" r="3"/></svg>
+    <svg class="mm-fish mm-fish-3" viewBox="0 0 160 90" aria-hidden="true"><path d="M150 46c-20 26-70 34-104 24-12-4-22-10-28-16L4 66l6-20-6-20 14 12c6-6 16-12 28-16 34-10 84-2 104 24z"/><path d="M118 30c-4 10-4 22 0 32M70 28l-6 34M90 28l-6 34"/><circle cx="132" cy="42" r="3.4"/></svg>
+    <svg class="mm-fish mm-fish-4" viewBox="0 0 140 80" aria-hidden="true"><path d="M20 40c20-30 60-36 90-18 10 6 16 14 18 22-6 12-20 20-36 22-30 4-56-6-72-26z"/><path d="M128 44c6-4 10-12 10-20M128 44c4 2 8 8 8 14M60 22c-4 10-4 26 2 36M76 20c-4 10-4 28 2 38M92 22c-4 10-4 26 0 34"/><circle cx="110" cy="38" r="3"/></svg>
+    <div class="mm-store-top">
+      <h2 class="mm-ttl mm-ttl-left" id="storeTtl">Trova il ristorante</h2>
+      <p>Sei ristoranti tra Padova, Abano, Vicenza, Treviso e Mestre. Orari, attesa e numero online, aggiornati adesso.</p>
+    </div>
+    <form class="mm-store-form" id="storeForm" onsubmit="return false">
+      <label class="mm-select"><span>Città</span>
+        <select id="storeCity"><option value="">Tutte le città</option></select>
+      </label>
+      <div class="mm-facets" id="facets" role="group" aria-label="Servizi"></div>
+    </form>
+    <p class="mm-store-count"><b id="storeCount">6</b> ristoranti</p>
+    <ul class="mm-store-list" id="storeList"></ul>
+  </div>
+</section>
+
+<!-- ============ NEWS ============ -->
+<section class="mm-news" id="notizie" aria-labelledby="newsTtl">
+  <h2 class="mm-ttl" id="newsTtl"><i class="mm-px" aria-hidden="true"></i>Notizie<i class="mm-px mm-px-r" aria-hidden="true"></i></h2>
+  <ul class="mm-news-list" id="newsList"></ul>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="mm-faq" id="faq" aria-labelledby="faqTtl">
+  <h2 class="mm-ttl" id="faqTtl"><i class="mm-px" aria-hidden="true"></i>Domande frequenti<i class="mm-px mm-px-r" aria-hidden="true"></i></h2>
+  <div class="mm-faq-list" id="faqList">
+    <details><summary>Come funzionano i colori dei piatti?</summary><p>Ogni piatto sul nastro ha un bordo colorato: rosso €1,90, giallo €2,90, blu €3,90, nero €4,90. A fine pasto contiamo i piatti per colore: niente menu fissi, paghi solo quello che prendi.</p></details>
+    <details><summary>Posso prendere il numero prima di arrivare?</summary><p>Sì. Scegli il ristorante, quante persone siete e se preferite il banco o un box: ricevi un numero con l'attesa stimata. Presentati all'accoglienza quando mancano un paio di gruppi; se arrivi dopo che il numero è passato, ti rimettiamo al primo posto libero.</p></details>
+    <details><summary>Come funziona la consegna?</summary><p>Consegniamo dal ristorante di Padova Centro nei CAP che iniziano con 351. Prezzi uguali a quelli del nastro, minimo d'ordine €15, consegna €2,90 e gratis sopra €35.</p></details>
+    <details><summary>Dove trovo gli allergeni?</summary><p>Ogni piatto ha la sua scheda allergeni al ristorante e sul tablet al tavolo. Se hai un'allergia, dillo all'accoglienza: prepariamo il tuo piatto a parte e lo portiamo al tavolo, non sul nastro.</p></details>
+  </div>
+</section>
+
+<!-- ============ APP BAND ============ -->
+<section class="mm-app" id="app" aria-labelledby="appTtl">
+  <div class="mm-app-in">
+    <div class="mm-phone" aria-hidden="true">
+      <div class="mm-phone-scr">
+        <div class="mm-phone-bar"><b>MARUMARU</b><span>120 pt</span></div>
+        <div class="mm-phone-tk"><small>Il tuo numero</small><strong>T 047</strong><em>≈ 18 min</em></div>
+        <div class="mm-phone-plates"><i style="--c:var(--p1)"></i><i style="--c:var(--p2)"></i><i style="--c:var(--p3)"></i><i style="--c:var(--p4)"></i></div>
+      </div>
+    </div>
+    <div class="mm-app-txt">
+      <p class="mm-app-kicker">Più piatti, più punti.</p>
+      <h2 id="appTtl">L'app Marumaru</h2>
+      <p>Un punto ogni piatto, il numero in tasca e l'avviso quando tocca a te.</p>
+    </div>
+    <div class="mm-app-badges">
+      <a href="#" class="mm-store-badge"><small>Scarica su</small>App Store</a>
+      <a href="#" class="mm-store-badge"><small>Disponibile su</small>Google Play</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="mm-foot">
+  <div class="mm-foot-in">
+    <div class="mm-foot-sns">
+      <h2>Seguici</h2>
+      <div class="mm-sns">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="#fff" stroke-width="2"/><circle cx="17.2" cy="6.8" r="1.2" fill="#fff"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.6-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H8v3h2.5V21z" fill="#fff"/></svg></a>
+        <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M15.5 3c.4 2.4 1.9 3.9 4.3 4.1v3c-1.5 0-2.9-.4-4.2-1.2v6.3A5.8 5.8 0 1 1 9.8 9.5v3.1a2.8 2.8 0 1 0 2.7 2.8V3z" fill="#fff"/></svg></a>
+        <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4" fill="#fff"/><path d="M10 9v6l5.2-3z" fill="currentColor"/></svg></a>
+      </div>
+    </div>
+    <div class="mm-foot-cols">
+      <div><h3>Asporto</h3><a href="#asporto" data-open-cart>Ordina da ritirare</a><a href="#asporto" data-open-cart="consegna">Consegna a domicilio</a></div>
+      <div><h3>Menu</h3><a href="#menu">Menu per ristorante</a><a href="#faq" data-faq="3">Allergeni</a><a href="#consigliati">Piatti a tempo</a></div>
+      <div><h3>Ristoranti</h3><a href="#ristoranti">Trova il ristorante</a><a href="#numero" data-open-queue>Prendi il numero</a></div>
+      <div><h3>Marumaru</h3><a href="#notizie">Notizie</a><a href="#notizie">Lavora con noi</a><a href="#faq">Domande frequenti</a></div>
+    </div>
+    <div class="mm-foot-legal">
+      <p>Marumaru Sushi S.r.l. · Via San Fermo 41, 35137 Padova · Tel. 049 870 4412 · P.IVA 05238140286</p>
+      <p>Nome, indirizzi e prezzi sono di fantasia.</p>
+      <p><a class="mm-back" href="/templates" target="_top">← Tutti i modelli</a></p>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ MOBILE TAB BAR — magnify row ============ -->
+<nav class="mm-tabbar" id="tabbar" aria-label="Scorciatoie">
+  <button type="button" class="mm-tab" data-go="#menu"><svg><use href="#i-menu"/></svg><span>Menu</span></button>
+  <button type="button" class="mm-tab" data-go="#ristoranti"><svg><use href="#i-pin"/></svg><span>Ristoranti</span></button>
+  <button type="button" class="mm-tab" data-go="queue"><svg><use href="#i-ticket"/></svg><span data-ticket-label-short>Numero</span></button>
+  <button type="button" class="mm-tab" data-go="cart"><svg><use href="#i-bag"/></svg><span>Asporto</span><em class="mm-badge" data-cart-count hidden>0</em></button>
+  <button type="button" class="mm-tab" data-go="#app"><svg><use href="#i-phone"/></svg><span>App</span></button>
+  <span class="mm-tab-tag" id="tabTag" aria-hidden="true"></span>
+</nav>
+
+<!-- ============ QUEUE DIALOG ============ -->
+<div class="mm-modal" id="queue" hidden role="dialog" aria-modal="true" aria-labelledby="queueTtl">
+  <div class="mm-modal-bg" data-close></div>
+  <div class="mm-modal-card">
+    <header class="mm-modal-head">
+      <h2 id="queueTtl">Prendi il numero</h2>
+      <ol class="mm-steps" id="qSteps"><li>Ristorante</li><li>Persone</li><li>Posto</li><li>Contatto</li></ol>
+      <button class="mm-x" type="button" data-close aria-label="Chiudi"><svg><use href="#i-x"/></svg></button>
+    </header>
+    <form id="qForm" novalidate>
+      <div class="mm-q-step" data-q="0">
+        <p class="mm-q-hint">Scegli dove vuoi mangiare. Se il ristorante è chiuso, il numero vale per l'apertura.</p>
+        <ul class="mm-q-stores" id="qStores" role="radiogroup" aria-label="Ristorante"></ul>
+      </div>
+      <div class="mm-q-step" data-q="1" hidden>
+        <div class="mm-stepper"><span><b>Adulti</b><small>da 12 anni</small></span><button type="button" id="adMinus" aria-label="Meno adulti">−</button><output id="adOut">2</output><button type="button" id="adPlus" aria-label="Più adulti">+</button></div>
+        <div class="mm-stepper"><span><b>Bambini</b><small>seggiolone su richiesta</small></span><button type="button" id="kdMinus" aria-label="Meno bambini">−</button><output id="kdOut">0</output><button type="button" id="kdPlus" aria-label="Più bambini">+</button></div>
+        <p class="mm-q-note" id="pplNote">Al massimo 10 persone per numero. Per gruppi più grandi chiama il ristorante.</p>
+      </div>
+      <div class="mm-q-step" data-q="2" hidden>
+        <div class="mm-seats" id="qSeats" role="radiogroup" aria-label="Posto"></div>
+      </div>
+      <div class="mm-q-step" data-q="3" hidden>
+        <label class="mm-field"><span>Nome</span><input name="name" autocomplete="given-name" placeholder="Come ti chiamiamo"><em class="mm-err"></em></label>
+        <label class="mm-field"><span>Cellulare</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+39 333 123 4567"><em class="mm-err"></em></label>
+        <label class="mm-check"><input type="checkbox" name="sms" checked><span>Mandami un SMS quando mancano 2 gruppi</span></label>
+        <div class="mm-q-sum" id="qSum"></div>
+      </div>
+      <div class="mm-q-step mm-q-ticket" data-q="4" hidden>
+        <div class="mm-ticket" id="ticket">
+          <div class="mm-tk-top">
+            <span class="mm-tk-store" id="tkStore">—</span>
+            <span class="mm-tk-lab">Il tuo numero</span>
+            <strong class="mm-tk-num"><span id="tkPre">T</span> <span class="mm-odo" id="tkNum">000</span></strong>
+            <span class="mm-tk-meta" id="tkMeta">—</span>
+          </div>
+          <div class="mm-tk-tear" aria-hidden="true"></div>
+          <div class="mm-tk-bot">
+            <svg class="mm-qr" id="tkQr" viewBox="0 0 25 25" aria-label="Codice del numero" role="img"></svg>
+            <div class="mm-tk-wait">
+              <span>Attesa stimata</span>
+              <strong><span class="mm-odo" id="tkWait">00</span><small> min</small></strong>
+              <em id="tkAhead">—</em>
+            </div>
+          </div>
+        </div>
+        <p class="mm-q-note" id="tkNote">—</p>
+      </div>
+    </form>
+    <footer class="mm-modal-foot">
+      <button type="button" class="mm-btn-ghost" id="qBack">Indietro</button>
+      <button type="button" class="mm-btn-red" id="qNext" disabled>Avanti</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ============ CART DRAWER ============ -->
+<div class="mm-modal mm-cart" id="cart" hidden role="dialog" aria-modal="true" aria-labelledby="cartTtl">
+  <div class="mm-modal-bg" data-close></div>
+  <div class="mm-cart-panel">
+    <header class="mm-cart-head">
+      <h2 id="cartTtl">Asporto</h2>
+      <button class="mm-x" type="button" data-close aria-label="Chiudi"><svg><use href="#i-x"/></svg></button>
+    </header>
+    <div class="mm-cart-body" id="cartBody">
+      <div class="mm-seg" id="cartMode" role="radiogroup" aria-label="Modalità">
+        <button type="button" role="radio" aria-checked="true" data-mode="ritiro">Ritiro al ristorante</button>
+        <button type="button" role="radio" aria-checked="false" data-mode="consegna">Consegna</button>
+      </div>
+      <p class="mm-cart-empty" id="cartEmpty">Il vassoio è vuoto. Aggiungi piatti dal <a href="#menu" data-close class="mm-ul mm-ul-red">menu</a> o dal nastro.</p>
+      <ul class="mm-cart-list" id="cartList"></ul>
+      <div class="mm-cart-plates" id="cartPlates"></div>
+      <form id="cartForm" novalidate>
+        <div class="mm-cart-ritiro">
+          <label class="mm-field"><span>Ristorante</span><select name="store" id="cartStore"></select><em class="mm-err"></em></label>
+          <label class="mm-field"><span>Orario di ritiro</span><select name="slot" id="cartSlot"></select><em class="mm-err"></em></label>
+        </div>
+        <div class="mm-cart-consegna" hidden>
+          <label class="mm-field"><span>Indirizzo</span><input name="addr" autocomplete="street-address" placeholder="Via e numero civico"><em class="mm-err"></em></label>
+          <label class="mm-field mm-field-cap"><span>CAP</span><input name="cap" inputmode="numeric" maxlength="5" placeholder="35121"><em class="mm-err"></em></label>
+          <label class="mm-field"><span>Orario di consegna</span><select name="dslot" id="cartDSlot"></select><em class="mm-err"></em></label>
+        </div>
+        <label class="mm-field"><span>Nome</span><input name="name" autocomplete="name"><em class="mm-err"></em></label>
+        <label class="mm-field"><span>Cellulare</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+39 …"><em class="mm-err"></em></label>
+      </form>
+      <div class="mm-cart-done" id="cartDone" hidden></div>
+    </div>
+    <footer class="mm-cart-foot">
+      <dl class="mm-cart-sum">
+        <div><dt>Piatti</dt><dd id="cartSub">€0,00</dd></div>
+        <div id="cartFeeRow" hidden><dt>Consegna</dt><dd id="cartFee">€2,90</dd></div>
+      </dl>
+      <p class="mm-cart-hint" id="cartHint"></p>
+      <div class="mm-cart-total"><span>Totale</span><strong class="mm-odo-wrap">€<span class="mm-odo" id="cartTotal">0,00</span></strong></div>
+      <button type="button" class="mm-btn-red mm-btn-wide" id="cartGo" disabled>Ordina</button>
+    </footer>
+  </div>
+</div>
+
+<!-- store picker -->
+<div class="mm-modal" id="picker" hidden role="dialog" aria-modal="true" aria-labelledby="pickTtl">
+  <div class="mm-modal-bg" data-close></div>
+  <div class="mm-modal-card mm-pick-card">
+    <header class="mm-modal-head"><h2 id="pickTtl">Di quale ristorante?</h2><button class="mm-x" type="button" data-close aria-label="Chiudi"><svg><use href="#i-x"/></svg></button></header>
+    <ul class="mm-pick" id="pickList"></ul>
+  </div>
+</div>
+
+<div class="mm-toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

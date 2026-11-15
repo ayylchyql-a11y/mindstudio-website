@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mollica · Pizza al taglio a Trastevere</title>
+<meta name="description" content="Mollica, pizza al taglio a peso nel cuore di Trastevere. Scegli la teglia, indica quanti grammi, ritira al banco.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="mo-skip" href="#banco">Vai al banco</a>
+
+<!-- annuncio: stato in tempo reale al posto del solito avviso -->
+<div class="mo-bar" id="bar"><span class="mo-dot" data-status-dot></span><span data-status-line>Calcolo orari…</span></div>
+
+<header class="mo-head" id="head">
+  <nav class="mo-nav" aria-label="Principale">
+    <a href="#banco">Al banco</a>
+    <a href="#bottega">Bottega</a>
+    <a href="#storia">Storia</a>
+    <a href="#dove">Dove siamo</a>
+  </nav>
+  <button class="mo-burger" id="burger" type="button" aria-label="Apri il menu" aria-expanded="false" aria-controls="drawer"><i></i><i></i></button>
+  <a class="mo-logo" href="#top" aria-label="Mollica, torna su">
+    <svg class="mo-logo-arc" viewBox="0 0 120 34" aria-hidden="true"><path id="arcp" d="M14 32 Q60 -4 106 32" fill="none"/><text><textPath href="#arcp" startOffset="50%" text-anchor="middle">LIEVITO NATURALE</textPath></text></svg>
+    <span class="mo-logo-face" data-mascot="head" aria-hidden="true"></span>
+    <b>mollica</b><small>dal 2009</small>
+  </a>
+  <div class="mo-tools">
+    <span class="mo-pill" data-status-pill><i data-status-dot></i><span data-status-short>—</span></span>
+    <button class="mo-traybtn" id="trayBtn" type="button" aria-label="Apri il vassoio, 0 articoli">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18l-2 9.5a2 2 0 0 1-2 1.5H7a2 2 0 0 1-2-1.5L3 9Z"/><path d="M8 9l2.5-5M16 9l-2.5-5"/></svg>
+      <span class="mo-badge" id="trayCount">0</span>
+    </button>
+  </div>
+</header>
+
+<div class="mo-drawer" id="drawer" aria-hidden="true">
+  <nav aria-label="Menu mobile">
+    <a href="#banco">Al banco</a>
+    <a href="#bottega">Bottega</a>
+    <a href="#storia">Storia</a>
+    <a href="#corsi">Laboratorio</a>
+    <a href="#dove">Dove siamo</a>
+  </nav>
+  <p class="mo-drawer-foot"><span class="mo-dot" data-status-dot></span><span data-status-line></span></p>
+  <span class="mo-critter mo-critter-drawer" data-mascot="peek" aria-hidden="true"></span>
+</div>
+
+<main id="top">
+<!-- 1 · primo piano della teglia -->
+<section class="mo-hero" aria-label="Benvenuti">
+  <img class="mo-hero-img" src="assets/hero.webp" alt="Primo piano di pizza in teglia con pomodorini, basilico e pecorino" width="1920" height="1080" fetchpriority="high">
+  <div class="mo-hero-copy">
+    <p class="mo-eyebrow">Mollica · Trastevere</p>
+    <h1>Si taglia a peso,<br>si mangia in piedi</h1>
+    <p class="mo-hero-sub">Dal 2009 pizza in teglia a lievitazione lenta, venduta a etti</p>
+    <div class="mo-hero-cta">
+      <a class="mo-btn mo-btn-light" href="#banco">Scegli al banco</a>
+      <a class="mo-btn mo-btn-light" href="#bottega">Vai alla bottega</a>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · nastro con le teglie di oggi -->
+<div class="mo-ribbon" aria-hidden="true"><div class="mo-ribbon-run" id="ribbon"></div></div>
+
+<!-- 3 · storia: card bianca + foto grande -->
+<section class="mo-story mo-cream" id="storia">
+  <div class="mo-split">
+    <div class="mo-card mo-story-card">
+      <p class="mo-kicker">Il forno del vicolo</p>
+      <h2 class="mo-h2">Prima l’impasto,<br>poi tutto il resto</h2>
+      <p class="mo-lead">Tre farine, quarantotto ore, una pala di legno</p>
+      <a class="mo-btn" href="#filosofia">Scopri come lavoriamo</a>
+      <span class="mo-critter mo-critter-peek" data-mascot="peek" aria-hidden="true"></span>
+    </div>
+    <figure class="mo-photo"><img src="assets/impasto.webp" alt="Mani che tengono un panetto di impasto" loading="lazy" width="900" height="1080"></figure>
+  </div>
+</section>
+
+<!-- 4 · il banco di oggi: a peso -->
+<section class="mo-banco mo-cream" id="banco" aria-labelledby="bancoT">
+  <div class="mo-wrap">
+    <div class="mo-sechead">
+      <div>
+        <p class="mo-kicker">Al banco oggi</p>
+        <h2 class="mo-h2" id="bancoT">Indica col dito, tagliamo noi</h2>
+        <p class="mo-lead">Prezzi al chilo. Scegli i grammi, vedi subito quanto è larga la fetta e quanto costa.</p>
+      </div>
+      <p class="mo-fresh"><span class="mo-dot is-warm"></span><span id="freshLine">Teglie sfornate ogni 40 minuti</span></p>
+    </div>
+    <div class="mo-tabs" role="tablist" aria-label="Categorie del banco" id="tabs">
+      <button role="tab" type="button" aria-selected="true" data-cat="tutte">Tutte</button>
+      <button role="tab" type="button" aria-selected="false" data-cat="rosse">Rosse</button>
+      <button role="tab" type="button" aria-selected="false" data-cat="bianche">Bianche</button>
+      <button role="tab" type="button" aria-selected="false" data-cat="speciali">Speciali</button>
+      <button role="tab" type="button" aria-selected="false" data-cat="fritti">Fritti</button>
+    </div>
+    <div class="mo-grid" id="grid" role="tabpanel" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- 5 · bottega: carosello a scatti come gli scaffali -->
+<section class="mo-bottega mo-cream" id="bottega" aria-labelledby="botT">
+  <div class="mo-wrap">
+    <div class="mo-sechead">
+      <div>
+        <p class="mo-kicker">La bottega</p>
+        <h2 class="mo-h2" id="botT">Porta a casa il forno</h2>
+      </div>
+      <div class="mo-arrows">
+        <button type="button" class="mo-arrow" id="shopPrev" aria-label="Scorri indietro"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button type="button" class="mo-arrow" id="shopNext" aria-label="Scorri avanti"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+    </div>
+  </div>
+  <div class="mo-shelf" id="shelf" tabindex="0" aria-label="Prodotti della bottega">
+    <article class="mo-shelf-hero">
+      <img src="assets/focaccia.webp" alt="Focaccia al rosmarino su tagliere" loading="lazy" width="800" height="534">
+      <div><h3>Dal nostro mulino</h3><p>Le stesse farine della teglia, in sacchi da un chilo</p></div>
+    </article>
+    <div id="shopItems" class="mo-shelf-items"></div>
+  </div>
+  <div class="mo-wrap"><div class="mo-shelf-prog" aria-hidden="true"><i id="shelfProg"></i></div></div>
+</section>
+
+<!-- 6 · filosofia: foto a sinistra, testo a destra -->
+<section class="mo-filo mo-cream" id="filosofia" aria-labelledby="filoT">
+  <div class="mo-split mo-split-rev">
+    <figure class="mo-photo"><img src="assets/campo.webp" alt="Mietitrebbia in un campo di grano visto dall’alto" loading="lazy" width="1024" height="763"></figure>
+    <div class="mo-filo-txt">
+      <p class="mo-kicker">La filosofia</p>
+      <h2 class="mo-h2" id="filoT">Grano, tempo,<br>vicinato</h2>
+      <ol class="mo-values">
+        <li><b>01</b><span><strong>Grano del Lazio</strong> macinato a pietra a quaranta chilometri dal vicolo.</span></li>
+        <li><b>02</b><span><strong>Quarantotto ore</strong> di lievitazione in frigo: la teglia è leggera, l’alveolo grande.</span></li>
+        <li><b>03</b><span><strong>Il vicinato</strong> prima dei turisti: chi passa ogni giorno ha il suo pezzo da parte.</span></li>
+      </ol>
+      <a class="mo-btn" href="#corsi">Impara a farla</a>
+      <span class="mo-critter mo-critter-wheat" data-mascot="wheat" aria-hidden="true"></span>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · laboratorio: la card si apre a tutto schermo mentre scorri -->
+<section class="mo-corsi" id="corsi" aria-labelledby="corsiT">
+  <div class="mo-corsi-stage" id="corsiStage">
+    <div class="mo-corsi-card">
+      <img src="assets/forno.webp" alt="Fiamma viva dentro un forno a legna" loading="lazy" width="1600" height="1208">
+      <div class="mo-corsi-copy">
+        <p class="mo-eyebrow">Laboratori del sabato</p>
+        <h2 id="corsiT">Le mani in pasta, per tre ore</h2>
+        <p>Impasto, stesura in teglia, cottura. Otto posti, grembiule incluso, €65</p>
+        <button class="mo-btn mo-btn-light" type="button" id="corsoOpen">Prenota un posto</button>
+      </div>
+    </div>
+    <div class="mo-corsi-rail" aria-hidden="true"><i></i></div>
+  </div>
+</section>
+
+<!-- 8 · dove siamo -->
+<section class="mo-dove mo-cream" id="dove" aria-labelledby="doveT">
+  <div class="mo-split">
+    <div class="mo-dove-txt">
+      <p class="mo-kicker">Dove siamo</p>
+      <h2 class="mo-h2" id="doveT">Vieni al banco</h2>
+      <p class="mo-status-big"><span class="mo-dot" data-status-dot></span><span data-status-line>—</span></p>
+      <address><b>Mollica Trastevere</b><br>Vicolo del Mattarello 14<br>00153 Roma</address>
+      <table class="mo-hours" id="hours" aria-label="Orari di apertura"></table>
+      <a class="mo-btn" href="#">Indicazioni</a>
+    </div>
+    <figure class="mo-photo"><img src="assets/banco.webp" alt="Il banco con le teglie tagliate a quadrati" loading="lazy" width="1400" height="940"></figure>
+  </div>
+</section>
+
+<!-- 9 · newsletter con la mascotte in meditazione -->
+<section class="mo-news" aria-labelledby="newsT">
+  <span class="mo-critter mo-critter-zen" data-mascot="zen" aria-hidden="true"></span>
+  <p class="mo-kicker">Newsletter</p>
+  <h2 class="mo-h2" id="newsT">Una mail quando esce la teglia nuova</h2>
+  <form class="mo-newsform" id="newsForm" novalidate>
+    <label class="mo-field"><span class="mo-sr">La tua email</span><input type="email" name="email" placeholder="La tua email" autocomplete="email"><button type="submit" aria-label="Iscriviti"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></label>
+    <label class="mo-check"><input type="checkbox" name="ok"><span>Ho letto l’informativa privacy e accetto di ricevere la newsletter.</span></label>
+    <p class="mo-formmsg" id="newsMsg" role="status"></p>
+  </form>
+</section>
+</main>
+
+<footer class="mo-foot">
+  <div class="mo-foot-top">
+    <a class="mo-logo mo-logo-foot" href="#top" aria-label="Mollica, torna su"><span class="mo-logo-face" data-mascot="head" aria-hidden="true"></span><b>mollica</b><small>dal 2009</small></a>
+    <div class="mo-foot-col"><h3>Al banco</h3><a href="#banco">Teglie di oggi</a><a href="#banco">Fritti</a><a href="#corsi">Laboratori</a></div>
+    <div class="mo-foot-col"><h3>Bottega</h3><a href="#bottega">Farine</a><a href="#bottega">Carta regalo</a><a href="#bottega">Teglie in ferro</a></div>
+    <div class="mo-foot-col"><h3>Mollica</h3><a href="#storia">Storia</a><a href="#filosofia">Filosofia</a><a href="#dove">Dove siamo</a></div>
+    <div class="mo-foot-col"><h3>Orari</h3><p>Mar–Gio 11:00–22:30<br>Ven–Sab 11:00–00:30<br>Dom 12:00–22:00<br>Lunedì chiuso</p></div>
+  </div>
+  <div class="mo-foot-bot">
+    <p>Mollica Forno srl · Vicolo del Mattarello 14, 00153 Roma · Tel. 06 5830 4412 · P.IVA 09876543210</p>
+    <div class="mo-social">
+      <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".9" class="fill"/></svg></a>
+      <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4.5h-3a4 4 0 0 0-4 4V11H7.5v3.5H10V21h3.5v-6.5H16l.7-3.5h-3.2V9a1 1 0 0 1 1-1Z"/></svg></a>
+      <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3.5v11.2a3.3 3.3 0 1 1-3.3-3.3M14 3.5c.4 2.6 2.2 4.3 5 4.5"/></svg></a>
+    </div>
+  </div>
+  <p class="mo-foot-note"><a href="/templates" target="_top">← Tutti i modelli</a> · Nome, indirizzi e prezzi sono di fantasia.</p>
+</footer>
+
+<!-- foglio «taglia a peso»: righello da trascinare -->
+<div class="mo-scrim" id="scrim" hidden></div>
+<section class="mo-sheet mo-cut" id="cutSheet" role="dialog" aria-modal="true" aria-labelledby="cutName" hidden>
+  <div class="mo-sheet-grab" aria-hidden="true"></div>
+  <header class="mo-cut-hd">
+    <div><p class="mo-kicker" id="cutCat">Rossa</p><h3 id="cutName">—</h3></div>
+    <button class="mo-x" type="button" data-close aria-label="Chiudi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </header>
+  <div class="mo-cut-teglia" id="cutTeglia">
+    <div class="mo-cut-img" id="cutImg"></div>
+    <div class="mo-cut-piece" id="cutPiece"><span id="cutCm">15 cm</span></div>
+    <i class="mo-cut-knife" id="cutKnife" aria-hidden="true"></i>
+  </div>
+  <div class="mo-cut-big">
+    <span class="mo-cut-g"><b id="cutG">200</b> g</span>
+    <span class="mo-cut-eur" id="cutEur">€ 4,40</span>
+  </div>
+  <div class="mo-ruler" id="ruler" role="slider" tabindex="0" aria-label="Grammi" aria-valuemin="100" aria-valuemax="500" aria-valuenow="200" aria-valuetext="200 grammi">
+    <div class="mo-ruler-scale" id="rulerScale"></div>
+    <i class="mo-ruler-needle" aria-hidden="true"></i>
+  </div>
+  <div class="mo-ruler-ends"><button type="button" id="gMinus" aria-label="Meno 10 grammi">−10 g</button><span>trascina il righello</span><button type="button" id="gPlus" aria-label="Più 10 grammi">+10 g</button></div>
+  <dl class="mo-kv">
+    <div><dt>Prezzo al chilo</dt><dd id="cutKg">€ 22,00</dd></div>
+    <div><dt>Larghezza della fetta</dt><dd id="cutW">≈ 15 cm × 10 cm</dd></div>
+    <div><dt>Alla bilancia</dt><dd>± 10 g, paghi il peso vero</dd></div>
+  </dl>
+  <div class="mo-acts"><button type="button" class="mo-act-ghost" data-close>Annulla</button><button type="button" class="mo-act-main" id="cutAdd">Aggiungi · € 4,40</button></div>
+</section>
+
+<!-- vassoio: riepilogo + ritiro -->
+<aside class="mo-sheet mo-tray" id="tray" role="dialog" aria-modal="true" aria-labelledby="trayT" hidden>
+  <header class="mo-cut-hd">
+    <div><p class="mo-kicker">Ritiro al banco</p><h3 id="trayT">Il tuo vassoio</h3></div>
+    <button class="mo-x" type="button" data-close aria-label="Chiudi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </header>
+  <div class="mo-tray-body" id="trayBody"></div>
+</aside>
+
+<!-- prenotazione laboratorio -->
+<section class="mo-sheet mo-corso" id="corsoSheet" role="dialog" aria-modal="true" aria-labelledby="corsoT" hidden>
+  <header class="mo-cut-hd">
+    <div><p class="mo-kicker">Laboratorio · €65 a persona</p><h3 id="corsoT">Prenota un posto</h3></div>
+    <button class="mo-x" type="button" data-close aria-label="Chiudi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </header>
+  <form id="corsoForm" novalidate>
+    <fieldset class="mo-chips" id="corsoDates"><legend>Sabato</legend></fieldset>
+    <div class="mo-row2">
+      <label class="mo-lab">Persone<span class="mo-stepper"><button type="button" id="pMinus" aria-label="Una persona in meno">−</button><output id="pOut">2</output><button type="button" id="pPlus" aria-label="Una persona in più">+</button></span></label>
+      <label class="mo-lab">Email<input type="email" name="email" autocomplete="email" placeholder="nome@email.it"></label>
+    </div>
+    <p class="mo-formmsg" id="corsoMsg" role="status"></p>
+    <div class="mo-acts"><button type="button" class="mo-act-ghost" data-close>Annulla</button><button type="submit" class="mo-act-main" id="corsoSubmit">Prenota · € 130</button></div>
+  </form>
+</section>
+
+<div class="mo-toast" id="toast" role="status" aria-live="polite"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="moFuzz" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="1.6" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
+<script src="app.js"></script>
+</body>
+</html>

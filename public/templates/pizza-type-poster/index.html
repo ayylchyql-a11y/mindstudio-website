@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panetto · Pizza e basta · Milano Navigli</title>
+<meta name="description" content="Panetto, pizzeria napoletana sui Navigli di Milano. Menu, degustazione in sette passaggi, prenotazioni e carte regalo.">
+<meta name="theme-color" content="#FF390E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<svg class="pt-defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <filter id="pt-smear-hero" x="-5%" y="-30%" width="110%" height="160%"><feGaussianBlur stdDeviation="0 0" edgeMode="none"/></filter>
+  <filter id="pt-smear-foot" x="-5%" y="-30%" width="110%" height="160%"><feGaussianBlur stdDeviation="0 0" edgeMode="none"/></filter>
+</svg>
+
+<a class="pt-skip" href="#storia">Vai ai contenuti</a>
+
+<!-- ============ Colonna sinistra fissa (desktop) ============ -->
+<aside class="pt-rail" id="rail" aria-label="Informazioni e navigazione">
+  <div class="pt-rail-top">
+    <a class="pt-mark" href="#top" aria-label="Panetto, torna su"><span>P</span><span>a</span><span>n</span><span>e</span><span>t</span><span>t</span><span>o</span><sup>©</sup></a>
+    <dl class="pt-info">
+      <div class="pt-info-full">Panetto, pizzeria napoletana sui Navigli</div>
+      <div class="pt-info-full">P a n e t t o © Pizza e basta, Milano</div>
+      <dt>Pizzerie:</dt><dd><a href="#sedi" data-venue-link="0">Alzaia Naviglio Grande 48</a><br><a href="#sedi" data-venue-link="1">Via Vigevano 17</a></dd>
+      <dt>Email:</dt><dd><a href="mailto:navigli@panettopizza.it">navigli@panettopizza.it</a><br><a href="mailto:vigevano@panettopizza.it">vigevano@panettopizza.it</a></dd>
+      <dt>Instagram:</dt><dd><a href="#">@panetto.pizza</a></dd>
+    </dl>
+  </div>
+
+  <nav class="pt-nav" aria-label="Principale">
+    <ul>
+      <li class="pt-acc">
+        <button type="button" class="pt-nav-a" aria-expanded="false" aria-controls="sub-menu" data-spy="menu">Menu</button>
+        <ul class="pt-sub" id="sub-menu" hidden>
+          <li><a href="#menu" data-cat-jump="classiche">Pizze classiche</a></li>
+          <li><a href="#menu" data-cat-jump="casa">Pizze Panetto</a></li>
+          <li><a href="#menu" data-cat-jump="fritti">Fritti</a></li>
+          <li><a href="#menu" data-cat-jump="dolci">Dolci</a></li>
+        </ul>
+      </li>
+      <li><a class="pt-nav-a" href="#degustazione" data-spy="degustazione">Degustazione</a></li>
+      <li class="pt-acc">
+        <button type="button" class="pt-nav-a" aria-expanded="false" aria-controls="sub-prenota">Prenota</button>
+        <ul class="pt-sub" id="sub-prenota" hidden>
+          <li><button type="button" data-book data-book-venue="0">Navigli</button></li>
+          <li><button type="button" data-book data-book-venue="1">Vigevano</button></li>
+        </ul>
+      </li>
+      <li><a class="pt-nav-a" href="#sedi" data-spy="sedi">Sedi</a></li>
+      <li><a class="pt-nav-a" href="#regala" data-spy="regala">Regala una pizza</a></li>
+      <li class="pt-acc">
+        <button type="button" class="pt-nav-a" aria-expanded="false" aria-controls="sub-lavora">Lavora con noi</button>
+        <ul class="pt-sub pt-sub-text" id="sub-lavora" hidden>
+          <li>Pizzaioli, sala, lavaggio. Tutti i livelli.</li>
+          <li><a href="mailto:lavoro@panettopizza.it">lavoro@panettopizza.it</a></li>
+        </ul>
+      </li>
+      <li><a class="pt-nav-a" href="#storia" data-spy="storia">Chi siamo</a></li>
+    </ul>
+  </nav>
+
+  <div class="pt-rail-bot">
+    <ul class="pt-status-list" id="railStatus" aria-live="polite"></ul>
+    <button type="button" class="pt-awards-t" aria-expanded="false" aria-controls="awards">Premi +</button>
+    <div class="pt-awards" id="awards" hidden>
+      <p>Guida Forni d'Italia:<br>Prima pizzeria in Lombardia 2025 e 2026</p>
+      <p>Premio Lievito d'Oro 2024 — impasto dell'anno</p>
+    </div>
+  </div>
+</aside>
+
+<!-- ============ Barra mobile ============ -->
+<header class="pt-mbar" id="mbar">
+  <a class="pt-mbar-mark" href="#top" aria-label="Panetto, torna su">P a n e t t o<sup>©</sup></a>
+  <button type="button" class="pt-mbar-btn" id="mOpen" aria-expanded="false" aria-controls="mMenu">Menu +</button>
+</header>
+
+<div class="pt-mmenu" id="mMenu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+  <div class="pt-aurora" aria-hidden="true"><i></i><i></i></div>
+  <div class="pt-mmenu-in">
+    <div class="pt-mmenu-head">
+      <span class="pt-mbar-mark">P a n e t t o<sup>©</sup></span>
+      <button type="button" class="pt-mbar-btn" id="mClose">Chiudi ×</button>
+    </div>
+    <nav aria-label="Mobile">
+      <a href="#menu">Menu</a>
+      <a href="#degustazione">Degustazione</a>
+      <button type="button" data-book>Prenota un tavolo</button>
+      <a href="#sedi">Sedi</a>
+      <a href="#regala">Regala una pizza</a>
+      <a href="#lavora">Lavora con noi</a>
+      <a href="#storia">Chi siamo</a>
+    </nav>
+    <ul class="pt-status-list" id="mStatus"></ul>
+    <p class="pt-mmenu-foot">Alzaia Naviglio Grande 48<br>Via Vigevano 17<br>@panetto.pizza</p>
+  </div>
+</div>
+
+<main id="top">
+  <!-- ============ Primo schermo: manifesto tipografico ============ -->
+  <section class="pt-hero" id="hero" aria-label="Panetto, pizza e basta">
+    <div class="pt-aurora" aria-hidden="true"><i></i><i></i></div>
+    <div class="pt-field" id="heroField" aria-hidden="true"></div>
+    <h1 class="pt-sr">Panetto — pizza e basta. Pizzeria napoletana a Milano, Navigli.</h1>
+    <div class="pt-hero-minfo" aria-hidden="false">
+      <dl class="pt-info">
+        <dt>Pizzerie:</dt><dd>Alzaia Naviglio Grande 48<br>Via Vigevano 17</dd>
+        <dt>Email:</dt><dd>navigli@panettopizza.it</dd>
+        <dt>Instagram:</dt><dd>@panetto.pizza</dd>
+      </dl>
+    </div>
+    <div class="pt-hero-corner">
+      <span class="pt-hero-ed">Menu d'autunno — N. 26</span>
+      <span class="pt-hero-cue">scorri ↓</span>
+    </div>
+    <div class="pt-hero-mcta">
+      <ul class="pt-status-list" id="heroStatus"></ul>
+      <div class="pt-hero-btns">
+        <button type="button" class="pt-btn pt-btn-cream" data-book>Prenota</button>
+        <a class="pt-btn pt-btn-line" href="#menu">Il menu</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="pt-body">
+    <!-- colonna centrale: titolo di capitolo che rotola -->
+    <div class="pt-mid" aria-hidden="true">
+      <div class="pt-mid-in">
+        <div class="pt-roll" id="roller">
+          <div class="pt-roll-eye" id="rollEye"></div>
+          <div class="pt-roll-ln pt-roll-l1" id="rollL1"></div>
+          <div class="pt-roll-ln pt-roll-l2" id="rollL2"></div>
+        </div>
+        <div class="pt-roll-pips" id="rollPips"></div>
+        <ul class="pt-midx" id="midIndex"></ul>
+      </div>
+    </div>
+
+    <div class="pt-content">
+      <!-- 01 Chi siamo -->
+      <section class="pt-sec" id="storia" data-chapter="01 — Chi siamo|Fatta|a mano">
+        <h2 class="pt-h2"><small>01 — Chi siamo</small><span data-split>Fatta a mano</span></h2>
+        <p class="pt-lead" data-split>Farina, acqua, sale e tempo. Il resto è rumore.</p>
+        <div class="pt-story">
+          <div class="pt-story-txt">
+            <p>Abbiamo cominciato nel 2018 con un forno elettrico e un tavolo pieghevole al mercato del sabato, sotto le tettoie di viale Papiniano. Trenta pizze a mattina, finite prima di mezzogiorno.</p>
+            <p>Oggi i forni sono due, a legna, a tre minuti a piedi l'uno dall'altro. L'impasto è lo stesso: tipo 1 macinato a pietra e una parte di grano duro, 72 ore tra frigo e banco.</p>
+            <p>Lavoriamo con quello che c'è. Pomodoro dell'Agro Sarnese, fior di latte di Agerola, verdure dalle cascine del Parco Sud. Quando una cosa finisce, sparisce dal menu.</p>
+          </div>
+          <div class="pt-story-sq">
+            <figure class="pt-sq"><img src="assets/impasto.webp" alt="Mani che tengono un panetto di impasto" width="560" height="560" loading="lazy"></figure>
+            <figure class="pt-sq"><img src="assets/pane.webp" alt="Pane di semola appena sfornato" width="560" height="560" loading="lazy"></figure>
+          </div>
+        </div>
+        <dl class="pt-facts">
+          <div><dt>72 h</dt><dd>di maturazione dell'impasto</dd></div>
+          <div><dt>450 °C</dt><dd>sulla platea del forno</dd></div>
+          <div><dt>90 s</dt><dd>dalla pala al tavolo</dd></div>
+        </dl>
+      </section>
+
+      <!-- 02 Menu -->
+      <section class="pt-sec" id="menu" data-chapter="02 — Menu|Cosa|si mangia">
+        <h2 class="pt-h2"><small>02 — Menu</small><span data-split>Cosa si mangia</span></h2>
+        <div class="pt-menu-intro">
+          <h3>Menu d'autunno 2026</h3>
+          <p>Ogni piatto qui sotto si apre: tocca un nome e diventa un manifesto. Giralo per leggere da dove arriva ogni ingrediente.</p>
+          <p>(V) vegetariano · (Vg) vegano. Senza glutine non possiamo garantirlo: in cucina vola farina tutto il giorno.</p>
+        </div>
+        <div class="pt-filters" id="menuFilters">
+          <div class="pt-tabs" role="tablist" aria-label="Categorie" id="menuTabs"></div>
+          <div class="pt-diet" role="group" aria-label="Filtri dieta">
+            <label><input type="checkbox" id="fV"> <span>(V) vegetariano</span></label>
+            <label><input type="checkbox" id="fVg"> <span>(Vg) vegano</span></label>
+          </div>
+        </div>
+        <p class="pt-count" id="menuCount" aria-live="polite"></p>
+        <div class="pt-menu" id="menuList"></div>
+        <div class="pt-empty" id="menuEmpty" hidden>
+          <p>Nessun piatto con questi filtri.</p>
+          <button type="button" class="pt-link" id="menuReset">Azzera i filtri</button>
+        </div>
+      </section>
+
+      <!-- 03 Degustazione -->
+      <section class="pt-sec" id="degustazione" data-chapter="03 — Degustazione|Sette|passaggi">
+        <h2 class="pt-h2"><small>03 — Degustazione</small><span data-split>Sette passaggi</span></h2>
+        <div class="pt-tast">
+          <p class="pt-tast-p">Il modo più lungo di mangiare una pizza. Solo ai Navigli, a cena, da martedì a sabato, due turni. Tutto il tavolo, da 2 a 6 persone.</p>
+          <ol class="pt-tast-list" id="tastList"></ol>
+          <div class="pt-tast-price">
+            <div><b>€ 58</b><span>a persona</span></div>
+            <div><b>+ € 32</b><span>abbinamento vini naturali</span></div>
+          </div>
+          <button type="button" class="pt-btn pt-btn-ink" data-book data-book-formula="tasting" data-book-venue="0">Prenota la degustazione</button>
+        </div>
+      </section>
+
+      <!-- 04 Sedi -->
+      <section class="pt-sec" id="sedi" data-chapter="04 — Sedi|Due forni|sul Naviglio">
+        <h2 class="pt-h2"><small>04 — Sedi</small><span data-split>Due forni sul Naviglio</span></h2>
+        <div class="pt-venue" id="venue">
+          <figure class="pt-sq pt-venue-sq"><img id="venueImg" src="assets/pala.webp" alt="" width="560" height="560" loading="lazy"></figure>
+          <div class="pt-venue-count"><span id="venueIdx">1</span><span>/</span><span id="venueTot">2</span></div>
+          <div class="pt-venue-body" id="venueBody" aria-live="polite"></div>
+          <div class="pt-venue-nav">
+            <button type="button" class="pt-link" id="venuePrev" aria-label="Sede precedente">← Precedente</button>
+            <button type="button" class="pt-link" id="venueNext" aria-label="Sede successiva">Successiva →</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 Regala -->
+      <section class="pt-sec" id="regala" data-chapter="05 — Regala|Una pizza|in busta">
+        <h2 class="pt-h2"><small>05 — Regala</small><span data-split>Una pizza in busta</span></h2>
+        <p class="pt-gift-p">Carta regalo digitale, valida in tutte e due le sedi per dodici mesi. Arriva per email, quando vuoi tu.</p>
+        <div class="pt-gift">
+          <div class="pt-gift-prev" aria-hidden="true">
+            <div class="pt-gcard" id="gCard">
+              <div class="pt-aurora"><i></i><i></i></div>
+              <div class="pt-gcard-field" id="gField"></div>
+              <div class="pt-gcard-top"><span>P a n e t t o ©</span><span>Carta regalo</span></div>
+              <div class="pt-gcard-bot"><span id="gTo">Per —</span><span id="gMsg">Una pizza, offro io.</span><span id="gFrom">da —</span></div>
+            </div>
+          </div>
+          <form class="pt-form" id="giftForm" novalidate>
+            <fieldset class="pt-fs">
+              <legend>Importo</legend>
+              <div class="pt-chips" id="gAmounts"></div>
+              <label class="pt-field-l pt-other" id="gOtherWrap" hidden>
+                <span>Altro importo (€ 20–300)</span>
+                <input type="number" inputmode="numeric" id="gOther" min="20" max="300" step="5" placeholder="es. 65">
+              </label>
+            </fieldset>
+            <label class="pt-field-l"><span>Per (nome)</span><input type="text" id="gName" autocomplete="off" maxlength="40" placeholder="Giulia"></label>
+            <label class="pt-field-l"><span>Email di chi la riceve</span><input type="email" id="gEmail" autocomplete="off" placeholder="giulia@esempio.it"></label>
+            <label class="pt-field-l"><span>Messaggio <em id="gMsgCount">0/140</em></span><textarea id="gText" maxlength="140" rows="2" placeholder="Una pizza, offro io."></textarea></label>
+            <label class="pt-field-l"><span>Da (il tuo nome)</span><input type="text" id="gSender" autocomplete="name" maxlength="40" placeholder="Marco"></label>
+            <fieldset class="pt-fs">
+              <legend>Consegna</legend>
+              <div class="pt-chips" id="gWhen">
+                <button type="button" class="pt-chip" data-when="now" aria-pressed="true">Subito</button>
+                <button type="button" class="pt-chip" data-when="later" aria-pressed="false">Scegli il giorno</button>
+              </div>
+              <label class="pt-field-l" id="gDateWrap" hidden><span>Giorno di invio</span><input type="date" id="gDate"></label>
+            </fieldset>
+            <p class="pt-err" id="giftErr" role="alert"></p>
+            <button type="submit" class="pt-btn pt-btn-ink pt-btn-wide" id="giftSubmit">Regala € 50</button>
+          </form>
+          <div class="pt-done" id="giftDone" hidden tabindex="-1">
+            <p class="pt-done-k">Fatto.</p>
+            <p id="giftDoneTxt"></p>
+            <p class="pt-code" id="giftCode"></p>
+            <button type="button" class="pt-link" id="giftAgain">Regalane un'altra</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 06 Lavora / stampa -->
+      <section class="pt-sec pt-sec-last" id="lavora" data-chapter="06 — Lavora|Vieni a|impastare">
+        <h2 class="pt-h2"><small>06 — Lavora con noi</small><span data-split>Vieni a impastare</span></h2>
+        <div class="pt-jobs">
+          <div><h3>Lavora con noi</h3><p>Pizzaioli, sala, lavaggio. Tutti i livelli, contratto vero, due giorni liberi di fila.</p><a href="mailto:lavoro@panettopizza.it">lavoro@panettopizza.it</a></div>
+          <div><h3>Stampa e collaborazioni</h3><p>Interviste, eventi, marchi che vogliono fare qualcosa con noi.</p><a href="mailto:ciao@panettopizza.it">ciao@panettopizza.it</a></div>
+          <div><h3>Eventi privati</h3><p>Il locale di via Vigevano si chiude intero fino a 40 persone, la domenica a pranzo.</p><a href="mailto:eventi@panettopizza.it">eventi@panettopizza.it</a></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ============ Chiusura: secondo manifesto ============ -->
+  <footer class="pt-foot" id="foot">
+    <div class="pt-aurora" aria-hidden="true"><i></i><i></i></div>
+    <div class="pt-field pt-field-foot" id="footField" aria-hidden="true"></div>
+    <div class="pt-foot-in">
+      <div class="pt-foot-cols">
+        <dl class="pt-info">
+          <dt>Navigli:</dt><dd>Alzaia Naviglio Grande 48, 20144 Milano<br>+39 02 8457 2210</dd>
+          <dt>Vigevano:</dt><dd>Via Vigevano 17, 20144 Milano<br>+39 02 8457 2211</dd>
+          <dt>Società:</dt><dd>Panetto S.r.l. — P.IVA 12345670968</dd>
+        </dl>
+        <div class="pt-foot-r">
+          <div class="pt-social">
+            <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" class="pt-fill"/></svg></a>
+            <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3.5v11.2a3.8 3.8 0 1 1-3.8-3.8"/><path d="M14 3.5c.4 2.6 2.2 4.4 5 4.6"/></svg></a>
+            <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 20.5v-7h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.6-1.5h1.5V4.4a20 20 0 0 0-2.3-.1c-2.3 0-3.8 1.4-3.8 3.9v2.3H9v3h2.5v7"/></svg></a>
+          </div>
+          <a class="pt-back" href="/templates" target="_top">← Tutti i modelli</a>
+        </div>
+      </div>
+      <p class="pt-fine">Nome, indirizzi e prezzi sono di fantasia. · © 2026 Panetto</p>
+    </div>
+  </footer>
+</main>
+
+<!-- ============ Manifesto del piatto (carta che si gira) ============ -->
+<div class="pt-pov" id="poster" role="dialog" aria-modal="true" aria-labelledby="posterTitle" hidden>
+  <div class="pt-pov-bg" data-close></div>
+  <div class="pt-pov-wrap">
+    <div class="pt-pov-bar">
+      <button type="button" class="pt-pov-b" id="posterPrev" aria-label="Piatto precedente">←</button>
+      <span class="pt-pov-n" id="posterN">01 / 24</span>
+      <button type="button" class="pt-pov-b" id="posterNext" aria-label="Piatto successivo">→</button>
+      <button type="button" class="pt-pov-b pt-pov-x" data-close aria-label="Chiudi">×</button>
+    </div>
+    <div class="pt-pc-stage" id="pcStage">
+      <div class="pt-pc">
+        <section class="pt-pc-face pt-pc-front" id="pcFront">
+          <div class="pt-aurora" aria-hidden="true"><i></i><i></i></div>
+          <div class="pt-pc-field" id="pcField" aria-hidden="true"></div>
+          <div class="pt-pc-top"><span>P a n e t t o ©</span><span id="pcCat">Pizze classiche</span></div>
+          <h3 class="pt-pc-title" id="posterTitle">Margherita</h3>
+          <div class="pt-pc-bot">
+            <span class="pt-pc-price" id="pcPrice">€ 10</span>
+            <button type="button" class="pt-pc-flip" id="pcFlip">Gira ↻</button>
+          </div>
+        </section>
+        <section class="pt-pc-face pt-pc-back" id="pcBack" aria-hidden="true">
+          <div class="pt-pc-bhead">
+            <div><b id="pcbName">Margherita</b><span id="pcbTag"></span></div>
+            <figure class="pt-sq pt-pc-sq" id="pcbSq"><img id="pcbImg" src="assets/margherita.webp" alt="" width="560" height="560"></figure>
+          </div>
+          <p class="pt-pc-desc" id="pcbDesc"></p>
+          <p class="pt-pc-lbl">Ingredienti e provenienza</p>
+          <ul class="pt-pc-ing" id="pcbIng"></ul>
+          <p class="pt-pc-all" id="pcbAll"></p>
+          <div class="pt-pc-bbot">
+            <button type="button" class="pt-pc-flip" id="pcFlipBack">↺ Fronte</button>
+            <button type="button" class="pt-btn pt-btn-ink pt-btn-sm" data-book>Prenota un tavolo</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Prenotazione ============ -->
+<div class="pt-dlg" id="book" role="dialog" aria-modal="true" aria-labelledby="bookTitle" hidden>
+  <div class="pt-dlg-bg" data-close></div>
+  <div class="pt-dlg-panel">
+    <div class="pt-dlg-head">
+      <h2 id="bookTitle">Prenota</h2>
+      <button type="button" class="pt-pov-b pt-dlg-x" data-close aria-label="Chiudi">×</button>
+    </div>
+    <form class="pt-form" id="bookForm" novalidate>
+      <fieldset class="pt-fs">
+        <legend>Formula</legend>
+        <div class="pt-seg" id="bFormula">
+          <button type="button" data-formula="carta" aria-pressed="true"><b>À la carte</b><small>pranzo e cena</small></button>
+          <button type="button" data-formula="tasting" aria-pressed="false"><b>Degustazione</b><small>7 passaggi · € 58</small></button>
+        </div>
+      </fieldset>
+      <fieldset class="pt-fs">
+        <legend>Sede</legend>
+        <div class="pt-chips" id="bVenue"></div>
+        <p class="pt-hint" id="bVenueHint"></p>
+      </fieldset>
+      <fieldset class="pt-fs">
+        <legend>Giorno</legend>
+        <div class="pt-days" id="bDays"></div>
+      </fieldset>
+      <fieldset class="pt-fs">
+        <legend>Orario</legend>
+        <div class="pt-chips pt-slots" id="bSlots"></div>
+      </fieldset>
+      <fieldset class="pt-fs pt-fs-row">
+        <legend>Persone</legend>
+        <div class="pt-step">
+          <button type="button" id="bMinus" aria-label="Una persona in meno">−</button>
+          <output id="bPeople" aria-live="polite">2</output>
+          <button type="button" id="bPlus" aria-label="Una persona in più">+</button>
+        </div>
+        <p class="pt-hint" id="bPeopleHint"></p>
+      </fieldset>
+      <div class="pt-form-2">
+        <label class="pt-field-l"><span>Nome e cognome</span><input type="text" id="bName" autocomplete="name" maxlength="60"></label>
+        <label class="pt-field-l"><span>Telefono</span><input type="tel" id="bPhone" autocomplete="tel" inputmode="tel" placeholder="+39 ..."></label>
+      </div>
+      <label class="pt-field-l"><span>Note (allergie, seggiolone…)</span><textarea id="bNote" rows="2" maxlength="200"></textarea></label>
+      <p class="pt-err" id="bookErr" role="alert"></p>
+      <div class="pt-dlg-foot">
+        <p class="pt-sum" id="bSummary"></p>
+        <button type="submit" class="pt-btn pt-btn-ink" id="bookSubmit">Conferma</button>
+      </div>
+    </form>
+    <div class="pt-done pt-done-book" id="bookDone" hidden tabindex="-1">
+      <p class="pt-done-k">A presto.</p>
+      <p id="bookDoneTxt"></p>
+      <p class="pt-code" id="bookCode"></p>
+      <button type="button" class="pt-btn pt-btn-ink" data-close>Chiudi</button>
+    </div>
+  </div>
+</div>
+
+<div class="pt-toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

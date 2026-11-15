@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shiomi · Semplicemente, ottimo sushi · Rimini</title>
+<meta name="description" content="Shiomi, sushi di tradizione a Rimini. Niente prenotazioni: mettiti in lista d'attesa online o ordina da asporto.">
+<meta name="theme-color" content="#0b2c4f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cabin:wght@500;600&family=Nunito+Sans:opsz,wght@6..12,300;6..12,400;6..12,600;6..12,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="so-fish" viewBox="0 0 72 30">
+      <path d="M3 15C12 4.5 33 3 49 12.5L62 4.5 58.5 15 62 25.5 49 17.5C33 27 12 25.5 3 15Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M17 8.5c3 3.6 3 9.4 0 13" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+      <path d="M23 9.5c3 2.2 6 2.2 9 0s6-2.2 9 0M24 13c3 2.2 6 2.2 9 0s6-2.2 9 0M26 16.6c3 2 5.5 2 8 0s5.5-2 8 0" fill="none" stroke="currentColor" stroke-width=".9" stroke-linecap="round" opacity=".75"/>
+      <circle cx="10.5" cy="13.4" r="1.3" fill="currentColor"/>
+    </symbol>
+    <symbol id="so-i-fb" viewBox="0 0 24 24"><path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H7.9v3h2.6V21" fill="currentColor"/></symbol>
+    <symbol id="so-i-ig" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3.6" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="16.9" cy="7.1" r="1" fill="currentColor"/></symbol>
+    <symbol id="so-i-tt" viewBox="0 0 24 24"><path d="M14.5 4c.4 2.3 1.9 3.8 4.2 4v2.6c-1.5 0-2.9-.5-4.1-1.3v5.8a5 5 0 1 1-5-5h.4v2.7a2.4 2.4 0 1 0 2 2.3V4h2.5Z" fill="currentColor"/></symbol>
+    <symbol id="so-i-bag" viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 10V7a3 3 0 0 1 6 0v3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="so-i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="so-i-bars" viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<a class="so-skip" href="#storia">Vai al contenuto</a>
+
+<div class="so-family" aria-label="I nostri locali">
+  <a href="#famiglia">Nori Nori</a><span aria-hidden="true">·</span><b>Shiomi</b><span aria-hidden="true">·</span><a href="#famiglia">Banco Kaze</a>
+</div>
+
+<header class="so-nav" id="nav" data-state="top">
+  <button class="so-burger" id="burger" type="button" aria-label="Apri il menu" aria-expanded="false" aria-controls="drawer">
+    <svg width="22" height="22"><use href="#so-i-bars"/></svg>
+  </button>
+  <nav class="so-nav-l" aria-label="Sezioni">
+    <a href="#menu">Il menu</a><a href="#pesce">Il pesce</a><a href="#sedi">Sedi</a>
+  </nav>
+  <a class="so-logo" href="#top" aria-label="Shiomi, torna su">
+    <svg class="so-logo-fish" width="72" height="30" aria-hidden="true"><use href="#so-fish"/></svg>
+    <span class="so-logo-word">SHIOMI</span>
+    <span class="so-logo-sub">sushi · rimini</span>
+  </a>
+  <nav class="so-nav-r" aria-label="Azioni">
+    <button type="button" class="so-navbtn" data-open="cart">Asporto <i class="so-count" id="cartCount" hidden>0</i></button>
+    <button type="button" class="so-navbtn" data-open="wait">Lista d'attesa <i class="so-count so-count--wait" id="waitChip" hidden></i></button>
+    <a href="#storia">Chi siamo</a>
+  </nav>
+  <button class="so-navbag" type="button" data-open="cart" aria-label="Apri l'asporto">
+    <svg width="22" height="22"><use href="#so-i-bag"/></svg><i class="so-count" id="cartCountM" hidden>0</i>
+  </button>
+</header>
+
+<div class="so-drawer" id="drawer" hidden>
+  <div class="so-drawer-in">
+    <button class="so-drawer-x" type="button" id="drawerX" aria-label="Chiudi il menu"><svg width="26" height="26"><use href="#so-i-x"/></svg></button>
+    <nav class="so-drawer-nav" aria-label="Menu mobile">
+      <a href="#menu">Il menu</a>
+      <a href="#pesce">Il pesce</a>
+      <a href="#sedi">Sedi</a>
+      <button type="button" data-open="wait">Lista d'attesa</button>
+      <button type="button" data-open="cart">Asporto</button>
+      <a href="#storia">Chi siamo</a>
+    </nav>
+    <p class="so-drawer-status" data-status-line></p>
+    <div class="so-social so-social--drawer">
+      <a href="#" aria-label="Facebook"><svg width="20" height="20"><use href="#so-i-fb"/></svg></a>
+      <a href="#" aria-label="Instagram"><svg width="20" height="20"><use href="#so-i-ig"/></svg></a>
+      <a href="#" aria-label="TikTok"><svg width="20" height="20"><use href="#so-i-tt"/></svg></a>
+    </div>
+    <p class="so-drawer-mail">CIAO@SHIOMI.IT</p>
+  </div>
+</div>
+
+<main id="top">
+<section class="so-hero" id="hero" aria-label="Shiomi">
+  <canvas class="so-sea" id="sea" aria-hidden="true"></canvas>
+  <div class="so-hero-scene" id="heroScene">
+    <h1 class="so-hero-h">Semplicemente,<br>ottimo sushi.</h1>
+    <a class="so-hero-link" href="#storia">La nostra storia</a>
+  </div>
+  <div class="so-lens" id="lens" aria-hidden="true">
+    <div class="so-hero-scene">
+      <p class="so-hero-h">Semplicemente,<br>ottimo sushi.</p>
+      <span class="so-hero-link">La nostra storia</span>
+    </div>
+  </div>
+  <i class="so-edge so-edge--l" id="edgeL" aria-hidden="true"></i>
+  <i class="so-edge so-edge--r" id="edgeR" aria-hidden="true"></i>
+  <div class="so-hero-bar">
+    <p class="so-live" id="heroStatus"><i class="so-dot"></i><span>Calcolo gli orari…</span></p>
+    <div class="so-hero-cta">
+      <button type="button" class="so-btn so-btn--glass" data-open="wait">Mettiti in lista</button>
+      <a class="so-btn so-btn--ghost" href="#menu">Vedi il menu</a>
+    </div>
+  </div>
+</section>
+
+<section class="so-story" id="storia">
+  <header class="so-head">
+    <h2 class="so-h2">Valore all'antica</h2>
+    <p class="so-eyebrow">Sushi di tradizione</p>
+    <p class="so-lede">Riso tiepido, pesce scelto all'alba al mercato di Rimini, una mano leggera. Da noi il sushi si mangia come al banco di Tokyo: senza salse in più, senza fronzoli, al prezzo giusto.</p>
+  </header>
+  <figure class="so-story-pic">
+    <img src="assets/story.webp" alt="Nigiri di salmone su piatto bianco, luci calde del locale sullo sfondo" width="1400" height="934" loading="lazy" draggable="false">
+  </figure>
+</section>
+
+<section class="so-band" aria-labelledby="approccioT">
+  <div class="so-band-bg" style="background-image:url(assets/band.webp)" aria-hidden="true"></div>
+  <article class="so-card-w">
+    <h2 class="so-h2" id="approccioT">Nuovo approccio</h2>
+    <p class="so-eyebrow">Non pensare. Mangia.</p>
+    <p class="so-manifesto" id="manifesto">Qui non trovi roll fritti, salse dolci né maionese piccante. Ti sediamo, ti portiamo un piatto alla volta nell'ordine giusto e ti chiediamo solo una cosa: fidati. Il riso è tiepido e appena compattato, il pesce è freddo e tagliato al momento. Se le bacchette ti tradiscono, usa le mani.</p>
+    <a class="so-btn so-btn--line" href="#menu">Scopri i Fidati</a>
+  </article>
+</section>
+
+<section class="so-quality" id="pesce" aria-labelledby="qualitaT">
+  <div class="so-quality-txt">
+    <h2 class="so-h2 so-h2--w" id="qualitaT">Qualità</h2>
+    <p>Prima di tutto, la materia prima. Ogni mattina scegliamo il pesce dai pescherecci del porto canale e dai mercati di fiducia; per tenere i prezzi onesti teniamo tutto il resto semplice. Pochi piatti, fatti sempre allo stesso modo, ogni giorno.</p>
+    <ul class="so-rules">
+      <li>Il pesce si sceglie ogni mattina, e se non è all'altezza non si serve.</li>
+      <li>Il riso è tiepido e poco pressato: deve sciogliersi in bocca.</li>
+      <li>Niente di gommoso, filoso o che sa di pesce.</li>
+    </ul>
+    <a class="so-btn so-btn--line so-btn--w" href="#menu">Vedi il menu</a>
+  </div>
+  <figure class="so-quality-pic"><img src="assets/quality.webp" alt="Gunkan di ikura in primo piano" width="1100" height="735" loading="lazy" draggable="false"></figure>
+</section>
+
+<section class="so-menu" id="menu" aria-labelledby="menuT">
+  <header class="so-head so-head--menu">
+    <h2 class="so-h2" id="menuT">Il menu</h2>
+    <p class="so-eyebrow">I Fidati · pranzo e cena</p>
+    <p class="so-lede">Tre percorsi fissi, serviti un piatto alla volta. Il pranzo costa meno: vale fino alle 15:30.</p>
+    <div class="so-seg" role="tablist" aria-label="Servizio">
+      <button type="button" role="tab" id="tabPranzo" data-service="pranzo" aria-selected="true">Pranzo <small>fino alle 15:30</small></button>
+      <button type="button" role="tab" id="tabCena" data-service="cena" aria-selected="false">Cena <small>dalle 15:30</small></button>
+      <i class="so-seg-pill" aria-hidden="true"></i>
+    </div>
+  </header>
+
+  <div class="so-sets-bar">
+    <p class="so-sets-hint" id="setsHint">Gira una carta per vedere cosa arriva al tavolo.</p>
+    <button type="button" class="so-btn so-btn--line so-btn--sm" id="compareBtn" aria-pressed="false">Confronta i tre</button>
+  </div>
+  <div class="so-sets" id="sets"></div>
+
+  <article class="so-maestro" id="maestro">
+    <img src="assets/set-maestro.webp" alt="Sashimi misto su ciotola di ceramica" width="900" height="600" loading="lazy" draggable="false">
+    <div class="so-maestro-txt">
+      <p class="so-eyebrow">Solo al banco · su richiesta</p>
+      <h3>Non pensare. Fidati.</h3>
+      <p>Il percorso più vicino a quello che il nostro itamae prepara per i clienti di sempre: un giro di sashimi, sette nigiri scelti quel giorno e due temaki. Cambia ogni sera, non chiederci cosa c'è.</p>
+      <div class="so-maestro-foot">
+        <b class="so-price" id="maestroPrice">€ 58</b>
+        <button type="button" class="so-btn so-btn--gold" data-add="maestro">Aggiungi all'asporto</button>
+      </div>
+    </div>
+  </article>
+
+  <div class="so-carta">
+    <div class="so-acc" id="acc"></div>
+    <aside class="so-notes">
+      <h3>Da sapere</h3>
+      <p><b>Niente coperto, niente mance.</b> Il prezzo che leggi è quello che paghi.</p>
+      <p><b>Allergie.</b> Diccelo prima di ordinare. In cucina ci sono pesce, crostacei, soia, sesamo e glutine: la contaminazione è sempre possibile.</p>
+      <p><b>Come lo serviamo.</b> Ogni piatto arriva come vuole la tradizione. Per favore, niente richieste di salse extra, sale o ciotole di riso.</p>
+      <p class="so-notes-sm">Tranne anguilla, gambero rosso scottato su richiesta e zuppa di miso, tutto ciò che è in menu è servito crudo o poco cotto. Il pesce crudo è abbattuto a norma di legge.</p>
+    </aside>
+  </div>
+</section>
+
+<section class="so-family-tiles" id="famiglia" aria-labelledby="famT">
+  <header class="so-head">
+    <h2 class="so-h2" id="famT">Tutto ruota attorno al pesce</h2>
+    <p class="so-lede">Shiomi è uno dei tre banchi della stessa famiglia. Nori Nori fa solo temaki, al volo, al bancone; Banco Kaze è l'omakase da dodici posti per chi vuole lasciarsi guidare fino in fondo. Shiomi sta nel mezzo: un ristorante vero, ossessionato da un sushi fatto bene.</p>
+  </header>
+  <div class="so-tiles">
+    <article class="so-tile"><img src="assets/fam-vetro.webp" alt="Sashimi su vetro" width="800" height="534" loading="lazy" draggable="false"><div><h3>Banco Kaze</h3><a class="so-btn so-btn--line so-btn--w so-btn--sm" href="#" data-toast="Banco Kaze: 12 posti, solo su prenotazione telefonica.">Omakase · 12 posti</a></div></article>
+    <article class="so-tile so-tile--main"><img src="assets/fam-uramaki.webp" alt="Uramaki al salmone" width="800" height="534" loading="lazy" draggable="false"><div><h3>Shiomi</h3><a class="so-btn so-btn--line so-btn--w so-btn--sm" href="#storia">La nostra storia</a></div></article>
+    <article class="so-tile"><img src="assets/fam-tempura.webp" alt="Tempura servita in un cesto" width="800" height="534" loading="lazy" draggable="false"><div><h3>Nori Nori</h3><a class="so-btn so-btn--line so-btn--w so-btn--sm" href="#" data-toast="Nori Nori apre in primavera a Cesenatico.">Temaki bar</a></div></article>
+  </div>
+</section>
+
+<section class="so-sedi" id="sedi" aria-labelledby="sediT">
+  <div class="so-sedi-in">
+    <div class="so-sedi-l">
+      <p class="so-eyebrow so-eyebrow--w">Non prendiamo prenotazioni</p>
+      <h2 class="so-h2 so-h2--w" id="sediT">Le nostre sedi</h2>
+      <p class="so-sedi-rule">Si entra in ordine d'arrivo. Facciamo sedere il gruppo solo quando siete tutti, e nel modo più rapido possibile in base al numero di persone. Per non aspettare in piedi, mettiti in lista da qui.</p>
+      <ul class="so-sedi-list" id="sediList" role="listbox" aria-label="Scegli una sede"></ul>
+    </div>
+    <aside class="so-sede-card" id="sedeCard" aria-live="polite">
+      <div class="so-sede-photo"><img id="sedePhoto" src="assets/sede-marina.webp" alt="" width="800" height="534" draggable="false"></div>
+      <div class="so-sede-body so-fade" id="sedeBody"></div>
+    </aside>
+  </div>
+</section>
+</main>
+
+<footer class="so-foot" id="contatti">
+  <div class="so-social">
+    <a href="#" aria-label="Facebook"><svg width="18" height="18"><use href="#so-i-fb"/></svg></a>
+    <a href="#" aria-label="Instagram"><svg width="18" height="18"><use href="#so-i-ig"/></svg></a>
+    <a href="#" aria-label="TikTok"><svg width="18" height="18"><use href="#so-i-tt"/></svg></a>
+  </div>
+  <h2 class="so-foot-h">Orari</h2>
+  <div class="so-hours" id="hours"></div>
+  <div class="so-foot-closed">
+    <h3>Chiuso</h3>
+    <p>25 dicembre · 1 gennaio · 15 agosto</p>
+    <p>24 e 31 dicembre chiudiamo alle 15:00</p>
+  </div>
+  <svg class="so-foot-fish" width="96" height="40" aria-hidden="true"><use href="#so-fish"/></svg>
+  <p class="so-foot-word">SHIOMI</p>
+  <p class="so-foot-legal">Shiomi S.r.l. · Viale Amerigo Vespucci 41, 47921 Rimini (RN) · +39 0541 380 214 · P.IVA 04517320403</p>
+  <p class="so-foot-legal">Nome, indirizzi e prezzi sono di fantasia.</p>
+  <p class="so-foot-back"><a href="/templates" target="_top">← Tutti i modelli</a></p>
+</footer>
+
+<!-- Lista d'attesa -->
+<div class="so-modal" id="waitModal" role="dialog" aria-modal="true" aria-labelledby="waitT" hidden>
+  <div class="so-modal-scrim" data-close></div>
+  <div class="so-sheet" id="waitSheet">
+    <button class="so-sheet-x" type="button" data-close aria-label="Chiudi"><svg width="22" height="22"><use href="#so-i-x"/></svg></button>
+    <p class="so-eyebrow">Niente prenotazioni, solo la fila</p>
+    <h2 class="so-sheet-h" id="waitT">Lista d'attesa</h2>
+    <ol class="so-steps" id="waitSteps" aria-label="Passaggi"><li class="is-on">Sede</li><li>Persone</li><li>Contatto</li></ol>
+
+    <form class="so-wait" id="waitForm" novalidate>
+      <fieldset class="so-step" data-step="0">
+        <legend class="so-vh">Scegli la sede</legend>
+        <div class="so-pick" id="waitSedi"></div>
+        <p class="so-err" id="errSede" role="alert"></p>
+      </fieldset>
+      <fieldset class="so-step" data-step="1" hidden>
+        <legend class="so-vh">Quante persone</legend>
+        <div class="so-party">
+          <button type="button" class="so-stepper" id="partyMinus" aria-label="Una persona in meno">−</button>
+          <output id="partyOut" aria-live="polite">2</output>
+          <button type="button" class="so-stepper" id="partyPlus" aria-label="Una persona in più">+</button>
+        </div>
+        <p class="so-party-note" id="partyNote">Tavolo da due, di solito al banco.</p>
+        <label class="so-check"><input type="checkbox" id="allHere"> <span>Arriveremo tutti insieme: sediamo il gruppo solo quando è completo.</span></label>
+        <p class="so-err" id="errParty" role="alert"></p>
+      </fieldset>
+      <fieldset class="so-step" data-step="2" hidden>
+        <legend class="so-vh">I tuoi dati</legend>
+        <label class="so-field"><span>Nome</span><input id="wName" autocomplete="given-name" placeholder="Giulia" maxlength="40"></label>
+        <label class="so-field"><span>Cellulare</span><input id="wPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+39 333 123 4567" maxlength="20"></label>
+        <p class="so-hintline">Ti scriviamo un SMS quando il tavolo è pronto. Hai 10 minuti per arrivare.</p>
+        <p class="so-err" id="errContact" role="alert"></p>
+      </fieldset>
+      <div class="so-sheet-foot">
+        <button type="button" class="so-btn so-btn--line" id="waitBack" hidden>Indietro</button>
+        <p class="so-est" id="waitEst"></p>
+        <button type="submit" class="so-btn so-btn--gold" id="waitNext">Avanti</button>
+      </div>
+    </form>
+
+    <div class="so-ticket" id="waitTicket" hidden></div>
+  </div>
+</div>
+
+<!-- Asporto -->
+<div class="so-modal so-modal--side" id="cartModal" role="dialog" aria-modal="true" aria-labelledby="cartT" hidden>
+  <div class="so-modal-scrim" data-close></div>
+  <div class="so-cart" id="cartPanel">
+    <header class="so-cart-head">
+      <div><p class="so-eyebrow">Ritiro in sede · paghi al ritiro</p><h2 class="so-sheet-h" id="cartT">Asporto</h2></div>
+      <button class="so-sheet-x" type="button" data-close aria-label="Chiudi"><svg width="22" height="22"><use href="#so-i-x"/></svg></button>
+    </header>
+    <div class="so-cart-body" id="cartBody">
+      <ul class="so-lines" id="cartLines"></ul>
+      <div class="so-cart-empty" id="cartEmpty">
+        <svg width="72" height="30" aria-hidden="true"><use href="#so-fish"/></svg>
+        <p>La borsa è vuota. I Fidati viaggiano bene: si comincia da lì.</p>
+        <a class="so-btn so-btn--line so-btn--sm" href="#menu" data-close>Vai al menu</a>
+      </div>
+      <div class="so-pickup" id="pickup">
+        <label class="so-field"><span>Sede di ritiro</span><select id="pkSede"></select></label>
+        <div class="so-field"><span>Orario di ritiro</span><div class="so-slots" id="pkSlots" role="radiogroup" aria-label="Orario di ritiro"></div></div>
+        <p class="so-hintline" id="pkService"></p>
+        <label class="so-field"><span>Nome</span><input id="pkName" autocomplete="given-name" placeholder="Marco" maxlength="40"></label>
+        <label class="so-field"><span>Cellulare</span><input id="pkPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+39 333 123 4567" maxlength="20"></label>
+        <p class="so-err" id="errCart" role="alert"></p>
+      </div>
+    </div>
+    <footer class="so-cart-foot" id="cartFoot">
+      <div class="so-total"><span>Totale <small id="cartQty"></small></span><b id="cartTotal">€ 0,00</b></div>
+      <button type="button" class="so-btn so-btn--gold so-btn--block" id="cartGo">Conferma il ritiro</button>
+    </footer>
+    <div class="so-done" id="cartDone" hidden></div>
+  </div>
+</div>
+
+<div class="so-toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

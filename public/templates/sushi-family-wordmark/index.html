@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>shio famiglia — quattro case giapponesi tra Trieste, Udine, Venezia e Lubiana</title>
+<meta name="description" content="shio, shioya, shiochà, shiobune: una famiglia di tavole giapponesi nata sul mare di Trieste. Scegli la città, scegli la casa, prenota il tuo tavolo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600&text=%E6%BD%AE%E5%B1%8B%E8%8C%B6%E8%88%9F%E5%AE%B6&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-tint="fam">
+<a class="sh-skip" href="#citta">Salta al contenuto</a>
+
+<header class="sh-head" id="sh-head">
+  <a class="sh-seal" href="#home" data-home aria-label="shio famiglia — torna all'inizio"><span>潮</span></a>
+  <nav class="sh-nav" aria-label="Principale">
+    <a href="#citta">città e case</a><i aria-hidden="true">°</i>
+    <a href="#storia">la famiglia</a><i aria-hidden="true">°</i>
+    <a href="#casa">menu</a><i aria-hidden="true">°</i>
+    <a href="#contatti">contatti</a>
+  </nav>
+  <div class="sh-head-r">
+    <button class="sh-btn-line" type="button" data-book>prenota</button>
+    <button class="sh-burger" type="button" aria-expanded="false" aria-controls="sh-mnav" id="sh-burger"><span></span><span></span><b>menu</b></button>
+  </div>
+</header>
+
+<div class="sh-mnav" id="sh-mnav" hidden>
+  <nav aria-label="Menu mobile">
+    <a href="#citta">città e case</a>
+    <a href="#storia">la famiglia</a>
+    <a href="#casa">menu</a>
+    <a href="#contatti">contatti</a>
+  </nav>
+  <ul class="sh-mnav-brands" id="sh-mnav-brands"></ul>
+  <button class="sh-btn-solid" type="button" data-book>prenota un tavolo</button>
+</div>
+
+<main>
+  <!-- ─────────首屏：字标堆叠 + 线描章鱼 ───────── -->
+  <section class="sh-hero" id="home" aria-labelledby="sh-hero-h">
+    <h1 class="sh-vh" id="sh-hero-h">shio famiglia</h1>
+    <svg class="sh-octo" id="sh-octo" viewBox="0 0 1000 1000" aria-hidden="true" focusable="false"></svg>
+    <p class="sh-tag"><span>Una famiglia di tavole giapponesi, nata sul mare di Trieste.</span></p>
+    <ul class="sh-stack" id="sh-stack" aria-label="Le case della famiglia"></ul>
+    <div class="sh-fly" id="sh-fly" aria-live="polite">
+      <p class="sh-fly-kind" id="sh-fly-kind">quattro case · quattro città</p>
+      <p class="sh-fly-txt" id="sh-fly-txt">Un banco di sushi, una izakaya che fa tardi, una sala da tè, un bancone di temaki sul molo. Stessa cucina di casa, quattro caratteri diversi.</p>
+      <div class="sh-fly-links" id="sh-fly-links"><a href="#citta">scegli la città</a></div>
+    </div>
+  </section>
+
+  <!-- ───────── 城市 + 子品牌卡 ───────── -->
+  <section class="sh-loc" id="citta" aria-labelledby="sh-loc-h">
+    <div class="sh-frame" id="sh-frame">
+      <h2 class="sh-vh" id="sh-loc-h">Le nostre case, città per città</h2>
+      <div class="sh-cities" id="sh-cities" role="tablist" aria-label="Città"></div>
+      <label class="sh-citysel"><span class="sh-vh">Città</span>
+        <select id="sh-citysel"></select>
+      </label>
+      <div class="sh-cards" id="sh-cards"></div>
+      <p class="sh-loc-note" id="sh-loc-note"></p>
+    </div>
+  </section>
+
+  <!-- ───────── 家族故事 ───────── -->
+  <section class="sh-story" id="storia" aria-labelledby="sh-story-h">
+    <div class="sh-story-grid">
+      <figure class="sh-story-pic">
+        <img src="assets/storia-sashimi.webp" alt="Sashimi tagliato al banco e servito su un piatto di ceramica" width="900" height="600" loading="lazy" draggable="false">
+      </figure>
+      <div class="sh-story-txt">
+        <h2 id="sh-story-h">una famiglia di tavole straordinarie, cominciata nel 2009 con otto sgabelli davanti al porto di Trieste</h2>
+        <p>Aiko Furlan è cresciuta tra Osaka e Muggia; suo marito Davide ha passato vent'anni sui pescherecci del golfo. Il primo banco di shio era un ex magazzino del sale: otto sgabelli, un frigorifero di legno, il pesce che arrivava a piedi dal molo.</p>
+        <p>Da quel banco sono nate le altre case. shioya è la cucina della sera tardi, con la brace e il sake; shiochà è il pomeriggio, tè e dolci; shiobune è il pranzo in piedi, un temaki e via. Ognuna ha il suo carattere, tutte hanno la stessa regola: si cucina come per chi è di famiglia.</p>
+      </div>
+      <div class="sh-wave" aria-hidden="true">
+        <svg width="100%" height="100%"><defs><pattern id="sh-seigaiha" width="56" height="28" patternUnits="userSpaceOnUse"><g class="sh-wave-g"><path d="M0 28a28 28 0 0 1 56 0M8 28a20 20 0 0 1 40 0M16 28a12 12 0 0 1 24 0M24 28a4 4 0 0 1 8 0"/><path d="M-28 14a28 28 0 0 1 56 0M-20 14a20 20 0 0 1 40 0M-12 14a12 12 0 0 1 24 0M28 14a28 28 0 0 1 56 0M36 14a20 20 0 0 1 40 0M44 14a12 12 0 0 1 24 0"/></g></pattern></defs><rect width="100%" height="100%" fill="url(#sh-seigaiha)"/></svg>
+      </div>
+      <blockquote class="sh-quote">
+        <p>«Volevo che tutta la sala si sentisse come il primo posto al banco: vicino, curato, un po' in famiglia.»</p>
+        <footer>aiko furlan, cuoca e fondatrice</footer>
+      </blockquote>
+      <figure class="sh-story-pic2">
+        <img src="assets/storia-tartare.webp" alt="Tartare in coppette di vetro su un vassoio" width="900" height="600" loading="lazy" draggable="false">
+      </figure>
+    </div>
+  </section>
+
+  <!-- ───────── 子品牌页（la casa） ───────── -->
+  <section class="sh-casa" id="casa" aria-labelledby="sh-casa-h">
+    <h2 class="sh-vh" id="sh-casa-h">La casa scelta</h2>
+    <div class="sh-casa-tabs" id="sh-casa-tabs" role="tablist" aria-label="Scegli la casa"></div>
+    <div class="sh-casa-hero">
+      <div class="sh-roll sh-roll-wm" id="sh-roll-wm" aria-live="polite"></div>
+      <div class="sh-roll sh-roll-city" id="sh-roll-city"></div>
+      <svg class="sh-creature" id="sh-creature" viewBox="0 0 48 48" aria-hidden="true" focusable="false"></svg>
+    </div>
+    <div class="sh-casa-cities" id="sh-casa-cities" aria-label="In quali città"></div>
+
+    <nav class="sh-sub" aria-label="Sezioni della casa">
+      <div class="sh-sub-l"><a href="#sh-info">info</a><i aria-hidden="true">°</i><a href="#sh-fav">piatti del cuore</a><i aria-hidden="true">°</i><a href="#sh-menu">menu</a><i aria-hidden="true">°</i><a href="#sh-info" data-book-casa>prenota</a></div>
+      <a class="sh-sub-r" href="#sh-menu">vedi il menu</a>
+    </nav>
+
+    <div class="sh-info" id="sh-info">
+      <div class="sh-info-main">
+        <p class="sh-info-kind" id="sh-info-kind"></p>
+        <p id="sh-info-p1"></p>
+        <p id="sh-info-p2"></p>
+        <div class="sh-info-facts">
+          <div><h3>orari</h3><dl class="sh-hours" id="sh-hours"></dl></div>
+          <div><h3>indirizzo</h3><p id="sh-addr"></p><h3>telefono</h3><p id="sh-phone"></p></div>
+        </div>
+        <p class="sh-status sh-status-lg" id="sh-casa-status"></p>
+      </div>
+      <aside class="sh-info-book">
+        <h3 id="sh-book-h">prenota un tavolo da</h3>
+        <p>Accettiamo prenotazioni e accogliamo chi passa senza. I tavoli all'aperto dipendono dal tempo (e dalla bora).</p>
+        <button class="sh-btn-line sh-btn-wide" type="button" data-book-casa>scegli data e orario</button>
+        <p class="sh-small" id="sh-book-call"></p>
+      </aside>
+    </div>
+
+    <div class="sh-fav" id="sh-fav">
+      <div class="sh-fav-head">
+        <h3>piatti del cuore</h3>
+        <div class="sh-fav-ctl">
+          <span id="sh-fav-count">1 di 4</span>
+          <button type="button" class="sh-arrow" id="sh-fav-prev" aria-label="Piatto precedente"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button type="button" class="sh-arrow" id="sh-fav-next" aria-label="Piatto successivo"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+      <ul class="sh-fav-track" id="sh-fav-track"></ul>
+    </div>
+
+    <div class="sh-menu" id="sh-menu">
+      <div class="sh-menu-head">
+        <h3>menu <span id="sh-menu-of"></span></h3>
+        <div class="sh-mtabs" id="sh-mtabs" role="tablist" aria-label="Categorie del menu"></div>
+      </div>
+      <ul class="sh-mlist" id="sh-mlist" role="tabpanel"></ul>
+      <p class="sh-small">Prezzi in euro, servizio incluso. Allergeni: chiedi pure al banco, abbiamo la scheda di ogni piatto.</p>
+    </div>
+
+    <div class="sh-sibs" id="sh-sibs"></div>
+  </section>
+
+  <!-- ───────── 订阅条 ───────── -->
+  <section class="sh-band" aria-labelledby="sh-band-h">
+    <form class="sh-band-in" id="sh-news" novalidate>
+      <h2 id="sh-band-h">Novità, cene a quattro mani ed eventi delle nostre case, una volta al mese.</h2>
+      <label class="sh-vh" for="sh-news-mail">Email</label>
+      <input id="sh-news-mail" type="email" placeholder="la tua email" autocomplete="email">
+      <button type="submit">resta in contatto</button>
+      <p class="sh-band-err" id="sh-news-err" role="alert"></p>
+    </form>
+  </section>
+</main>
+
+<footer class="sh-foot" id="contatti">
+  <div class="sh-foot-frame">
+    <div class="sh-foot-top">
+      <div class="sh-foot-brand"><span class="sh-wm"><b>shio</b></span><span class="sh-foot-sep"></span><p>Una famiglia di tavole giapponesi da Shio Ospitalità S.r.l., Trieste.</p></div>
+      <nav class="sh-foot-links" aria-label="Link"><a href="#contatti">lavora con noi</a><a href="#contatti">stampa</a><a href="#contatti">buoni regalo</a><a href="#contatti">cene private</a></nav>
+      <svg class="sh-foot-fish" id="sh-foot-fish" viewBox="0 0 120 80" aria-hidden="true"></svg>
+    </div>
+    <div class="sh-foot-mid">
+      <p><b>casa madre</b><br>Riva del Mandracchio 4, 34124 Trieste<br>+39 040 000 0412 · ciao@shio.example</p>
+      <p><b>stampa</b><br>stampa@shio.example</p>
+      <div class="sh-social" aria-label="Social">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".9"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8h3V4.5h-3c-2.5 0-4 1.6-4 4V11H7.5v3.5H10V21h3.5v-6.5H16l.6-3.5h-3.1V8.7c0-.4.3-.7.5-.7z"/></svg></a>
+        <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M14 3.5v11.2a3.4 3.4 0 1 1-3.4-3.4M14 3.5c.4 2.6 2.2 4.3 4.8 4.5"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <div class="sh-foot-legal">
+    <span>© 2026 Shio Ospitalità S.r.l. · P.IVA 01284560329</span>
+    <a href="#contatti">privacy</a><a href="#contatti">termini d'uso</a><a href="#contatti">accessibilità</a>
+    <a class="sh-back" href="/templates" target="_top">← Tutti i modelli</a>
+    <span class="sh-fanta">Nome, indirizzi e prezzi sono di fantasia.</span>
+  </div>
+</footer>
+
+<!-- ───────── 订位弹窗 ───────── -->
+<div class="sh-modal" id="sh-book" hidden>
+  <div class="sh-modal-bg" data-close></div>
+  <div class="sh-sheet" role="dialog" aria-modal="true" aria-labelledby="sh-bk-title">
+    <div class="sh-sheet-head">
+      <h2 id="sh-bk-title">prenota un tavolo</h2>
+      <button type="button" class="sh-x" data-close aria-label="Chiudi"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <form id="sh-bk-form" novalidate>
+      <fieldset class="sh-fs">
+        <legend><i>1</i> città</legend>
+        <div class="sh-chips" id="bk-city" role="radiogroup" aria-label="Città"></div>
+      </fieldset>
+      <fieldset class="sh-fs">
+        <legend><i>2</i> casa</legend>
+        <div class="sh-bk-brands" id="bk-brand" role="radiogroup" aria-label="Casa"></div>
+        <p class="sh-err" id="bk-err-brand" role="alert"></p>
+      </fieldset>
+      <fieldset class="sh-fs">
+        <legend><i>3</i> quando e in quanti</legend>
+        <div class="sh-bk-row">
+          <label class="sh-field"><span>data</span><input type="date" id="bk-date" required></label>
+          <div class="sh-field"><span>persone</span>
+            <div class="sh-step"><button type="button" id="bk-minus" aria-label="Una persona in meno">−</button><output id="bk-party" aria-live="polite">2</output><button type="button" id="bk-plus" aria-label="Una persona in più">+</button></div>
+          </div>
+        </div>
+        <p class="sh-hint" id="bk-party-note"></p>
+        <div class="sh-slots" id="bk-slots" role="group" aria-label="Orari disponibili"></div>
+        <p class="sh-err" id="bk-err-when" role="alert"></p>
+      </fieldset>
+      <fieldset class="sh-fs">
+        <legend><i>4</i> a nome di</legend>
+        <div class="sh-bk-row">
+          <label class="sh-field"><span>nome e cognome</span><input type="text" id="bk-name" autocomplete="name" required></label>
+          <label class="sh-field"><span>telefono</span><input type="tel" id="bk-tel" autocomplete="tel" inputmode="tel" required></label>
+        </div>
+        <label class="sh-field"><span>note (allergie, seggiolone, ricorrenze)</span><input type="text" id="bk-note" maxlength="160"></label>
+        <p class="sh-err" id="bk-err-who" role="alert"></p>
+      </fieldset>
+      <div class="sh-bk-foot">
+        <p class="sh-bk-sum" id="bk-sum"></p>
+        <button type="submit" class="sh-btn-solid">conferma</button>
+      </div>
+    </form>
+    <div class="sh-done" id="sh-done" hidden tabindex="-1">
+      <svg class="sh-done-mark" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="27"/><path d="M20 33l8 8 16-17"/></svg>
+      <h3>ti aspettiamo</h3>
+      <p id="sh-done-txt"></p>
+      <p class="sh-code" id="sh-done-code"></p>
+      <button type="button" class="sh-btn-line" data-close>chiudi</button>
+    </div>
+  </div>
+</div>
+
+<div class="sh-toast" id="sh-toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kaede · Cucina giapponese, casa a Roma</title>
+<meta name="description" content="Kaede: la casa madre a Roma in Via Ludovisi e una famiglia di ristoranti giapponesi in Italia e in Europa. Prenota in ogni sede.">
+<meta name="theme-color" content="#f4f4f4">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/hero.webp" media="(min-width: 641px)">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="k-skip" href="#sedi">Vai alle sedi</a>
+
+<!-- ───────── Topbar ───────── -->
+<header class="tb" id="tb">
+  <div class="tb-in">
+    <button class="tb-burger" id="navOpen" type="button" aria-label="Apri il menu" aria-expanded="false" aria-controls="nav">
+      <span class="tb-sticks" aria-hidden="true"><i></i><i></i></span><span class="tb-burger-t">Menu</span>
+    </button>
+    <a class="tb-mark" href="#top" aria-label="Kaede, torna su">Kaede</a>
+    <div class="tb-right">
+      <a class="tb-sedi" href="#sedi">Sedi</a>
+      <button class="tb-book" type="button" data-book="roma">Prenota</button>
+    </div>
+  </div>
+</header>
+
+<!-- ───────── Full-screen nav ───────── -->
+<div class="nav" id="nav" hidden>
+  <div class="nav-panel" role="dialog" aria-modal="true" aria-label="Menu di navigazione">
+    <div class="nav-top">
+      <button class="nav-x" type="button" data-nav-close aria-label="Chiudi il menu"><span aria-hidden="true"></span></button>
+      <span class="tb-mark tb-mark--static">Kaede</span>
+      <button class="tb-book tb-book--light" type="button" data-book="roma" data-nav-close>Prenota</button>
+    </div>
+    <div class="nav-body">
+      <ul class="nav-main">
+        <li><a href="#sedi" data-nav-close>Le sedi</a></li>
+        <li><a href="#casa" data-nav-close>Roma, la casa madre</a></li>
+        <li><a href="#chef" data-nav-close>Lo chef</a></li>
+        <li><a href="#firma" data-nav-close>Piatti firma</a></li>
+        <li><a href="#menu" data-nav-close>Il menu</a></li>
+        <li><a href="#esperienze" data-nav-close>Esperienze</a></li>
+        <li><a href="#residenze" data-nav-close>Residenze</a></li>
+      </ul>
+      <div class="nav-dir" id="navDir"></div>
+    </div>
+    <p class="nav-foot"><span class="k-dot" data-status-dot="roma"></span><span data-status-text="roma">Roma</span></p>
+  </div>
+</div>
+
+<main id="top">
+<!-- ───────── Hero ───────── -->
+<section class="hero" aria-labelledby="hero-t">
+  <picture class="hero-pic">
+    <source media="(max-width: 640px)" srcset="assets/hero-m.webp">
+    <img src="assets/hero.webp" alt="La sala di Kaede Roma: soffitto di listelli di legno e sedute in pelle rossa" width="1920" height="1080" fetchpriority="high">
+  </picture>
+  <div class="hero-panel">
+    <h1 id="hero-t">Scopri il mondo<br>di Kaede</h1>
+    <div class="hero-row">
+      <a class="k-btn k-btn--light" href="#novita">Entra</a>
+      <button class="hero-live" type="button" data-book="roma">
+        <span class="k-dot" data-status-dot="roma"></span>
+        <span><b>Roma, Via Ludovisi</b> · <span data-status-text="roma">…</span></span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── Social row + news cards ───────── -->
+<section class="nw" id="novita" aria-label="Novità">
+  <ul class="k-social k-social--top" aria-label="Social">
+    <li><a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle cx="16.9" cy="7.1" r=".9" class="f"/></svg></a></li>
+    <li><a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M13.4 20v-7h2.3l.4-2.8h-2.7V8.5c0-.8.3-1.4 1.4-1.4h1.4V4.6c-.3 0-1.1-.1-2.1-.1-2.1 0-3.5 1.3-3.5 3.6v2.1H8.3V13h2.3v7" class="f"/></svg></a></li>
+    <li><a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M14 4v10.2a2.9 2.9 0 1 1-2.9-2.9M14 4c.4 2.3 1.8 3.7 4 4" /></svg></a></li>
+    <li><a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="17" height="11" rx="3"/><path d="m10.5 9.6 4 2.4-4 2.4z" class="f"/></svg></a></li>
+  </ul>
+
+  <article class="nw-row">
+    <div class="nw-media nw-slides" id="nwSlides" aria-roledescription="carosello" aria-label="Foto di Kaede Wien">
+      <img class="on" src="assets/s-vienna.webp" alt="La sala di Kaede Wien, piante e luce calda" loading="lazy">
+      <img src="assets/d-tartare-ardesia.webp" alt="Assaggi crudi su ardesia" loading="lazy">
+      <img src="assets/d-sashimi-vetro.webp" alt="Sashimi su vetro" loading="lazy">
+      <div class="nw-dots" role="tablist" aria-label="Scegli la foto"></div>
+    </div>
+    <div class="nw-panel">
+      <p class="k-label">Appena aperto</p>
+      <h2 class="k-h2">Kaede Wien</h2>
+      <p>Dal 9 ottobre siamo sul Kohlmarkt, a due passi dalla Hofburg. Un banco di dodici posti, una sala sotto le volte e la stessa carta di Roma, con il pesce dell'Adriatico che arriva ogni mattina.</p>
+      <button class="k-btn" type="button" data-detail="vienna">Esplora</button>
+    </div>
+  </article>
+
+  <article class="nw-row nw-row--flip">
+    <div class="nw-media"><img src="assets/s-cortina.webp" alt="Il bancone in legno di Kaede Cortina" loading="lazy"></div>
+    <div class="nw-panel">
+      <p class="k-label">In arrivo</p>
+      <h2 class="k-h2">Kaede Cortina</h2>
+      <p>La sede d'inverno riapre <b>sabato 5 dicembre</b>, ai piedi delle Tofane: sake caldo, nabe e la terrazza al sole di mezzogiorno. <span class="nw-count" id="cortinaCount"></span></p>
+      <button class="k-btn" type="button" data-book="cortina">Prenota la stagione</button>
+    </div>
+  </article>
+
+  <article class="nw-row">
+    <div class="nw-media"><img src="assets/news-pranzo.webp" alt="Sashimi di salmone in una scatola di legno" loading="lazy"></div>
+    <div class="nw-panel">
+      <p class="k-label">A pranzo</p>
+      <h2 class="k-h2">Roma apre a mezzogiorno</h2>
+      <p>Ogni giorno, dalle 12:30 alle 15:00, il Pranzo Kaede: tre portate dal banco e dalla cucina calda, servite in un'ora.</p>
+      <p class="nw-meta">Lunedì – domenica · 12:30 – 15:00 · € 48</p>
+      <button class="k-btn" type="button" data-book="roma" data-part="pranzo">Prenota</button>
+    </div>
+  </article>
+</section>
+
+<!-- ───────── Fullscreen expansion: Roma ───────── -->
+<section class="kx" id="casa" aria-labelledby="kx-t">
+  <div class="kx-track">
+    <div class="kx-stage" id="kxStage">
+      <div class="kx-back" aria-hidden="true"><span>Roma</span></div>
+      <p class="kx-cue"><span class="k-label">La casa madre</span><span>Via Ludovisi 21, dal 2009</span></p>
+      <div class="kx-card">
+        <img class="kx-art" src="assets/roma-wide.webp" alt="La sala grande di Kaede Roma: tavoli rotondi e sedie in pelle rossa" loading="lazy">
+        <div class="kx-panel" id="kxPanel">
+          <p class="k-label k-label--light">La casa madre</p>
+          <h2 id="kx-t">Kaede Roma</h2>
+          <p>Sushi bar di quattordici posti, la sala grande e la terrazza all'ultimo piano. Qui nasce ogni piatto che poi viaggia nelle altre sedi.</p>
+          <div class="kx-actions">
+            <button class="k-btn k-btn--light-solid" type="button" data-book="roma">Prenota</button>
+            <button class="k-btn k-btn--light" type="button" data-detail="roma">Scheda della sede</button>
+          </div>
+          <p class="kx-status"><span class="k-dot" data-status-dot="roma"></span><span data-status-text="roma"></span></p>
+        </div>
+      </div>
+      <div class="kx-rail" aria-hidden="true"><i></i></div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── Locations explorer ───────── -->
+<section class="st" id="sedi" aria-labelledby="st-t">
+  <div class="k-wrap">
+    <header class="st-head">
+      <div>
+        <p class="k-label">La famiglia</p>
+        <h2 class="k-h2" id="st-t">Le sedi Kaede</h2>
+        <p class="st-lede">Undici tavole, una cucina. Scegli una regione, cerca una città o guarda chi è aperto adesso: ogni sede si prenota da qui.</p>
+      </div>
+      <p class="st-count" id="stCount" aria-live="polite">11 sedi</p>
+    </header>
+    <div class="st-tools">
+      <label class="st-search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+        <input id="stQ" type="search" placeholder="Cerca una città" aria-label="Cerca una città" autocomplete="off">
+      </label>
+      <div class="st-chips" id="stChips" role="group" aria-label="Filtra per regione">
+        <i class="st-pill" aria-hidden="true"></i>
+        <button type="button" aria-pressed="true" data-r="all">Tutte</button>
+        <button type="button" aria-pressed="false" data-r="roma">Roma</button>
+        <button type="button" aria-pressed="false" data-r="italia">Italia</button>
+        <button type="button" aria-pressed="false" data-r="europa">Europa</button>
+        <button type="button" aria-pressed="false" data-r="stagionali">Stagionali</button>
+      </div>
+      <label class="st-open"><input type="checkbox" id="stOpen"><span class="st-switch" aria-hidden="true"></span>Aperte ora</label>
+    </div>
+    <div class="st-grid" id="stGrid"></div>
+    <p class="st-empty" id="stEmpty" hidden>Nessuna sede corrisponde. <button type="button" id="stReset">Mostra tutte</button></p>
+  </div>
+</section>
+
+<!-- ───────── Chef ───────── -->
+<section class="ch" id="chef" aria-labelledby="ch-t">
+  <div class="ch-img"><img src="assets/chef.webp" alt="Lo chef in giacca bianca porge un vassoio di uramaki" loading="lazy"></div>
+  <div class="k-wrap">
+    <div class="ch-panel">
+      <p class="k-label">In primo piano</p>
+      <h2 class="k-h2" id="ch-t">La visione dello chef</h2>
+      <p>Hiroshi Kanda è arrivato a Roma nel 1998 con due coltelli e un quaderno di ricette di Osaka. Dieci anni di mercati, tra Fiumicino e Mazara del Vallo, gli hanno insegnato che il pesce italiano non chiede di essere tradotto: chiede tempo, riso giusto e poco altro. Lo stile Kaede si riconosce da cinque cose.</p>
+      <div class="ch-more" id="chMore" hidden>
+        <ol class="ch-keys">
+          <li><b>Il mercato decide.</b> La carta cambia ogni giorno di un terzo: quello che non arriva non si serve.</li>
+          <li><b>Agrumi italiani, aceti giapponesi.</b> Limone di Amalfi, bergamotto, yuzu e ponzu nello stesso piatto.</li>
+          <li><b>Riso a temperatura di pelle.</b> Lo shari si prepara ogni due ore, mai dal frigo.</li>
+          <li><b>Si mangia insieme.</b> Due crudi, due piatti caldi, poi il sushi e il dolce, tutto al centro del tavolo.</li>
+          <li><b>Nessuna sede è una copia.</b> Ogni cucina ha tre piatti che esistono solo lì.</li>
+        </ol>
+      </div>
+      <button class="k-btn" type="button" id="chToggle" aria-expanded="false" aria-controls="chMore">Mostra di più</button>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── Ring carousel: signature dishes ───────── -->
+<section class="rg" id="firma" aria-labelledby="rg-t">
+  <div class="k-wrap rg-grid">
+    <div class="rg-copy">
+      <p class="k-label">Piatti firma</p>
+      <h2 class="k-h2" id="rg-t">Gli otto classici</h2>
+      <p class="rg-intro">Alla prima visita lo chef consiglia di sceglierne almeno tre: si comincia dai crudi, si passa al caldo, si chiude col sushi.</p>
+      <div class="rg-cap" id="rgCap" aria-live="polite">
+        <p class="rg-n" id="rgN">01 / 08</p>
+        <h3 id="rgName"></h3>
+        <p id="rgDesc"></p>
+        <p class="rg-price" id="rgPrice"></p>
+      </div>
+      <div class="rg-ctrl">
+        <button class="rg-arrow" type="button" id="rgPrev" aria-label="Piatto precedente"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button class="rg-arrow" type="button" id="rgNext" aria-label="Piatto successivo"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+        <span class="rg-hint">Trascina l'anello</span>
+      </div>
+    </div>
+    <div class="rg-stage">
+      <div class="rg-ring" id="rgRing" tabindex="0" role="listbox" aria-label="Piatti firma: usa le frecce per girare"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── Menu ───────── -->
+<section class="mn" id="menu" aria-labelledby="mn-t">
+  <div class="k-wrap">
+    <header class="mn-head">
+      <p class="k-label">Il menu</p>
+      <h2 class="k-h2" id="mn-t">La carta di Roma</h2>
+      <p>Prezzi in euro, coperto incluso. Le altre sedi seguono la stessa carta con tre piatti propri. Segnalaci allergie e intolleranze al momento della prenotazione.</p>
+    </header>
+    <div class="mn-tabs" id="mnTabs" role="tablist" aria-label="Scegli il menu"></div>
+    <div class="mn-legend"><span><i class="mn-tag mn-tag--firma">Firma</i> piatto classico</span><span><i class="mn-tag">Crudo</i> pesce crudo</span><span><i class="mn-tag mn-tag--veg">Veg</i> vegetariano</span></div>
+    <div class="mn-body" id="mnBody" role="tabpanel"></div>
+  </div>
+</section>
+
+<!-- ───────── Experiences (hover-tinted list) ───────── -->
+<section class="xp" id="esperienze" aria-labelledby="xp-t">
+  <div class="k-wrap xp-grid">
+    <div>
+      <p class="k-label k-label--light">Esperienze</p>
+      <h2 class="k-h2 k-h2--light" id="xp-t">Cinque modi di sedersi da Kaede</h2>
+      <ul class="xp-list" id="xpList"></ul>
+    </div>
+    <aside class="xp-side" aria-live="polite">
+      <p class="xp-price xp-fade" id="xpPrice"></p>
+      <p class="xp-blurb xp-fade" id="xpBlurb"></p>
+      <p class="xp-where xp-fade" id="xpWhere"></p>
+      <button class="xp-cta" type="button" id="xpCta">Prenota</button>
+      <div class="xp-card" id="xpCard"><i></i></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ───────── Residenze (hotels) ───────── -->
+<section class="rs" id="residenze" aria-labelledby="rs-t">
+  <div class="k-wrap">
+    <header class="rs-head">
+      <div>
+        <p class="k-label">Residenze Kaede</p>
+        <h2 class="k-h2" id="rs-t">Dormire sopra la cucina</h2>
+      </div>
+      <p>In tre sedi il ristorante ha qualche camera ai piani alti: poche, silenziose, con la colazione giapponese servita in camera. Chi dorme da noi ha sempre un tavolo per la cena.</p>
+    </header>
+    <div class="rs-grid">
+      <article class="rs-card"><img src="assets/s-residenza-1.webp" alt="Camera con tatami e parete viola" loading="lazy"><p class="rs-c">Italia</p><h3>Roma</h3><p class="rs-m">9 camere · da € 420</p><button class="k-btn" type="button" data-book="roma" data-note="Ospite Residenza Kaede">Cena + camera</button></article>
+      <article class="rs-card"><img src="assets/s-residenza-3.webp" alt="Sala affacciata sull'acqua al tramonto" loading="lazy"><p class="rs-c">Italia</p><h3>Venezia</h3><p class="rs-m">6 camere · da € 480</p><button class="k-btn" type="button" data-book="venezia" data-note="Ospite Residenza Kaede">Cena + camera</button></article>
+      <article class="rs-card"><img src="assets/s-residenza-2.webp" alt="Suite con vista sulla città" loading="lazy"><p class="rs-c">Francia</p><h3>Parigi</h3><p class="rs-m">12 camere · da € 510</p><button class="k-btn" type="button" data-book="parigi" data-note="Ospite Residenza Kaede">Cena + camera</button></article>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── Press ───────── -->
+<section class="pr" aria-labelledby="pr-t">
+  <div class="k-wrap">
+    <h2 class="pr-t" id="pr-t">Dicono di noi</h2>
+    <div class="pr-row">
+      <figure class="pr-card"><p class="k-label">La Tavola Nuova</p><blockquote>«Il crudo più preciso di Roma, servito come una cena di famiglia.»</blockquote><figcaption>Guida 2026</figcaption></figure>
+      <figure class="pr-card"><p class="k-label">Viaggi &amp; Sapori</p><blockquote>«Undici sedi e nessuna fotocopia: a Cortina il nabe vale il viaggio.»</blockquote><figcaption>Settembre 2026</figcaption></figure>
+      <figure class="pr-card"><p class="k-label">Notte Magazine</p><blockquote>«La terrazza sopra Via Ludovisi è il miglior posto per un highball dopo le undici.»</blockquote><figcaption>Giugno 2026</figcaption></figure>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ───────── Footer ───────── -->
+<footer class="ft">
+  <div class="k-wrap">
+    <h2 class="ft-t">Tutte le sedi Kaede</h2>
+    <p class="ft-legend"><i class="ft-r">R</i> = sede con Residenza</p>
+    <div class="ft-dir" id="ftDir"></div>
+    <div class="ft-bottom">
+      <div>
+        <span class="tb-mark tb-mark--static ft-mark">Kaede</span>
+        <p>Kaede Hospitality S.r.l. · Via Ludovisi 21, 00187 Roma · P.IVA 14820360581</p>
+        <p>Tel. +39 06 4201 2121 · ciao@kaede-ristoranti.it</p>
+      </div>
+      <ul class="k-social" aria-label="Social">
+        <li><a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle cx="16.9" cy="7.1" r=".9" class="f"/></svg></a></li>
+        <li><a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M13.4 20v-7h2.3l.4-2.8h-2.7V8.5c0-.8.3-1.4 1.4-1.4h1.4V4.6c-.3 0-1.1-.1-2.1-.1-2.1 0-3.5 1.3-3.5 3.6v2.1H8.3V13h2.3v7" class="f"/></svg></a></li>
+        <li><a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M14 4v10.2a2.9 2.9 0 1 1-2.9-2.9M14 4c.4 2.3 1.8 3.7 4 4" /></svg></a></li>
+        <li><a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="17" height="11" rx="3"/><path d="m10.5 9.6 4 2.4-4 2.4z" class="f"/></svg></a></li>
+      </ul>
+    </div>
+    <nav class="ft-links" aria-label="Link di servizio">
+      <a href="#top">Torna su</a><a href="#menu">Menu</a><a href="#esperienze">Carta regalo</a><a href="#residenze">Residenze</a><a href="#">Lavora con noi</a><a href="#">Privacy</a>
+      <a class="ft-back" href="/templates" target="_top">← Tutti i modelli</a>
+    </nav>
+    <p class="ft-fake">Nome, indirizzi e prezzi sono di fantasia.</p>
+  </div>
+</footer>
+
+<!-- ───────── Store drawer (single-location page) ───────── -->
+<div class="dr" id="dr" hidden>
+  <div class="dr-scrim" data-dr-close></div>
+  <aside class="dr-panel" role="dialog" aria-modal="true" aria-labelledby="dr-t">
+    <div class="dr-hero">
+      <img id="drImg" src="assets/s-roma.webp" alt="">
+      <button class="dr-x" type="button" data-dr-close aria-label="Chiudi la scheda"><span aria-hidden="true"></span></button>
+      <div class="dr-hero-t">
+        <p class="k-label k-label--light" id="drCountry"></p>
+        <h2 id="dr-t"></h2>
+        <p class="dr-status"><span class="k-dot" id="drDot"></span><span id="drStatus"></span></p>
+      </div>
+    </div>
+    <div class="dr-tabs" role="tablist" aria-label="Sezioni della sede">
+      <button role="tab" type="button" aria-selected="true" data-tab="info" id="drTabInfo">Orari e contatti</button>
+      <button role="tab" type="button" aria-selected="false" data-tab="menu" id="drTabMenu">Menu</button>
+      <button role="tab" type="button" aria-selected="false" data-tab="rules" id="drTabRules">Prenotazioni</button>
+    </div>
+    <div class="dr-body" id="drBody" role="tabpanel"></div>
+    <div class="dr-foot"><button class="k-btn k-btn--solid k-btn--wide" type="button" id="drBook">Prenota</button></div>
+  </aside>
+</div>
+
+<!-- ───────── Booking modal ───────── -->
+<div class="bk" id="bk" hidden>
+  <div class="bk-scrim" data-bk-close></div>
+  <div class="bk-panel" role="dialog" aria-modal="true" aria-labelledby="bk-t">
+    <header class="bk-head">
+      <div><p class="k-label">Prenotazioni</p><h2 id="bk-t">Prenota un tavolo</h2></div>
+      <button class="bk-x" type="button" data-bk-close aria-label="Chiudi"><span aria-hidden="true"></span></button>
+    </header>
+    <form class="bk-form" id="bkForm" novalidate>
+      <div class="bk-scroll">
+        <div class="bk-store">
+          <img id="bkImg" src="assets/s-roma.webp" alt="">
+          <div class="bk-store-r">
+            <label class="bk-lab" for="bkStore">Sede</label>
+            <div class="bk-select"><select id="bkStore"></select></div>
+            <p class="bk-sstatus"><span class="k-dot" id="bkDot"></span><span id="bkStatus"></span></p>
+          </div>
+        </div>
+
+        <fieldset class="bk-f">
+          <legend class="bk-lab">Ospiti</legend>
+          <div class="bk-guests" id="bkGuests"></div>
+          <p class="bk-note" id="bkGroup" hidden>Per 7 o più ospiti non prenotiamo online: lasciaci data e orario preferiti, ti richiama la sede entro 24 ore con le proposte per la sala privata.</p>
+        </fieldset>
+
+        <fieldset class="bk-f">
+          <legend class="bk-lab">Data <span class="bk-lab-s" id="bkMonth"></span></legend>
+          <div class="bk-days-w">
+            <button class="bk-dnav" type="button" id="bkDPrev" aria-label="Giorni precedenti"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+            <div class="bk-days" id="bkDays"></div>
+            <button class="bk-dnav" type="button" id="bkDNext" aria-label="Giorni successivi"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+          </div>
+          <p class="bk-note" id="bkNoDays" hidden></p>
+          <p class="bk-ferr" id="bkErrDate"></p>
+        </fieldset>
+
+        <fieldset class="bk-f">
+          <legend class="bk-lab">Orario</legend>
+          <div class="bk-slots" id="bkSlots"></div>
+          <p class="bk-ferr" id="bkErrSlot"></p>
+        </fieldset>
+
+        <fieldset class="bk-f bk-fields">
+          <legend class="bk-lab">I tuoi dati</legend>
+          <label class="bk-in"><span>Nome e cognome</span><input id="bkName" autocomplete="name" required><em class="bk-ferr" id="bkErrName"></em></label>
+          <label class="bk-in"><span>Telefono</span><input id="bkPhone" type="tel" autocomplete="tel" placeholder="+39 333 123 4567" required><em class="bk-ferr" id="bkErrPhone"></em></label>
+          <label class="bk-in"><span>Email</span><input id="bkEmail" type="email" autocomplete="email" required><em class="bk-ferr" id="bkErrEmail"></em></label>
+          <label class="bk-in bk-in--wide"><span>Note <small>(allergie, occasione, seggiolone…)</small></span><textarea id="bkNoteIn" rows="2" maxlength="300"></textarea></label>
+        </fieldset>
+
+        <label class="bk-check" id="bkPolicyRow"><input type="checkbox" id="bkPolicy"><span>Ho letto le condizioni: chiediamo una carta a garanzia (nessun addebito); in caso di mancata presentazione o disdetta dopo le 24 ore prima si applica una penale di € 50 a persona.</span></label>
+        <p class="bk-ferr" id="bkErrPolicy"></p>
+      </div>
+      <footer class="bk-foot">
+        <p class="bk-sum" id="bkSum"></p>
+        <button class="k-btn k-btn--solid" type="submit" id="bkSubmit">Conferma</button>
+      </footer>
+    </form>
+    <div class="bk-done" id="bkDone" hidden tabindex="-1">
+      <p class="k-label" id="bkDoneLabel">Prenotazione confermata</p>
+      <h3 id="bkDoneT"></h3>
+      <dl class="bk-dl" id="bkDoneDl"></dl>
+      <p class="bk-done-p" id="bkDoneP"></p>
+      <div class="bk-done-a"><button class="k-btn" type="button" id="bkAgain">Nuova prenotazione</button><button class="k-btn k-btn--solid" type="button" data-bk-close>Chiudi</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="k-toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quadretti · Pizza Club · Brescia</title>
+<meta name="description" content="Quadretti, pizza napoletana a lunga lievitazione a Brescia, sul Garda, a Mantova, Cremona e Trento. Prendi un tavolo o ordina a casa.">
+<meta name="theme-color" content="#00572E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-slice" viewBox="0 0 32 32"><path d="M4 7c8-4.5 16-4.5 24 0L16 29z" fill="#ffd25a" stroke="#003019" stroke-width="2" stroke-linejoin="round"/><path d="M4 7c8-4.5 16-4.5 24 0l-1.7 3.4C19 7 13 7 5.7 10.4z" fill="#e39a3b" stroke="#003019" stroke-width="2" stroke-linejoin="round"/><circle cx="12.6" cy="14" r="2.5" fill="#e3262e"/><circle cx="19.6" cy="15.4" r="2.2" fill="#e3262e"/><circle cx="16" cy="21.6" r="1.9" fill="#e3262e"/></symbol>
+  <symbol id="i-star" viewBox="0 0 32 32"><path d="M16 2l3.6 9.4L29.5 12l-7.7 6.3 2.6 9.7L16 22.6 7.6 28l2.6-9.7L2.5 12l9.9-.6z" fill="#fff4d8" stroke="#003019" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-beer" viewBox="0 0 32 32"><path d="M7 9h14v18a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z" fill="#ffc53d" stroke="#003019" stroke-width="2"/><path d="M21 13h3a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-3" fill="none" stroke="#003019" stroke-width="2"/><path d="M6 9.5c0-3 2.5-5 5-4 1.5-2 5-2 6.5 0 2.5-.7 4.5 1.2 4 4z" fill="#fff" stroke="#003019" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 22s7-6.4 7-12a7 7 0 1 0-14 0c0 5.6 7 12 7 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.6" fill="currentColor"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 13H6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 8V6a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+</svg>
+
+<!-- ================= HEADER: una fila di pillole ================= -->
+<header class="qd-head" id="qdHead">
+  <nav class="qd-bar" aria-label="Principale">
+    <div class="qd-side qd-l">
+      <button class="pill pill-grab" id="grabBtn" type="button" aria-expanded="false" aria-controls="grabPanel"><span class="t-d">Prendi un tavolo</span><span class="t-m">Prenota</span><i class="pill-plus" aria-hidden="true"><svg><use href="#i-plus"/></svg></i></button>
+      <a class="pill qd-hide-m" href="#pizzerie">Pizzerie</a>
+      <a class="pill qd-hide-m" href="#pizze">Le pizze</a>
+    </div>
+    <a class="pill pill-logo" href="#top" aria-label="Quadretti, torna su">Quadretti</a>
+    <div class="qd-side qd-r">
+      <button class="pill qd-hide-m" type="button" data-open-cart>Ordina <b class="cart-n" data-cart-n>0</b></button>
+      <a class="pill qd-hide-m" href="#feste">Feste</a>
+      <button class="pill pill-menu" id="menuBtn" type="button" aria-expanded="false" aria-controls="qdNav"><span class="t-d">Menu</span><i class="burger" aria-hidden="true"><b></b><b></b><b></b></i><span class="sr">Apri il menu</span></button>
+    </div>
+  </nav>
+
+  <div class="grab-panel" id="grabPanel" aria-label="Prendi un tavolo" inert>
+    <div class="grab-grid">
+      <article class="gc gc-lime gc-a">
+        <h3 class="xt xt-s">Prenota un tavolo</h3>
+        <p>Tieniti il posto. E se passi senza prenotare, un tavolo per te lo troviamo quasi sempre.</p>
+        <button class="pill pill-ghost" type="button" data-book>Voglio pizza</button>
+      </article>
+      <article class="gc gc-pink gc-b">
+        <span class="tag">In tutte le pizzerie</span>
+        <h3 class="xt xt-s">Corso di pizza</h3>
+        <p>Due ore con le mani in pasta: impasti, stendi, inforni e ti mangi il risultato. Il sabato mattina, 35 €.</p>
+        <a class="pill pill-ghost" href="#feste" data-close-grab>Ci sto</a>
+      </article>
+      <article class="gc gc-sky gc-c">
+        <h3 class="xt xt-s">Gruppi da 8+</h3>
+        <p>Compleanni, cene di classe, addii al celibato: menu da tavolata da 22 € a testa, tutto condiviso al centro.</p>
+        <button class="pill pill-ghost" type="button" data-book data-party="8">Si fa festa</button>
+      </article>
+      <article class="gc gc-lime gc-d">
+        <h3 class="xt xt-s">Ordina a casa</h3>
+        <p>Consegna o ritiro. Sopra i 25 € la consegna è gratis.</p>
+        <button class="pill pill-ghost" type="button" data-open-cart>Apri il carrello</button>
+      </article>
+      <article class="gc gc-white gc-e">
+        <h3 class="xt xt-s">Cosa succede</h3>
+        <p>DJ set, pizza senza fondo, quiz e corsi. Ogni mese qualcosa di nuovo.</p>
+        <a class="pill" href="#feste" data-close-grab>Vedi gli eventi</a>
+      </article>
+    </div>
+  </div>
+</header>
+
+<!-- ================= MENU A TUTTO SCHERMO ================= -->
+<div class="qd-nav" id="qdNav" role="dialog" aria-modal="true" aria-label="Menu" inert>
+  <div class="qd-nav-top">
+    <span class="qd-nav-logo">Quadretti</span>
+    <button class="qd-nav-x" type="button" data-close-nav>Chiudi <svg aria-hidden="true"><use href="#i-plus"/></svg></button>
+  </div>
+  <ul class="qd-nav-big">
+    <li><button type="button" class="xt xt-nav" data-book data-close-nav>Prenota</button></li>
+    <li><a class="xt xt-nav" href="#pizzerie" data-close-nav>Pizzerie</a></li>
+    <li><a class="xt xt-nav" href="#pizze" data-close-nav>Le pizze</a></li>
+    <li><a class="xt xt-nav" href="#feste" data-close-nav>Feste private</a></li>
+    <li><button type="button" class="xt xt-nav" data-open-cart data-close-nav>Ordina a casa</button></li>
+  </ul>
+  <ul class="qd-nav-small">
+    <li><a href="#storia" data-close-nav>La nostra storia</a></li>
+    <li><a href="#lavora" data-close-nav>Lavora con noi</a></li>
+    <li><a href="#feste" data-close-nav>Corsi di pizza</a></li>
+    <li><a href="#pizze" data-close-nav>Allergeni</a></li>
+    <li><a href="#club" data-close-nav>Pizza Club</a></li>
+  </ul>
+  <i class="qd-nav-tri a" aria-hidden="true"></i><i class="qd-nav-tri b" aria-hidden="true"></i>
+</div>
+
+<main id="top">
+<!-- ================= HERO ================= -->
+<section class="hero" aria-label="Benvenuti">
+  <picture>
+    <source media="(max-width: 700px)" srcset="assets/hero-tavola-m.webp">
+    <img class="hero-img" src="assets/hero-tavola.webp" alt="Pizza al salame piccante su una pala di legno, sopra una tovaglia a quadretti bianchi e rossi" fetchpriority="high">
+  </picture>
+  <div class="hero-in">
+    <p class="status-pill" id="heroStatus" aria-live="polite"><i class="dot"></i><span>Brescia Carmine</span></p>
+    <h1 class="xt xt-xl hero-h"><span>Buon</span> <span>impasto!</span></h1>
+    <div class="hero-cta">
+      <button class="pill pill-big" type="button" data-book>Prendi un tavolo</button>
+      <button class="pill pill-big" type="button" data-open-cart>Ordina qui</button>
+    </div>
+  </div>
+  <div class="mq mq-hero" data-mq aria-hidden="true">
+    <div class="mq-row mq-lime"><div class="mq-track" data-dir="1"><span>Così si fa</span><svg><use href="#i-slice"/></svg><span>Impastato da noi</span><svg><use href="#i-slice"/></svg></div></div>
+    <div class="mq-row mq-deep"><div class="mq-track" data-dir="-1"><span>Impastato da noi</span><svg><use href="#i-slice"/></svg><span>Così si fa</span><svg><use href="#i-slice"/></svg></div></div>
+  </div>
+</section>
+
+<!-- ================= LA NOSTRA PIZZA (adesivi trascinabili) ================= -->
+<section class="ours" id="nostra" aria-labelledby="oursH">
+  <div class="stk-stage" id="stkStage">
+    <h2 class="xt xt-l ours-h" id="oursH">La nostra pizza</h2>
+    <figure class="stk stk-1" style="--r:-6deg"><img src="assets/sticker-fetta.webp" alt="Una mano prende una fetta di pizza al pomodoro" draggable="false" loading="lazy"></figure>
+    <figure class="stk stk-2" style="--r:4deg"><img src="assets/sticker-margherita.webp" alt="Due margherite napoletane su una tovaglia a quadretti" draggable="false" loading="lazy"></figure>
+    <figure class="stk stk-3" style="--r:-3deg"><img src="assets/sticker-salame.webp" alt="Pizza al salame piccante con il cornicione bruciacchiato" draggable="false" loading="lazy"></figure>
+    <p class="stk-hint" aria-hidden="true"><svg><use href="#i-slice"/></svg> Prendile e tirale: tornano sempre al loro posto</p>
+  </div>
+  <div class="ours-copy">
+    <p>Impasto a 48 ore, farina di tipo 1 macinata a pietra, cottura a 480 °C per novanta secondi. Il cornicione si gonfia, si macchia di nero, resta morbido dentro. Il resto lo fanno il pomodoro San Marzano, il fior di latte della Val Camonica e una tovaglia a quadretti su ogni tavolo.</p>
+    <a class="pill pill-big" href="#pizze">Vedi il menu</a>
+  </div>
+</section>
+
+<!-- ================= LE NOSTRE PIZZE ================= -->
+<section class="pz" id="pizze" aria-labelledby="pzH">
+  <div class="pz-top">
+    <div class="pz-intro">
+      <h2 class="xt xt-l" id="pzH">Le nostre pizze</h2>
+      <p>Le cinque che ordinate di più questo mese. Tocca la carta in cima per girare il mazzo, o aggiungi al carrello al volo.</p>
+      <button class="pill" type="button" id="flipNext">Gira la carta <svg aria-hidden="true"><use href="#i-plus"/></svg></button>
+    </div>
+    <div class="fs-wrap">
+      <div class="fs-mq" aria-hidden="true"><div class="fs-mq-in" data-fsmq><span>Pizza calda</span><svg><use href="#i-slice"/></svg><span>Birra fredda</span><svg><use href="#i-beer"/></svg><span>Pizza calda</span><svg><use href="#i-slice"/></svg><span>Birra fredda</span><svg><use href="#i-beer"/></svg></div></div>
+      <div class="fs-stack" id="fsStack" aria-roledescription="carosello" aria-label="Le preferite del mese"></div>
+    </div>
+  </div>
+
+  <div class="mn">
+    <aside class="mn-cats" aria-label="Categorie del menu">
+      <div class="mn-cats-in" role="tablist" id="mnCats"></div>
+      <p class="mn-legend"><b>V</b> vegetariana · <b>VE</b> vegana · <b>SG</b> anche senza glutine (+2 €)</p>
+    </aside>
+    <div class="mn-body">
+      <div class="mn-head">
+        <h3 class="xt xt-m" id="mnTitle">Pizze rosse</h3>
+        <p id="mnNote"></p>
+      </div>
+      <div class="mn-grid" id="mnGrid" role="tabpanel" aria-labelledby="mnTitle"></div>
+      <p class="mn-legend mn-legend-m"><b>V</b> vegetariana · <b>VE</b> vegana · <b>SG</b> anche senza glutine (+2 €)</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COSA SUCCEDE ================= -->
+<section class="ev" id="feste" aria-labelledby="evH">
+  <h2 class="xt xt-l" id="evH">Cosa succede</h2>
+  <p class="ev-sub">Serate, corsi e tavolate. Si prenota tutto dal pulsante, senza telefonare.</p>
+  <div class="ev-row" id="evRow"></div>
+</section>
+
+<!-- ================= PIZZERIE ================= -->
+<section class="pr" id="pizzerie" aria-labelledby="prH">
+  <div class="pr-head">
+    <h2 class="xt xt-l" id="prH">Le pizzerie</h2>
+    <div class="pr-filter">
+      <span class="pr-filter-l">Filtra per città</span>
+      <div class="chips" id="prChips" role="group" aria-label="Filtra per città"><i class="chips-pill" aria-hidden="true"></i></div>
+    </div>
+  </div>
+  <div class="pr-grid" id="prGrid" aria-live="polite"></div>
+</section>
+
+<!-- ================= LA STORIA ================= -->
+<section class="st" id="storia" aria-labelledby="stH">
+  <div class="st-in">
+    <div class="st-copy">
+      <h2 class="xt xt-l" id="stH">Com'è cominciata</h2>
+      <p>Nel 2018 eravamo tre amici con un forno a legna avvitato su un carrello e una tovaglia a quadretti comprata al mercato di piazza Rovetta. Abbiamo sfornato pizze alle sagre, ai matrimoni, fuori dal Rigamonti nelle domeniche di partita.</p>
+      <p>Nel 2021 ci hanno dato le chiavi di un ex garage al Carmine. Il carrello è ancora lì, appeso al muro. La tovaglia no: l'abbiamo lavata così tante volte che adesso ne compriamo un rotolo al mese.</p>
+      <a class="pill pill-big" href="#pizzerie">Vieni a trovarci</a>
+    </div>
+    <div class="st-pic">
+      <figure class="stk stk-4" style="--r:3deg"><img src="assets/storia-tavolo.webp" alt="Pizza tagliata a spicchi su un tagliere, tovaglia a quadretti all'aperto" draggable="false" loading="lazy"></figure>
+      <figure class="stk stk-5" style="--r:-8deg"><img src="assets/sticker-impasto.webp" alt="Due mani tengono un panetto di impasto" draggable="false" loading="lazy"></figure>
+    </div>
+  </div>
+</section>
+
+<div class="mq mq-cream" data-mq aria-hidden="true">
+  <div class="mq-row mq-cr1"><div class="mq-track" data-dir="1"><span>Ami la pizza?</span><svg><use href="#i-slice"/></svg><span>Ami la pizza?</span><svg><use href="#i-slice"/></svg></div></div>
+  <div class="mq-row mq-cr2"><div class="mq-track" data-dir="-1"><span>Ami la pizza?</span><svg><use href="#i-slice"/></svg><span>Ami la pizza?</span><svg><use href="#i-slice"/></svg></div></div>
+</div>
+
+<!-- ================= LAVORA CON NOI ================= -->
+<section class="jb" id="lavora" aria-labelledby="jbH">
+  <div class="jb-in">
+    <h2 class="xt-cream" id="jbH">Stendi un panetto senza mattarello?<br>Allora ti cerchiamo.</h2>
+    <p>Pizzaioli, camerieri, rider in bicicletta: in tutte e sei le pizzerie. Contratto vero, turni scritti una settimana prima, e la pizza del personale non si paga mai.</p>
+    <button class="pill pill-dark" type="button" id="jobBtn">Candidati</button>
+  </div>
+  <i class="jb-pz jb-pz-a" aria-hidden="true"></i><i class="jb-pz jb-pz-b" aria-hidden="true"></i>
+</section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="ft" id="club">
+  <div class="mq mq-foot" data-mq aria-hidden="true">
+    <div class="mq-row mq-lime"><div class="mq-track" data-dir="1"><span>Quadretti</span><svg><use href="#i-slice"/></svg><span>Quadretti</span><svg><use href="#i-slice"/></svg></div></div>
+    <div class="mq-row mq-deep"><div class="mq-track" data-dir="-1"><span>Entra nel club</span><svg><use href="#i-star"/></svg><span>Entra nel club</span><svg><use href="#i-star"/></svg></div></div>
+  </div>
+  <div class="ft-news">
+    <p>Iscriviti al Pizza Club: aperture, assaggi del nuovo menu e una margherita gratis il giorno del tuo compleanno.</p>
+    <form class="nl" id="nlForm" novalidate>
+      <label class="nl-field"><span class="sr">La tua pizzeria</span>
+        <select id="nlStore" required><option value="">La tua pizzeria più vicina?</option></select>
+      </label>
+      <div class="nl-row">
+        <label class="nl-field nl-grow"><span class="sr">Email</span><input id="nlEmail" type="email" placeholder="La tua email" autocomplete="email" required></label>
+        <button class="pill" type="submit">Iscriviti</button>
+      </div>
+      <label class="nl-ok"><input type="checkbox" id="nlPrivacy"> <span>Ho letto l'informativa privacy e voglio ricevere le email.</span></label>
+      <p class="nl-err" id="nlErr" role="alert"></p>
+    </form>
+  </div>
+  <ul class="ft-links">
+    <li><a href="#lavora">Lavora con noi</a></li>
+    <li><a href="#pizzerie">Contatti</a></li>
+    <li><a href="#pizze">Allergeni</a></li>
+    <li><a href="#storia">I fornitori</a></li>
+  </ul>
+  <div class="ft-base">
+    <div class="ft-col">
+      <b class="ft-logo">Quadretti</b>
+      <p>Quadretti Pizza Club S.r.l. · Via San Faustino 38, 25122 Brescia<br>Tel. 030 555 0184 · ciao@quadretti.pizza<br>P.IVA 04187650982</p>
+    </div>
+    <div class="ft-col ft-r">
+      <div class="ft-soc">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.3" fill="currentColor"/></svg></a>
+        <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 3c.5 3 2.5 5 5.5 5.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor"/></svg></a>
+      </div>
+      <p class="ft-fake">Nome, indirizzi e prezzi sono di fantasia.</p>
+      <a class="ft-back" href="/templates" target="_top">← Tutti i modelli</a>
+    </div>
+  </div>
+</footer>
+
+<!-- carrello mobile flottante -->
+<button class="cart-fab" id="cartFab" type="button" data-open-cart hidden><svg aria-hidden="true"><use href="#i-bag"/></svg><span>Carrello</span><b data-cart-n>0</b><em id="fabTotal">0,00 €</em></button>
+
+<!-- ================= PRENOTA (dialog) ================= -->
+<div class="dlg" id="bookDlg" role="dialog" aria-modal="true" aria-labelledby="bookH" inert>
+  <div class="dlg-scrim" data-close-dlg></div>
+  <div class="dlg-card">
+    <div class="dlg-head gingham">
+      <h2 class="xt xt-m" id="bookH">Prendi un tavolo</h2>
+      <button class="dlg-x" type="button" data-close-dlg aria-label="Chiudi"><svg><use href="#i-plus"/></svg></button>
+    </div>
+    <form class="bk" id="bkForm" novalidate>
+      <div class="bk-f">
+        <label class="bk-l" for="bkStore">Pizzeria</label>
+        <select id="bkStore"></select>
+      </div>
+      <div class="bk-f">
+        <span class="bk-l" id="bkDateL">Giorno</span>
+        <div class="bk-days" id="bkDays" role="radiogroup" aria-labelledby="bkDateL"></div>
+      </div>
+      <div class="bk-f">
+        <span class="bk-l" id="bkTimeL">Orario</span>
+        <div class="bk-slots" id="bkSlots" role="radiogroup" aria-labelledby="bkTimeL"></div>
+        <p class="bk-err" data-err="slot"></p>
+      </div>
+      <div class="bk-f bk-ppl">
+        <span class="bk-l">Persone</span>
+        <div class="stepper"><button type="button" id="pplMinus" aria-label="Una persona in meno">−</button><output id="pplOut" aria-live="polite">2</output><button type="button" id="pplPlus" aria-label="Una persona in più">+</button></div>
+        <p class="bk-note" id="pplNote">Bimbi compresi: contali anche loro, così il tavolo è giusto.</p>
+      </div>
+      <div class="bk-2">
+        <div class="bk-f"><label class="bk-l" for="bkName">Nome</label><input id="bkName" autocomplete="name" placeholder="Come ti chiami?"><p class="bk-err" data-err="name"></p></div>
+        <div class="bk-f"><label class="bk-l" for="bkTel">Telefono</label><input id="bkTel" type="tel" inputmode="tel" autocomplete="tel" placeholder="333 123 4567"><p class="bk-err" data-err="tel"></p></div>
+      </div>
+      <div class="bk-f"><label class="bk-l" for="bkNote">Note (facoltative)</label><input id="bkNote" placeholder="Seggiolone, allergie, una candelina…"></div>
+      <button class="pill pill-big bk-go" type="submit">Conferma il tavolo</button>
+      <p class="bk-walk">Senza prenotazione? Vieni pure: teniamo sempre metà dei tavoli per chi passa.</p>
+    </form>
+    <div class="bk-ok" id="bkOk" hidden>
+      <h3 class="xt xt-m">Tavolo tuo!</h3>
+      <p id="bkOkTxt"></p>
+      <p class="bk-code" id="bkCode"></p>
+      <button class="pill" type="button" data-close-dlg>Perfetto</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CARRELLO (drawer) ================= -->
+<div class="dlg dlg-side" id="cartDlg" role="dialog" aria-modal="true" aria-labelledby="cartH" inert>
+  <div class="dlg-scrim" data-close-dlg></div>
+  <div class="dlg-card">
+    <div class="dlg-head gingham">
+      <h2 class="xt xt-m" id="cartH">Il tuo ordine</h2>
+      <button class="dlg-x" type="button" data-close-dlg aria-label="Chiudi"><svg><use href="#i-plus"/></svg></button>
+    </div>
+    <div class="ct-body" id="ctBody">
+      <div class="ct-mode" role="radiogroup" aria-label="Consegna o ritiro">
+        <button type="button" role="radio" aria-checked="true" data-mode="delivery">Consegna</button>
+        <button type="button" role="radio" aria-checked="false" data-mode="pickup">Ritiro</button>
+      </div>
+      <div class="ct-free" id="ctFree"><div class="ct-free-bar"><i id="ctFreeFill"></i></div><p id="ctFreeTxt"></p></div>
+      <ul class="ct-lines" id="ctLines"></ul>
+      <p class="ct-empty" id="ctEmpty">Il carrello è vuoto. Scegli una pizza dal menu: si aggiunge con un tocco.</p>
+      <div class="ct-where">
+        <div class="bk-f ct-del"><label class="bk-l" for="ctAddr">Indirizzo di consegna</label><input id="ctAddr" autocomplete="street-address" placeholder="Via e numero civico, Brescia"><p class="bk-err" data-err="addr"></p></div>
+        <div class="bk-f ct-pick" hidden><label class="bk-l" for="ctStore">Ritiri da</label><select id="ctStore"></select></div>
+        <div class="bk-f"><label class="bk-l" for="ctTime">Quando</label><select id="ctTime"></select></div>
+      </div>
+    </div>
+    <div class="ct-foot">
+      <dl class="ct-sum">
+        <div><dt>Subtotale</dt><dd id="ctSub">0,00 €</dd></div>
+        <div id="ctFeeRow"><dt>Consegna</dt><dd id="ctFee">2,50 €</dd></div>
+        <div class="ct-tot"><dt>Totale</dt><dd id="ctTot">0,00 €</dd></div>
+      </dl>
+      <p class="ct-min" id="ctMin"></p>
+      <button class="pill pill-big ct-go" type="button" id="ctGo">Invia l'ordine</button>
+    </div>
+    <div class="bk-ok ct-ok" id="ctOk" hidden>
+      <h3 class="xt xt-m">In forno!</h3>
+      <p id="ctOkTxt"></p>
+      <p class="bk-code" id="ctCode"></p>
+      <button class="pill" type="button" data-close-dlg>Va bene</button>
+    </div>
+  </div>
+</div>
+
+<canvas class="burst" id="burst" aria-hidden="true"></canvas>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

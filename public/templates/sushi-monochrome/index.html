@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kaname — Omakase al banco · Milano Porta Nuova</title>
+<meta name="description" content="Kaname, banco omakase di dodici posti a Milano Porta Nuova. Due turni la sera, solo su prenotazione.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Familjen+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600&text=%E8%A6%81&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="kn-skip" href="#ristorante">Salta al contenuto</a>
+
+<!-- ============ NAV ============ -->
+<header class="kn-nav" id="nav" data-tone="light">
+  <a class="kn-logo" href="#top" aria-label="Kaname — inizio pagina"><span>K</span><span>A</span><span>N</span><span>A</span><span>M</span><span>E</span></a>
+  <nav class="kn-links" aria-label="Principale">
+    <a href="#menu">Menù</a>
+    <a href="#maestro">Il Maestro</a>
+    <a href="#eventi">Eventi privati</a>
+    <a href="#contatti">Contatti</a>
+  </nav>
+  <button class="kn-btn kn-btn--line kn-magnet kn-nav-book" type="button" data-book>Prenota</button>
+  <button class="kn-seal" id="menuBtn" type="button" aria-expanded="false" aria-controls="overlay" aria-label="Apri il menu"><span aria-hidden="true">要</span></button>
+</header>
+
+<!-- full-screen menu -->
+<div class="kn-overlay" id="overlay" hidden>
+  <div class="kn-overlay-in">
+    <nav class="kn-overlay-links" aria-label="Menu">
+      <a href="#menu" data-close>Menù <sup>01</sup></a>
+      <a href="#maestro" data-close>Il Maestro <sup>02</sup></a>
+      <a href="#eventi" data-close>Eventi privati <sup>03</sup></a>
+      <a href="#contatti" data-close>Contatti <sup>04</sup></a>
+    </nav>
+    <div class="kn-overlay-meta">
+      <p class="kn-status" data-status><i></i><span>—</span></p>
+      <p>Mar–Sab · due turni, 18:30 e 21:15</p>
+      <p>Viale della Liberazione 21, Milano</p>
+      <button class="kn-btn kn-btn--line kn-btn--wide" type="button" data-book data-close>Prenota un posto al banco</button>
+    </div>
+    <span class="kn-overlay-seal" aria-hidden="true">要</span>
+  </div>
+</div>
+
+<main id="top">
+
+<!-- ============ HERO (pinned, recomposes into the photo pair) ============ -->
+<section class="kn-hero" id="hero" aria-label="Kaname">
+  <div class="kn-hero-stage" id="heroStage" style="--p:0;--p1:0;--p2:0">
+    <div class="kn-hero-bg"></div>
+    <figure class="kn-tileA kn-photo" id="tileA">
+      <img src="assets/hero.webp" alt="Due nigiri di salmone su un piatto tondo, luci soffuse sullo sfondo" width="1600" height="1067" draggable="false">
+    </figure>
+    <figure class="kn-tileB kn-photo" id="tileB">
+      <img src="assets/tile-sashimi.webp" alt="Sashimi di pesce bianco e salmone in una ciotola di ceramica" width="900" height="600" draggable="false" loading="lazy">
+    </figure>
+
+    <div class="kn-hero-copy">
+      <h1 class="kn-h1">
+        <span class="kn-h1-row" data-split>Dodici posti al banco,</span>
+        <span class="kn-h1-row kn-h1-row--in" data-split>un solo coltello,</span>
+        <span class="kn-h1-row" data-split>nessuna fretta</span>
+        <span class="kn-h1-serif" data-split>Porta Nuova, Milano</span>
+      </h1>
+    </div>
+
+    <p class="kn-corner kn-corner--l"><b>Kaname</b><span class="kn-dash">—</span><em>L'arte del togliere</em></p>
+    <p class="kn-corner kn-corner--r"><span>Milano, IT</span><span class="kn-dash">—</span><b class="kn-clock" id="clock">00:00:00</b></p>
+    <button class="kn-btn kn-btn--line kn-hero-book" type="button" data-book>Prenota</button>
+
+    <!-- fragments that arrive on the right as the hero settles into the pair -->
+    <div class="kn-frag">
+      <p class="kn-label"><span>01</span>Ristorante</p>
+      <p class="kn-frag-big">Un banco di hinoki lungo nove metri. Dodici sgabelli. Il pesce arriva la mattina e finisce la sera.</p>
+      <p class="kn-frag-small">Due turni · 18:30 e 21:15<br>Solo su prenotazione</p>
+    </div>
+  </div>
+</section>
+
+<!-- static pair (only shown with reduced motion, where the hero does not recompose) -->
+<section class="kn-pair-static" aria-hidden="true">
+  <figure class="kn-photo"><img src="assets/hero.webp" alt="" width="1600" height="1067" loading="lazy"></figure>
+  <figure class="kn-photo"><img src="assets/tile-sashimi.webp" alt="" width="900" height="600" loading="lazy"></figure>
+</section>
+
+<!-- ============ 01 RISTORANTE ============ -->
+<section class="kn-sec kn-paper" id="ristorante" data-tone="dark">
+  <div class="kn-wrap">
+    <h2 class="kn-h2 kn-stagger">
+      <span>Rigore, pazienza e attenzione</span>
+      <span class="kn-in1">sono il nostro modo di dire</span>
+      <span class="kn-in2"><em>quello che resta</em> quando</span>
+      <span class="kn-in1">si toglie il superfluo.</span>
+    </h2>
+
+    <div class="kn-grid4">
+      <figure class="kn-photo kn-g1"><img src="assets/tartare-ardesia.webp" alt="Tartare e sashimi su lastra d'ardesia" width="900" height="601" loading="lazy" draggable="false"></figure>
+      <figure class="kn-photo kn-g2"><img src="assets/uramaki.webp" alt="Uramaki di salmone in fila su piatto bianco" width="900" height="600" loading="lazy" draggable="false"></figure>
+      <figure class="kn-photo kn-g3"><img src="assets/sashimi-vetro.webp" alt="Sashimi di tonno e branzino su vetro intagliato" width="900" height="601" loading="lazy" draggable="false"></figure>
+      <figure class="kn-photo kn-g4"><img src="assets/gunkan-ikura.webp" alt="Gunkan di salmone con uova di salmone" width="900" height="601" loading="lazy" draggable="false"></figure>
+    </div>
+    <p class="kn-hint" aria-hidden="true"><span class="kn-hint-fine">Passa sopra una foto: torna il colore.</span><span class="kn-hint-touch">Scorri: le foto si colorano al centro dello schermo.</span></p>
+  </div>
+</section>
+
+<!-- ============ 02 FILOSOFIA (chapter roller) ============ -->
+<section class="kn-roller" id="filosofia" data-tone="light" aria-label="02 — Filosofia">
+  <div class="kn-roller-stage">
+    <div class="kn-roller-bg" data-bg style="background-image:url(assets/nigiri-salmone-r.webp)"></div>
+    <div class="kn-roller-bg" data-bg style="background-image:url(assets/sashimi-box.webp)"></div>
+    <div class="kn-roller-bg" data-bg style="background-image:url(assets/tartare-coppe.webp)"></div>
+    <div class="kn-roller-bg" data-bg style="background-image:url(assets/tempura.webp)"></div>
+    <div class="kn-roller-shade"></div>
+
+    <p class="kn-label kn-label--light kn-roller-top"><span>02</span>Filosofia</p>
+    <div class="kn-roller-type">
+      <div class="kn-roll-eyebrow" id="rollEye"></div>
+      <div class="kn-roll-row kn-roll-r1" id="rollL1"></div>
+      <div class="kn-roll-row kn-roll-r2" id="rollL2"></div>
+      <div class="kn-roll-text" id="rollText"></div>
+    </div>
+    <div class="kn-roller-pips" id="rollPips" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- ============ MENU ============ -->
+<section class="kn-sec kn-paper" id="menu" data-tone="dark">
+  <div class="kn-wrap">
+    <p class="kn-label"><span>03</span>Menù</p>
+    <h2 class="kn-h2 kn-stagger">
+      <span>Ingredienti scelti per</span>
+      <span class="kn-in1">consistenza, colore e sapore.</span>
+      <span class="kn-in2">Serviti su <em>ceramiche fatte a mano</em></span>
+      <span class="kn-in1">a Tokoname e a Faenza.</span>
+    </h2>
+
+    <div class="kn-menu">
+      <div class="kn-menu-tabs" role="tablist" aria-label="Sezioni del menù">
+        <button role="tab" id="tab-omakase" aria-controls="pan-omakase" aria-selected="true" data-tab="omakase">Omakase<sup>1</sup></button>
+        <button role="tab" id="tab-supplementi" aria-controls="pan-supplementi" aria-selected="false" tabindex="-1" data-tab="supplementi">Supplementi<sup>2</sup></button>
+        <button role="tab" id="tab-bevande" aria-controls="pan-bevande" aria-selected="false" tabindex="-1" data-tab="bevande">Sake &amp; tè<sup>3</sup></button>
+      </div>
+
+      <div class="kn-menu-body">
+        <!-- Omakase -->
+        <div class="kn-pan" role="tabpanel" id="pan-omakase" aria-labelledby="tab-omakase">
+          <p class="kn-serif-p">Kaname serve soltanto omakase. Due modi di sedersi, un'unica cucina: al banco di hinoki, davanti al maestro, oppure ai tavoli della sala, con un cameriere che vi accompagna portata dopo portata.</p>
+
+          <ul class="kn-prices">
+            <li><div><b>Banco Hinoki</b><span>Omakase al banco · 6 assaggi, 14 nigiri, dolce</span></div><strong>€ 280 <small>a persona</small></strong></li>
+            <li><div><b>Omakase in sala</b><span>Al tavolo · 5 assaggi, 10 nigiri, dolce</span></div><strong>€ 190 <small>a persona</small></strong></li>
+            <li><div><b>Abbinamento sake</b><span>Cinque calici, scelti sul menù del giorno</span></div><strong>€ 95 <small>a persona</small></strong></li>
+          </ul>
+          <p class="kn-fine">Bevande escluse dove non indicato. Coperto incluso, servizio facoltativo.</p>
+
+          <h3 class="kn-h3">Il percorso</h3>
+          <ol class="kn-course">
+            <li><span>01</span><b>Sakizuke</b><em>un boccone freddo per aprire: tofu di sesamo, ricci di mare</em></li>
+            <li><span>02</span><b>Hassun</b><em>la stagione in un vassoio, cinque piccoli assaggi</em></li>
+            <li><span>03</span><b>Otsukuri</b><em>sashimi tagliato al momento, salsa di soia invecchiata</em></li>
+            <li><span>04</span><b>Yakimono</b><em>pesce alla brace di binchotan, agrumi del Garda</em></li>
+            <li><span>05</span><b>Nigiri</b><em>quattordici pezzi, uno alla volta, dal più magro al più grasso</em></li>
+            <li><span>06</span><b>Owan</b><em>brodo chiaro di kombu e katsuobushi</em></li>
+            <li><span>07</span><b>Mizugashi</b><em>frutta di stagione, un solo tè</em></li>
+          </ol>
+
+          <div class="kn-rules">
+            <p>Il percorso dura circa due ore e mezza. Il menù cambia con il mercato: ciò che non è pronto, non viene servito.</p>
+            <p>Vi chiediamo di non indossare profumi intensi: al banco, il profumo del riso e del legno fa parte del piatto.</p>
+          </div>
+          <button class="kn-btn kn-btn--line kn-btn--ink kn-magnet" type="button" data-book>Prenota</button>
+        </div>
+
+        <!-- Supplementi -->
+        <div class="kn-pan" role="tabpanel" id="pan-supplementi" aria-labelledby="tab-supplementi" hidden>
+          <p class="kn-serif-p">Pezzi da aggiungere al percorso, su richiesta al maestro. Disponibili finché c'è pesce.</p>
+          <ul class="kn-dish">
+            <li><figure class="kn-photo"><img src="assets/m-nigiri-tartufo.webp" alt="Nigiri con lamelle di tartufo" width="560" height="374" loading="lazy" draggable="false"></figure><div><b>Nigiri al tartufo nero</b><em>branzino, tartufo di Norcia, sale di Cervia</em></div><strong>€ 18</strong></li>
+            <li><figure class="kn-photo"><img src="assets/m-nigiri-tonno.webp" alt="Nigiri di tonno" width="560" height="420" loading="lazy" draggable="false"></figure><div><b>Otoro</b><em>ventresca di tonno rosso, maturata cinque giorni</em></div><strong>€ 22</strong></li>
+            <li><figure class="kn-photo"><img src="assets/m-nigiri-gambero-rosso.webp" alt="Nigiri di gambero rosso" width="560" height="420" loading="lazy" draggable="false"></figure><div><b>Gambero rosso di Mazara</b><em>crudo, testa alla brace a parte</em></div><strong>€ 16</strong></li>
+            <li><figure class="kn-photo"><img src="assets/m-gunkan-salmon-ikura.webp" alt="Gunkan con uova di salmone" width="560" height="280" loading="lazy" draggable="false"></figure><div><b>Gunkan di ikura</b><em>uova di salmone marinate nel sake</em></div><strong>€ 14</strong></li>
+            <li><figure class="kn-photo"><img src="assets/m-nigiri-anguilla.webp" alt="Nigiri di anguilla laccata" width="560" height="280" loading="lazy" draggable="false"></figure><div><b>Anguilla laccata</b><em>salsa tare ridotta per sei ore</em></div><strong>€ 15</strong></li>
+            <li><figure class="kn-photo"><img src="assets/m-tartare-tonno.webp" alt="Tartare di tonno" width="560" height="420" loading="lazy" draggable="false"></figure><div><b>Tartare di tonno e caviale</b><em>tonno battuto al coltello, caviale Calvisius</em></div><strong>€ 38</strong></li>
+          </ul>
+        </div>
+
+        <!-- Bevande -->
+        <div class="kn-pan" role="tabpanel" id="pan-bevande" aria-labelledby="tab-bevande" hidden>
+          <div class="kn-bev-head">
+            <p class="kn-serif-p">Una carta corta, scelta per il pesce. Il tappo si paga € 50 a bottiglia, massimo due.</p>
+            <div class="kn-seg" role="radiogroup" aria-label="Formato">
+              <button role="radio" aria-checked="true" data-size="glass">Calice</button>
+              <button role="radio" aria-checked="false" data-size="bottle">Bottiglia</button>
+            </div>
+          </div>
+          <ul class="kn-bev" id="bevList">
+            <li><div><b>Junmai Daiginjo · Niigata</b><em>secco, pera, riso lucidato al 40%</em></div><strong data-glass="18" data-bottle="140">€ 18</strong></li>
+            <li><div><b>Kimoto Junmai · Hyōgo</b><em>lattico, funghi, servito tiepido</em></div><strong data-glass="14" data-bottle="96">€ 14</strong></li>
+            <li><div><b>Nigori · Kyōto</b><em>torbido, riso dolce, finale fresco</em></div><strong data-glass="12" data-bottle="78">€ 12</strong></li>
+            <li><div><b>Franciacorta Pas Dosé</b><em>Erbusco, 60 mesi sui lieviti</em></div><strong data-glass="16" data-bottle="88">€ 16</strong></li>
+            <li><div><b>Sencha e gyokuro</b><em>tè verde in infusione a freddo</em></div><strong data-glass="7" data-bottle="24">€ 7</strong></li>
+          </ul>
+          <p class="kn-fine" id="bevNote">Prezzi al calice da 90 ml.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ IL MAESTRO ============ -->
+<section class="kn-sec kn-paper kn-sec--tight" id="maestro" data-tone="dark">
+  <div class="kn-wrap">
+    <div class="kn-chef">
+      <div class="kn-chef-copy">
+        <p class="kn-sign">Kenji Morimoto</p>
+        <p>Trent'anni dietro un banco, i primi dieci a lavare riso. Morimoto ha imparato a Kanazawa e a Tokyo, poi ha scelto Milano per il pesce del Tirreno e dell'Adriatico, che taglia con lo stesso rispetto che riserva al tonno di Ōma.</p>
+        <p>Al banco parla poco. Guarda come mangiate il primo nigiri e regola i successivi: più riso, meno aceto, un minuto in più di riposo.</p>
+        <button class="kn-btn kn-btn--line kn-btn--wide" type="button" data-book>Siediti davanti a lui</button>
+      </div>
+      <figure class="kn-photo kn-chef-photo"><img src="assets/tempura.webp" alt="Tempura di gamberi sotto una campana di bambù" width="1280" height="854" loading="lazy" draggable="false"></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EVENTI PRIVATI ============ -->
+<section class="kn-sec kn-paper" id="eventi" data-tone="dark">
+  <div class="kn-wrap">
+    <p class="kn-label"><span>04</span>Eventi privati</p>
+    <h2 class="kn-h2 kn-stagger">
+      <span>Una sera solo vostra,</span>
+      <span class="kn-in1">al banco o in sala,</span>
+      <span class="kn-in2"><em>per chi conta davvero.</em></span>
+    </h2>
+    <div class="kn-events">
+      <figure class="kn-photo kn-events-photo"><img src="assets/sashimi-box.webp" alt="Sashimi di salmone in una scatola di legno" width="1280" height="854" loading="lazy" draggable="false"></figure>
+      <div class="kn-events-copy">
+        <p class="kn-serif-p">Kaname si prenota per intero, solo la sala, o solo il banco. Il menù si costruisce insieme, così come i fiori, la musica e gli abbinamenti.</p>
+        <table class="kn-cap">
+          <caption class="kn-sr">Capienza</caption>
+          <tr><th scope="row">Esclusiva totale</th><td>26 seduti · 40 in piedi</td></tr>
+          <tr><th scope="row">Sala</th><td>14 seduti</td></tr>
+          <tr><th scope="row">Banco Hinoki</th><td>12 seduti</td></tr>
+        </table>
+        <p class="kn-fine">«Non serve dire che ci tieni, se ogni dettaglio lo dimostra.»</p>
+        <button class="kn-btn kn-btn--line kn-btn--ink kn-magnet" type="button" id="eventBtn">Richiedi un evento</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTATTI / FOOTER ============ -->
+<footer class="kn-foot kn-paper" id="contatti" data-tone="dark">
+  <div class="kn-wrap">
+    <div class="kn-foot-top">
+      <form class="kn-news" id="newsForm" novalidate>
+        <p>Entra nella lista degli ospiti: aperture di stagione, cene a quattro mani, i rari posti che si liberano all'ultimo momento.</p>
+        <div class="kn-news-row">
+          <label class="kn-sr" for="newsEmail">Email</label>
+          <input id="newsEmail" type="email" placeholder="La tua email" autocomplete="email">
+          <button type="submit">Invia</button>
+        </div>
+        <p class="kn-err" id="newsErr" role="alert"></p>
+      </form>
+    </div>
+
+    <div class="kn-foot-grid">
+      <div>
+        <p class="kn-status" data-status><i></i><span>—</span></p>
+        <table class="kn-hours">
+          <tr><th>Cena</th><td>Mar–Sab</td><td>18:30–00:30</td></tr>
+          <tr><th>Turni</th><td>I · II</td><td>18:30 · 21:15</td></tr>
+          <tr><th>Chiuso</th><td>Dom–Lun</td><td>—</td></tr>
+        </table>
+      </div>
+      <dl class="kn-tea">
+        <div><dt>T</dt><dd><a href="tel:+390200000000">+39 02 0000 0000</a></dd></div>
+        <div><dt>E</dt><dd><a href="mailto:banco@kaname.example">banco@kaname.example</a></dd></div>
+        <div><dt>A</dt><dd>Viale della Liberazione 21<br>20124 Milano · Porta Nuova<br>M2 Gioia, 4 minuti a piedi</dd></div>
+      </dl>
+      <span class="kn-foot-seal" aria-hidden="true">要</span>
+    </div>
+
+    <div class="kn-foot-bottom">
+      <p>© 2026 Kaname s.r.l. · P.IVA 09876540961</p>
+      <div class="kn-social">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M14 8h3V4.5h-3c-2.5 0-4 1.6-4 4V11H7.5v3.5H10V21h3.5v-6.5h3l.5-3.5h-3.5V9c0-.6.4-1 1-1z" fill="currentColor"/></svg></a>
+        <a href="#" aria-label="TripAdvisor"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="7.5" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="16.5" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 8.5h19M12 8.5l-1.6 3M12 8.5l1.6 3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></a>
+      </div>
+      <a class="kn-back" href="/templates" target="_top">← Tutti i modelli</a>
+    </div>
+    <p class="kn-fantasy">Nome, indirizzi e prezzi sono di fantasia.</p>
+  </div>
+</footer>
+
+</main>
+
+<!-- ============ BOOKING DIALOG ============ -->
+<div class="kn-modal" id="book" hidden>
+  <div class="kn-modal-scrim" data-dismiss></div>
+  <div class="kn-modal-card" role="dialog" aria-modal="true" aria-labelledby="bookTitle">
+    <div class="kn-modal-head">
+      <p class="kn-modal-title" id="bookTitle">Prenota · <em>Kaname</em></p>
+      <button class="kn-x" type="button" data-dismiss aria-label="Chiudi">×</button>
+    </div>
+    <ol class="kn-steps" id="steps" aria-label="Passaggi">
+      <li data-s="0"><span>01</span>Data</li>
+      <li data-s="1"><span>02</span>Turno</li>
+      <li data-s="2"><span>03</span>Ospiti</li>
+      <li data-s="3"><span>04</span>Conferma</li>
+    </ol>
+
+    <div class="kn-modal-body" id="bookBody">
+      <!-- step 0: date -->
+      <div class="kn-step" data-step="0">
+        <div class="kn-cal-head">
+          <button type="button" class="kn-cal-nav" id="calPrev" aria-label="Mese precedente">←</button>
+          <p id="calMonth">—</p>
+          <button type="button" class="kn-cal-nav" id="calNext" aria-label="Mese successivo">→</button>
+        </div>
+        <div class="kn-cal-dow" aria-hidden="true"><span>L</span><span>M</span><span>M</span><span>G</span><span>V</span><span>S</span><span>D</span></div>
+        <div class="kn-cal" id="cal" role="grid" aria-label="Calendario"></div>
+        <p class="kn-fine kn-cal-legend"><span class="kn-lg kn-lg--full"></span>al completo <span class="kn-lg kn-lg--off"></span>chiuso · Le prenotazioni aprono 30 giorni prima.</p>
+      </div>
+
+      <!-- step 1: experience + seating -->
+      <div class="kn-step" data-step="1" hidden>
+        <p class="kn-step-q">Dove vi sedete?</p>
+        <div class="kn-exp" id="expPick" role="radiogroup" aria-label="Esperienza">
+          <button type="button" role="radio" aria-checked="true" data-exp="banco"><b>Banco Hinoki</b><span>€ 280 a persona</span></button>
+          <button type="button" role="radio" aria-checked="false" data-exp="sala"><b>Omakase in sala</b><span>€ 190 a persona</span></button>
+        </div>
+        <p class="kn-step-q">Quale turno?</p>
+        <div class="kn-turns" id="turnPick" role="radiogroup" aria-label="Turno"></div>
+      </div>
+
+      <!-- step 2: guests -->
+      <div class="kn-step" data-step="2" hidden>
+        <p class="kn-step-q">Quanti ospiti?</p>
+        <div class="kn-stepper">
+          <button type="button" id="gMinus" aria-label="Un ospite in meno">−</button>
+          <output id="gOut" aria-live="polite">2</output>
+          <button type="button" id="gPlus" aria-label="Un ospite in più">+</button>
+        </div>
+        <p class="kn-fine" id="gNote">—</p>
+        <label class="kn-check"><input type="checkbox" id="sakeOpt"><span>Aggiungi l'abbinamento sake <b>+ € 95</b> a persona</span></label>
+        <p class="kn-fine">Più di sei persone? <a href="#eventi" id="toEvents">Scrivete al team eventi.</a></p>
+      </div>
+
+      <!-- step 3: confirm -->
+      <form class="kn-step" data-step="3" id="bookForm" novalidate hidden>
+        <dl class="kn-sum" id="sum"></dl>
+        <div class="kn-fields">
+          <label class="kn-field"><span>Nome e cognome</span><input name="name" autocomplete="name" required><em class="kn-err"></em></label>
+          <label class="kn-field"><span>Email</span><input name="email" type="email" autocomplete="email" required><em class="kn-err"></em></label>
+          <label class="kn-field"><span>Telefono</span><input name="phone" type="tel" autocomplete="tel" required placeholder="+39"><em class="kn-err"></em></label>
+          <label class="kn-field kn-field--full"><span>Allergie o intolleranze (facoltativo)</span><input name="notes"></label>
+        </div>
+        <label class="kn-check"><input type="checkbox" name="policy" required><span>Accetto la caparra e la politica di cancellazione.</span></label>
+        <p class="kn-err" id="policyErr" role="alert"></p>
+      </form>
+
+      <!-- done -->
+      <div class="kn-step kn-done" data-step="4" hidden>
+        <p class="kn-done-seal" aria-hidden="true">要</p>
+        <p class="kn-done-big">A presto al banco.</p>
+        <p class="kn-serif-p" id="doneText">—</p>
+        <p class="kn-fine">Codice prenotazione <b id="doneCode">—</b></p>
+      </div>
+    </div>
+
+    <div class="kn-modal-foot" id="bookFoot">
+      <p class="kn-total" id="bookTotal"><span>—</span></p>
+      <div class="kn-modal-actions">
+        <button type="button" class="kn-btn kn-btn--ghost" id="bookBack">Indietro</button>
+        <button type="button" class="kn-btn kn-btn--solid" id="bookNext">Continua</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ EVENT INQUIRY DIALOG ============ -->
+<div class="kn-modal" id="evt" hidden>
+  <div class="kn-modal-scrim" data-dismiss></div>
+  <div class="kn-modal-card kn-modal-card--sm" role="dialog" aria-modal="true" aria-labelledby="evtTitle">
+    <div class="kn-modal-head">
+      <p class="kn-modal-title" id="evtTitle">Eventi privati · <em>richiesta</em></p>
+      <button class="kn-x" type="button" data-dismiss aria-label="Chiudi">×</button>
+    </div>
+    <form class="kn-modal-body" id="evtForm" novalidate>
+      <div class="kn-fields">
+        <label class="kn-field"><span>Nome</span><input name="name" required autocomplete="name"><em class="kn-err"></em></label>
+        <label class="kn-field"><span>Email</span><input name="email" type="email" required autocomplete="email"><em class="kn-err"></em></label>
+        <label class="kn-field"><span>Data indicativa</span><input name="date" type="date" required><em class="kn-err"></em></label>
+        <label class="kn-field"><span>Ospiti</span><input name="guests" type="number" min="7" max="40" value="10" required><em class="kn-err"></em></label>
+        <label class="kn-field kn-field--full"><span>Formula</span>
+          <select name="kind"><option>Esclusiva totale</option><option>Sala</option><option>Banco Hinoki</option></select></label>
+        <label class="kn-field kn-field--full"><span>Raccontateci l'occasione</span><textarea name="msg" rows="3"></textarea></label>
+      </div>
+      <div class="kn-modal-actions kn-modal-actions--end">
+        <button type="button" class="kn-btn kn-btn--ghost" data-dismiss>Annulla</button>
+        <button type="submit" class="kn-btn kn-btn--solid">Invia richiesta</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="kn-toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Storica Pizzeria Ruoppolo · Napoli, dal 1882</title>
+<meta name="description" content="Storica Pizzeria Ruoppolo: quattro pizze, cinque sedi in Campania, nessuna prenotazione. Prendi il numero online.">
+<meta name="theme-color" content="#1b0e06">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=Karla:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip" href="#segreto">Salta al contenuto</a>
+
+<!-- ============ TOP BAR ============ -->
+<header class="top" id="top">
+  <div class="top-in">
+    <button class="burger" id="burger" type="button" aria-label="Apri il menu" aria-expanded="false" aria-controls="mnav"><i></i><i></i><i></i></button>
+    <nav class="nav nav-l" aria-label="Principale">
+      <a href="#storia">La storia</a>
+      <div class="sedi-dd" id="sediDd">
+        <button type="button" class="dd-btn" id="ddBtn" aria-expanded="false" aria-controls="ddList">Sedi <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+        <div class="dd-list" id="ddList" role="menu"></div>
+      </div>
+      <a href="#menu">Il menù</a>
+    </nav>
+    <a class="badge" href="#top" aria-label="Storica Pizzeria Ruoppolo, torna su">
+      <svg viewBox="0 0 120 140" role="img" aria-hidden="true">
+        <defs>
+          <path id="bdgArc" d="M24 56 A36 36 0 0 1 96 56"/>
+          <clipPath id="bdgClip"><circle cx="60" cy="62" r="27"/></clipPath>
+        </defs>
+        <path d="M8 20 Q60 -2 112 20 L112 80 Q112 118 60 138 Q8 118 8 80 Z" fill="#d08a45"/>
+        <path d="M14 24 Q60 5 106 24 L106 80 Q106 113 60 131 Q14 113 14 80 Z" fill="#fff5e7" stroke="#2b170b" stroke-width="1.4"/>
+        <text font-family="Zilla Slab, Georgia, serif" font-size="9.4" font-weight="700" letter-spacing="1.6" fill="#2b170b"><textPath href="#bdgArc" startOffset="50%" text-anchor="middle">STORICA PIZZERIA</textPath></text>
+        <circle cx="60" cy="62" r="29" fill="#2b170b"/>
+        <g clip-path="url(#bdgClip)">
+          <rect x="30" y="34" width="60" height="60" fill="#e8b47a"/>
+          <path d="M33 96 Q36 76 60 74 Q84 76 87 96 Z" fill="#fff5e7"/>
+          <path d="M52 76 L60 86 L68 76" fill="none" stroke="#b8321f" stroke-width="3"/>
+          <circle cx="60" cy="63" r="10.5" fill="#f3cfa6"/>
+          <path d="M49.5 61 Q60 56 70.5 61 L70 56 Q60 51 50 56 Z" fill="#2b170b"/>
+          <path d="M48 52 Q46 42 53 42 Q56 36 62 39 Q69 36 71 43 Q76 45 72 52 Z" fill="#fff"/>
+          <rect x="49" y="49" width="22" height="5" rx="1" fill="#fff" stroke="#d6c6b0" stroke-width=".6"/>
+          <path d="M52 68 Q56 65 60 67.5 Q64 65 68 68 Q66 71.5 63 69.5 Q60 71 57 69.5 Q54 71.5 52 68 Z" fill="#2b170b"/>
+          <circle cx="56" cy="62.5" r="1" fill="#2b170b"/><circle cx="64" cy="62.5" r="1" fill="#2b170b"/>
+        </g>
+        <path d="M4 98 L18 92 L102 92 L116 98 L108 104 L116 110 L100 110 L100 114 L20 114 L20 110 L4 110 L12 104 Z" fill="#b8321f"/>
+        <path d="M18 92 L20 114 M102 92 L100 114" stroke="#7d1e11" stroke-width="1"/>
+        <text x="60" y="108" text-anchor="middle" font-family="Zilla Slab, Georgia, serif" font-style="italic" font-weight="600" font-size="14" fill="#fff5e7">Ruoppolo</text>
+        <text x="60" y="123" text-anchor="middle" font-family="Zilla Slab, Georgia, serif" font-weight="700" font-size="6.6" letter-spacing=".6" fill="#2b170b">DAL 1882</text>
+      </svg>
+    </a>
+    <nav class="nav nav-r" aria-label="Secondaria">
+      <a href="#quando">Quando venire</a>
+      <a href="#mondo">Nel mondo</a>
+      <button type="button" class="cta-top" data-open-queue><span class="cta-full">Prendi il numero</span><span class="cta-short">Numero</span></button>
+    </nav>
+  </div>
+</header>
+
+<!-- mobile nav -->
+<div class="mnav" id="mnav" hidden>
+  <nav aria-label="Menu mobile">
+    <a href="#storia">La storia</a>
+    <a href="#menu">Il menù</a>
+    <a href="#sedi">Le sedi</a>
+    <a href="#quando">Quando venire</a>
+    <a href="#mondo">Nel mondo</a>
+  </nav>
+  <button type="button" class="btn btn-caramel" data-open-queue>Prendi il numero</button>
+  <p class="mnav-note">Non si prenota. Si prende il numero, come sempre.</p>
+</div>
+
+<main>
+<!-- ============ HERO: DOOR STRIPS ============ -->
+<section class="hero" aria-label="Le nostre sedi">
+  <h1 class="sr">Storica Pizzeria Ruoppolo, Napoli dal 1882 — cinque sedi</h1>
+  <div class="hs" id="hs"></div>
+  <p class="hs-hint" id="hsHint">Passa sopra una porta</p>
+</section>
+
+<!-- ============ SEGRETO ============ -->
+<section class="segreto" id="segreto">
+  <div class="wrap">
+    <header class="sec-head center">
+      <h2>Il nostro segreto?</h2>
+      <p class="sub">Fare poche cose. Sempre le stesse. Sempre meglio.</p>
+    </header>
+    <div class="seg-grid">
+      <div class="seg-copy">
+        <p class="seg-big" id="segCopy">Quattro pizze e basta. Dal 1882 la nostra famiglia impasta con farina del Sannio, acqua, sale e lievito madre, lascia riposare ventiquattro ore e inforna a legna per novanta secondi. Niente aggiunte, niente mode: solo quello che a Napoli si è sempre chiamato pizza.</p>
+        <a class="btn btn-basil" href="#menu">Apri il menù <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5L12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
+      </div>
+      <figure class="seg-fig">
+        <img src="assets/impasto.webp" alt="Mani che reggono un panetto di impasto" width="640" height="966" loading="lazy" draggable="false">
+        <ul class="seg-nums">
+          <li><b>4</b><span>pizze in carta</span></li>
+          <li><b>24 h</b><span>di lievitazione</span></li>
+          <li><b>90″</b><span>nel forno a legna</span></li>
+          <li><b>5</b><span>generazioni</span></li>
+        </ul>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MENU ============ -->
+<section class="menu" id="menu">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="kicker">Il menù</p>
+      <h2>Tutto qui. Da cent'anni.</h2>
+    </header>
+    <div class="mn-bar">
+      <div class="mn-tabs" role="tablist" aria-label="Categorie">
+        <button type="button" role="tab" aria-selected="true" data-cat="pizze" id="tab-pizze">Pizze</button>
+        <button type="button" role="tab" aria-selected="false" data-cat="bere" id="tab-bere">Da bere</button>
+      </div>
+      <div class="mn-size" id="mnSize" role="radiogroup" aria-label="Formato">
+        <button type="button" role="radio" aria-checked="true" data-size="n">Normale <small>Ø 33</small></button>
+        <button type="button" role="radio" aria-checked="false" data-size="m">A ruota di carro <small>Ø 45</small></button>
+      </div>
+    </div>
+    <div class="mn-list" id="mnList" role="tabpanel" aria-labelledby="tab-pizze"></div>
+    <p class="mn-note">Si mangia in sala o si porta via nel cartone. Non si prenota: <button type="button" class="link" data-open-queue>prendi il numero</button>.</p>
+  </div>
+</section>
+
+<!-- ============ STORIA / TIMELINE ============ -->
+<section class="storia" id="storia">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="kicker">La storia</p>
+      <h2>Dal 1882 a oggi, un forno alla volta.</h2>
+    </header>
+  </div>
+  <div class="st-rail-wrap wrap">
+    <div class="st-rail" id="stRail" aria-hidden="true">
+      <div class="st-rail-base"></div>
+      <div class="st-rail-fill" id="stFill"></div>
+    </div>
+    <div class="st-years" id="stYears" role="tablist" aria-label="Anni"></div>
+  </div>
+  <div class="st-scroller" id="stScroller" tabindex="0" aria-label="Momenti della storia, scorri in orizzontale"></div>
+  <div class="wrap st-ctrl">
+    <button type="button" class="st-arrow" id="stPrev" aria-label="Anno precedente"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M11 4L6 9l5 5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
+    <span class="st-count" id="stCount">1 / 8</span>
+    <button type="button" class="st-arrow" id="stNext" aria-label="Anno successivo"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M7 4l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
+  </div>
+</section>
+
+<!-- ============ SEDI + QUANDO VENIRE ============ -->
+<section class="sedi" id="sedi">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="kicker">Le sedi</p>
+      <h2>Cinque porte, la stessa pizza.</h2>
+    </header>
+    <div class="sd-grid">
+      <div class="sd-tabs" id="sdTabs" role="tablist" aria-label="Scegli la sede"></div>
+      <article class="sd-card" id="sdCard" aria-live="polite"></article>
+    </div>
+
+    <div class="qv" id="quando">
+      <div class="qv-head">
+        <div>
+          <p class="kicker">Quando venire</p>
+          <h3 id="qvTitle">La coda, ora per ora</h3>
+        </div>
+        <div class="qv-days" id="qvDays" role="radiogroup" aria-label="Giorno"></div>
+      </div>
+      <div class="qv-panel">
+        <div class="qv-read" id="qvRead"><b id="qvTime">—</b><span class="qv-pill" id="qvPill">—</span><span id="qvWait"></span></div>
+        <div class="qv-tl">
+          <div class="qv-rows"><span>Coda lunga</span><span>Si aspetta</span><span>Tranquillo</span></div>
+          <div class="qv-lanes" id="qvLanes" tabindex="0" role="slider" aria-label="Ora del giorno" aria-valuemin="660" aria-valuemax="1500" aria-valuenow="1200"><div class="qv-cursor" id="qvCursor"></div><div class="qv-knob" id="qvKnob"></div></div>
+        </div>
+        <div class="qv-axis"><span></span><div><span>11</span><span>13</span><span>15</span><span>17</span><span>19</span><span>21</span><span>23</span><span>01</span></div></div>
+        <p class="qv-sum" id="qvSum"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NEL MONDO ============ -->
+<section class="mondo" id="mondo">
+  <div class="wrap">
+    <div class="mo-grid">
+      <div class="mo-left">
+        <h2 class="caps">Le nostre pizzerie nel mondo</h2>
+        <p>Un forno a legna, lo stesso impasto, lo stesso pizzaiolo formato a Napoli per almeno due anni. Così la Margherita di Ruoppolo è arrivata, una città alla volta, dall'altra parte del mare.</p>
+        <div class="mo-chips" id="moChips" role="radiogroup" aria-label="Filtra per area">
+          <button type="button" role="radio" aria-checked="true" data-area="all">Tutte</button>
+          <button type="button" role="radio" aria-checked="false" data-area="eu">Europa</button>
+          <button type="button" role="radio" aria-checked="false" data-area="am">Americhe</button>
+          <button type="button" role="radio" aria-checked="false" data-area="ap">Asia e Oceania</button>
+        </div>
+        <div class="mo-map" id="moMap"></div>
+      </div>
+      <ul class="mo-list" id="moList"></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUEUE CTA ============ -->
+<section class="coda" aria-labelledby="codaH">
+  <div class="wrap coda-in">
+    <div>
+      <h2 id="codaH">Qui non si prenota.<br><em>Si prende il numero.</em></h2>
+      <p>Scegli la sede, dicci in quanti siete e ti stampiamo il numero. Ti diciamo quanti tavoli hai davanti e a che ora presentarti alla porta.</p>
+    </div>
+    <div class="coda-side">
+      <ul class="coda-live" id="codaLive" aria-label="Attesa adesso"></ul>
+      <button type="button" class="btn btn-caramel btn-lg" data-open-queue>Prendi il numero</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="foot">
+  <div class="wrap foot-grid">
+    <div>
+      <h4>Contatti</h4>
+      <ul class="foot-ul">
+        <li>ciao@pizzeriaruoppolo.it</li>
+        <li>+39 081 552 18 82</li>
+        <li>Vico dei Cartari 7, 80138 Napoli</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Naviga</h4>
+      <ul class="foot-ul">
+        <li><a href="#storia">La storia</a></li>
+        <li><a href="#menu">Il menù</a></li>
+        <li><a href="#sedi">Le sedi</a></li>
+        <li><a href="#mondo">Nel mondo</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Le sedi</h4>
+      <ul class="foot-ul" id="footSedi"></ul>
+    </div>
+    <div>
+      <h4>Seguici</h4>
+      <div class="social">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.2" fill="currentColor"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H7.9v3h2.6V21z" fill="currentColor"/></svg></a>
+        <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M14 3h2.7c.2 1.9 1.5 3.4 3.3 3.7v2.8c-1.3 0-2.5-.4-3.4-1v6.3a5.3 5.3 0 1 1-5.3-5.3c.3 0 .5 0 .8.1v2.9a2.5 2.5 0 1 0 1.9 2.4z" fill="currentColor"/></svg></a>
+      </div>
+      <p class="foot-small">P.IVA 08812345634 · Ruoppolo &amp; Figli s.n.c.</p>
+    </div>
+  </div>
+  <div class="wrap foot-bottom">
+    <a href="/templates" target="_top">← Tutti i modelli</a>
+    <span>Nome, indirizzi e prezzi sono di fantasia.</span>
+    <a href="#top">Torna su ↑</a>
+  </div>
+</footer>
+
+<!-- ============ QUEUE DIALOG ============ -->
+<div class="qd-scrim" id="qdScrim" hidden></div>
+<div class="qd" id="qd" role="dialog" aria-modal="true" aria-labelledby="qdTitle" hidden>
+  <div class="qd-head">
+    <h2 id="qdTitle">Prendi il numero</h2>
+    <ol class="qd-steps" id="qdSteps"><li class="on">Sede</li><li>Persone</li><li>Numero</li></ol>
+    <button type="button" class="qd-x" id="qdClose" aria-label="Chiudi"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.8"/></svg></button>
+  </div>
+  <div class="qd-body">
+    <!-- step 1 -->
+    <div class="qd-step" data-step="1">
+      <p class="qd-lead">Il numero si prende quando la sede è aperta, o da mezz'ora prima dell'apertura.</p>
+      <div class="qd-stores" id="qdStores" role="radiogroup" aria-label="Sede"></div>
+      <p class="qd-err" id="qdErr1" role="alert"></p>
+      <div class="qd-actions"><button type="button" class="btn btn-ghost" data-close>Annulla</button><button type="button" class="btn btn-dark" id="qdNext1">Avanti</button></div>
+    </div>
+    <!-- step 2 -->
+    <form class="qd-step" data-step="2" id="qdForm" novalidate hidden>
+      <p class="qd-lead" id="qdStoreLine"></p>
+      <div class="qd-field">
+        <span class="qd-label" id="pplLabel">Quanti siete?</span>
+        <div class="qd-stepper" role="group" aria-labelledby="pplLabel">
+          <button type="button" id="pplMinus" aria-label="Una persona in meno">−</button>
+          <output id="pplOut" aria-live="polite">2</output>
+          <button type="button" id="pplPlus" aria-label="Una persona in più">+</button>
+        </div>
+        <p class="qd-hint" id="pplHint">Tavoli da 1 a 8 persone. Per gruppi più grandi chiamaci.</p>
+      </div>
+      <label class="qd-field">
+        <span class="qd-label">Nome per la chiamata</span>
+        <input id="qName" name="nome" autocomplete="given-name" maxlength="24" placeholder="Es. Carmela">
+        <span class="qd-ferr" id="eName"></span>
+      </label>
+      <label class="qd-field">
+        <span class="qd-label">Cellulare <small>(ti scriviamo quando mancano 3 tavoli)</small></span>
+        <input id="qTel" name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="+39 333 123 4567">
+        <span class="qd-ferr" id="eTel"></span>
+      </label>
+      <div class="qd-est" id="qdEst"></div>
+      <div class="qd-actions"><button type="button" class="btn btn-ghost" id="qdBack">Indietro</button><button type="submit" class="btn btn-dark">Stampa il numero</button></div>
+    </form>
+    <!-- step 3 -->
+    <div class="qd-step" data-step="3" hidden>
+      <div class="tk-rig" id="tkRig">
+        <div class="tk-printer"><span class="tk-brand">RUOPPOLO · ELIMINACODE</span><span class="tk-led"></span><div class="tk-slot"></div></div>
+        <div class="tk-shadow" id="tkShadow"></div>
+        <div class="tk-feed"><div class="tk-paper" id="tkPaper"></div></div>
+      </div>
+      <p class="tk-cap" id="tkCap">Stampa in corso…</p>
+      <div class="qd-actions tk-actions" id="tkActions"><button type="button" class="btn btn-ghost" id="tkCancel">Annulla il numero</button><button type="button" class="btn btn-dark" data-close>Fatto</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="mine" id="mine" hidden>
+  <button type="button" id="mineBtn"><span>Il tuo numero</span><b id="mineNo">—</b><small id="mineMeta"></small></button>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/world.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UMIMARÉ — Cucina nikkei · Genova</title>
+<meta name="description" content="UMIMARÉ, Genova: cucina giapponese, peruviana e brasiliana davanti al porto. Prenota un tavolo o richiedi un evento privato.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip" href="#storia">Vai al contenuto</a>
+
+<!-- ============ HEADER ============ -->
+<header class="hd" id="hd">
+  <button class="hd-burger" id="openNav" aria-label="Apri il menu" aria-expanded="false" aria-controls="navDrawer">
+    <span></span><span></span><span></span>
+  </button>
+  <a class="hd-mark" href="#top" aria-label="UMIMARÉ, torna su"><b>UMI</b>MARÉ</a>
+  <button class="btn-line hd-book" data-open-book>Prenota<span class="hide-s">&nbsp;un tavolo</span></button>
+</header>
+
+<!-- ============ DRAWER NAV (sinistra) ============ -->
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer drawer-l" id="navDrawer" aria-label="Menu principale" aria-hidden="true" inert>
+  <div class="drawer-top">
+    <button class="x-btn" data-close aria-label="Chiudi il menu"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="1.5"/></svg></button>
+    <span class="drawer-mark"><b>UMI</b>MARÉ</span>
+  </div>
+  <nav class="dnav">
+    <a href="#storia" style="--c:var(--aka)">La storia</a>
+    <a href="#culture" style="--c:var(--aji)">Tre culture</a>
+    <a href="#firma" style="--c:var(--verde)">Piatti firma</a>
+    <a href="#menu" style="--c:var(--mare)">Il menu</a>
+    <a href="#esperienza" style="--c:var(--aka)">L'esperienza</a>
+    <a href="#eventi" style="--c:var(--aji)">Eventi</a>
+    <a href="#private" style="--c:var(--verde)">Private dining</a>
+    <a href="#contatti" style="--c:var(--mare)">Contatti</a>
+  </nav>
+  <div class="drawer-foot">
+    <p class="status" data-status><i></i><span>—</span></p>
+    <p>Via del Molo 41r, 16128 Genova<br><a href="tel:+390102468135">+39 010 246 8135</a></p>
+    <div class="social">
+      <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" class="fill"/></svg></a>
+      <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3c-2.8 0-4 1.8-4 4.4V11H7v4h3v7h4v-7h3l1-4h-4V8.6c0-.4.3-.6.6-.6z"/></svg></a>
+      <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M15 3c.4 2.6 2 4.2 4.6 4.4v3.4c-1.7 0-3.2-.5-4.5-1.4V16a5.6 5.6 0 1 1-5.6-5.6v3.5a2.1 2.1 0 1 0 2.1 2.1V3z"/></svg></a>
+    </div>
+  </div>
+</aside>
+
+<!-- ============ DRAWER PRENOTAZIONE (destra) ============ -->
+<aside class="drawer drawer-r" id="bookDrawer" aria-label="Prenota un tavolo" aria-hidden="true" inert>
+  <div class="drawer-top">
+    <h2 class="bk-title">Prenota un tavolo</h2>
+    <button class="x-btn" data-close aria-label="Chiudi la prenotazione"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="1.5"/></svg></button>
+  </div>
+  <ol class="bk-steps" aria-hidden="true"><li class="on">Tavolo</li><li>Dati</li><li>Conferma</li></ol>
+
+  <form class="bk" id="bkForm" novalidate>
+    <!-- step 1 -->
+    <div class="bk-pane" data-pane="1">
+      <p class="bk-place"><b>UMIMARÉ</b> Genova · Via del Molo 41r</p>
+
+      <fieldset class="bk-group">
+        <legend>Data</legend>
+        <div class="bk-dates" id="bkDates" role="radiogroup" aria-label="Scegli la data"></div>
+        <p class="bk-note">Il lunedì siamo chiusi. Pranzo solo sabato e domenica.</p>
+      </fieldset>
+
+      <fieldset class="bk-group">
+        <legend>Persone</legend>
+        <div class="stepper">
+          <button type="button" class="st-btn" id="pMinus" aria-label="Una persona in meno">−</button>
+          <output id="pOut" aria-live="polite">2</output>
+          <button type="button" class="st-btn" id="pPlus" aria-label="Una persona in più">+</button>
+          <span class="st-unit" id="pUnit">persone</span>
+        </div>
+        <p class="bk-big" id="bigGroup" hidden>Oltre 10 persone organizziamo noi: <button type="button" class="link" id="toPrivate">richiedi il private dining →</button></p>
+      </fieldset>
+
+      <fieldset class="bk-group">
+        <legend>Orario</legend>
+        <div class="bk-slots" id="bkSlots"></div>
+      </fieldset>
+
+      <fieldset class="bk-group">
+        <legend>Dove</legend>
+        <div class="bk-areas" id="bkAreas">
+          <label class="area"><input type="radio" name="area" value="sala" checked><span><b>Sala principale</b><small>Soffitto di bambù, tavoli da 2 a 10</small></span></label>
+          <label class="area"><input type="radio" name="area" value="banco"><span><b>Banco sushi</b><small>Davanti ai cuochi · max 4 persone</small></span></label>
+          <label class="area"><input type="radio" name="area" value="mare"><span><b>Sala Maré</b><small>Cocktail bar e musica · dalle 21:00</small></span></label>
+        </div>
+      </fieldset>
+
+      <p class="bk-err" id="err1" role="alert"></p>
+      <button type="button" class="btn-solid bk-next" id="toStep2">Continua</button>
+    </div>
+
+    <!-- step 2 -->
+    <div class="bk-pane" data-pane="2" hidden>
+      <p class="bk-sum" id="bkSum"></p>
+      <div class="fld"><label for="bName">Nome e cognome</label><input id="bName" name="name" autocomplete="name"><small class="fe"></small></div>
+      <div class="fld"><label for="bPhone">Telefono</label><input id="bPhone" name="phone" type="tel" autocomplete="tel" placeholder="+39 …"><small class="fe"></small></div>
+      <div class="fld"><label for="bMail">Email</label><input id="bMail" name="email" type="email" autocomplete="email"><small class="fe"></small></div>
+      <div class="fld"><label for="bOcc">Occasione <i>(facoltativo)</i></label>
+        <select id="bOcc" name="occ"><option value="">—</option><option>Compleanno</option><option>Anniversario</option><option>Cena di lavoro</option><option>Prima volta da noi</option></select></div>
+      <div class="fld"><label for="bNote">Allergie o richieste <i>(facoltativo)</i></label><textarea id="bNote" name="note" rows="2" maxlength="240"></textarea></div>
+      <label class="chk"><input type="checkbox" id="bOk"><span>Accetto il trattamento dei dati per gestire la prenotazione.</span></label>
+      <small class="fe" id="bOkErr"></small>
+      <div class="bk-row">
+        <button type="button" class="btn-line dark" id="back1">Indietro</button>
+        <button type="submit" class="btn-solid">Conferma</button>
+      </div>
+    </div>
+
+    <!-- step 3 -->
+    <div class="bk-pane bk-done" data-pane="3" hidden>
+      <svg class="ok-ico" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22"/><path d="M14 25l7 7 13-15"/></svg>
+      <h3>Tavolo confermato</h3>
+      <p id="bkDoneTxt"></p>
+      <p class="code">Codice <b id="bkCode"></b></p>
+      <p class="bk-note">Ti abbiamo scritto una conferma. Teniamo il tavolo 15 minuti.</p>
+      <button type="button" class="btn-line dark" id="bkAgain">Nuova prenotazione</button>
+    </div>
+  </form>
+</aside>
+
+<main id="top">
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero">
+  <div class="hero-bg"><img src="assets/hero.webp" alt="" fetchpriority="high" draggable="false"></div>
+  <div class="hero-tint"></div>
+  <div class="hero-in">
+    <p class="hero-kicker">Cucina nikkei · Porto Antico, Genova</p>
+    <h1 class="hero-mark" aria-label="UMIMARÉ"><span class="hm-b" data-chars>UMI</span><span class="hm-l" data-chars>MARÉ</span></h1>
+    <nav class="hero-links" aria-label="Le culture">
+      <a href="#culture" data-cult="0">Giappone</a>
+      <a href="#culture" data-cult="1">Perù</a>
+      <a href="#culture" data-cult="2">Brasile</a>
+      <a href="#culture" data-cult="3">Liguria</a>
+    </nav>
+    <p class="status status-hero" data-status><i></i><span>—</span></p>
+  </div>
+  <a class="hero-down" href="#storia" aria-label="Scorri alla storia"><svg viewBox="0 0 24 24"><path d="M5 9l7 7 7-7"/></svg></a>
+</section>
+
+<!-- ============ STORIA ============ -->
+<section class="story" id="storia">
+  <svg class="leaves" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g fill="currentColor">
+      <path d="M120 760c60-160 220-250 380-230-40 150-210 260-380 230z"/>
+      <path d="M40 420c120-40 250 20 300 140-130 40-260-20-300-140z"/>
+      <path d="M560 60c40 120 0 240-110 300-40-120 0-240 110-300z"/>
+      <path d="M1180 820c-20-140 70-260 200-290 30 140-60 260-200 290z"/>
+      <path d="M1320 120c-90 90-220 110-320 50 90-90 220-110 320-50z"/>
+      <path d="M760 860c80-90 210-110 300-40-80 90-210 110-300 40z"/>
+    </g>
+  </svg>
+  <div class="wrap story-grid">
+    <div class="story-txt">
+      <p class="kicker"><b>UMI</b>MARÉ GENOVA</p>
+      <h2 class="h2" data-chars>La nostra storia</h2>
+      <p class="lead">Da UMIMARÉ il Giappone, il Perù e il Brasile si siedono alla stessa tavola, davanti al porto di Genova.</p>
+      <p>Nel 1899 una nave partita da Yokohama attraccò al Callao con quasi ottocento contadini giapponesi; nove anni dopo un'altra arrivò a Santos. Portavano riso, soia e coltelli affilati. Trovarono lime, peperoncino ají e brace di carbone. Da quell'incontro, a Lima e a São Paulo, è nata la cucina <b>nikkei</b>.</p>
+      <p>Genova è un porto come quelli. Il pesce del Mar Ligure arriva ogni mattina e noi lo trattiamo con il taglio di Tokyo, l'acidità di Lima e il fuoco lento di São Paulo. Il resto lo fa la sala: musica, cocktail e tavoli lunghi da dividere.</p>
+      <button class="btn-line dark" data-open-book>Prenota un tavolo</button>
+    </div>
+
+    <div class="px-field" id="pxField" aria-label="Fotografie dei tre paesi e di Genova">
+      <i class="px-item px-block" style="--x:58%;--y:2%;--w:34%;--ar:1;--z:.15;--bg:var(--aji)"></i>
+      <i class="px-item px-block" style="--x:0%;--y:44%;--w:22%;--ar:1;--z:.3;--bg:var(--verde)"></i>
+      <i class="px-item px-block" style="--x:84%;--y:74%;--w:16%;--ar:1;--z:.25;--bg:var(--aka)"></i>
+      <figure class="px-item" style="--x:22%;--y:6%;--w:52%;--ar:.75;--z:.45"><img src="assets/story-peru.webp" alt="Terrazze circolari di Moray, Perù" loading="lazy" draggable="false"><figcaption>Moray · Perù</figcaption></figure>
+      <figure class="px-item" style="--x:64%;--y:16%;--w:34%;--ar:1;--z:.85"><img src="assets/story-brasile.webp" alt="Baia di Botafogo e Pan di Zucchero, Rio de Janeiro" loading="lazy" draggable="false"><figcaption>Rio de Janeiro · Brasile</figcaption></figure>
+      <figure class="px-item" style="--x:4%;--y:62%;--w:46%;--ar:1.333;--z:.95"><img src="assets/story-giappone.webp" alt="Galleria di torii rossi a Kyoto" loading="lazy" draggable="false"><figcaption>Kyoto · Giappone</figcaption></figure>
+      <figure class="px-item" style="--x:58%;--y:66%;--w:30%;--ar:1.333;--z:.6"><img src="assets/story-genova.webp" alt="Case colorate di Boccadasse, Genova" loading="lazy" draggable="false"><figcaption>Boccadasse · Genova</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRE CULTURE (hover tinted list) ============ -->
+<section class="tl" id="culture">
+  <div class="wrap tl-grid">
+    <div class="tl-head">
+      <p class="kicker">Quattro rotte, una cucina</p>
+      <h2 class="h2" data-chars>Tre culture e un porto</h2>
+    </div>
+    <ul class="tl-list" id="tlList" role="tablist" aria-label="Le culture in cucina"></ul>
+    <div class="tl-side" aria-live="polite">
+      <div class="tl-card" id="tlCard"><img id="tlImg" src="assets/cult-giappone.webp" alt="" draggable="false"></div>
+      <p class="tl-blurb tl-fade" id="tlBlurb"></p>
+      <p class="tl-dishes tl-fade" id="tlDishes"></p>
+      <a class="btn-line" href="#menu" id="tlGo">Vedi nel menu</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PIATTI FIRMA (scroll-snap) ============ -->
+<section class="sg" id="firma">
+  <div class="sg-frame" aria-hidden="true"></div>
+  <div class="wrap sg-head">
+    <div>
+      <p class="kicker">Dalla cucina e dalla brace</p>
+      <h2 class="h2" data-chars>I piatti firma</h2>
+      <p class="sg-intro">Undici piatti che non togliamo mai dal menu. Scorri: ognuno si ferma al centro.</p>
+    </div>
+    <div class="sg-ctrl">
+      <span class="sg-count" id="sgCount">01 / 11</span>
+      <button class="sg-arrow" id="sgPrev" aria-label="Piatto precedente"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button class="sg-arrow" id="sgNext" aria-label="Piatto successivo"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+  </div>
+  <div class="sg-rail" id="sgRail" tabindex="0" aria-label="Piatti firma, scorri in orizzontale"></div>
+  <div class="sg-bar" aria-hidden="true"><i id="sgBar"></i></div>
+</section>
+
+<!-- ============ MENU ============ -->
+<section class="mn" id="menu">
+  <div class="wrap">
+    <div class="mn-head">
+      <div>
+        <p class="kicker"><b>UMI</b>MARÉ GENOVA</p>
+        <h2 class="h2" data-chars>Il menu</h2>
+      </div>
+      <p class="mn-intro">Tempura e nigiri dal Giappone, seviche e anticuchos dal Perù, picanha e moqueca dal Brasile, pesce del giorno dalla Liguria. Piatti piccoli, da dividere: ne consigliamo tre o quattro a persona.</p>
+    </div>
+
+    <div class="mn-tabs" role="tablist" aria-label="Sezioni del menu" id="mnTabs"></div>
+
+    <div class="mn-filters" id="mnFilters">
+      <div class="chips" role="group" aria-label="Filtra per cultura">
+        <button class="chip on" data-cult="all" aria-pressed="true">Tutte</button>
+        <button class="chip" data-cult="jp" aria-pressed="false" style="--c:var(--aka)">Giappone</button>
+        <button class="chip" data-cult="pe" aria-pressed="false" style="--c:var(--aji)">Perù</button>
+        <button class="chip" data-cult="br" aria-pressed="false" style="--c:var(--verde)">Brasile</button>
+        <button class="chip" data-cult="li" aria-pressed="false" style="--c:var(--mare)">Liguria</button>
+      </div>
+      <div class="chips" role="group" aria-label="Filtri alimentari">
+        <button class="chip tog" data-diet="v" aria-pressed="false">Vegetariano</button>
+        <button class="chip tog" data-diet="gf" aria-pressed="false">Senza glutine</button>
+      </div>
+      <span class="mn-count" id="mnCount" aria-live="polite"></span>
+    </div>
+
+    <div class="mn-body" id="mnBody"></div>
+    <p class="mn-foot">V vegetariano · GF senza glutine. Gli allergeni di ogni piatto sono a disposizione in sala: chiedi pure. Il pesce crudo è abbattuto secondo il Reg. CE 853/2004.</p>
+  </div>
+</section>
+
+<!-- ============ L'ESPERIENZA (chapter roller) ============ -->
+<section class="cr" id="esperienza" aria-label="L'esperienza, dalle sei a tardi">
+  <div class="cr-stage" id="crStage">
+    <div class="cr-bg" style="background-image:url(assets/ch-aperitivo.webp)"></div>
+    <div class="cr-bg" style="background-image:url(assets/ch-cena.webp)"></div>
+    <div class="cr-bg" style="background-image:url(assets/ch-sala.webp)"></div>
+    <div class="cr-bg" style="background-image:url(assets/ch-notte.webp)"></div>
+    <div class="cr-shade"></div>
+    <p class="cr-kick">L'esperienza</p>
+    <div class="cr-type">
+      <div class="cr-eyebrow" id="crEye"></div>
+      <div class="cr-row cr-l1" id="crL1"></div>
+      <div class="cr-row cr-l2" id="crL2"></div>
+    </div>
+    <div class="cr-box" id="crBox"><p id="crTxt"></p></div>
+    <div class="cr-pips" id="crPips"></div>
+  </div>
+</section>
+
+<!-- ============ EVENTI ============ -->
+<section class="ev" id="eventi">
+  <div class="wrap">
+    <div class="ev-head">
+      <div>
+        <p class="kicker">In calendario</p>
+        <h2 class="h2" data-chars>Eventi</h2>
+      </div>
+      <p class="ev-intro">Aperitivi, brunch e notti con musica dal vivo. Per tutti gli eventi si prenota dal solito bottone.</p>
+    </div>
+    <div class="ev-list">
+      <article class="ev-item" style="--c:var(--aji)">
+        <div class="ev-img"><img src="assets/dish-pisco.webp" alt="Pisco sour con schiuma e scorza" loading="lazy" draggable="false"><h3>Hora Nikkei</h3></div>
+        <p class="ev-when">Giovedì e venerdì · 18:00 – 20:00</p>
+        <p>Pisco sour e caipirinha a 8 €, con un giro di bocconi dalla brace offerto al banco.</p>
+        <button class="btn-line dark" data-open-book data-book-hint="aperitivo">Prenota il banco</button>
+      </article>
+      <article class="ev-item" style="--c:var(--verde)">
+        <div class="ev-img"><img src="assets/cult-brasile.webp" alt="Pão de queijo appena sfornati" loading="lazy" draggable="false"><h3>Brunch Carioca</h3></div>
+        <p class="ev-when">Sabato e domenica · 12:30 – 16:30</p>
+        <p>Menu da 55 € con pão de queijo, seviche, robata e un cocktail. Percussioni dal vivo dalle 14.</p>
+        <button class="btn-line dark" data-open-book data-book-hint="brunch">Prenota il brunch</button>
+      </article>
+      <article class="ev-item" style="--c:var(--aka)">
+        <div class="ev-img"><img src="assets/ch-sala.webp" alt="Sala illuminata di rosso durante una serata" loading="lazy" draggable="false"><h3>Notte Maré</h3></div>
+        <p class="ev-when">Venerdì e sabato · dalle 23:00</p>
+        <p>DJ set tra bossa, cumbia e city pop giapponese nella Sala Maré. Ingresso libero per chi cena.</p>
+        <button class="btn-line dark" data-open-book data-book-hint="notte">Prenota in Sala Maré</button>
+      </article>
+      <article class="ev-item" style="--c:var(--mare)">
+        <div class="ev-img"><img src="assets/ch-notte.webp" alt="Tavoli a lume di candela" loading="lazy" draggable="false"><h3>Capodanno al porto</h3></div>
+        <p class="ev-when">31 dicembre · dalle 20:30</p>
+        <p>Cena in nove portate, brindisi sulla terrazza e musica fino alle tre. 160 € a persona.</p>
+        <a class="btn-line dark" href="#private">Chiedi informazioni</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRIVATE DINING ============ -->
+<section class="pd" id="private">
+  <div class="wrap pd-grid">
+    <div class="pd-media">
+      <div class="pd-pic"><div class="pd-frame" aria-hidden="true"></div>
+      <img src="assets/private.webp" alt="Tavolo lungo apparecchiato con candele" loading="lazy" draggable="false"></div>
+      <ul class="pd-rooms">
+        <li><b>Sala Kasato</b><span>18 seduti · tavolo unico</span></li>
+        <li><b>Sala Maré</b><span>60 in piedi · 40 seduti · bar dedicato</span></li>
+        <li><b>Tutto il locale</b><span>fino a 160 ospiti</span></li>
+      </ul>
+    </div>
+    <div class="pd-txt">
+      <p class="kicker"><b>UMI</b>MARÉ GENOVA</p>
+      <h2 class="h2" data-chars>Private dining &amp; eventi</h2>
+      <p>Cene aziendali, lanci di prodotto, compleanni che finiscono tardi. Una sala riservata, un menu costruito con lo chef, il bar tutto per voi.</p>
+      <div class="pd-menus">
+        <div><b>Menu Callao</b><span>6 portate</span><em>75 €</em></div>
+        <div><b>Menu Santos</b><span>8 portate + brace</span><em>95 €</em></div>
+        <div><b>Omakase nikkei</b><span>11 portate al banco</span><em>130 €</em></div>
+      </div>
+
+      <form class="pd-form" id="pdForm" novalidate>
+        <h3>Richiedi un preventivo</h3>
+        <div class="pd-cols">
+          <div class="fld"><label for="eType">Tipo di evento</label>
+            <select id="eType"><option value="">Scegli…</option><option>Cena privata</option><option>Evento aziendale</option><option>Compleanno o festa</option><option>Lancio di prodotto</option></select><small class="fe"></small></div>
+          <div class="fld"><label for="eRoom">Spazio</label>
+            <select id="eRoom"><option value="kasato" data-max="18" data-min="8">Sala Kasato (8–18)</option><option value="mare" data-max="60" data-min="15">Sala Maré (15–60)</option><option value="tutto" data-max="160" data-min="40">Tutto il locale (40–160)</option></select><small class="fe"></small></div>
+          <div class="fld"><label for="eDate">Data</label><input id="eDate" type="date"><small class="fe"></small></div>
+          <div class="fld"><label for="eGuests">Ospiti</label><input id="eGuests" type="number" inputmode="numeric" min="8" max="160" value="12"><small class="fe"></small></div>
+          <div class="fld"><label for="eBudget">Budget a persona</label>
+            <select id="eBudget"><option>60 – 80 €</option><option selected>80 – 120 €</option><option>oltre 120 €</option><option>Da definire</option></select></div>
+          <div class="fld"><label for="eCompany">Azienda <i>(facoltativo)</i></label><input id="eCompany" autocomplete="organization"></div>
+          <div class="fld"><label for="eName">Nome e cognome</label><input id="eName" autocomplete="name"><small class="fe"></small></div>
+          <div class="fld"><label for="eMail">Email</label><input id="eMail" type="email" autocomplete="email"><small class="fe"></small></div>
+          <div class="fld"><label for="ePhone">Telefono</label><input id="ePhone" type="tel" autocomplete="tel"><small class="fe"></small></div>
+          <div class="fld span2"><label for="eNote">Raccontaci l'evento <i>(facoltativo)</i></label><textarea id="eNote" rows="3" maxlength="600"></textarea></div>
+        </div>
+        <label class="chk"><input type="checkbox" id="eOk"><span>Accetto il trattamento dei dati per ricevere il preventivo.</span></label>
+        <small class="fe" id="eOkErr"></small>
+        <button type="submit" class="btn-solid">Invia la richiesta</button>
+      </form>
+      <div class="pd-done" id="pdDone" hidden>
+        <svg class="ok-ico" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22"/><path d="M14 25l7 7 13-15"/></svg>
+        <h3>Richiesta ricevuta</h3>
+        <p id="pdDoneTxt"></p>
+        <button type="button" class="btn-line dark" id="pdAgain">Invia un'altra richiesta</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTATTI ============ -->
+<section class="ct" id="contatti">
+  <div class="wrap ct-grid">
+    <div class="ct-box">
+      <h2 class="h2" data-chars>Dove siamo</h2>
+      <p class="ct-addr"><b>UMI</b>MARÉ<br>Via del Molo 41r<br>16128 Genova GE</p>
+      <p>telefono: <a href="tel:+390102468135">+39 010 246 8135</a><br>
+        prenotazioni: <a href="mailto:tavoli@umimare.example">tavoli@umimare.example</a><br>
+        eventi: <a href="mailto:eventi@umimare.example">eventi@umimare.example</a></p>
+      <p class="status status-ct" data-status><i></i><span>—</span></p>
+      <h3 class="ct-h">Orari</h3>
+      <dl class="hours" id="hours"></dl>
+    </div>
+    <div class="ct-map" aria-label="Mappa schematica: il ristorante sul Molo Vecchio, Porto Antico">
+      <svg viewBox="0 0 600 460" role="img" aria-hidden="true">
+        <rect width="600" height="460" fill="#e9e3d8"/>
+        <path d="M0 300 C120 290 180 330 260 320 S420 270 600 300 V460 H0Z" fill="#c9dbe6"/>
+        <path d="M150 330 l60 -8 l10 80 l-62 6z M300 318 l120 -14 l6 30 l-122 14z M440 300 l18 90 l-26 4 l-18 -88z" fill="#d6e4ec"/>
+        <g stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round">
+          <path d="M0 250 C140 240 260 270 380 240 S540 200 600 210"/>
+          <path d="M240 0 C250 90 230 170 260 262"/>
+          <path d="M420 0 C400 80 430 160 410 236"/>
+        </g>
+        <g stroke="#fff" stroke-width="5" fill="none"><path d="M90 0 L120 245 M520 40 L470 220 M0 140 L600 120"/></g>
+        <g fill="#d8cfbf"><rect x="40" y="40" width="60" height="70"/><rect x="130" y="60" width="80" height="60"/><rect x="290" y="30" width="100" height="70"/><rect x="290" y="130" width="70" height="70"/><rect x="450" y="60" width="50" height="110"/><rect x="530" y="160" width="60" height="40"/><rect x="140" y="150" width="70" height="60"/></g>
+        <text x="150" y="436" font-size="14" fill="#5d7f94" letter-spacing="3" font-family="Outfit, sans-serif">PORTO ANTICO</text>
+        <text x="140" y="232" font-size="11" fill="#8a8275" letter-spacing="2" font-family="Outfit, sans-serif">VIA DEL MOLO</text>
+        <g transform="translate(300 300)">
+          <circle r="28" fill="#ef7a1a" opacity=".18"><animate attributeName="r" values="14;34;14" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values=".35;0;.35" dur="3s" repeatCount="indefinite"/></circle>
+          <path d="M0 -6 C-14 -26 -20 -32 -20 -40 a20 20 0 0 1 40 0 c0 8 -6 14 -20 34z" fill="#ef7a1a" transform="translate(0 -4)"/>
+          <circle cx="0" cy="-44" r="7" fill="#fff"/>
+        </g>
+      </svg>
+      <a class="btn-line dark ct-dir" href="#">Indicazioni</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft-top">
+      <span class="ft-mark"><b>UMI</b>MARÉ</span>
+      <nav class="ft-links"><a href="#private">Eventi privati</a><a href="#">Lavora con noi</a><a href="#contatti">Contatti</a><a href="#">Carte regalo</a></nav>
+      <div class="social">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" class="fill"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3c-2.8 0-4 1.8-4 4.4V11H7v4h3v7h4v-7h3l1-4h-4V8.6c0-.4.3-.6.6-.6z"/></svg></a>
+        <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M15 3c.4 2.6 2 4.2 4.6 4.4v3.4c-1.7 0-3.2-.5-4.5-1.4V16a5.6 5.6 0 1 1-5.6-5.6v3.5a2.1 2.1 0 1 0 2.1 2.1V3z"/></svg></a>
+      </div>
+    </div>
+    <div class="ft-bot">
+      <p>UMIMARÉ S.r.l. · Via del Molo 41r, 16128 Genova · P.IVA 02814670995</p>
+      <p><a href="#">Privacy</a> · <a href="#">Accessibilità</a> · <a href="#">Allergeni</a></p>
+    </div>
+    <div class="ft-bot">
+      <a href="/templates" target="_top">← Tutti i modelli</a>
+      <p class="ft-fake">Nome, indirizzi e prezzi sono di fantasia.</p>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

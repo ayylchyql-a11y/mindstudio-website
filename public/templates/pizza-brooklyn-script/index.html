@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bandita — Pizza Club · Bergamo</title>
+<meta name="description" content="Bandita Pizza Club, Bergamo: pizza a legna in Borgo Palazzo e Città Alta, trancio in Stazione, pizze surgelate spedite in tutta Italia e catering con forno mobile.">
+<meta name="theme-color" content="#E3242B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Yellowtail&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-burst" viewBox="-50 -50 100 100"><path id="burst-path" fill="currentColor" d=""/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 0C12.9 7.6 16.4 11.1 24 12 16.4 12.9 12.9 16.4 12 24 11.1 16.4 7.6 12.9 0 12 7.6 11.1 11.1 7.6 12 0Z"/></symbol>
+    <symbol id="i-ig" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.4" cy="6.6" r="1.3" fill="currentColor"/></symbol>
+    <symbol id="i-fb" viewBox="0 0 24 24"><path fill="currentColor" d="M13.6 21v-7.6h2.6l.4-3h-3V8.5c0-.9.3-1.5 1.5-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.9v3h2.6V21h3.1Z"/></symbol>
+    <symbol id="i-tt" viewBox="0 0 24 24"><path fill="currentColor" d="M16.5 3c.3 2.2 1.6 3.6 3.8 3.8v3c-1.4 0-2.7-.4-3.8-1.1v5.7c0 3.6-2.6 6.1-5.9 6.1A5.8 5.8 0 0 1 4.8 14.6c0-3.5 2.9-6.1 6.5-5.7v3.1c-1.6-.4-3.4.6-3.4 2.6 0 1.6 1.2 2.7 2.7 2.7 1.7 0 2.8-1.1 2.8-3.1V3h3.1Z"/></symbol>
+  </defs>
+</svg>
+
+<!-- ============ HEADER ============ -->
+<header class="bd-head" id="head">
+  <button class="bd-burger" id="burger" type="button" aria-label="Apri il menu" aria-expanded="false" aria-controls="drawer"><i></i><i></i><i></i></button>
+  <a class="bd-mark" href="#top" aria-label="Bandita, torna su">Bandita</a>
+  <nav class="bd-quick" aria-label="Azioni rapide">
+    <button class="bd-btn bd-btn--white bd-q-extra" type="button" data-open="book">Prenota un tavolo</button>
+    <button class="bd-btn bd-btn--white bd-q-extra" type="button" data-open="catering">Catering</button>
+    <button class="bd-btn bd-btn--red bd-q-main" type="button" data-open="delivery"><span class="bd-q-long">Ordina a domicilio</span><span class="bd-q-short">Ordina</span></button>
+  </nav>
+</header>
+
+<!-- ============ DRAWER ============ -->
+<div class="bd-scrim" id="scrim" hidden></div>
+<aside class="bd-drawer" id="drawer" aria-label="Menu principale" aria-hidden="true">
+  <button class="bd-drawer-x" id="drawerClose" type="button" aria-label="Chiudi il menu"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+  <ul class="bd-drawer-list">
+    <li><a href="#top">Home</a></li>
+    <li><a href="#sedi">Sedi</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#shop">Shop surgelate</a></li>
+    <li><a href="#catering">Catering &amp; eventi</a></li>
+    <li><a href="#storia">Chi siamo</a></li>
+    <li><a href="#contatti">Contatti</a></li>
+  </ul>
+  <p class="bd-drawer-status" data-status="borgo"></p>
+  <svg class="bd-drawer-art" viewBox="0 0 160 170" aria-hidden="true">
+    <g fill="none" stroke="#E3242B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M30 28c34-14 76-14 108 4L84 156Z"/>
+      <path d="M30 28c34-8 74-6 108 4" stroke-width="7"/>
+      <circle cx="70" cy="56" r="9"/><circle cx="100" cy="62" r="7"/><circle cx="82" cy="92" r="8"/><circle cx="88" cy="122" r="5"/>
+      <path d="M58 78q4 6 10 2M96 82q4 6 10 1"/>
+      <path d="M74 104q8 8 16 0"/>
+      <path d="M14 104l6 4M10 120h8M18 134l6-4"/>
+      <path d="M140 92l6-6M146 110h8M140 126l6 6"/>
+    </g>
+  </svg>
+  <div class="bd-drawer-social"><a href="#" aria-label="Instagram"><svg width="22" height="22"><use href="#i-ig"/></svg></a><a href="#" aria-label="Facebook"><svg width="22" height="22"><use href="#i-fb"/></svg></a><a href="#" aria-label="TikTok"><svg width="22" height="22"><use href="#i-tt"/></svg></a></div>
+</aside>
+
+<main>
+<!-- ============ HERO ============ -->
+<section class="bd-hero" id="top">
+  <div class="bd-hero-img" id="heroImg"><img src="assets/hero-forno.webp" alt="Una pizza che cuoce nel forno a legna, tra le fiamme" width="1920" height="1279" fetchpriority="high"></div>
+  <div class="bd-hero-shade"></div>
+  <div class="bd-hero-mid">
+    <p class="bd-pill" data-status="borgo"><b></b><span>…</span></p>
+    <h1 class="bd-hero-h">Pizza a legna, dischi a volume alto.<br><em>Borgo Palazzo, Bergamo — dal 2011.</em></h1>
+  </div>
+  <div class="bd-hero-ctas">
+    <button class="bd-btn bd-btn--red bd-btn--lg bd-hero-delivery bd-magnet" type="button" data-open="delivery">Ordina a domicilio</button>
+    <button class="bd-btn bd-btn--light bd-btn--lg bd-magnet" type="button" data-go="shop">Ordina surgelate</button>
+    <button class="bd-btn bd-btn--ink bd-btn--lg bd-magnet" type="button" data-open="book">Prenota un tavolo</button>
+    <button class="bd-btn bd-btn--light bd-btn--lg bd-magnet" type="button" data-open="catering">Ordina catering</button>
+  </div>
+  <button class="bd-pause" id="heroPause" type="button" aria-pressed="false">Pausa</button>
+</section>
+
+<!-- ============ INTRO / PEEK PIZZAS ============ -->
+<section class="bd-intro bd-paper" id="storia">
+  <div class="bd-checker" aria-hidden="true"></div>
+  <div class="bd-float" id="float" aria-hidden="true">
+    <img class="bd-peek bd-peek--l" data-z="1" src="assets/marinara-cut.webp" alt="" width="760" height="760" draggable="false">
+    <img class="bd-peek bd-peek--r" data-z=".85" src="assets/margherita-cut.webp" alt="" width="760" height="760" draggable="false">
+    <svg class="bd-fl-star" data-z=".35" style="left:27%;top:22%" width="26" height="26"><use href="#i-spark"/></svg>
+    <svg class="bd-fl-star" data-z=".6" style="left:70%;top:16%" width="18" height="18"><use href="#i-spark"/></svg>
+    <svg class="bd-fl-star bd-fl-burst" data-z=".45" style="left:66%;top:74%" width="34" height="34"><use href="#i-burst"/></svg>
+    <svg class="bd-fl-star" data-z=".25" style="left:31%;top:78%" width="14" height="14"><use href="#i-spark"/></svg>
+  </div>
+  <div class="bd-intro-copy">
+    <p>Il nostro menu cambia con le stagioni: pizze a legna di scuola napoletana con l'accento di Bergamo, salumi stagionati in casa, pasta tirata a mano, verdure dell'orto di Seriate e dolci che non chiedono scusa.</p>
+    <button class="bd-btn bd-btn--red bd-btn--lg" id="storyBtn" type="button" aria-expanded="false" aria-controls="story">La nostra storia</button>
+    <div class="bd-story" id="story" hidden>
+      <div class="bd-story-in">
+        <p><b>2011.</b> Un garage in Borgo Palazzo, un forno costruito a mano da tre amici e un impianto stereo più costoso del forno.</p>
+        <p><b>72 ore.</b> Tanto lievita il nostro impasto: farina di tipo 1 macinata a pietra a Martinengo, lievito madre, sale, acqua. Basta.</p>
+        <p><b>Oggi.</b> Due sale, una finestra del trancio in stazione, un furgone con il forno sopra e le stesse regole: niente prenotazioni dopo le 22:30, la musica non si abbassa.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAR BAND ============ -->
+<div class="bd-stars" aria-hidden="true">
+  <div class="bd-stars-track" id="starTrack"></div>
+  <svg class="bd-wave" viewBox="0 0 1440 40" preserveAspectRatio="none"><path d="M0 18C120 6 240 6 360 16s240 22 360 12 240-26 360-16 240 20 360 10V40H0Z" fill="#2A2E35"/></svg>
+</div>
+
+<!-- ============ SEDI ============ -->
+<section class="bd-dark bd-sedi" id="sedi">
+  <h2 class="bd-h2 bd-h2--light"><svg width="30" height="30"><use href="#i-spark"/></svg><span>Le sedi</span><svg width="30" height="30"><use href="#i-spark"/></svg></h2>
+  <p class="bd-sub bd-sub--light">Due sale con servizio al tavolo e una finestra del trancio. L'orario qui sotto è quello di oggi, ora di Roma.</p>
+  <h3 class="bd-kicker">Full service</h3>
+  <div class="bd-loc-grid" id="locFull"></div>
+  <h3 class="bd-kicker">Outpost</h3>
+  <div class="bd-loc-grid bd-loc-grid--one" id="locOut"></div>
+</section>
+
+<!-- ============ MENU ============ -->
+<section class="bd-menu bd-paper" id="menu">
+  <div class="bd-checker" aria-hidden="true"></div>
+  <div class="bd-menu-head">
+    <svg class="bd-doodle bd-doodle--l" viewBox="0 0 120 120" aria-hidden="true"><g fill="none" stroke="#E3242B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="60" cy="60" r="44"/><circle cx="60" cy="60" r="34" stroke-dasharray="4 7"/><circle cx="46" cy="46" r="6"/><circle cx="74" cy="52" r="5"/><circle cx="58" cy="76" r="7"/><path d="M60 16v88M16 60h88M29 29l62 62M91 29 29 91" stroke-width="1.6"/></g></svg>
+    <h2 class="bd-h2"><svg width="30" height="30"><use href="#i-spark"/></svg><span>Il menu</span><svg width="30" height="30"><use href="#i-spark"/></svg></h2>
+    <svg class="bd-doodle bd-doodle--r" viewBox="0 0 120 120" aria-hidden="true"><g fill="none" stroke="#E3242B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M38 18h44l-6 26H44Z"/><path d="M44 44c0 20 32 20 32 0"/><path d="M60 64v34M44 100h32"/><path d="M78 24l18-14M90 10l8 6"/><circle cx="26" cy="74" r="3"/><circle cx="96" cy="70" r="4"/></g></svg>
+    <p class="bd-sub">Niente PDF: il menu di questa settimana, sempre aggiornato. Cambia il lunedì.</p>
+  </div>
+  <div class="bd-tabs" role="tablist" aria-label="Categorie del menu" id="menuTabs"></div>
+  <div class="bd-filters" id="menuFilters">
+    <button type="button" class="bd-chip" data-filter="veg" aria-pressed="false">Vegetariano</button>
+    <button type="button" class="bd-chip" data-filter="hot" aria-pressed="false">Piccante</button>
+    <button type="button" class="bd-chip" data-filter="new" aria-pressed="false">Novità</button>
+    <span class="bd-filter-count" id="menuCount" aria-live="polite"></span>
+  </div>
+  <div class="bd-menu-card" id="menuCard" role="tabpanel">
+    <div class="bd-menu-bar" id="menuBar">Pizze rosse</div>
+    <ul class="bd-menu-list" id="menuList"></ul>
+    <p class="bd-menu-empty" id="menuEmpty" hidden>Niente in questa categoria con questi filtri.</p>
+  </div>
+  <p class="bd-menu-note">V = vegetariano · P = piccante · Impasto senza glutine su richiesta (+3 €), cotto nel forno a legna: non adatto a celiaci.</p>
+</section>
+
+<!-- ============ SHOP ============ -->
+<section class="bd-shop" id="shop">
+  <div class="bd-checker" aria-hidden="true"></div>
+  <h2 class="bd-h2 bd-h2--light"><svg width="30" height="30"><use href="#i-burst"/></svg><span>Shop Bandita</span><svg width="30" height="30"><use href="#i-burst"/></svg></h2>
+  <p class="bd-sub bd-sub--light">Pizze surgelate cotte nel nostro forno a legna e abbattute a −40 °C. Sette minuti nel forno di casa. Spediamo in tutta Italia con corriere refrigerato, gratis sopra i 59 €, oppure le ritiri in pizzeria.</p>
+  <div class="bd-prod-grid" id="prodGrid"></div>
+</section>
+
+<!-- ============ SEMPRE AL SUGO ============ -->
+<section class="bd-sugo" id="sugo">
+  <img class="bd-sugo-img" src="assets/fiamma.webp" alt="Le fiamme del forno a legna" width="1600" height="1208" loading="lazy">
+  <div class="bd-sugo-shade"></div>
+  <h2 class="bd-sugo-h">Sempre<br>al sugo!</h2>
+  <button class="bd-btn bd-btn--white bd-btn--lg bd-magnet bd-sugo-b1" type="button" data-open="catering">Ordina catering</button>
+  <button class="bd-btn bd-btn--ink bd-btn--lg bd-magnet bd-sugo-b2" type="button" data-open="book">Prenota un tavolo</button>
+  <button class="bd-btn bd-btn--red bd-btn--lg bd-magnet bd-sugo-b3" type="button" data-open="delivery">Ordina a domicilio</button>
+  <button class="bd-btn bd-btn--white bd-btn--lg bd-magnet bd-sugo-b4" type="button" data-go="shop">Shop surgelate</button>
+</section>
+
+<!-- ============ CATERING ============ -->
+<section class="bd-cater bd-paper" id="catering">
+  <div class="bd-checker" aria-hidden="true"></div>
+  <h2 class="bd-h2"><svg width="30" height="30"><use href="#i-spark"/></svg><span>Catering<br>&amp; eventi</span><svg width="30" height="30"><use href="#i-spark"/></svg></h2>
+  <p class="bd-sub">Dal pranzo in ufficio al matrimonio in cascina: portiamo la stessa pizza che esce dal nostro forno, cotta sul posto quando si può.</p>
+  <div class="bd-cater-grid">
+    <div class="bd-cater-left">
+      <ul class="bd-formulas">
+        <li><b>Vassoi drop-off</b><span>Pizze al taglio, insalate e dolci consegnati pronti. Da 10 persone.</span><em>da 16 € a persona</em></li>
+        <li><b>Forno mobile</b><span>Il furgone con il forno a legna, due pizzaioli, pizze a ciclo continuo. Da 40 persone.</span><em>da 26 € a persona + 350 € uscita</em></li>
+        <li><b>Festa in pizzeria</b><span>La sala di Città Alta tutta per voi, dal lunedì al giovedì. Fino a 60 persone.</span><em>da 32 € a persona</em></li>
+      </ul>
+      <div class="bd-cater-pics"><img src="assets/impasto.webp" alt="Mani che reggono un panetto di impasto" width="900" height="1359" loading="lazy"><img src="assets/pala.webp" alt="Una pizza appena sfornata su una tavola di legno" width="900" height="601" loading="lazy"></div>
+    </div>
+    <form class="bd-form bd-cater-form" id="caterForm" novalidate>
+      <h3>Chiedi un preventivo</h3>
+      <fieldset class="bd-seg" id="caterType"><legend>Formula</legend>
+        <label><input type="radio" name="formula" value="drop" checked><span>Drop-off</span></label>
+        <label><input type="radio" name="formula" value="forno"><span>Forno mobile</span></label>
+        <label><input type="radio" name="formula" value="sala"><span>In pizzeria</span></label>
+      </fieldset>
+      <div class="bd-row2">
+        <label class="bd-field"><span>Data dell'evento</span><input type="date" name="date" id="caterDate" required></label>
+        <label class="bd-field"><span>Persone</span><input type="number" name="guests" id="caterGuests" min="10" max="400" value="30" inputmode="numeric" required></label>
+      </div>
+      <label class="bd-field"><span>Che occasione è?</span>
+        <select name="kind"><option>Pranzo aziendale</option><option>Compleanno</option><option>Matrimonio</option><option>Festa privata</option><option>Altro</option></select></label>
+      <div class="bd-row2">
+        <label class="bd-field"><span>Nome e cognome</span><input type="text" name="fullname" autocomplete="name" required></label>
+        <label class="bd-field"><span>Email</span><input type="email" name="email" autocomplete="email" required></label>
+      </div>
+      <div class="bd-estimate" id="caterEst" aria-live="polite"></div>
+      <p class="bd-form-err" id="caterErr" role="alert"></p>
+      <button class="bd-btn bd-btn--ink bd-btn--lg bd-btn--full" type="submit">Invia la richiesta</button>
+      <div class="bd-form-done" id="caterDone" hidden></div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ SOCIAL ============ -->
+<section class="bd-social" id="social">
+  <h2 class="bd-h2 bd-h2--light"><span>Seguici!</span></h2>
+  <div class="bd-social-icons"><a href="#" aria-label="Instagram"><svg width="26" height="26"><use href="#i-ig"/></svg></a><a href="#" aria-label="Facebook"><svg width="26" height="26"><use href="#i-fb"/></svg></a><a href="#" aria-label="TikTok"><svg width="26" height="26"><use href="#i-tt"/></svg></a></div>
+  <div class="bd-polas">
+    <figure class="bd-pola" style="--r:-6deg"><img src="assets/pala.webp" alt="Pizza sulla tavola" loading="lazy" draggable="false"><figcaption>venerdì, 23:40</figcaption></figure>
+    <figure class="bd-pola" style="--r:4deg"><img src="assets/impasto.webp" alt="Panetto di impasto" loading="lazy" draggable="false"><figcaption>72 ore dopo</figcaption></figure>
+    <figure class="bd-pola" style="--r:-2deg"><img src="assets/hero-forno.webp" alt="Il forno acceso" loading="lazy" draggable="false"><figcaption>il forno, 480 °C</figcaption></figure>
+    <figure class="bd-pola" style="--r:5deg"><img src="assets/focaccia.webp" alt="Focaccia al rosmarino" loading="lazy" draggable="false"><figcaption>focaccia della domenica</figcaption></figure>
+    <figure class="bd-pola" style="--r:-4deg"><img src="assets/fiamma.webp" alt="Fiamme nel forno" loading="lazy" draggable="false"><figcaption>accendiamo alle 17</figcaption></figure>
+  </div>
+</section>
+
+<!-- ============ NEWSLETTER + FOOTER ============ -->
+<section class="bd-dark bd-news" id="contatti">
+  <svg class="bd-news-s s1" width="34" height="34" aria-hidden="true"><use href="#i-spark"/></svg>
+  <svg class="bd-news-s s2" width="40" height="40" aria-hidden="true"><use href="#i-burst"/></svg>
+  <svg class="bd-news-s s3" width="28" height="28" aria-hidden="true"><use href="#i-spark"/></svg>
+  <svg class="bd-news-s s4" width="34" height="34" aria-hidden="true"><use href="#i-burst"/></svg>
+  <h2 class="bd-h2 bd-h2--light"><span>Iscriviti alla<br>newsletter</span></h2>
+  <p class="bd-sub bd-sub--light">Nuove pizze del mese, serate con i DJ e lanci dello shop prima di tutti. Una mail al mese, giuriamo.</p>
+  <form class="bd-news-form" id="newsForm" novalidate>
+    <label class="bd-sr" for="newsEmail">La tua email</label>
+    <input id="newsEmail" type="email" placeholder="La tua email" autocomplete="email">
+    <button type="submit">Vai!</button>
+  </form>
+  <p class="bd-form-err bd-form-err--light" id="newsErr" role="alert"></p>
+
+  <footer class="bd-foot">
+    <div class="bd-foot-cols">
+      <div><span class="bd-foot-mark">Bandita</span><p>Bandita Pizza Club S.r.l.<br>Via Borgo Palazzo 118, 24125 Bergamo<br>+39 035 018 4411 · ciao@banditapizza.it<br>P.IVA 04517760162</p></div>
+      <div><p class="bd-foot-h">Sedi</p><p>Borgo Palazzo<br>Città Alta<br>Bandita Trancio · Stazione</p></div>
+      <div><p class="bd-foot-h">Seguici</p><div class="bd-foot-social"><a href="#" aria-label="Instagram"><svg width="22" height="22"><use href="#i-ig"/></svg></a><a href="#" aria-label="Facebook"><svg width="22" height="22"><use href="#i-fb"/></svg></a><a href="#" aria-label="TikTok"><svg width="22" height="22"><use href="#i-tt"/></svg></a></div></div>
+    </div>
+    <div class="bd-foot-bar">
+      <a href="/templates" target="_top">← Tutti i modelli</a>
+      <span>Bandita Pizza Club ©2011—2026</span>
+      <span>Nome, indirizzi e prezzi sono di fantasia.</span>
+    </div>
+  </footer>
+</section>
+</main>
+
+<!-- ============ CART ============ -->
+<button class="bd-cartfab" id="cartFab" type="button" hidden aria-label="Apri il carrello"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14l-1.4 12.2a2 2 0 0 1-2 1.8H8.4a2 2 0 0 1-2-1.8Z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg><b id="cartCount">0</b><span id="cartFabTotal">0,00 €</span></button>
+
+<aside class="bd-cart" id="cart" aria-label="Carrello" aria-hidden="true">
+  <div class="bd-cart-head"><h3>Il tuo carrello</h3><button class="bd-x" type="button" data-close="cart" aria-label="Chiudi il carrello"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+  <div class="bd-cart-body" id="cartBody">
+    <div class="bd-ship" id="shipMeter"><p id="shipMsg"></p><div class="bd-ship-bar"><i id="shipFill"></i></div></div>
+    <ul class="bd-cart-list" id="cartList"></ul>
+    <p class="bd-cart-empty" id="cartEmpty">Il carrello è vuoto. Le pizze sono di là, nello shop.</p>
+    <fieldset class="bd-seg bd-seg--full" id="modeSeg"><legend>Come le vuoi?</legend>
+      <label><input type="radio" name="mode" value="ship" checked><span>Corriere refrigerato</span></label>
+      <label><input type="radio" name="mode" value="pick"><span>Ritiro in pizzeria</span></label>
+    </fieldset>
+    <form class="bd-form bd-checkout" id="checkout" novalidate>
+      <div class="bd-ship-fields" id="shipFields">
+        <label class="bd-field"><span>Indirizzo</span><input name="addr" autocomplete="street-address"></label>
+        <div class="bd-row2"><label class="bd-field"><span>CAP</span><input name="cap" inputmode="numeric" maxlength="5" autocomplete="postal-code"></label><label class="bd-field"><span>Città</span><input name="city" autocomplete="address-level2"></label></div>
+        <p class="bd-hint">Spediamo dal lunedì al mercoledì, consegna in 24–48 ore nella scatola termica.</p>
+      </div>
+      <div class="bd-pick-fields" id="pickFields" hidden>
+        <div class="bd-row2"><label class="bd-field"><span>Sede</span><select name="pickLoc" id="pickLoc"></select></label><label class="bd-field"><span>Giorno</span><select name="pickDay" id="pickDay"></select></label></div>
+        <p class="bd-hint">Pronte dalle 18:00 al banco, in borsa frigo.</p>
+      </div>
+      <div class="bd-row2"><label class="bd-field"><span>Nome</span><input name="fullname" autocomplete="name"></label><label class="bd-field"><span>Email</span><input name="email" type="email" autocomplete="email"></label></div>
+      <dl class="bd-sum"><div><dt>Subtotale</dt><dd id="sumSub">0,00 €</dd></div><div><dt id="sumShipLbl">Spedizione</dt><dd id="sumShip">—</dd></div><div class="bd-sum-tot"><dt>Totale</dt><dd id="sumTot">0,00 €</dd></div></dl>
+      <p class="bd-form-err" id="cartErr" role="alert"></p>
+      <button class="bd-btn bd-btn--red bd-btn--lg bd-btn--full" type="submit" id="payBtn">Paga</button>
+      <p class="bd-hint bd-hint--c">Pagamento dimostrativo: nessun addebito.</p>
+    </form>
+  </div>
+</aside>
+
+<!-- ============ MODALS ============ -->
+<div class="bd-modal" id="m-book" role="dialog" aria-modal="true" aria-labelledby="bookTitle" hidden>
+  <div class="bd-modal-card">
+    <div class="bd-modal-bar"><h3 id="bookTitle">Prenota un tavolo</h3><button class="bd-x" type="button" data-close="book" aria-label="Chiudi"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+    <form class="bd-form" id="bookForm" novalidate>
+      <fieldset class="bd-seg bd-seg--full" id="bookLoc"><legend>Sede</legend></fieldset>
+      <div class="bd-row2">
+        <label class="bd-field"><span>Giorno</span><input type="date" id="bookDate" name="date" required></label>
+        <div class="bd-field"><span>Persone</span>
+          <div class="bd-step"><button type="button" id="ppMinus" aria-label="Una persona in meno">−</button><output id="ppOut" aria-live="polite">2</output><button type="button" id="ppPlus" aria-label="Una persona in più">+</button></div>
+        </div>
+      </div>
+      <p class="bd-hint" id="ppHint"></p>
+      <div class="bd-field"><span>Orario</span><div class="bd-slots" id="bookSlots" role="radiogroup" aria-label="Orari disponibili"></div></div>
+      <div class="bd-row2">
+        <label class="bd-field"><span>Nome</span><input name="fullname" autocomplete="name" required></label>
+        <label class="bd-field"><span>Telefono</span><input name="phone" type="tel" autocomplete="tel" required></label>
+      </div>
+      <p class="bd-form-err" id="bookErr" role="alert"></p>
+      <button class="bd-btn bd-btn--ink bd-btn--lg bd-btn--full" type="submit">Conferma la prenotazione</button>
+    </form>
+    <div class="bd-ticket" id="bookDone" hidden></div>
+  </div>
+</div>
+
+<div class="bd-modal" id="m-delivery" role="dialog" aria-modal="true" aria-labelledby="delTitle" hidden>
+  <div class="bd-modal-card bd-modal-card--sm">
+    <div class="bd-modal-bar"><h3 id="delTitle">Ordina a domicilio</h3><button class="bd-x" type="button" data-close="delivery" aria-label="Chiudi"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+    <div class="bd-del">
+      <p>Consegniamo caldo entro 4 km da ogni sede. Scrivi il CAP e ti diciamo chi arriva prima.</p>
+      <form class="bd-del-form" id="delForm" novalidate><label class="bd-sr" for="delCap">CAP</label><input id="delCap" inputmode="numeric" maxlength="5" placeholder="CAP, es. 24125"><button class="bd-btn bd-btn--red" type="submit">Cerca</button></form>
+      <div class="bd-del-out" id="delOut" aria-live="polite"></div>
+    </div>
+  </div>
+</div>
+
+<div class="bd-modal" id="m-catering" role="dialog" aria-modal="true" aria-labelledby="catTitle" hidden>
+  <div class="bd-modal-card bd-modal-card--sm">
+    <div class="bd-modal-bar"><h3 id="catTitle">Catering</h3><button class="bd-x" type="button" data-close="catering" aria-label="Chiudi"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+    <div class="bd-del">
+      <p>Scegli la formula, poi ti portiamo al modulo del preventivo con tutto già impostato.</p>
+      <div class="bd-cat-pick">
+        <button type="button" class="bd-cat-opt" data-formula="drop"><b>Vassoi drop-off</b><span>da 10 persone · da 16 €/p.</span></button>
+        <button type="button" class="bd-cat-opt" data-formula="forno"><b>Forno mobile</b><span>da 40 persone · da 26 €/p.</span></button>
+        <button type="button" class="bd-cat-opt" data-formula="sala"><b>Festa in pizzeria</b><span>fino a 60 · da 32 €/p.</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- receipt -->
+<div class="bd-rcpt" id="rcpt" hidden role="dialog" aria-modal="true" aria-label="Ricevuta dell'ordine">
+  <div class="bd-rcpt-rig" id="rcptRig">
+    <div class="bd-printer"><div class="bd-slot"></div></div>
+    <div class="bd-rcpt-shadow" id="rcptShadow"></div>
+    <div class="bd-feed" id="rcptFeed"><div class="bd-paperslip" id="rcptPaper"></div></div>
+    <p class="bd-rcpt-cap" id="rcptCap">Stampo la ricevuta…</p>
+    <button class="bd-btn bd-btn--white bd-btn--lg bd-rcpt-close" id="rcptClose" type="button">Chiudi</button>
+  </div>
+</div>
+
+<canvas class="bd-burst" id="burstCv" aria-hidden="true"></canvas>
+<div class="bd-toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

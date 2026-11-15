@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hiko · Sushi a domicilio e da asporto a Verona</title>
+<meta name="description" content="Hiko: sushi box, roll e piatti caldi consegnati a Verona in 30 minuti, o pronti da ritirare in uno dei tre shop.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-pin" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.5a7 7 0 0 0-7 7c0 5 7 12 7 12s7-7 7-12a7 7 0 0 0-7-7Zm0 9.6a2.6 2.6 0 1 1 0-5.2 2.6 2.6 0 0 1 0 5.2Z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></g></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c.8-4 3.8-6 7.5-6s6.7 2 7.5 6"/></g></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M5.5 8h13l-.9 12.5H6.4L5.5 8Z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/></g></symbol>
+  <symbol id="i-shop" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M3.5 9.5 5 4.5h14l1.5 5"/><path d="M3.5 9.5c0 1.5 1.2 2.5 2.7 2.5s2.7-1 2.7-2.5c0 1.5 1.2 2.5 2.8 2.5s2.8-1 2.8-2.5c0 1.5 1.2 2.5 2.7 2.5s2.8-1 2.8-2.5"/><path d="M5 12v7.5h14V12"/><path d="M10 19.5v-4h4v4"/></g></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="m6 6 12 12M18 6 6 18"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></g></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M9 7h11M9 12h11M9 17h11M4.5 7h.01M4.5 12h.01M4.5 17h.01"/></symbol>
+  <symbol id="i-fish" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M6 24c6-8 15-11 23-8 4 1.5 7 4 9 8-2 4-5 6.5-9 8-8 3-17 0-23-8Z"/><path d="M38 24l5-6v12l-5-6"/><circle cx="14" cy="22" r="1.2"/><path d="M22 18c2 4 2 8 0 12"/></g></symbol>
+  <symbol id="i-scooter" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><circle cx="12" cy="34" r="5"/><circle cx="37" cy="34" r="5"/><path d="M17 34h13l4-12h5"/><path d="M8 20h14v8H8z"/><path d="M34 22l-3-8h-4"/></g></symbol>
+  <symbol id="i-card" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><rect x="6" y="12" width="36" height="24" rx="3"/><path d="M6 19h36M12 29h8"/><path d="M33 27l2 2 4-4"/></g></symbol>
+  <symbol id="i-chat" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"><path d="M8 12h32v20H22l-8 6v-6H8z"/><path d="M16 22h.01M24 22h.01M32 22h.01"/></g></symbol>
+  <symbol id="i-ig" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6" fill="currentColor"/></g></symbol>
+  <symbol id="i-fb" viewBox="0 0 24 24"><path fill="currentColor" d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9v2.3H8v3h2.5V21h3Z"/></symbol>
+  <symbol id="i-tt" viewBox="0 0 24 24"><path fill="currentColor" d="M16.6 3c.4 2.2 1.8 3.6 4 3.8v3.1c-1.5 0-2.8-.4-4-1.2v6.1c0 3.4-2.6 5.7-5.7 5.7a5.6 5.6 0 0 1-1.1-11.1v3.2a2.5 2.5 0 1 0 1.8 2.4V3h5Z"/></symbol>
+</svg>
+
+<!-- ============ TOP BAR ============ -->
+<header class="hk-top" id="top">
+  <div class="hk-top-row">
+    <a class="hk-logo" href="#hero" aria-label="Hiko, torna all'inizio">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12.5 25.5c3.5-1 6-4.3 7.5-10.5 1.5 6.2 4 9.5 7.5 10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="20" cy="27.5" r="1.6" fill="currentColor"/></svg>
+      <span>hiko</span>
+    </a>
+    <nav class="hk-nav-l" aria-label="Principale">
+      <a href="#carta" class="hk-nl">Menu</a>
+      <a href="#shop" class="hk-nl hk-nl-shop" id="navShop"><svg class="hk-ic"><use href="#i-shop"/></svg><span id="navShopName">I nostri shop</span></a>
+    </nav>
+    <div class="hk-mini" id="mini" aria-hidden="true">
+      <button class="hk-mini-mode" id="miniMode" type="button" tabindex="-1"><span id="miniModeTxt">In consegna</span><svg class="hk-ic-s"><use href="#i-chev"/></svg></button>
+      <button class="hk-mini-addr" id="miniAddr" type="button" tabindex="-1"><svg class="hk-ic-s"><use href="#i-pin"/></svg><span id="miniAddrTxt">Inserisci il tuo indirizzo</span><span class="hk-mini-eta" id="miniEta" hidden><svg class="hk-ic-s"><use href="#i-clock"/></svg><b></b></span><i class="hk-mini-go"><svg class="hk-ic-s"><use href="#i-search"/></svg></i></button>
+    </div>
+    <div class="hk-nav-r">
+      <a href="#shop" class="hk-icbtn hk-only-m" aria-label="I nostri shop"><svg class="hk-ic"><use href="#i-shop"/></svg></a>
+      <button class="hk-nr" id="loginBtn" type="button"><svg class="hk-ic"><use href="#i-user"/></svg><span>Accedi</span></button>
+      <button class="hk-nr" id="cartBtn" type="button" aria-label="Carrello"><svg class="hk-ic"><use href="#i-bag"/></svg><span>Carrello (<b id="cartCount">0</b>)</span><i class="hk-cart-dot" id="cartDot">0</i></button>
+      <button class="hk-icbtn" id="burger" type="button" aria-label="Apri il menu" aria-expanded="false"><svg class="hk-ic"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<!-- side menu -->
+<div class="hk-scrim" id="menuScrim" hidden></div>
+<aside class="hk-side" id="sideMenu" aria-label="Menu" aria-hidden="true">
+  <div class="hk-side-head"><b>hiko</b><button class="hk-x" id="menuClose" type="button" aria-label="Chiudi"><svg><use href="#i-close"/></svg></button></div>
+  <nav class="hk-side-nav">
+    <a href="#carta" data-close>Il menu</a>
+    <a href="#promo" data-close>Promozioni</a>
+    <a href="#autunno" data-close>Novità d'autunno</a>
+    <a href="#shop" data-close>I nostri shop</a>
+    <a href="#storia" data-close>Il nostro riso</a>
+  </nav>
+  <div class="hk-side-status" id="sideStatus"></div>
+  <p class="hk-side-small">Assistenza 7 giorni su 7 · 045 000 1188</p>
+</aside>
+
+<main id="main">
+<!-- ============ HERO ============ -->
+<section class="hk-hero" id="hero" data-slide="0" aria-roledescription="carosello" aria-label="In evidenza">
+  <div class="hk-hero-bg" aria-hidden="true"></div>
+
+  <div class="hk-float" id="floatField" aria-hidden="true"></div>
+
+  <div class="hk-order" id="order">
+    <div class="hk-mode" role="tablist" aria-label="Modalità" id="heroMode">
+      <i class="hk-mode-pill" aria-hidden="true"></i>
+      <button type="button" role="tab" data-mode="delivery" aria-selected="true"><svg class="hk-ic-s hk-mode-tick"><use href="#i-check"/></svg>In consegna</button>
+      <button type="button" role="tab" data-mode="pickup" aria-selected="false"><svg class="hk-ic-s hk-mode-tick"><use href="#i-check"/></svg>Da asporto</button>
+    </div>
+    <form class="hk-addr" id="heroAddr" autocomplete="off" novalidate>
+      <svg class="hk-addr-pin"><use href="#i-pin"/></svg>
+      <label class="hk-vh" for="addrInput">Indirizzo di consegna</label>
+      <input id="addrInput" type="text" placeholder="Inserisci un indirizzo di consegna" aria-autocomplete="list" aria-controls="addrSug" aria-expanded="false" spellcheck="false">
+      <button class="hk-addr-go" type="submit" aria-label="Verifica"><svg><use href="#i-search"/></svg></button>
+      <ul class="hk-sug" id="addrSug" role="listbox" hidden></ul>
+    </form>
+    <div class="hk-zone" id="zoneMsg" aria-live="polite"></div>
+  </div>
+
+  <div class="hk-hero-copy" id="heroCopy">
+    <article class="hk-slide is-on" data-i="0">
+      <p class="hk-eyebrow"><span>Dal banco alla porta in</span></p>
+      <h1 class="hk-mega"><span>Trenta</span><span>minuti</span></h1>
+      <p class="hk-sub">Riso ancora tiepido,<br>rider in bicicletta,<br>stesso prezzo dello shop.</p>
+      <a class="hk-btn hk-btn-ink" href="#zone">Scopri le zone</a>
+    </article>
+    <article class="hk-slide" data-i="1" aria-hidden="true">
+      <p class="hk-eyebrow"><span>Nuova da questa settimana</span></p>
+      <h2 class="hk-mega"><span>Box</span><span>Festa</span></h2>
+      <p class="hk-sub">Quarantotto pezzi da dividere,<br>dieci euro in meno<br>fino a domenica.</p>
+      <button class="hk-btn hk-btn-ink" type="button" data-open="party">Ordina la box</button>
+    </article>
+    <article class="hk-slide" data-i="2" aria-hidden="true">
+      <p class="hk-eyebrow"><span>Solo fino a novembre</span></p>
+      <h2 class="hk-mega"><span>Nuovi</span><span>roll</span></h2>
+      <p class="hk-sub">Capesante scottate,<br>zucca e salmone fiammato,<br>quattro novità a cena.</p>
+      <a class="hk-btn hk-btn-ink" href="#autunno">Guarda le novità</a>
+    </article>
+  </div>
+
+  <div class="hk-hero-nav">
+    <span class="hk-hero-count" id="heroCount">1 / 3</span>
+    <button type="button" class="hk-arrow" id="heroPrev" aria-label="Slide precedente"><svg><use href="#i-arrow"/></svg></button>
+    <button type="button" class="hk-arrow" id="heroNext" aria-label="Slide successiva"><svg><use href="#i-arrow"/></svg></button>
+  </div>
+</section>
+
+<!-- ============ PROMO BLOCKS ============ -->
+<section class="hk-promos" id="promo" aria-label="Promozioni">
+  <article class="hk-promo hk-promo-terra">
+    <div class="hk-promo-txt">
+      <p class="hk-promo-big">10€</p>
+      <p class="hk-promo-mid">in meno</p>
+      <p class="hk-promo-small">sulle box da condividere<sup>*</sup></p>
+      <button class="hk-btn hk-btn-ink" type="button" data-cat="box">Ordina</button>
+    </div>
+    <img class="hk-promo-img" src="assets/ph-sashimi-box.webp" alt="Box di sashimi di salmone su stuoia di bambù" loading="lazy" width="1400" height="934">
+    <p class="hk-promo-note">*codice BOX10 · su ordini da 40 € con almeno una box</p>
+  </article>
+
+  <article class="hk-promo hk-promo-photo">
+    <img src="assets/ph-tempura.webp" alt="Tempura di gamberi in un cestino di bambù" loading="lazy" width="1600" height="1067">
+    <div class="hk-promo-over">
+      <p class="hk-promo-title">La parte calda del menu: gyoza, ramen, tempura.</p>
+      <button class="hk-btn hk-btn-ink" type="button" data-cat="caldi">Ordina</button>
+    </div>
+  </article>
+
+  <article class="hk-promo hk-promo-cream">
+    <div class="hk-promo-txt">
+      <p class="hk-promo-kicker">26 pezzi a prezzo gentile</p>
+      <p class="hk-promo-head">La box del mese</p>
+      <button class="hk-btn hk-btn-ink" type="button" data-open="duo">Ordina</button>
+    </div>
+    <img class="hk-promo-prod" src="assets/fly-boat.webp" alt="Barca nera con uramaki di salmone scottato" loading="lazy">
+  </article>
+</section>
+
+<!-- ============ AUTUMN COLLECTION ============ -->
+<section class="hk-collab" id="autunno" aria-labelledby="autTitle">
+  <h2 class="hk-h2" id="autTitle">Hiko × Autunno</h2>
+  <div class="hk-collab-grid">
+    <article class="hk-collab-feat">
+      <img src="assets/ph-uramaki.webp" alt="Uramaki di salmone su piatto bianco, luci soffuse" loading="lazy" width="1200" height="800">
+      <div class="hk-collab-over">
+        <p>Quattro ricette nuove,<br>pensate per la sera.</p>
+        <a class="hk-btn hk-btn-taupe" href="#carta" data-cat-link="roll">Scopri</a>
+      </div>
+    </article>
+    <div class="hk-collab-tiles" id="collabTiles"></div>
+  </div>
+</section>
+
+<!-- ============ CARTA ============ -->
+<section class="hk-carta" id="carta" aria-labelledby="cartaTitle">
+  <div class="hk-carta-wrap">
+    <aside class="hk-cats" aria-label="Categorie">
+      <p class="hk-cats-label"><svg class="hk-ic-s"><use href="#i-list"/></svg><span>Categorie</span></p>
+      <div class="hk-cats-list" id="catList" role="group" aria-label="Filtra per categoria">
+        <i class="hk-cats-pill" aria-hidden="true"></i>
+      </div>
+    </aside>
+    <div class="hk-carta-main">
+      <div class="hk-carta-head">
+        <h2 class="hk-h2" id="cartaTitle">Il menu</h2>
+        <div class="hk-diet" id="dietChips" role="group" aria-label="Filtri">
+          <button type="button" data-diet="veg" aria-pressed="false">Vegetariano</button>
+          <button type="button" data-diet="cotto" aria-pressed="false">Senza crudo</button>
+          <button type="button" data-diet="spicy" aria-pressed="false">Piccante</button>
+        </div>
+      </div>
+      <p class="hk-carta-note" id="cartaNote"></p>
+      <div class="hk-grid" id="grid" aria-live="polite"></div>
+      <p class="hk-empty" id="gridEmpty" hidden>Nessun piatto con questi filtri. <button type="button" id="clearDiet">Togli i filtri</button></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STORY ============ -->
+<section class="hk-story" id="storia" aria-label="Chi siamo">
+  <article>
+    <img src="assets/ph-tartare-coppe.webp" alt="Tartare di salmone in cucchiai di porcellana" loading="lazy" width="900" height="600">
+    <h3>Il riso, cotto ogni due ore</h3>
+    <p>Ogni shop cuoce piccole pentole durante il servizio: il riso che arriva a casa tua ha al massimo due ore ed è condito a mano con il nostro aceto.</p>
+    <details><summary><svg class="hk-ic-s"><use href="#i-plus"/></svg>Leggi di più</summary><p>Usiamo un riso a chicco medio coltivato nel vercellese. Niente vaschette pronte, niente riso del giorno prima.</p></details>
+  </article>
+  <article>
+    <img src="assets/ph-sashimi-piatto.webp" alt="Sashimi di pesce bianco in una ciotola di ceramica" loading="lazy" width="900" height="600">
+    <h3>Pesce abbattuto e tracciato</h3>
+    <p>Salmone norvegese, tonno pinna gialla e branzino del Mediterraneo: ogni lotto è abbattuto a −40 °C e ha la sua scheda di provenienza in shop.</p>
+    <details><summary><svg class="hk-ic-s"><use href="#i-plus"/></svg>Leggi di più</summary><p>Gli allergeni di ogni piatto sono indicati nella scheda prodotto, alla voce «Allergeni».</p></details>
+  </article>
+  <article>
+    <img src="assets/ph-nigiri-gambero.webp" alt="Nigiri di gambero su piatto bianco" loading="lazy" width="900" height="600">
+    <h3>Punti Hiko a ogni ordine</h3>
+    <p>Ogni 10 € spesi diventano un chicco; con 20 chicchi la box del mese è offerta. I punti valgono sia in consegna sia al ritiro.</p>
+    <details><summary><svg class="hk-ic-s"><use href="#i-plus"/></svg>Leggi di più</summary><p>Basta accedere con la tua email prima di ordinare: niente password, ti mandiamo un link.</p></details>
+  </article>
+</section>
+
+<section class="hk-assure" id="zone" aria-label="Garanzie">
+  <div><svg><use href="#i-fish"/></svg><b>Freschezza garantita</b></div>
+  <div><svg><use href="#i-scooter"/></svg><b>Consegna gratis sopra soglia</b><small id="assureFree">da 30 € in centro</small></div>
+  <div><svg><use href="#i-card"/></svg><b>Pagamento sicuro</b></div>
+  <div><svg><use href="#i-chat"/></svg><b>Assistenza 7 su 7</b></div>
+</section>
+
+<section class="hk-zones" aria-labelledby="zonesTitle">
+  <h2 class="hk-h2" id="zonesTitle">Dove consegniamo</h2>
+  <div class="hk-zones-grid" id="zoneTable"></div>
+</section>
+
+<!-- ============ SHOPS ============ -->
+<section class="hk-shops" id="shop" aria-labelledby="shopTitle">
+  <div class="hk-shops-list">
+    <img class="hk-shops-hero" src="assets/ph-tartare-ardesia.webp" alt="Degustazione di tartare su ardesia" loading="lazy" width="1000" height="668">
+    <h2 class="hk-shops-title" id="shopTitle">I nostri shop</h2>
+    <p class="hk-shops-sub">Cerca un quartiere o consulta la mappa</p>
+    <label class="hk-shops-search"><svg class="hk-ic-s"><use href="#i-pin"/></svg><input id="shopSearch" type="search" placeholder="Cerca" aria-label="Cerca uno shop"><i><svg class="hk-ic-s"><use href="#i-search"/></svg></i></label>
+    <label class="hk-shops-open"><input type="checkbox" id="openOnly"> Solo aperti adesso</label>
+    <ul class="hk-shop-rows" id="shopRows"></ul>
+  </div>
+  <div class="hk-map" id="map">
+    <svg viewBox="0 0 600 560" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Mappa schematica di Verona con i tre shop e le zone di consegna">
+      <rect width="600" height="560" fill="#ecebe6"/>
+      <g class="hk-map-zones">
+        <ellipse class="hk-mz hk-mz-c" cx="300" cy="290" rx="290" ry="250"/>
+        <ellipse class="hk-mz hk-mz-b" cx="300" cy="290" rx="205" ry="175"/>
+        <ellipse class="hk-mz hk-mz-a" cx="292" cy="275" rx="112" ry="96"/>
+      </g>
+      <g fill="none" stroke="#fff" stroke-linecap="round">
+        <path d="M-10 410 C120 380 200 360 330 372 S520 400 610 386" stroke-width="10"/>
+        <path d="M120 -10 C150 120 200 200 250 300 S300 470 280 570" stroke-width="7"/>
+        <path d="M-10 170 C150 190 300 200 610 160" stroke-width="6"/>
+        <path d="M430 -10 C420 130 400 260 460 570" stroke-width="5"/>
+        <path d="M60 520 C200 470 330 470 600 520" stroke-width="5"/>
+      </g>
+      <path class="hk-river" d="M-20 120 C80 110 160 150 190 210 C220 270 170 330 230 360 C300 395 360 330 340 260 C320 190 380 150 450 190 C520 230 560 300 620 300" fill="none" stroke="#bcd3dc" stroke-width="22" stroke-linecap="round"/>
+      <text x="470" y="216" class="hk-map-lbl">Adige</text>
+      <text x="236" y="250" class="hk-map-lbl hk-map-lbl-b">Centro storico</text>
+      <text x="372" y="300" class="hk-map-lbl">Veronetta</text>
+      <text x="168" y="150" class="hk-map-lbl">Borgo Trento</text>
+      <text x="420" y="110" class="hk-map-lbl">Borgo Venezia</text>
+      <text x="200" y="450" class="hk-map-lbl">Borgo Roma</text>
+      <g id="mapPins"></g>
+    </svg>
+    <div class="hk-map-legend"><span><i class="hk-lg-a"></i>Zona A</span><span><i class="hk-lg-b"></i>Zona B</span><span><i class="hk-lg-c"></i>Zona C</span></div>
+    <div class="hk-map-card" id="mapCard" hidden></div>
+  </div>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="hk-foot">
+  <div class="hk-foot-cols">
+    <div>
+      <h3>Assistenza</h3>
+      <p class="hk-foot-strong">Serve una mano?</p>
+      <p>Hai una domanda su un ordine o un allergene? Chiamaci allo 045 000 1188, tutti i giorni dalle 11 alle 23.</p>
+    </div>
+    <div>
+      <h3>Hiko &amp; te</h3>
+      <a href="#shop">I nostri shop</a><a href="#storia">Punti Hiko</a><a href="#carta">Allergeni</a><a href="#storia">Provenienza del pesce</a><a href="#zone">Zone di consegna</a>
+    </div>
+    <div>
+      <h3>Chi siamo</h3>
+      <a href="#storia">La nostra cucina</a><a href="#">Lavora con noi</a><a href="#">Ordini per aziende</a><a href="#">Stampa</a>
+    </div>
+    <div>
+      <h3>Seguici</h3>
+      <a href="#" class="hk-soc"><svg><use href="#i-ig"/></svg>Instagram</a>
+      <a href="#" class="hk-soc"><svg><use href="#i-fb"/></svg>Facebook</a>
+      <a href="#" class="hk-soc"><svg><use href="#i-tt"/></svg>TikTok</a>
+      <form class="hk-news" id="newsForm" novalidate>
+        <label for="newsMail">Le novità, una volta al mese</label>
+        <div><input id="newsMail" type="email" placeholder="La tua email"><button type="submit" aria-label="Iscriviti"><svg><use href="#i-arrow"/></svg></button></div>
+        <small class="hk-news-msg" id="newsMsg" aria-live="polite"></small>
+      </form>
+    </div>
+  </div>
+  <div class="hk-foot-bottom">
+    <span class="hk-foot-logo">hiko</span>
+    <span>Hiko Sushi Delivery S.r.l. · Via Stella 14, 37121 Verona · P.IVA 04812370239 · 045 000 1188</span>
+    <span>Nome, indirizzi e prezzi sono di fantasia.</span>
+    <a href="/templates" target="_top">← Tutti i modelli</a>
+  </div>
+</footer>
+
+<!-- ============ PRODUCT MODAL ============ -->
+<div class="hk-modal" id="prodModal" role="dialog" aria-modal="true" aria-labelledby="pmName" hidden>
+  <div class="hk-modal-scrim" data-close-modal></div>
+  <div class="hk-modal-card">
+    <button class="hk-x hk-modal-x" type="button" data-close-modal aria-label="Chiudi"><svg><use href="#i-close"/></svg></button>
+    <div class="hk-pm-media"><span class="hk-tag" id="pmTag" hidden></span><img id="pmImg" alt=""></div>
+    <div class="hk-pm-body">
+      <div class="hk-pm-scroll">
+        <p class="hk-pm-cat" id="pmCat"></p>
+        <h2 class="hk-pm-name" id="pmName"></h2>
+        <p class="hk-pm-meta" id="pmMeta"></p>
+        <p class="hk-pm-desc" id="pmDesc"></p>
+        <div class="hk-pm-opts" id="pmOpts"></div>
+        <details class="hk-acc"><summary>Ingredienti e sapori<svg class="hk-ic-s"><use href="#i-chev"/></svg></summary><p id="pmIng"></p></details>
+        <details class="hk-acc"><summary>Allergeni<svg class="hk-ic-s"><use href="#i-chev"/></svg></summary><p id="pmAll"></p></details>
+      </div>
+      <div class="hk-pm-foot">
+        <div class="hk-stp" id="pmStp" data-min="1" data-max="20"><button type="button" data-d="-1" aria-label="Meno">−</button><output id="pmQty">1</output><button type="button" data-d="1" aria-label="Più">+</button></div>
+        <button class="hk-add" id="pmAdd" type="button"><span class="hk-add-lbl">Aggiungi · <b id="pmTotal">0,00 €</b></span><svg class="hk-add-tick" viewBox="0 0 24 24"><path d="M6.5 12.5l3.6 3.6L17.5 8.5"/></svg></button>
+      </div>
+      <p class="hk-stp-hint">Tocca per uno · tieni premuto e trascina per andare veloce</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CART DRAWER ============ -->
+<div class="hk-scrim" id="cartScrim" hidden></div>
+<aside class="hk-cart" id="cart" aria-label="Carrello" aria-hidden="true">
+  <div class="hk-cart-head">
+    <h2>Il tuo carrello</h2>
+    <button class="hk-x" id="cartClose" type="button" aria-label="Chiudi il carrello"><svg><use href="#i-close"/></svg></button>
+  </div>
+  <div class="hk-cart-where">
+    <div class="hk-mode hk-mode-sm" role="tablist" aria-label="Modalità" id="cartMode">
+      <i class="hk-mode-pill" aria-hidden="true"></i>
+      <button type="button" role="tab" data-mode="delivery" aria-selected="true">Consegna</button>
+      <button type="button" role="tab" data-mode="pickup" aria-selected="false">Ritiro</button>
+    </div>
+    <div class="hk-cart-dest" id="cartDest"></div>
+  </div>
+  <div class="hk-cart-body" id="cartBody"></div>
+  <div class="hk-cart-foot" id="cartFoot">
+    <div class="hk-free" id="freeBar"><div class="hk-free-track"><i id="freeFill"></i></div><p id="freeTxt"></p></div>
+    <form class="hk-promo-code" id="promoForm" novalidate>
+      <input id="promoInput" type="text" placeholder="Codice sconto" aria-label="Codice sconto" autocapitalize="characters" spellcheck="false">
+      <button type="submit">Applica</button>
+    </form>
+    <p class="hk-promo-msg" id="promoMsg" aria-live="polite"></p>
+    <dl class="hk-sum" id="cartSum"></dl>
+    <p class="hk-cart-warn" id="cartWarn" aria-live="polite"></p>
+    <button class="hk-btn hk-btn-ink hk-btn-full" id="checkoutBtn" type="button">Vai alla cassa</button>
+  </div>
+</aside>
+
+<!-- ============ CHECKOUT STEP SHEET ============ -->
+<div class="hk-co" id="co" role="dialog" aria-modal="true" aria-labelledby="coTitle" hidden>
+  <div class="hk-co-scrim" data-close-co></div>
+  <div class="hk-sheet" id="sheet">
+    <div class="hk-sheet-head">
+      <button class="hk-sheet-back" id="coBack" type="button" aria-label="Indietro"><svg><use href="#i-arrow"/></svg></button>
+      <div><p class="hk-sheet-step" id="coStepLbl">Passo 1 di 3</p><h2 id="coTitle">Quando e dove</h2></div>
+      <div class="hk-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+      <button class="hk-x" type="button" data-close-co aria-label="Chiudi"><svg><use href="#i-close"/></svg></button>
+    </div>
+    <div class="hk-sheet-vp" id="sheetVp">
+      <section class="hk-pane" data-step="0"></section>
+      <section class="hk-pane" data-step="1"></section>
+      <section class="hk-pane" data-step="2"></section>
+    </div>
+    <div class="hk-sheet-foot">
+      <p class="hk-sheet-err" id="coErr" aria-live="assertive"></p>
+      <button class="hk-btn hk-btn-ink hk-btn-full" id="coNext" type="button">Continua</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ RECEIPT ============ -->
+<div class="hk-rc" id="rc" role="dialog" aria-modal="true" aria-label="Ordine confermato" hidden>
+  <div class="hk-rc-rig">
+    <div class="hk-rc-printer"><span>hiko</span><i></i><div class="hk-rc-slot"></div></div>
+    <div class="hk-rc-feed"><div class="hk-rc-paper" id="rcPaper"></div></div>
+    <p class="hk-rc-cap" id="rcCap">Stiamo stampando la comanda…</p>
+    <button class="hk-btn hk-btn-ink hk-rc-done" id="rcDone" type="button">Torna al sito</button>
+  </div>
+</div>
+
+<!-- ============ LOGIN ============ -->
+<div class="hk-modal hk-login" id="login" role="dialog" aria-modal="true" aria-labelledby="loginTitle" hidden>
+  <div class="hk-modal-scrim" data-close-login></div>
+  <form class="hk-login-card" id="loginForm" novalidate>
+    <button class="hk-x hk-modal-x" type="button" data-close-login aria-label="Chiudi"><svg><use href="#i-close"/></svg></button>
+    <h2 id="loginTitle">Accedi</h2>
+    <p>Niente password: ti mandiamo un link di accesso e ritrovi indirizzi, ordini e punti Hiko.</p>
+    <label for="loginMail">Email</label>
+    <input id="loginMail" type="email" placeholder="nome@esempio.it" autocomplete="email">
+    <small class="hk-field-err" id="loginErr"></small>
+    <button class="hk-btn hk-btn-ink hk-btn-full" type="submit">Inviami il link</button>
+    <div class="hk-login-ok" id="loginOk" hidden><svg><use href="#i-check"/></svg><p></p></div>
+  </form>
+</div>
+
+<div class="hk-fly" id="flyLayer" aria-hidden="true"></div>
+<canvas class="hk-burst" id="burst" aria-hidden="true"></canvas>
+<div class="hk-toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

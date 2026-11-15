@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sumi — Banco di sushi omakase · Firenze</title>
+<meta name="description" content="Sumi, banco di sushi omakase a Firenze. Dieci posti, un solo menu, un solo prezzo. Richiesta di prenotazione con conferma telefonica.">
+<meta name="theme-color" content="#0a0908">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Yuji+Boku&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#banco">Salta al contenuto</a>
+
+<!-- ============ HEADER ============ -->
+<header class="hd" id="hd">
+  <div class="hd-top">
+    <a class="hd-mark" href="#top" aria-label="Sumi — torna su"><span class="hd-mark-k">墨</span><span>Sumi</span></a>
+    <div class="hd-cells">
+      <span class="hd-cell hd-status" id="hdStatus" role="status"><i class="dot"></i><span class="js-status-short">—</span></span>
+      <a class="hd-cell hd-tel" href="tel:+390552718840">055 271 8840</a>
+    </div>
+    <button class="hd-burger box-btn" id="burger" type="button" aria-expanded="false" aria-controls="mnav">Menu</button>
+  </div>
+  <nav class="hd-nav" aria-label="Sezioni">
+    <a class="box-btn" href="#top" data-spy="top">Home</a>
+    <a class="box-btn" href="#banco" data-spy="banco">Il banco</a>
+    <a class="box-btn" href="#omakase" data-spy="omakase">Omakase</a>
+    <a class="box-btn" href="#stagioni" data-spy="stagioni">Le stagioni</a>
+    <a class="box-btn" href="#avvisi" data-spy="avvisi">Avvisi</a>
+    <a class="box-btn" href="#domande" data-spy="domande">Domande</a>
+    <a class="box-btn" href="#dove" data-spy="dove">Dove siamo</a>
+    <button class="box-btn box-btn--seal js-open-rq" type="button">Richiesta di prenotazione</button>
+  </nav>
+</header>
+
+<!-- mobile menu -->
+<div class="mnav" id="mnav" hidden>
+  <nav aria-label="Menu">
+    <a class="box-btn" href="#top">Home</a>
+    <a class="box-btn" href="#banco">Il banco</a>
+    <a class="box-btn" href="#omakase">Omakase</a>
+    <a class="box-btn" href="#stagioni">Le stagioni</a>
+    <a class="box-btn" href="#avvisi">Avvisi</a>
+    <a class="box-btn" href="#domande">Domande</a>
+    <a class="box-btn" href="#dove">Dove siamo</a>
+  </nav>
+  <button class="box-btn box-btn--seal js-open-rq" type="button">Richiesta di prenotazione</button>
+  <p class="mnav-meta"><span class="js-status-long">—</span><br><a href="tel:+390552718840">+39 055 271 8840</a></p>
+</div>
+
+<main>
+<!-- ============ HERO ============ -->
+<section class="hero" id="top" aria-label="Sumi, banco di sushi a Firenze">
+  <div class="hero-slides" id="slides">
+    <div class="hs hs--row is-on" data-i="0">
+      <div class="hs-row" aria-hidden="true">
+        <img class="nig" style="--d:0" src="assets/n-branzino.webp" alt="" width="340" height="151" draggable="false">
+        <img class="nig" style="--d:1" src="assets/n-tonno.webp" alt="" width="338" height="137" draggable="false">
+        <span class="nig-gap"></span>
+        <img class="nig" style="--d:2" src="assets/n-anguilla.webp" alt="" width="300" height="117" draggable="false">
+        <img class="nig" style="--d:3" src="assets/n-gambero.webp" alt="" width="368" height="156" draggable="false">
+      </div>
+    </div>
+    <div class="hs hs--photo" data-i="1"><img src="assets/slide-salmone.webp" alt="Due nigiri di trota sul piatto, al buio" draggable="false" loading="lazy"></div>
+    <div class="hs hs--photo" data-i="2"><img src="assets/slide-gambero.webp" alt="Nigiri di gambero su piatto bianco" draggable="false" loading="lazy"></div>
+    <div class="hs hs--photo" data-i="3"><img src="assets/slide-vetro.webp" alt="Sashimi su vetro intagliato" draggable="false" loading="lazy"></div>
+  </div>
+
+  <a class="box-btn hero-news" href="#avvisi">Avvisi <span class="chev" aria-hidden="true">›</span></a>
+
+  <!-- the washi label -->
+  <div class="label" role="img" aria-label="Sumi — sushi, Firenze">
+    <span class="label-city" aria-hidden="true">フィレンツェ</span>
+    <span class="label-name" aria-hidden="true">鮨すみ</span>
+    <svg class="label-seal" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="3" fill="#b3322b"/><rect x="5" y="5" width="30" height="30" rx="1.5" fill="none" stroke="#f3e9dc" stroke-width="1.2"/><text x="20" y="27.5" text-anchor="middle" font-family="Yuji Boku, serif" font-size="19" fill="#f3e9dc">墨</text></svg>
+  </div>
+
+  <div class="hero-foot">
+    <p class="hero-line">Omakase al banco · dieci posti · Firenze</p>
+    <div class="hero-ctas">
+      <button class="box-btn box-btn--light js-open-rq" type="button">Richiesta di prenotazione <span class="chev" aria-hidden="true">›</span></button>
+      <a class="box-btn" href="#omakase">Omakase · € 180</a>
+    </div>
+  </div>
+
+  <div class="hero-ctrl" aria-label="Immagini">
+    <button class="hc-btn" id="hPrev" type="button" aria-label="Immagine precedente">‹</button>
+    <span class="hc-count" id="hCount" aria-live="polite">1 / 4</span>
+    <button class="hc-btn" id="hNext" type="button" aria-label="Immagine successiva">›</button>
+  </div>
+  <div class="paper-edge" aria-hidden="true"></div>
+</section>
+
+<!-- ============ IL BANCO (washi) ============ -->
+<section class="washi banco" id="banco">
+  <div class="banco-head">
+    <h2 class="vt js-split" aria-label="Ikkan ikkai — un pezzo, un incontro">一貫一会</h2>
+    <div class="vt-sign" aria-hidden="true"><span>日野 正</span>
+      <svg viewBox="0 0 24 24"><rect x="1" y="1" width="22" height="22" rx="2" fill="#b3322b"/><text x="12" y="17" text-anchor="middle" font-family="Yuji Boku, serif" font-size="13" fill="#f3e9dc">正</text></svg>
+    </div>
+  </div>
+  <p class="banco-gloss">Ikkan ichie — un pezzo, un incontro.</p>
+
+  <figure class="ink-photo">
+    <svg viewBox="0 0 1000 760" role="img" aria-label="Le mani del maestro al banco, foto in bianco e nero sfumata a pennello">
+      <defs>
+        <filter id="dry" x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.003 0.09" numOctaves="3" seed="11" result="t"/>
+          <feDisplacementMap in="SourceGraphic" in2="t" scale="90" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+        <filter id="dry2" x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.004 0.06" numOctaves="3" seed="4" result="t"/>
+          <feDisplacementMap in="SourceGraphic" in2="t" scale="120" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+        <mask id="inkMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="760">
+          <rect width="1000" height="760" fill="#000"/>
+          <path d="M210 120 L700 70 L760 150 L740 600 L640 690 L250 700 L190 620 Z" fill="#fff" filter="url(#dry)"/>
+        </mask>
+      </defs>
+      <path class="ink-stroke" d="M420 170 C560 120 820 110 900 200 L880 560 C820 660 640 700 500 690 L430 520 Z" fill="#141210" filter="url(#dry2)"/>
+      <image href="assets/maestro.webp" x="170" y="60" width="620" height="567" preserveAspectRatio="xMidYMid slice" mask="url(#inkMask)"/>
+    </svg>
+    <figcaption>Al banco, ogni sera. Il maestro Tadashi Hino.</figcaption>
+  </figure>
+
+  <div class="creed-wrap">
+    <p class="creed" id="creed">Riso, aceto, pesce, una mano. Non c'è salsa dietro cui nascondersi: ogni pezzo arriva sul banco e dura il tempo di un respiro. Per questo lo serviamo uno alla volta, nel momento esatto in cui è pronto, e mai un secondo dopo.</p>
+  </div>
+
+  <p class="cards-intro">Pesce scelto ogni mattina, una stagione alla volta. Dieci posti, una sola sera.</p>
+  <div class="cards">
+    <article class="ccard">
+      <a class="ccard-img" href="#omakase"><img src="assets/card-omakase.webp" alt="Due nigiri di trota con lime su piatto bianco" loading="lazy" width="720" height="540"><span class="box-btn box-btn--paper">Scopri <span class="chev">›</span></span></a>
+      <h3>Omakase</h3>
+      <p>Circa diciotto pezzi in un ordine pensato come un unico piatto. Un solo menu, un solo prezzo.</p>
+    </article>
+    <article class="ccard">
+      <a class="ccard-img" href="#stagioni"><img src="assets/card-stagioni.webp" alt="Sashimi di pesce bianco con ghiaccio e ravanello" loading="lazy" width="720" height="540"><span class="box-btn box-btn--paper">Scopri <span class="chev">›</span></span></a>
+      <h3>Le stagioni</h3>
+      <p>Cosa arriva sul banco in autunno, in inverno, in primavera e d'estate — e da dove viene.</p>
+    </article>
+    <article class="ccard">
+      <a class="ccard-img" href="#percorso"><img src="assets/card-maestro.webp" alt="Le mani del maestro mentre impiatta" loading="lazy" width="720" height="540"><span class="box-btn box-btn--paper">Scopri <span class="chev">›</span></span></a>
+      <h3>Il percorso</h3>
+      <p>Sei pezzi di stasera, uno dopo l'altro, nell'ordine in cui li serviamo.</p>
+    </article>
+    <article class="ccard">
+      <a class="ccard-img" href="#avvisi"><img src="assets/card-avvisi.webp" alt="Tempura leggera sotto una campana di bambù" loading="lazy" width="720" height="540"><span class="box-btn box-btn--paper">Scopri <span class="chev">›</span></span></a>
+      <h3>Avvisi</h3>
+      <p>Chiusure, nuove regole per le richieste e tutto ciò che cambia al banco.</p>
+    </article>
+    <article class="ccard">
+      <a class="ccard-img" href="#domande"><img src="assets/card-domande.webp" alt="Due cucchiai di ceramica con uova marinate" loading="lazy" width="720" height="540"><span class="box-btn box-btn--paper">Scopri <span class="chev">›</span></span></a>
+      <h3>Domande</h3>
+      <p>Allergie, bambini, durata della cena, come si mangia un nigiri. Le risposte brevi.</p>
+    </article>
+    <article class="ccard">
+      <a class="ccard-img" href="#dove"><img src="assets/card-banco.webp" alt="Il banco in legno chiaro con dieci posti apparecchiati" loading="lazy" width="720" height="530"><span class="box-btn box-btn--paper">Scopri <span class="chev">›</span></span></a>
+      <h3>Dove siamo</h3>
+      <p>Via dei Neri, a due passi dagli Uffizi. Orari, giorni di chiusura, telefono.</p>
+    </article>
+  </div>
+</section>
+
+<!-- ============ OMAKASE ============ -->
+<section class="washi omakase" id="omakase">
+  <div class="sec-title">
+    <h2>Omakase</h2>
+    <span class="sec-jp" aria-hidden="true">お品書き</span>
+  </div>
+  <figure class="framed"><img src="assets/menu-box.webp" alt="Sashimi e nigiri disposti in una scatola di legno" loading="lazy" width="1000" height="667"></figure>
+  <p class="omk-intro">Al banco non c'è una carta. Il maestro decide l'ordine dei pezzi e li serve uno alla volta, davanti a voi, come le portate di un unico menu: prima il pesce bianco, poi il tonno, poi i crostacei e le uova, per finire con il grongo e il tamago.</p>
+
+  <div class="price-wrap">
+    <div class="price-card">
+      <div class="bar">Omakase · circa 18 pezzi</div>
+      <p class="price"><span>€</span>180<small>a persona</small></p>
+      <p class="price-note">Un solo menu, un solo prezzo, uguale per tutti al banco. Il percorso cambia con il mercato, il prezzo no.</p>
+      <p class="price-rule">※ Disdette: dal settimo giorno prima della data addebitiamo € 90 a persona.</p>
+      <div class="bar">Da bere</div>
+      <p class="drinks">Sake freddo e caldo · birra giapponese · tè verde</p>
+      <p class="price-rule">※ Bevande a parte. Accettiamo tutte le principali carte di credito.</p>
+    </div>
+    <figure class="price-photo"><img src="assets/slide-gambero.webp" alt="" loading="lazy"></figure>
+  </div>
+</section>
+
+<!-- ============ IL PERCORSO (scroll-scrubbed) ============ -->
+<section class="pc" id="percorso" aria-label="Il percorso di stasera, sei pezzi">
+  <div class="pc-track" id="pcTrack">
+    <div class="pc-stage" id="pcStage">
+      <p class="pc-eyebrow">Il percorso di stasera</p>
+      <div class="pc-pieces" id="pcPieces"></div>
+      <div class="pc-text" id="pcText" aria-live="polite"></div>
+      <div class="pc-rail" aria-hidden="true"><i id="pcRail"></i></div>
+      <p class="pc-count" aria-hidden="true"><span id="pcNum">01</span> / 06</p>
+      <p class="pc-cue" id="pcCue" aria-hidden="true">Scorri — un pezzo alla volta</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LE STAGIONI (hover-tinted list) ============ -->
+<section class="washi st" id="stagioni">
+  <div class="st-head">
+    <h2 class="vt vt--sm js-split" aria-label="Shiki — le quattro stagioni">四季の握り</h2>
+    <div>
+      <div class="sec-title sec-title--left"><h2>Le stagioni</h2></div>
+      <p class="st-sub" id="stSub">Esempio di percorso d'autunno (cambia con il mercato)</p>
+      <div class="st-tabs" role="tablist" aria-label="Stagione">
+        <button class="box-btn box-btn--ink" role="tab" data-season="autunno" type="button">Autunno</button>
+        <button class="box-btn box-btn--ink" role="tab" data-season="inverno" type="button">Inverno</button>
+        <button class="box-btn box-btn--ink" role="tab" data-season="primavera" type="button">Primavera</button>
+        <button class="box-btn box-btn--ink" role="tab" data-season="estate" type="button">Estate</button>
+      </div>
+    </div>
+  </div>
+  <div class="st-body">
+    <ol class="st-list" id="stList" role="tabpanel" aria-labelledby=""></ol>
+    <aside class="st-side" aria-live="polite">
+      <div class="st-card" id="stCard"><div class="st-card-in" id="stCardIn"></div></div>
+      <p class="st-jp" id="stJp"></p>
+      <p class="st-note" id="stNote"></p>
+      <p class="st-from" id="stFrom"></p>
+    </aside>
+  </div>
+  <p class="st-foot">Nessun prezzo per pezzo: tutto è compreso nell'omakase da € 180.</p>
+</section>
+
+<!-- ============ AVVISI (black) ============ -->
+<section class="ink avvisi" id="avvisi">
+  <div class="sec-title sec-title--dark"><h2>Avvisi</h2><span class="sec-jp" aria-hidden="true">お知らせ</span></div>
+  <article class="notice">
+    <h3>Chiusura d'inverno</h3>
+    <p>Il banco resta chiuso dal 24 dicembre al 7 gennaio compresi. Le richieste per gennaio si aprono il 1° dicembre. Grazie a chi ci ha fatto compagnia quest'anno.</p>
+  </article>
+  <article class="notice">
+    <h3>Come accettiamo le prenotazioni</h3>
+    <p>Riceviamo richieste online e per telefono. Una richiesta diventa prenotazione solo dopo una nostra telefonata di conferma. Non accettiamo prenotazioni fatte da terzi per rivenderle: il nome sulla richiesta deve essere quello di chi siede al banco, e all'arrivo potremmo chiedere un documento.</p>
+    <div class="notice-ctas">
+      <button class="box-btn js-open-rq" type="button">Richiesta di prenotazione <span class="chev">›</span></button>
+      <a class="box-btn box-btn--light" href="tel:+390552718840">☎ 055 271 8840</a>
+    </div>
+    <p class="notice-small">※ Telefonate fuori dagli orari di servizio, per favore: durante il servizio il maestro è al banco.</p>
+  </article>
+  <article class="notice">
+    <h3>Orari di servizio</h3>
+    <ul class="hours-icons">
+      <li><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="currentColor"/><g stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M10 1.8v2.4M10 15.8v2.4M1.8 10h2.4M15.8 10h2.4M4.2 4.2l1.7 1.7M14.1 14.1l1.7 1.7M4.2 15.8l1.7-1.7M14.1 5.9l1.7-1.7"/></g></svg>Pranzo · mar–sab · 12:30 – 14:30</li>
+      <li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M13.5 15.2A6.6 6.6 0 0 1 8.3 3a6.6 6.6 0 1 0 8.4 9.6 6.5 6.5 0 0 1-3.2 2.6z" fill="currentColor"/></svg>Cena · mar–gio · 19:00 – 23:00 · ven–sab fino alle 00:30</li>
+    </ul>
+  </article>
+</section>
+
+<!-- ============ DOMANDE ============ -->
+<section class="washi faq" id="domande">
+  <div class="sec-title"><h2>Domande</h2><span class="sec-jp" aria-hidden="true">よくあるご質問</span></div>
+  <div class="faq-list">
+    <details class="qa"><summary>Posso scegliere i pezzi?</summary><p>No: al banco si mangia solo l'omakase. Ditecelo però se qualcosa non vi piace o non potete mangiarlo — lo segnaliamo al maestro prima del servizio.</p></details>
+    <details class="qa"><summary>Ho un'allergia. Come faccio?</summary><p>Indicatela nella richiesta. Il menu è a base di pesce crudo e frutti di mare: crostacei, molluschi e glutine (nella salsa di soia) si possono evitare, il pesce crudo no. Non prepariamo un percorso vegetariano.</p></details>
+    <details class="qa"><summary>Quanto dura la cena?</summary><p>Circa un'ora e un quarto. Il servizio delle 19:00 finisce verso le 20:30, perché alle 21:15 il banco si riapparecchia.</p></details>
+    <details class="qa"><summary>Come si mangia un nigiri?</summary><p>Subito, appena posato davanti a voi, in un solo boccone. Con le mani va benissimo. Il pesce è già condito: non serve altra salsa.</p></details>
+    <details class="qa"><summary>Posso prenotare per un amico?</summary><p>Sì, se venite insieme. Non accettiamo richieste a nome di altri da parte di agenzie o rivenditori: il nome indicato deve essere di chi siede al banco.</p></details>
+    <details class="qa"><summary>Bambini?</summary><p>Dai 12 anni in su, con lo stesso percorso degli adulti. Il banco ha dieci sgabelli alti e nessun seggiolone.</p></details>
+  </div>
+</section>
+
+<!-- ============ DOVE SIAMO ============ -->
+<section class="washi dove" id="dove">
+  <div class="sec-title"><h2>Dove siamo</h2><span class="sec-jp" aria-hidden="true">店舗のご案内</span></div>
+  <div class="dove-grid">
+    <div class="dove-info">
+      <h3 class="dove-name">Sumi · Firenze</h3>
+      <dl>
+        <dt>«Indirizzo»</dt><dd>Via dei Neri 27r, 50122 Firenze<br><small>Portone di legno, campanello «Sumi». Scendere tre gradini.</small></dd>
+        <dt>«Orari»</dt><dd>Pranzo 12:30 – 14:30 (mar–sab)<br>Cena 19:00 – 23:00 (mar–gio)<br>Cena 19:00 – 00:30 (ven–sab)</dd>
+        <dt>«Giorni di chiusura»</dt><dd>Domenica, lunedì, 24 dicembre – 7 gennaio, due settimane ad agosto</dd>
+        <dt>«Telefono per le richieste»</dt><dd><a href="tel:+390552718840">+39 055 271 8840</a><br><small>※ Fuori dagli orari di servizio, per favore.</small></dd>
+      </dl>
+      <div class="live" id="live">
+        <p class="live-now"><i class="dot"></i><span class="js-status-long">—</span></p>
+        <table class="week" id="week" aria-label="Orari della settimana"></table>
+      </div>
+    </div>
+    <figure class="dove-photo"><img src="assets/banco.webp" alt="Il banco in legno chiaro, dieci posti, luce dalle finestre" loading="lazy" width="1500" height="813"><figcaption>Il banco, dieci posti in legno di cipresso.</figcaption></figure>
+  </div>
+  <figure class="inkmap" aria-label="Mappa: Via dei Neri, tra gli Uffizi e Santa Croce, a nord dell'Arno">
+    <svg viewBox="0 0 1000 320" aria-hidden="true">
+      <defs><filter id="mapInk"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter></defs>
+      <g filter="url(#mapInk)" fill="none" stroke="#1b1815" stroke-linecap="round">
+        <path d="M-10 250 C 180 236 300 262 470 246 S 760 218 1010 238" stroke-width="22" stroke-opacity=".14"/>
+        <path d="M-10 250 C 180 236 300 262 470 246 S 760 218 1010 238" stroke-width="1.2" stroke-opacity=".55"/>
+        <path d="M120 40 L 160 300" stroke-width="2"/>
+        <path d="M60 140 L 960 118" stroke-width="2.4"/>
+        <path d="M380 30 L 400 236" stroke-width="1.6"/>
+        <path d="M560 20 L 548 232" stroke-width="1.6"/>
+        <path d="M300 186 C 420 180 600 170 820 150" stroke-width="3.2"/>
+        <path d="M760 40 L 790 226" stroke-width="1.6"/>
+      </g>
+      <g font-family="Cormorant Garamond, serif" font-size="15" fill="#1b1815" fill-opacity=".7" font-style="italic">
+        <text x="70" y="226">Arno</text>
+        <text x="610" y="106">Borgo dei Greci</text>
+        <text x="560" y="168">Via dei Neri</text>
+        <text x="300" y="80">Piazza della Signoria</text>
+        <text x="300" y="276">Ponte alle Grazie →</text>
+        <text x="810" y="96">Santa Croce</text>
+      </g>
+      <g transform="translate(486 159)">
+        <rect x="-12" y="-12" width="24" height="24" rx="2" fill="#b3322b"/>
+        <text x="0" y="6" text-anchor="middle" font-family="Yuji Boku, serif" font-size="15" fill="#f3e9dc">墨</text>
+      </g>
+    </svg>
+    <figcaption>Tra Piazza della Signoria e Santa Croce. Parcheggio più vicino: Lungarno della Zecca.</figcaption>
+  </figure>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="ft">
+  <div class="ft-grid">
+    <div class="ft-brand">
+      <div class="label label--sm" role="img" aria-label="Sumi">
+        <span class="label-city" aria-hidden="true">フィレンツェ</span>
+        <span class="label-name" aria-hidden="true">鮨すみ</span>
+        <svg class="label-seal" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="3" fill="#b3322b"/><text x="20" y="27.5" text-anchor="middle" font-family="Yuji Boku, serif" font-size="19" fill="#f3e9dc">墨</text></svg>
+      </div>
+      <p class="ft-title">Firenze · Sumi · banco di sushi</p>
+    </div>
+    <div class="ft-col">
+      <p class="ft-ico"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5a6 6 0 0 0-6 6c0 4.6 6 11 6 11s6-6.4 6-11a6 6 0 0 0-6-6zm0 8.2a2.2 2.2 0 1 1 0-4.4 2.2 2.2 0 0 1 0 4.4z" fill="currentColor"/></svg>Via dei Neri 27r<br>50122 Firenze</p>
+      <p class="ft-k">«Richieste al telefono»</p>
+      <p class="ft-ico"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.2 2.5l2.6 3.4-1.6 2a10 10 0 0 0 5.9 5.9l2-1.6 3.4 2.6-1.4 2.7C10 17.2 2.8 10 3.1 3.9z" fill="currentColor"/></svg><a href="tel:+390552718840">055 271 8840</a></p>
+      <p class="ft-k">«Orari»</p>
+      <p class="ft-ico"><span class="ico-txt" aria-hidden="true">☀</span>12:30 – 14:30</p>
+      <p class="ft-ico"><span class="ico-txt" aria-hidden="true">☾</span>19:00 – 23:00 · ven–sab 00:30</p>
+      <button class="box-btn js-open-rq" type="button">Come prenotare <span class="chev">›</span></button>
+    </div>
+    <div class="ft-col">
+      <p class="ft-k">«Social»</p>
+      <ul class="ft-social">
+        <li><a href="#" aria-label="Instagram"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="2.5" width="15" height="15" rx="4.2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="10" r="3.4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="14.6" cy="5.4" r="1" fill="currentColor"/></svg>sumi.firenze</a></li>
+        <li><a href="#" aria-label="Facebook"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M11.2 18v-6.6h2.3l.4-2.7h-2.7V7c0-.8.3-1.3 1.4-1.3h1.4V3.3c-.3 0-1.1-.1-2-.1-2 0-3.4 1.2-3.4 3.5v2H6.4v2.7h2.2V18z" fill="currentColor"/></svg>Sumi Firenze</a></li>
+      </ul>
+      <p class="ft-small">※ Non inviamo mai link di pagamento via SMS o e-mail. Se ricevete un messaggio a nostro nome che chiede un pagamento, non apritelo.</p>
+    </div>
+  </div>
+  <div class="ft-bottom">
+    <a href="/templates" target="_top">← Tutti i modelli</a>
+    <span>Privacy</span><span>Note legali</span>
+    <span>© 2026 Sumi S.r.l. · P.IVA 07418290481</span>
+    <span class="ft-fantasy">Nome, indirizzi e prezzi sono di fantasia.</span>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" type="button" aria-label="Torna su"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18V6M6.5 11.5 12 6l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+
+<!-- ============ RICHIESTA DI PRENOTAZIONE ============ -->
+<div class="rq" id="rq" hidden>
+  <div class="rq-scrim" data-close></div>
+  <div class="rq-sheet" role="dialog" aria-modal="true" aria-labelledby="rqTitle">
+    <button class="rq-x" type="button" data-close aria-label="Chiudi">×</button>
+    <div class="rq-form-view" id="rqFormView">
+      <p class="rq-jp" aria-hidden="true">ご予約のお願い</p>
+      <h2 id="rqTitle">Richiesta di prenotazione</h2>
+      <p class="rq-lead">Questa è una <b>richiesta</b>, non ancora una prenotazione: vi richiamiamo entro 24 ore (giorni di apertura) per confermare. Omakase a prezzo fisso, <b>€ 180 a persona</b>, bevande escluse.</p>
+      <form id="rqForm" novalidate>
+        <fieldset class="rq-f">
+          <legend>Data</legend>
+          <div class="cal" id="cal"></div>
+          <p class="rq-err" data-err="date"></p>
+        </fieldset>
+        <fieldset class="rq-f">
+          <legend>Servizio</legend>
+          <div class="slots" id="slots">
+            <label class="slot"><input type="radio" name="slot" value="pranzo"><span>Pranzo<b>12:30</b></span></label>
+            <label class="slot"><input type="radio" name="slot" value="cena1"><span>Cena<b>19:00</b></span></label>
+            <label class="slot"><input type="radio" name="slot" value="cena2"><span>Cena<b>21:15</b></span></label>
+          </div>
+          <p class="rq-err" data-err="slot"></p>
+        </fieldset>
+        <fieldset class="rq-f rq-f--row">
+          <legend>Persone</legend>
+          <div class="stepper">
+            <button type="button" id="pMinus" aria-label="Una persona in meno">−</button>
+            <output id="pOut" aria-live="polite">2</output>
+            <button type="button" id="pPlus" aria-label="Una persona in più">+</button>
+          </div>
+          <p class="rq-hint" id="pHint">€ 360 in totale, bevande escluse. Oltre 6 persone: telefonateci.</p>
+        </fieldset>
+        <fieldset class="rq-f">
+          <legend>Allergie o intolleranze</legend>
+          <div class="al-choice">
+            <label class="slot slot--sm"><input type="radio" name="allergy" value="no"><span>Nessuna</span></label>
+            <label class="slot slot--sm"><input type="radio" name="allergy" value="si"><span>Sì, le indico</span></label>
+          </div>
+          <div class="al-more" id="alMore" hidden>
+            <div class="chips">
+              <label class="chip"><input type="checkbox" name="al" value="Crostacei"><span>Crostacei</span></label>
+              <label class="chip"><input type="checkbox" name="al" value="Molluschi"><span>Molluschi</span></label>
+              <label class="chip"><input type="checkbox" name="al" value="Glutine / soia"><span>Glutine / soia</span></label>
+              <label class="chip"><input type="checkbox" name="al" value="Sesamo"><span>Sesamo</span></label>
+              <label class="chip"><input type="checkbox" name="al" value="Gravidanza"><span>Gravidanza</span></label>
+            </div>
+            <textarea id="alText" rows="2" maxlength="240" placeholder="Altro? Scrivetelo qui (es. niente uova di pesce)"></textarea>
+          </div>
+          <p class="rq-hint">Il menu è a base di pesce crudo: non prepariamo un percorso vegetariano.</p>
+          <p class="rq-err" data-err="allergy"></p>
+        </fieldset>
+        <div class="rq-two">
+          <label class="fld"><span>Nome e cognome</span><input id="fName" autocomplete="name" maxlength="80"><em class="rq-err" data-err="name"></em></label>
+          <label class="fld"><span>Telefono</span><input id="fTel" type="tel" autocomplete="tel" inputmode="tel" placeholder="+39 …" maxlength="24"><em class="rq-err" data-err="tel"></em></label>
+        </div>
+        <label class="fld"><span>E-mail <small>(facoltativa)</small></span><input id="fMail" type="email" autocomplete="email" maxlength="120"><em class="rq-err" data-err="mail"></em></label>
+        <label class="agree"><input type="checkbox" id="fAgree"><span>Ho capito che il prezzo è fisso (€ 180 a persona, bevande escluse), che la richiesta diventa prenotazione solo dopo la vostra telefonata e che il nome deve essere di chi siede al banco.</span></label>
+        <p class="rq-err" data-err="agree"></p>
+        <div class="rq-actions">
+          <button class="box-btn box-btn--ghost" type="button" data-close>Annulla</button>
+          <button class="box-btn box-btn--seal" type="submit">Invia la richiesta <span class="chev">›</span></button>
+        </div>
+      </form>
+    </div>
+
+    <div class="rq-done" id="rqDone" hidden>
+      <div class="slip-rig">
+        <div class="slip-slot" aria-hidden="true"><i></i></div>
+        <div class="slip-feed"><div class="slip" id="slip"></div></div>
+      </div>
+      <p class="slip-cap" id="slipCap" aria-live="polite">Stiamo registrando la richiesta…</p>
+      <div class="rq-actions rq-actions--done" id="doneActs">
+        <button class="box-btn box-btn--ghost" type="button" id="rqAgain">Nuova richiesta</button>
+        <button class="box-btn box-btn--seal" type="button" data-close>Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

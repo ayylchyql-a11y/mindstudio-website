@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>koyomi · izakaya contemporanea · Torino</title>
+<meta name="description" content="koyomi, izakaya contemporanea a Torino. Due stagioni, due menu: brace e sake caldo d'inverno, crudi e highball d'estate.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Instrument+Serif:ital@0;1&family=Unbounded:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="kz-skip" href="#main">Vai al contenuto</a>
+
+<!-- ============ HEADER ============ -->
+<header class="kz-head" id="head">
+  <a class="kz-mark" href="#top" aria-label="koyomi, torna su">koyomi</a>
+  <nav class="kz-nav" aria-label="Principale">
+    <a href="#stagioni">stagioni</a>
+    <a href="#menu">menu</a>
+    <a href="#eventi">eventi</a>
+    <a href="#serata">orari</a>
+    <a href="#lista" class="kz-serif">la lista</a>
+  </nav>
+  <button class="kz-btn kz-btn--solid kz-head-book" type="button" data-book="table">Prenota</button>
+  <button class="kz-burger" id="burger" type="button" aria-label="Apri il menu" aria-expanded="false" aria-controls="overlay"><i></i><i></i><i></i></button>
+</header>
+
+<!-- full-screen menu -->
+<div class="kz-overlay" id="overlay" hidden>
+  <div class="kz-ov-inner">
+    <nav class="kz-ov-nav" aria-label="Menu a schermo intero">
+      <a href="#stagioni">stagioni</a>
+      <a href="#cucine">le cucine</a>
+      <a href="#menu">menu</a>
+      <a href="#eventi">eventi</a>
+      <a href="#serata">orari &amp; contatti</a>
+      <a href="#lista" class="kz-serif">la lista</a>
+    </nav>
+    <div class="kz-ov-side">
+      <p class="kz-eyebrow">stagione</p>
+      <div class="kz-seg" role="group" aria-label="Scegli la stagione">
+        <button type="button" data-season="estate">estate</button>
+        <button type="button" data-season="inverno">inverno</button>
+      </div>
+      <p class="kz-eyebrow">adesso</p>
+      <p class="kz-status" data-status><span class="kz-dot"></span><span data-status-text>…</span></p>
+      <p class="kz-ov-addr">Via Sant'Agostino 21, Torino<br>+39 011 555 0192</p>
+      <button class="kz-btn kz-btn--solid" type="button" data-book="table">Prenota un tavolo <span class="kz-arr" aria-hidden="true"></span></button>
+      <button class="kz-btn" type="button" data-book="event">Eventi &amp; brunch <span class="kz-arr" aria-hidden="true"></span></button>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- ============ HERO (photo push instead of video) ============ -->
+<section class="kz-hero" id="top" aria-label="koyomi">
+  <div class="kz-hero-media" id="heroMedia" aria-hidden="true"></div>
+  <div class="kz-hero-shade" aria-hidden="true"></div>
+  <div class="kz-hero-copy">
+    <p class="kz-hero-kicker"><span data-season-label>inverno</span> · izakaya contemporanea · torino</p>
+    <h1 class="kz-hero-title" data-split="load">vivi la stagione</h1>
+    <div class="kz-hero-row">
+      <p class="kz-status kz-status--pill" data-status><span class="kz-dot"></span><span data-status-text>…</span></p>
+      <button class="kz-btn kz-btn--solid" type="button" data-book="table">Prenota un tavolo <span class="kz-arr" aria-hidden="true"></span></button>
+      <button class="kz-btn" type="button" data-book="event">Eventi <span class="kz-arr" aria-hidden="true"></span></button>
+    </div>
+  </div>
+  <a class="kz-scrollcue" href="#velluto" aria-label="Scorri giù"><i></i></a>
+</section>
+
+<!-- ============ VELVET: intro + seasons ============ -->
+<section class="kz-velvet" id="velluto">
+  <canvas class="kz-curtain" id="curtain" aria-hidden="true"></canvas>
+
+  <div class="kz-intro" id="intro">
+    <div class="kz-intro-in">
+      <p class="kz-glow" aria-hidden="true">koyomi</p>
+      <h2 class="kz-intro-h">cucina izakaya contemporanea</h2>
+      <p class="kz-intro-p">koyomi vuol dire calendario. due volte l'anno cambiamo menu, luci e musica: d'inverno brace, brodi e sake caldo; d'estate crudi, agrumi e highball in cortile. il banco, la brace e il rumore della sala restano dove sono.</p>
+      <a class="kz-btn" href="#cucine">La storia <span class="kz-arr" aria-hidden="true"></span></a>
+    </div>
+    <!-- liquid lens: a registered copy of the intro, clipped to a leaning glass band -->
+    <div class="kz-lens" id="lens" aria-hidden="true">
+      <div class="kz-lens-scene">
+        <canvas class="kz-curtain kz-curtain--copy" id="curtainCopy"></canvas>
+        <div class="kz-intro-in">
+          <p class="kz-glow">koyomi</p>
+          <p class="kz-intro-h">cucina izakaya contemporanea</p>
+          <p class="kz-intro-p">koyomi vuol dire calendario. due volte l'anno cambiamo menu, luci e musica: d'inverno brace, brodi e sake caldo; d'estate crudi, agrumi e highball in cortile. il banco, la brace e il rumore della sala restano dove sono.</p>
+          <span class="kz-btn">La storia <span class="kz-arr"></span></span>
+        </div>
+      </div>
+    </div>
+    <i class="kz-edge kz-edge--l" id="edgeL" aria-hidden="true"></i>
+    <i class="kz-edge kz-edge--r" id="edgeR" aria-hidden="true"></i>
+  </div>
+
+  <div class="kz-disc" id="stagioni">
+    <div class="kz-disc-head">
+      <h2 class="kz-h2" data-split>scopri le stagioni</h2>
+      <div class="kz-tabs-wrap">
+        <div class="kz-tabs" role="tablist" aria-label="Filtra">
+          <button type="button" role="tab" data-view="nuovo" aria-selected="false">novità</button>
+          <button type="button" role="tab" data-view="stagione" aria-selected="true">stagionale</button>
+          <button type="button" role="tab" data-view="tutto" aria-selected="false">tutto</button>
+        </div>
+        <div class="kz-tabs kz-tabs--sub" id="seasonTabs" role="group" aria-label="Stagione">
+          <button type="button" data-season="estate">Estate</button>
+          <button type="button" data-season="inverno">Inverno</button>
+        </div>
+      </div>
+    </div>
+    <div class="kz-stage" id="showStage">
+      <div class="kz-grid" id="showGrid"></div>
+    </div>
+    <div class="kz-center"><a class="kz-btn" href="#menu">Tutto il menu <span class="kz-arr" aria-hidden="true"></span></a></div>
+  </div>
+</section>
+
+<!-- ============ THREE KITCHENS (scroll-driven scenes) ============ -->
+<section class="kz-kitchens" id="cucine" aria-labelledby="kitH">
+  <div class="kz-kit-intro">
+    <h2 class="kz-h2 kz-h2--c" id="kitH" data-split>izakaya, non ristorante</h2>
+    <p>tre postazioni in una sala sola. si ordina un piatto alla volta, si divide tutto, si resta un po' di più. la cucina segue il mercato di Porta Palazzo e il calendario giapponese, non le mode.</p>
+  </div>
+  <div class="kz-kit-track" id="kitTrack">
+    <div class="kz-kit-stage">
+      <div class="kz-kit-panel" data-i="0"><img src="assets/c-sashimi-box.webp" alt="Sashimi di salmone su stuoia di bambù" width="800" height="533" draggable="false"><div class="kz-kit-veil"></div></div>
+      <div class="kz-kit-panel" data-i="1"><img src="assets/h-tempura.webp" alt="Tempura di gamberi sotto una cupola di bambù" width="1600" height="1067" draggable="false"><div class="kz-kit-veil"></div></div>
+      <div class="kz-kit-panel" data-i="2"><img src="assets/h-uramaki.webp" alt="Uramaki al bancone con luci soffuse" width="1600" height="1067" draggable="false"><div class="kz-kit-veil"></div></div>
+      <div class="kz-kit-caps" id="kitCaps">
+        <div class="kz-kit-cap"><span>01</span><b>il banco</b><i>crudi tagliati davanti a te, otto posti</i></div>
+        <div class="kz-kit-cap"><span>02</span><b>la cucina</b><i>tempura, brodi, ramen di mezzanotte</i></div>
+        <div class="kz-kit-cap"><span>03</span><b>il bar</b><i>sake, highball, vermouth di torino</i></div>
+      </div>
+      <div class="kz-kit-bar" aria-hidden="true"><i id="kitBar"></i></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MENU ============ -->
+<section class="kz-menu" id="menu" aria-labelledby="menuH">
+  <div class="kz-menu-head">
+    <h2 class="kz-h2" id="menuH" data-split>il menu</h2>
+    <div class="kz-menu-ctrl">
+      <div class="kz-tabs" role="tablist" aria-label="Categorie" id="catTabs"></div>
+      <div class="kz-chips" role="group" aria-label="Filtro stagione" id="menuFilter">
+        <button type="button" data-f="tutto" aria-pressed="true">tutto</button>
+        <button type="button" data-f="stagione" aria-pressed="false">solo <span data-season-label>inverno</span></button>
+        <button type="button" data-f="sempre" aria-pressed="false">tutto l'anno</button>
+      </div>
+    </div>
+  </div>
+  <p class="kz-menu-note" id="menuNote" aria-live="polite"></p>
+  <ul class="kz-dishes" id="dishes"></ul>
+  <p class="kz-menu-foot">Coperto € 3 · i piatti arrivano quando sono pronti, da dividere · allergeni su richiesta al personale</p>
+</section>
+
+<!-- ============ WHAT'S ON ============ -->
+<section class="kz-events" id="eventi" aria-labelledby="evH">
+  <h2 class="kz-h2" id="evH" data-split>cosa succede</h2>
+  <div class="kz-ev-list" id="evList">
+    <article class="kz-ev" data-h="318" tabindex="-1">
+      <div class="kz-ev-info">
+        <p class="kz-eyebrow">ogni venerdì e sabato · 22:30 – 02:00</p>
+        <h3>notte izakaya · dj set</h3>
+        <p>vinili city pop e house giapponese, cucina aperta fino all'una con il menu corto della notte. ingresso libero con prenotazione, solo maggiorenni.</p>
+        <button class="kz-btn kz-btn--solid" type="button" data-book="event:dj">Mettimi in lista <span class="kz-arr" aria-hidden="true"></span></button>
+      </div>
+      <div class="kz-ev-img"><img src="assets/h-nigiri-salmone-2.webp" alt="Nigiri di salmone in sala con luci della sera" loading="lazy" width="1600" height="1067" draggable="false"></div>
+    </article>
+    <article class="kz-ev" data-h="38" tabindex="-1">
+      <div class="kz-ev-info">
+        <p class="kz-eyebrow">ogni domenica · 11:30 – 15:30</p>
+        <h3>brunch della domenica</h3>
+        <p>cinque portate da dividere al centro tavola, tamagoyaki, onigiri alla piastra e un dolce. € 38 a persona, bambini sotto i 10 anni € 18.</p>
+        <button class="kz-btn kz-btn--solid" type="button" data-book="event:brunch">Prenota il brunch <span class="kz-arr" aria-hidden="true"></span></button>
+      </div>
+      <div class="kz-ev-img"><img src="assets/h-tartare-ardesia.webp" alt="Tartare e crudi su ardesia" loading="lazy" width="1600" height="1069" draggable="false"></div>
+    </article>
+    <article class="kz-ev" data-h="190" tabindex="-1" id="evSeasonal">
+      <div class="kz-ev-info">
+        <p class="kz-eyebrow" data-ev-when>ogni giovedì · 20:00</p>
+        <h3 data-ev-title>nabe al banco</h3>
+        <p data-ev-text>pentola di brodo al centro del banco, otto posti, il cuoco serve a giro. finisce con il riso nel brodo.</p>
+        <button class="kz-btn kz-btn--solid" type="button" data-book="event:stagione">Partecipa <span class="kz-arr" aria-hidden="true"></span></button>
+      </div>
+      <div class="kz-ev-img"><img data-ev-img src="assets/c-sashimi-piatto.webp" alt="Piatto di sashimi misto" loading="lazy" width="800" height="533" draggable="false"></div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ PLAN YOUR EVENING ============ -->
+<section class="kz-plan" id="serata" aria-labelledby="planH">
+  <h2 class="kz-h2" id="planH" data-split>organizza la serata</h2>
+  <div class="kz-plan-grid">
+    <div>
+      <h3>dove siamo</h3>
+      <p>Via Sant'Agostino 21<br>10122 Torino · Quadrilatero</p>
+      <p class="kz-muted">5 minuti a piedi da Porta Palazzo, tram 4 fermata Cottolengo</p>
+      <a class="kz-link" href="#">indicazioni</a>
+    </div>
+    <div>
+      <h3>contatti</h3>
+      <p><a class="kz-link" href="#">+39 011 555 0192</a><br><a class="kz-link" href="#">ciao@koyomi-torino.it</a></p>
+      <p class="kz-muted">gruppi oltre 8 persone e sala privata: chiamaci</p>
+    </div>
+    <div class="kz-hours">
+      <h3>orari</h3>
+      <p class="kz-status" data-status><span class="kz-dot"></span><span data-status-text>…</span></p>
+      <table id="hoursTable"><tbody></tbody></table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUOTES on velvet ============ -->
+<section class="kz-quotes" aria-label="Dicono di noi">
+  <canvas class="kz-curtain" id="curtain2" aria-hidden="true"></canvas>
+  <div class="kz-q-in">
+    <div class="kz-q-track" id="qTrack" aria-live="polite">
+      <figure class="kz-q is-on"><blockquote>“si viene per il sake caldo, si resta per il rumore giusto.”</blockquote><figcaption>Marta, ospite del giovedì</figcaption></figure>
+      <figure class="kz-q"><blockquote>“il nigiri al tartufo è la cosa più torinese che abbia mangiato in un ristorante giapponese.”</blockquote><figcaption>Davide, da Asti</figcaption></figure>
+      <figure class="kz-q"><blockquote>“a luglio, il cortile con le lanterne sembra un altro posto.”</blockquote><figcaption>Sofia e Luca</figcaption></figure>
+    </div>
+    <div class="kz-q-nav">
+      <button type="button" id="qPrev" aria-label="Citazione precedente"><span class="kz-arr kz-arr--l"></span></button>
+      <span id="qCount">1 / 3</span>
+      <button type="button" id="qNext" aria-label="Citazione successiva"><span class="kz-arr"></span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LA LISTA ============ -->
+<section class="kz-list" id="lista" aria-labelledby="listH">
+  <img class="kz-list-bg" src="assets/h-gunkan-ikura.webp" alt="" loading="lazy" width="1600" height="1069" draggable="false">
+  <div class="kz-list-in">
+    <h2 class="kz-serif kz-list-h" id="listH">la lista</h2>
+    <p>una mail per stagione: il nuovo menu una settimana prima degli altri, le date dei dj set e i posti al banco per le serate nabe.</p>
+    <form class="kz-list-form" id="listForm" novalidate>
+      <label class="kz-vh" for="listEmail">Email</label>
+      <input id="listEmail" type="email" placeholder="la tua email" autocomplete="email" required>
+      <button class="kz-btn kz-btn--solid" type="submit">Iscriviti <span class="kz-arr" aria-hidden="true"></span></button>
+      <p class="kz-err" id="listErr" role="alert"></p>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="kz-foot">
+  <div class="kz-foot-grid">
+    <div>
+      <a class="kz-mark kz-mark--lg" href="#top">koyomi</a>
+      <p class="kz-muted">izakaya contemporanea<br>Via Sant'Agostino 21, 10122 Torino<br>+39 011 555 0192</p>
+    </div>
+    <div>
+      <ul class="kz-foot-links">
+        <li><a href="#stagioni">stagioni</a></li>
+        <li><a href="#menu">menu</a></li>
+        <li><a href="#eventi">eventi</a></li>
+        <li><a href="#serata">orari</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="kz-eyebrow">social</p>
+      <div class="kz-social">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+        <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M14 3h3a4 4 0 0 0 4 4v3a7 7 0 0 1-4-1.3V15a6 6 0 1 1-6-6v3a3 3 0 1 0 3 3z"/></svg></a>
+        <a href="#" aria-label="Spotify"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M7.5 9.5c3-1 6.5-.7 9 .8M8 12.6c2.5-.7 5.2-.4 7.3.8M8.6 15.4c2-.5 3.9-.3 5.5.6"/></svg></a>
+      </div>
+    </div>
+    <div>
+      <p class="kz-eyebrow">iscriviti alla <span class="kz-serif">lista</span></p>
+      <p class="kz-muted">una mail per stagione, niente di più.</p>
+      <a class="kz-btn kz-btn--solid kz-btn--sm" href="#lista">Iscriviti <span class="kz-arr" aria-hidden="true"></span></a>
+    </div>
+  </div>
+  <div class="kz-foot-legal">
+    <span>© 2026 koyomi izakaya srl · P.IVA 11223340018</span>
+    <span>Nome, indirizzi e prezzi sono di fantasia.</span>
+    <a href="/templates" target="_top">← Tutti i modelli</a>
+  </div>
+</footer>
+
+<!-- ============ BOOKING DIALOG (table / events) ============ -->
+<div class="kz-modal" id="modal" hidden>
+  <div class="kz-modal-bg" data-close></div>
+  <div class="kz-dialog" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <button class="kz-x" type="button" data-close aria-label="Chiudi"><span></span><span></span></button>
+    <h2 class="kz-dlg-h" id="mTitle">prenota</h2>
+    <div class="kz-mtabs" role="tablist" aria-label="Tipo di prenotazione">
+      <button type="button" role="tab" id="tabTable" aria-selected="true" aria-controls="formTable">tavolo</button>
+      <button type="button" role="tab" id="tabEvent" aria-selected="false" aria-controls="formEvent">eventi</button>
+    </div>
+
+    <form class="kz-form" id="formTable" role="tabpanel" aria-labelledby="tabTable" novalidate>
+      <div class="kz-f2">
+        <label class="kz-field"><span>data</span><input type="date" id="tDate" required></label>
+        <label class="kz-field"><span>persone</span>
+          <select id="tPeople" required></select>
+        </label>
+      </div>
+      <p class="kz-err" id="tDateErr"></p>
+      <div class="kz-field"><span>orario</span>
+        <div class="kz-slots" id="tSlots" role="radiogroup" aria-label="Orario"></div>
+      </div>
+      <p class="kz-err" id="tSlotErr"></p>
+      <div class="kz-f2">
+        <label class="kz-field"><span>nome</span><input id="tName" autocomplete="name" required></label>
+        <label class="kz-field"><span>telefono</span><input id="tPhone" type="tel" autocomplete="tel" inputmode="tel" required></label>
+      </div>
+      <label class="kz-field"><span>email</span><input id="tEmail" type="email" autocomplete="email" required></label>
+      <label class="kz-field"><span>note (allergie, occasione)</span><input id="tNotes" maxlength="160"></label>
+      <p class="kz-err" id="tErr" role="alert"></p>
+      <button class="kz-btn kz-btn--solid kz-btn--wide" type="submit">Conferma la prenotazione <span class="kz-arr" aria-hidden="true"></span></button>
+      <p class="kz-small">Teniamo il tavolo 15 minuti. Il lunedì siamo chiusi.</p>
+    </form>
+
+    <form class="kz-form" id="formEvent" role="tabpanel" aria-labelledby="tabEvent" novalidate hidden>
+      <div class="kz-field"><span>evento</span>
+        <div class="kz-evpick" id="evPick" role="radiogroup" aria-label="Evento"></div>
+      </div>
+      <div class="kz-field"><span>data</span>
+        <div class="kz-slots kz-slots--dates" id="eDates" role="radiogroup" aria-label="Data dell'evento"></div>
+      </div>
+      <p class="kz-err" id="eDateErr"></p>
+      <div class="kz-f2">
+        <label class="kz-field"><span>persone</span><select id="ePeople"></select></label>
+        <label class="kz-field"><span>nome</span><input id="eName" autocomplete="name" required></label>
+      </div>
+      <label class="kz-field"><span>email</span><input id="eEmail" type="email" autocomplete="email" required></label>
+      <label class="kz-check" id="eAdultWrap"><input type="checkbox" id="eAdult"> <span>Confermo che tutte le persone hanno almeno 18 anni</span></label>
+      <p class="kz-err" id="eErr" role="alert"></p>
+      <button class="kz-btn kz-btn--solid kz-btn--wide" type="submit">Mettimi in lista <span class="kz-arr" aria-hidden="true"></span></button>
+    </form>
+
+    <div class="kz-done" id="done" hidden>
+      <p class="kz-eyebrow" id="doneKicker">confermato</p>
+      <h3 id="doneTitle">a presto</h3>
+      <p id="doneText"></p>
+      <p class="kz-code" id="doneCode"></p>
+      <button class="kz-btn kz-btn--solid" type="button" data-close>Chiudi</button>
+    </div>
+  </div>
+</div>
+
+<div class="kz-toast" id="toast" role="status" aria-live="polite"></div>
+<i class="kz-ring" id="ring" aria-hidden="true"></i>
+<i class="kz-wash" id="wash" aria-hidden="true"></i>
+
+<script src="app.js"></script>
+</body>
+</html>

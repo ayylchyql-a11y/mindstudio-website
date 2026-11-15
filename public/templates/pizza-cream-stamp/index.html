@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ottofette — Pizzeria a lievito madre · Ravenna</title>
+<meta name="description" content="Ottofette: pizza a lievito madre vivo, 24 ore di fermentazione, tagliata in 8 fette da condividere. Ravenna, Faenza, Forlì, Cesena, Rimini.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=Bebas+Neue&family=Yellowtail&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ink filter shared by every stamp on the page -->
+<svg class="of-defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="ofInk" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4"/>
+      <feComponentTransfer><feFuncA type="table" tableValues="0 .8 .95"/></feComponentTransfer>
+    </filter>
+    <path id="ofArc" d="M14 60 Q100 6 186 60"/>
+  </defs>
+</svg>
+
+<header class="of-head" id="top">
+  <div class="of-head__in">
+    <a class="of-brand" href="#top" aria-label="Ottofette Pizzeria — torna su">
+      <svg viewBox="0 0 200 104" class="of-brand__svg" aria-hidden="true">
+        <text class="of-brand__arc"><textPath href="#ofArc" startOffset="50%" text-anchor="middle">OTTOFETTE</textPath></text>
+        <text class="of-brand__script" x="100" y="80" text-anchor="middle">Pizzeria</text>
+        <text class="of-brand__since" x="100" y="100" text-anchor="middle">LIEVITO MADRE DAL 2011</text>
+      </svg>
+    </a>
+    <nav class="of-nav" aria-label="Principale">
+      <a href="#pizza">La nostra pizza</a>
+      <a href="#madre">Lievito madre</a>
+      <a href="#menu">Menu</a>
+      <a href="#pizzerie">Pizzerie</a>
+      <a href="#news">News</a>
+      <button class="of-btn of-btn--solid" type="button" data-open="prenota">Prenota</button>
+      <button class="of-btn of-btn--line" type="button" data-open="delivery">Delivery <span class="of-cartn" data-cartn hidden>0</span></button>
+    </nav>
+    <button class="of-burger" type="button" aria-label="Apri il menu" aria-expanded="false" aria-controls="ofMob"><i></i><i></i><i></i></button>
+  </div>
+</header>
+
+<div class="of-mob" id="ofMob" hidden>
+  <nav class="of-mob__nav" aria-label="Menu mobile">
+    <a href="#pizza">La nostra pizza</a>
+    <a href="#madre">Lievito madre</a>
+    <a href="#menu">Menu</a>
+    <a href="#news">News</a>
+  </nav>
+  <div class="of-mob__where">
+    <h3>Dove siamo</h3>
+    <ul id="mobStores"></ul>
+  </div>
+  <div class="of-mob__cta">
+    <button class="of-btn of-btn--solid" type="button" data-open="prenota">Prenota</button>
+    <button class="of-btn of-btn--line" type="button" data-open="delivery">Delivery</button>
+  </div>
+</div>
+
+<main>
+  <!-- 1 · HERO -->
+  <section class="of-hero" aria-label="La pizza">
+    <img class="of-hero__img" src="assets/hero.webp" alt="Pizza margherita a lievito madre vista dall'alto, tagliata in fette, su un tagliere di legno" width="1920" height="1066" fetchpriority="high">
+    <div class="of-hero__tag" id="heroTag">
+      <p class="of-hero__kicker"><span class="of-dot" id="heroDot"></span><span id="heroStatus">Ravenna Centro</span></p>
+      <p class="of-hero__line">Lievito madre vivo, 24 ore di riposo, otto fette da passarsi.</p>
+      <div class="of-hero__btns">
+        <button class="of-btn of-btn--solid" type="button" data-open="prenota">Prenota un tavolo</button>
+        <button class="of-btn of-btn--line" type="button" data-open="delivery">Ordina a casa</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · PERCHÉ (pinned, lines stamp in) -->
+  <section class="of-why" id="pizza" aria-labelledby="whyT">
+    <div class="of-why__pin">
+      <div class="of-why__in">
+        <figure class="of-why__art" aria-hidden="true">
+          <svg class="of-draw" id="drawHand" viewBox="0 0 300 300" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <!-- sleeve + hand -->
+            <path style="--i:0" d="M118 4 L124 34"/>
+            <path style="--i:1" d="M184 4 L178 34"/>
+            <path style="--i:2" d="M121 22 L181 22"/>
+            <path style="--i:3" d="M124 34 Q104 44 112 66 L120 78"/>
+            <path style="--i:4" d="M178 34 Q198 44 192 66 L184 78"/>
+            <path style="--i:5" d="M120 78 q4 12 15 6 q5 12 16 5 q5 12 16 4 q6 11 17 -15"/>
+            <path style="--i:6" d="M132 52 q6 6 14 3"/>
+            <!-- lifted slice -->
+            <path style="--i:7" d="M96 84 Q152 60 208 84"/>
+            <path style="--i:8" d="M96 84 L150 196 L208 84"/>
+            <path style="--i:9" d="M106 100 Q152 80 198 100"/>
+            <circle style="--i:10" cx="136" cy="118" r="9"/>
+            <circle style="--i:11" cx="170" cy="126" r="8"/>
+            <circle style="--i:12" cx="150" cy="156" r="7"/>
+            <path style="--i:13" d="M158 104 q10 -4 14 6 q-10 4 -14 -6z"/>
+            <path style="--i:14" d="M122 138 q8 -6 14 2 q-8 6 -14 -2z"/>
+            <!-- cheese strings -->
+            <path style="--i:15" d="M142 186 q-8 16 2 30 q6 10 -2 22"/>
+            <path style="--i:16" d="M156 190 q10 14 0 28 q-6 10 4 20"/>
+            <!-- pizza on the table -->
+            <path style="--i:17" d="M40 246 Q40 216 150 214 Q260 216 262 246 Q260 278 150 280 Q40 278 40 246z"/>
+            <path style="--i:18" d="M58 246 Q60 228 120 226 M182 226 Q244 228 244 246 Q242 266 150 268 Q58 266 58 246"/>
+            <path style="--i:19" d="M120 226 L150 248 L182 226"/>
+            <circle style="--i:20" cx="94" cy="246" r="7"/>
+            <circle style="--i:21" cx="206" cy="250" r="7"/>
+            <circle style="--i:22" cx="150" cy="262" r="5"/>
+            <!-- motion ticks -->
+            <path style="--i:23" d="M74 120 l-18 -6 M70 140 l-20 2 M230 120 l18 -6 M234 140 l20 2"/>
+          </svg>
+        </figure>
+        <div class="of-why__copy">
+          <h2 class="of-why__t" id="whyT">Perché la pizza Ottofette<br>ti resta in mente</h2>
+          <ol class="of-claims" id="claims">
+            <li class="of-claim" data-at=".06"><svg class="of-claim__st" viewBox="0 0 60 60" aria-hidden="true"><g filter="url(#ofInk)"><circle cx="30" cy="30" r="27"/><circle cx="30" cy="30" r="21" class="thin"/><text x="30" y="36">BIO</text></g></svg><span>Grani bio macinati lenti a pietra</span></li>
+            <li class="of-claim" data-at=".22"><svg class="of-claim__st" viewBox="0 0 60 60" aria-hidden="true"><g filter="url(#ofInk)"><circle cx="30" cy="30" r="27"/><circle cx="30" cy="30" r="21" class="thin"/><text x="30" y="36">24H</text></g></svg><span>Un giorno intero di lievitazione naturale</span></li>
+            <li class="of-claim" data-at=".38"><svg class="of-claim__st" viewBox="0 0 60 60" aria-hidden="true"><g filter="url(#ofInk)"><circle cx="30" cy="30" r="27"/><circle cx="30" cy="30" r="21" class="thin"/><text x="30" y="36">KM</text></g></svg><span>Condimenti di stagione, preparati ogni mattina</span></li>
+            <li class="of-claim" data-at=".54"><svg class="of-claim__st" viewBox="0 0 60 60" aria-hidden="true"><g filter="url(#ofInk)"><circle cx="30" cy="30" r="27"/><circle cx="30" cy="30" r="21" class="thin"/><text x="30" y="37" class="big">8</text></g></svg><span>Otto fette, da passare a chi hai accanto</span></li>
+          </ol>
+          <a class="of-why__more" href="#otto">Guarda le 8 fette ↓</a>
+        </div>
+      </div>
+      <ul class="of-awards" id="awards" aria-label="Riconoscimenti">
+        <li class="of-award" data-at=".68">
+          <svg viewBox="0 0 150 70" aria-hidden="true"><g filter="url(#ofInk)" class="o"><path d="M14 46 L26 20 L38 46z M44 46 L56 20 L68 46z M74 46 L86 20 L98 46z"/><text x="56" y="60" class="s">GUIDA PIZZERIE DI ROMAGNA</text><text x="56" y="69" class="s">2026 · TRE MATTARELLI</text></g></svg>
+          <span class="of-sr">Guida Pizzerie di Romagna 2026, tre mattarelli</span>
+        </li>
+        <li class="of-award" data-at=".76">
+          <svg viewBox="0 0 150 70" aria-hidden="true"><g filter="url(#ofInk)" class="o"><rect x="4" y="12" width="44" height="44" rx="3"/><text x="26" y="34" class="w">TOP</text><text x="26" y="48" class="w">30</text><text x="56" y="26" class="s l">TRA LE MIGLIORI</text><text x="56" y="36" class="s l">CATENE ARTIGIANALI</text><text x="56" y="46" class="s l">D'EUROPA · 2025</text></g></svg>
+          <span class="of-sr">Tra le 30 migliori catene artigianali d'Europa, 2025</span>
+        </li>
+        <li class="of-award" data-at=".84">
+          <svg viewBox="0 0 150 70" aria-hidden="true"><g filter="url(#ofInk)" class="g"><rect x="4" y="12" width="44" height="44" rx="3"/><path d="M14 44 q12 -30 26 -22 q-4 20 -26 22z M16 42 l14 -12" class="leaf"/><text x="56" y="26" class="s l">PREMIO</text><text x="56" y="36" class="s l">FORNO SOSTENIBILE</text><text x="56" y="46" class="s l">2024</text></g></svg>
+          <span class="of-sr">Premio Forno Sostenibile 2024</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3 · 8 FETTE (interactive half-and-half pizza) -->
+  <section class="of-otto" id="otto" aria-labelledby="ottoT">
+    <div class="of-otto__in">
+      <div class="of-otto__head">
+        <p class="of-eyebrow">La nostra pizza</p>
+        <h2 id="ottoT">8 fette, 8 gusti</h2>
+        <p class="of-otto__lead">Arriva già tagliata. Qui l'abbiamo composta con una fetta per ogni pizza della carta: tocca una fetta per vedere cosa c'è sopra.</p>
+      </div>
+      <div class="of-otto__stage">
+        <div class="of-otto__pz">
+          <svg class="of-pz" id="pz" viewBox="-310 -310 620 620" role="group" aria-label="Pizza divisa in 8 fette, una per gusto"></svg>
+          <p class="of-otto__hint" id="pzHint">← → per girare</p>
+        </div>
+        <article class="of-slice" id="sliceCard" aria-live="polite">
+          <p class="of-slice__n" id="sliceN">Fetta 1 di 8</p>
+          <h3 class="of-slice__t" id="sliceT">Margherita</h3>
+          <p class="of-slice__d" id="sliceD"></p>
+          <ul class="of-slice__tags" id="sliceTags"></ul>
+          <div class="of-slice__foot">
+            <span class="of-slice__p" id="sliceP">9,00 €</span>
+            <button class="of-btn of-btn--solid" type="button" id="sliceAdd">Ordina intera</button>
+          </div>
+          <div class="of-slice__nav">
+            <button type="button" class="of-round" id="slicePrev" aria-label="Fetta precedente">←</button>
+            <button type="button" class="of-round" id="sliceNext" aria-label="Fetta successiva">→</button>
+            <button type="button" class="of-link" data-open="delivery" data-mista="1">Componi la tua Mista a 8 gusti →</button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · LIEVITO MADRE -->
+  <section class="of-madre" id="madre" aria-labelledby="madreT">
+    <div class="of-madre__card">
+      <figure class="of-madre__art" aria-hidden="true">
+        <svg class="of-draw" id="drawJar" viewBox="0 0 300 300" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path style="--i:0" d="M92 70 Q92 56 106 56 L194 56 Q208 56 208 70 L208 82 Q208 92 196 92 L104 92 Q92 92 92 82z"/>
+          <path style="--i:1" d="M112 56 L112 92 M134 56 L134 92 M156 56 L156 92 M178 56 L178 92"/>
+          <path style="--i:2" d="M100 92 Q86 110 88 140 L88 248 Q88 276 116 276 L184 276 Q212 276 212 248 L212 140 Q214 110 200 92"/>
+          <path style="--i:3" d="M90 168 q14 -18 28 -4 q14 -20 30 -2 q14 -18 30 -2 q14 -16 30 0"/>
+          <circle style="--i:4" cx="118" cy="196" r="6"/>
+          <circle style="--i:5" cx="180" cy="210" r="8"/>
+          <circle style="--i:6" cx="146" cy="244" r="5"/>
+          <circle style="--i:7" cx="112" cy="238" r="4"/>
+          <circle style="--i:8" cx="190" cy="248" r="4"/>
+          <path style="--i:9" d="M132 130 l0 10 M168 130 l0 10"/>
+          <path style="--i:10" d="M134 148 q16 12 32 0"/>
+          <path style="--i:11" d="M88 120 L212 120"/>
+          <path style="--i:12" d="M236 70 q10 -10 0 -20 q-10 -10 0 -20 M60 96 q-8 -8 0 -16 q8 -8 0 -16"/>
+          <path style="--i:13" d="M244 160 l12 0 M250 154 l0 12 M48 200 l10 0 M53 195 l0 10"/>
+        </svg>
+      </figure>
+      <div class="of-madre__id">
+        <p class="of-eyebrow">Lievito madre</p>
+        <h2 id="madreT">Carta d'identità</h2>
+        <dl class="of-idcard">
+          <div><dt>Nome</dt><dd>Teresa</dd></div>
+          <div><dt>Specie</dt><dd>Pasta madre liquida, viva</dd></div>
+          <div><dt>Nata</dt><dd>Marzo 2011, in una cucina di via Mazzini, Ravenna</dd></div>
+          <div><dt>Ingredienti di partenza</dt><dd>farina, acqua, un cucchiaio di miele di millefiori</dd></div>
+          <div><dt>Dieta</dt><dd>due rinfreschi al giorno, anche a Natale</dd></div>
+          <div><dt>Clima ideale</dt><dd>22 °C, niente correnti</dd></div>
+          <div><dt>Segni particolari</dt><dd>profuma di yogurt e mela verde; se la trascuri, si offende</dd></div>
+        </dl>
+        <div class="of-ferm" id="ferm">
+          <div class="of-ferm__bar"><i id="fermBar"></i></div>
+          <p id="fermTxt">L'impasto di stasera sta riposando…</p>
+        </div>
+      </div>
+    </div>
+    <div class="of-madre__more">
+      <div class="of-seg" role="tablist" aria-label="Livello di dettaglio">
+        <button role="tab" type="button" aria-selected="true" aria-controls="madreA" id="madreTabA">Per curiosi</button>
+        <button role="tab" type="button" aria-selected="false" aria-controls="madreB" id="madreTabB">Per fissati</button>
+      </div>
+      <div class="of-madre__panel" role="tabpanel" id="madreA" aria-labelledby="madreTabA">
+        <p>Il lievito madre è un piccolo zoo di lieviti selvatici e batteri lattici che vive in farina e acqua. Lo nutriamo ogni giorno e lui, in cambio, fa crescere l'impasto con calma.</p>
+        <p>Calma vuol dire 24 ore: tempo per spezzare zuccheri e proteine prima che arrivino a te. Per questo la pizza è leggera, il cornicione è alveolato e il giorno dopo non hai sete.</p>
+      </div>
+      <div class="of-madre__panel" role="tabpanel" id="madreB" aria-labelledby="madreTabB" hidden>
+        <p>Impasto diretto con il 18% di madre liquida (idratazione 100%) su farina tipo 1 e una quota di integrale; idratazione finale 72%. Puntata 4 ore a 22 °C, poi staglio a mano in panetti da 230 g e appretto di 20 ore a temperatura controllata.</p>
+        <p>I batteri lattici abbassano il pH a circa 4,2: acido lattico per la morbidezza, un po' di acetico per il profumo. Cottura a 380 °C per 90 secondi in forno a platea refrattaria.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · NEWS -->
+  <section class="of-news" id="news" aria-labelledby="newsT">
+    <div class="of-news__in">
+      <div class="of-news__stamp" id="newsStamp">
+        <svg class="of-news__ring" id="newsRing" viewBox="0 0 200 200" aria-hidden="true">
+          <defs><path id="ofRing" d="M100 100 m-86 0 a86 86 0 1 1 172 0 a86 86 0 1 1 -172 0"/></defs>
+          <g filter="url(#ofInk)"><text><textPath href="#ofRing">APPENA SFORNATE · NOTIZIE DAL FORNO · APPENA SFORNATE · NOTIZIE DAL FORNO ·</textPath></text></g>
+        </svg>
+        <svg class="of-news__disc" viewBox="0 0 200 200" aria-hidden="true">
+          <g filter="url(#ofInk)"><circle cx="100" cy="100" r="72"/><text x="100" y="118" transform="rotate(-8 100 100)">NEWS!</text></g>
+        </svg>
+        <h2 class="of-sr" id="newsT">News</h2>
+      </div>
+      <div class="of-news__railwrap">
+        <div class="of-news__rail" id="newsRail" tabindex="0" aria-label="Notizie, scorri in orizzontale"></div>
+        <div class="of-news__foot">
+          <div class="of-news__dots" id="newsDots" aria-hidden="true"></div>
+          <div class="of-news__arrows">
+            <button class="of-round" type="button" id="newsPrev" aria-label="Notizia precedente">←</button>
+            <button class="of-round" type="button" id="newsNext" aria-label="Notizia successiva">→</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · PIZZERIE (hover-tinted list) -->
+  <section class="of-stores" id="pizzerie" aria-labelledby="storesT">
+    <div class="of-stores__in">
+      <div class="of-stores__left">
+        <h2 id="storesT">Le nostre pizzerie</h2>
+        <p class="of-stores__now" id="storesNow"></p>
+        <ul class="of-stores__list" id="storeList" role="listbox" aria-label="Scegli una pizzeria"></ul>
+      </div>
+      <aside class="of-store" id="storeCard" aria-live="polite">
+        <div class="of-store__art"><svg class="of-draw" id="drawShop" viewBox="0 0 320 220" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg></div>
+        <div class="of-store__body">
+          <p class="of-store__st" id="storeSt"></p>
+          <h3 id="storeName"></h3>
+          <p class="of-store__addr" id="storeAddr"></p>
+          <div class="of-store__hours" id="storeHours"></div>
+          <div class="of-store__btns">
+            <button class="of-btn of-btn--solid" type="button" id="storeBook">Prenota qui</button>
+            <button class="of-btn of-btn--line" type="button" id="storeOrder">Delivery da qui</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 7 · MENU -->
+  <section class="of-menu" id="menu" aria-labelledby="menuT">
+    <div class="of-menu__in">
+      <h2 id="menuT">Menu</h2>
+      <div class="of-tabs" role="tablist" aria-label="Categorie del menu" id="menuTabs"></div>
+      <div class="of-menu__bar">
+        <p class="of-menu__note" id="menuNote">Già tagliate in 8 fette, per assaggiare di tutto.</p>
+        <div class="of-chips" id="menuFilters" aria-label="Filtri">
+          <button type="button" class="of-chip" data-f="veg" aria-pressed="false"><b class="of-leaf"></b> Vegetariane</button>
+          <button type="button" class="of-chip" data-f="vegan" aria-pressed="false"><b class="of-leaf"></b><b class="of-leaf"></b> Vegane</button>
+          <button type="button" class="of-chip" data-f="hot" aria-pressed="false"><b class="of-chili"></b> Piccanti</button>
+        </div>
+      </div>
+      <div class="of-menu__grid" id="menuGrid"></div>
+      <p class="of-menu__empty" id="menuEmpty" hidden>Nessun piatto con questi filtri in questa categoria.</p>
+      <p class="of-menu__legal">Prezzi in euro, servizio incluso. * prodotto abbattuto all'origine. Allergeni: chiedi al personale o guarda l'icona in ogni scheda.</p>
+    </div>
+  </section>
+
+  <!-- 8 · PROMO PRANZO -->
+  <section class="of-promo" aria-labelledby="promoT">
+    <div class="of-promo__art" aria-hidden="true">
+      <svg class="of-draw" id="drawPromo" viewBox="0 0 520 150" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <circle style="--i:0" cx="80" cy="76" r="60"/>
+        <circle style="--i:1" cx="80" cy="76" r="48"/>
+        <path style="--i:2" d="M80 28 L80 124 M32 76 L128 76 M46 42 L114 110 M114 42 L46 110"/>
+        <circle style="--i:3" cx="64" cy="56" r="6"/><circle style="--i:4" cx="102" cy="92" r="6"/><circle style="--i:5" cx="98" cy="54" r="4"/>
+        <path style="--i:6" d="M168 64 l20 0 M178 54 l0 20"/>
+        <path style="--i:7" d="M222 18 L234 136 L282 136 L294 18z"/>
+        <path style="--i:8" d="M226 44 L290 44"/>
+        <circle style="--i:9" cx="250" cy="80" r="4"/><circle style="--i:10" cx="266" cy="104" r="3"/><circle style="--i:11" cx="258" cy="62" r="3"/>
+        <path style="--i:12" d="M284 18 L304 2"/>
+        <path style="--i:13" d="M330 64 l20 0 M340 54 l0 20"/>
+        <path style="--i:14" d="M384 58 L392 126 Q394 136 404 136 L448 136 Q458 136 460 126 L468 58z"/>
+        <path style="--i:15" d="M466 74 q26 0 22 22 q-4 18 -26 16"/>
+        <path style="--i:16" d="M370 140 L482 140"/>
+        <path style="--i:17" d="M408 44 q-8 -10 0 -20 q8 -10 0 -20 M428 44 q-8 -10 0 -20 q8 -10 0 -20 M448 44 q-8 -10 0 -20 q8 -10 0 -20"/>
+      </svg>
+    </div>
+    <h2 id="promoT">Pranzo a 12 €: pizza, bibita e caffè</h2>
+    <p>Dal lunedì al venerdì, 12:00–14:30, in tutte le pizzerie.</p>
+    <button class="of-btn of-btn--solid" type="button" data-open="prenota">Prenota il pranzo</button>
+  </section>
+
+  <!-- 9 · NEWSLETTER -->
+  <section class="of-nl" aria-labelledby="nlT">
+    <div class="of-nl__in">
+      <div class="of-nl__copy">
+        <h2 id="nlT">Iscriviti alla lettera</h2>
+        <p class="of-nl__sub">Una fetta di buone notizie, una volta al mese.</p>
+        <p>Si chiama «Dal forno»: pizze nuove prima che arrivino in carta, serate in pizzeria e un regalo il giorno del tuo compleanno.</p>
+      </div>
+      <form class="of-nl__form" id="nlForm" novalidate>
+        <label><span class="of-sr">Nome</span><input name="nome" placeholder="Nome" autocomplete="given-name" required></label>
+        <label><span class="of-sr">Email</span><input name="email" type="email" placeholder="La tua email" autocomplete="email" required></label>
+        <label><span class="of-sr">Compleanno</span><input name="bday" placeholder="Compleanno (gg/mm)" inputmode="numeric"></label>
+        <label><span class="of-sr">Città</span><select name="citta" required id="nlCity"><option value="">Città*</option></select></label>
+        <label class="of-nl__ok"><input type="checkbox" name="ok" required> <span>Acconsento al trattamento dei dati per ricevere la lettera.</span></label>
+        <button class="of-btn of-btn--ink" type="submit">Iscrivimi</button>
+        <p class="of-nl__err" id="nlErr" role="alert"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="of-foot">
+  <div class="of-foot__in">
+    <div class="of-foot__brand">
+      <svg viewBox="0 0 200 104" class="of-brand__svg of-brand__svg--ink" aria-hidden="true">
+        <text class="of-brand__arc"><textPath href="#ofArc" startOffset="50%" text-anchor="middle">OTTOFETTE</textPath></text>
+        <text class="of-brand__script" x="100" y="80" text-anchor="middle">Pizzeria</text>
+        <text class="of-brand__since" x="100" y="100" text-anchor="middle">LIEVITO MADRE DAL 2011</text>
+      </svg>
+      <p>Ottofette S.r.l.<br>Via Mazzini 41, 48121 Ravenna (RA)<br>Tel. 0544 218 840 · P.IVA 02873140391</p>
+      <div class="of-social">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" class="f"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg></a>
+        <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5M14 3c.5 3 2.5 5 5.5 5"/></svg></a>
+      </div>
+    </div>
+    <div class="of-foot__cols">
+      <div><h4>Ottofette</h4><a href="#pizza">Chi siamo</a><a href="#news">News</a><a href="#pizzerie">Pizzerie</a><a href="#" data-toast="Scrivici a lavoro@ottofette.it">Lavora con noi</a></div>
+      <div><h4>Pizza</h4><a href="#otto">Le 8 fette</a><a href="#madre">Lievito madre</a><a href="#menu">Menu</a></div>
+      <div><h4>Ordina</h4><button type="button" data-open="prenota">Prenota un tavolo</button><button type="button" data-open="delivery">Delivery e asporto</button></div>
+    </div>
+  </div>
+  <div class="of-foot__legal">
+    <a href="/templates" target="_top">← Tutti i modelli</a>
+    <p>Nome, indirizzi e prezzi sono di fantasia.</p>
+  </div>
+</footer>
+
+<!-- PRENOTA modal -->
+<div class="of-modal" id="bkModal" hidden>
+  <div class="of-modal__scrim" data-close></div>
+  <div class="of-modal__box" role="dialog" aria-modal="true" aria-labelledby="bkT">
+    <button class="of-x" type="button" data-close aria-label="Chiudi">×</button>
+    <form id="bkForm" novalidate>
+      <h2 id="bkT">Prenota un tavolo</h2>
+      <ol class="of-steps" id="bkSteps"><li class="on">Pizzeria</li><li>Giorno</li><li>Ora</li><li>Persone</li><li>Tu</li></ol>
+      <fieldset class="of-step" data-step="0">
+        <legend class="of-sr">Pizzeria</legend>
+        <div class="of-pick of-pick--stores" id="bkStores"></div>
+      </fieldset>
+      <fieldset class="of-step" data-step="1" hidden>
+        <legend class="of-sr">Giorno</legend>
+        <div class="of-pick of-pick--days" id="bkDays"></div>
+      </fieldset>
+      <fieldset class="of-step" data-step="2" hidden>
+        <legend class="of-sr">Ora</legend>
+        <div id="bkSlots"></div>
+      </fieldset>
+      <fieldset class="of-step" data-step="3" hidden>
+        <legend class="of-sr">Persone</legend>
+        <div class="of-qty of-qty--big">
+          <button type="button" id="bkMinus" aria-label="Una persona in meno">−</button>
+          <output id="bkPeople">2</output>
+          <button type="button" id="bkPlus" aria-label="Una persona in più">+</button>
+        </div>
+        <p class="of-help" id="bkPeopleHelp">Oltre 12 persone? Chiamaci: organizziamo la tavolata.</p>
+        <label class="of-check"><input type="checkbox" id="bkKids"> Ci serve un seggiolone</label>
+      </fieldset>
+      <fieldset class="of-step" data-step="4" hidden>
+        <legend class="of-sr">I tuoi dati</legend>
+        <label class="of-field"><span>Nome e cognome</span><input id="bkName" autocomplete="name"></label>
+        <label class="of-field"><span>Telefono</span><input id="bkTel" type="tel" inputmode="tel" autocomplete="tel" placeholder="333 123 4567"></label>
+        <label class="of-field"><span>Note (facoltative)</span><input id="bkNote" placeholder="allergie, compleanni…"></label>
+      </fieldset>
+      <p class="of-err" id="bkErr" role="alert"></p>
+      <div class="of-modal__nav">
+        <button class="of-btn of-btn--line" type="button" id="bkBack" hidden>Indietro</button>
+        <p class="of-modal__sum" id="bkSum"></p>
+        <button class="of-btn of-btn--solid" type="submit" id="bkNext">Avanti</button>
+      </div>
+    </form>
+    <div class="of-done" id="bkDone" hidden></div>
+  </div>
+</div>
+
+<!-- DELIVERY drawer -->
+<div class="of-drawer" id="dlDrawer" hidden>
+  <div class="of-modal__scrim" data-close></div>
+  <aside class="of-drawer__box" role="dialog" aria-modal="true" aria-labelledby="dlT">
+    <header class="of-drawer__head">
+      <h2 id="dlT">Delivery &amp; asporto</h2>
+      <button class="of-x" type="button" data-close aria-label="Chiudi">×</button>
+    </header>
+    <div class="of-drawer__body" id="dlBody">
+      <!-- step: where -->
+      <section class="of-dl" data-dl="where">
+        <p class="of-dl__lab">1 · Da quale pizzeria?</p>
+        <div class="of-pick of-pick--stores" id="dlStores"></div>
+        <p class="of-dl__lab">2 · Come?</p>
+        <div class="of-seg of-seg--wide" role="radiogroup" aria-label="Modalità">
+          <button type="button" role="radio" aria-checked="true" data-mode="consegna">Consegna a casa</button>
+          <button type="button" role="radio" aria-checked="false" data-mode="ritiro">Ritiro in pizzeria</button>
+        </div>
+        <label class="of-field" id="dlCapWrap"><span>CAP di consegna</span><input id="dlCap" inputmode="numeric" maxlength="5" placeholder="es. 48121"></label>
+        <p class="of-help" id="dlCapHelp"></p>
+        <p class="of-err" id="dlWhereErr" role="alert"></p>
+        <button class="of-btn of-btn--solid of-btn--block" type="button" id="dlGo">Vai al menu</button>
+      </section>
+      <!-- step: menu -->
+      <section class="of-dl" data-dl="menu" hidden>
+        <button class="of-dl__where" type="button" id="dlWhere"></button>
+        <div class="of-tabs of-tabs--sm" id="dlTabs" role="tablist" aria-label="Categorie"></div>
+        <div id="dlList"></div>
+      </section>
+      <!-- step: mista builder -->
+      <section class="of-dl" data-dl="mista" hidden>
+        <button class="of-link" type="button" id="mxBack">← Torna al menu</button>
+        <h3 class="of-dl__h">Mista a 8 gusti</h3>
+        <p class="of-help">Tocca una fetta, poi scegli il gusto. Prezzo: la media dei gusti + 1,50 €.</p>
+        <svg class="of-pz of-pz--mx" id="mxPz" viewBox="-310 -310 620 620" role="group" aria-label="Le tue 8 fette"></svg>
+        <p class="of-dl__lab" id="mxLab">Fetta 1</p>
+        <div class="of-mx__flav" id="mxFlav"></div>
+        <div class="of-mx__foot">
+          <button type="button" class="of-link" id="mxFill">Tutte uguali a questa</button>
+          <button class="of-btn of-btn--solid" type="button" id="mxAdd">Aggiungi · <span id="mxPrice"></span></button>
+        </div>
+      </section>
+      <!-- step: checkout -->
+      <section class="of-dl" data-dl="checkout" hidden>
+        <button class="of-link" type="button" id="coBack">← Torna al menu</button>
+        <h3 class="of-dl__h">Quasi fatto</h3>
+        <label class="of-field"><span>Nome</span><input id="coName" autocomplete="name"></label>
+        <label class="of-field"><span>Telefono</span><input id="coTel" type="tel" inputmode="tel" autocomplete="tel"></label>
+        <label class="of-field" id="coAddrWrap"><span>Indirizzo e numero civico</span><input id="coAddr" autocomplete="street-address"></label>
+        <label class="of-field"><span>Quando</span><select id="coTime"></select></label>
+        <p class="of-err" id="coErr" role="alert"></p>
+      </section>
+      <section class="of-dl" data-dl="done" hidden><div id="dlDone"></div></section>
+    </div>
+    <footer class="of-cart" id="dlCart" hidden>
+      <ul class="of-cart__list" id="cartList"></ul>
+      <div class="of-cart__free"><i id="cartFreeBar"></i></div>
+      <p class="of-cart__msg" id="cartMsg"></p>
+      <dl class="of-cart__tot">
+        <div><dt>Subtotale</dt><dd id="cartSub">0,00 €</dd></div>
+        <div id="cartFeeRow"><dt>Consegna</dt><dd id="cartFee">2,50 €</dd></div>
+        <div class="tot"><dt>Totale</dt><dd id="cartTot">0,00 €</dd></div>
+      </dl>
+      <button class="of-btn of-btn--solid of-btn--block" type="button" id="cartGo">Vai alla cassa</button>
+    </footer>
+  </aside>
+</div>
+
+<!-- NEWS article dialog -->
+<div class="of-modal" id="nwModal" hidden>
+  <div class="of-modal__scrim" data-close></div>
+  <div class="of-modal__box of-modal__box--art" role="dialog" aria-modal="true" aria-labelledby="nwT">
+    <button class="of-x" type="button" data-close aria-label="Chiudi">×</button>
+    <img id="nwImg" alt="" width="720" height="540">
+    <p class="of-eyebrow" id="nwDate"></p>
+    <h2 id="nwT"></h2>
+    <div id="nwBody"></div>
+  </div>
+</div>
+
+<div class="of-toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

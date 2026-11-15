@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Volta Antica · Pizzeria con camere · Casertavecchia</title>
+<meta name="description" content="Volta Antica, pizzeria con due camere sotto le volte di un palazzo del Seicento a Casertavecchia. Impasti lenti, forno a legna, prenotazioni online.">
+<meta name="theme-color" content="#0f0f0f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,600&family=Inter+Tight:wght@200;300;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ Sidebar (desktop) ============ -->
+<aside class="side" aria-label="Navigazione principale">
+  <a class="side-logo" href="#home" data-go="home" aria-label="Volta Antica, torna all'inizio">
+    <svg class="logo-arch" viewBox="0 0 120 40" aria-hidden="true"><path d="M8 38 V22 A52 52 0 0 1 112 22 V38" fill="none" stroke="currentColor" stroke-width="2"/><path d="M30 38 V26 A30 30 0 0 1 90 26 V38" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".55"/></svg>
+    <span class="logo-caps">VOLTA</span>
+    <span class="logo-script">antica</span>
+  </a>
+
+  <nav class="side-nav">
+    <ul>
+      <li><a href="#home" data-go="home">Home</a></li>
+      <li><a href="#storia" data-go="storia">La storia</a></li>
+      <li><a href="#evidenza" data-go="evidenza">In evidenza</a></li>
+      <li><a href="#sale" data-go="sale">Le sale</a></li>
+      <li><a href="#camere" data-go="camere">Le camere</a></li>
+      <li class="has-sub">
+        <a href="#menu" data-go="menu">Menu</a>
+        <button class="sub-toggle" type="button" aria-expanded="false" aria-controls="sub-menu" aria-label="Apri sottomenu Menu"><i></i></button>
+        <div class="side-sub" id="sub-menu"><ul>
+          <li><a href="#menu" data-go="menu" data-tab="classiche">Classiche</a></li>
+          <li><a href="#menu" data-go="menu" data-tab="degustazione">Degustazione</a></li>
+        </ul></div>
+      </li>
+      <li><a href="#officina" data-go="officina">Officina</a></li>
+      <li><button type="button" class="side-book" data-book="tavolo">Prenota</button></li>
+      <li><a href="#contatti" data-go="contatti">Contatti</a></li>
+    </ul>
+  </nav>
+
+  <div class="side-foot">
+    <p class="status" data-status><i class="status-dot"></i><span class="status-txt">—</span></p>
+    <div class="lang">
+      <button class="lang-btn" type="button" aria-expanded="false" aria-controls="lang-pop"><span class="flag" aria-hidden="true"><i></i><i></i><i></i></span>Italiano</button>
+      <div class="lang-pop" id="lang-pop" role="menu">
+        <button type="button" role="menuitem" data-lang="en">English <small>a breve</small></button>
+      </div>
+    </div>
+    <div class="side-social">
+      <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" class="fill"/></svg></a>
+      <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg></a>
+    </div>
+    <small class="side-copy">© 2026 Volta Antica</small>
+  </div>
+</aside>
+
+<!-- ============ Topbar (mobile) ============ -->
+<header class="top" aria-label="Barra superiore">
+  <a class="top-logo" href="#home" data-go="home" aria-label="Volta Antica">
+    <span class="logo-caps">VOLTA</span><span class="logo-script">antica</span>
+  </a>
+  <span class="top-status" data-status><i class="status-dot"></i><span class="status-txt">—</span></span>
+  <button class="burger" type="button" aria-expanded="false" aria-controls="mnav" aria-label="Apri menu"><i></i><i></i></button>
+</header>
+
+<div class="mnav" id="mnav" aria-hidden="true">
+  <nav>
+    <ul>
+      <li style="--n:0"><a href="#home" data-go="home">Home</a></li>
+      <li style="--n:1"><a href="#storia" data-go="storia">La storia</a></li>
+      <li style="--n:2"><a href="#evidenza" data-go="evidenza">In evidenza</a></li>
+      <li style="--n:3"><a href="#sale" data-go="sale">Le sale</a></li>
+      <li style="--n:4"><a href="#camere" data-go="camere">Le camere</a></li>
+      <li style="--n:5"><a href="#menu" data-go="menu">Menu</a></li>
+      <li style="--n:6"><a href="#officina" data-go="officina">Officina</a></li>
+      <li style="--n:7"><a href="#contatti" data-go="contatti">Contatti</a></li>
+    </ul>
+  </nav>
+  <div class="mnav-cta">
+    <button type="button" class="btn btn-cu" data-book="tavolo">Prenota un tavolo</button>
+    <button type="button" class="btn btn-ghost" data-book="camera">Prenota una camera</button>
+  </div>
+  <p class="mnav-addr">Vico della Torre 7 · Casertavecchia (CE)<br>Mar–Dom 18:30–00:30 · Lunedì chiuso</p>
+</div>
+
+<!-- ============ Right progress rail ============ -->
+<nav class="rail" aria-label="Sezioni della pagina">
+  <div class="rail-track"><i class="rail-fill"></i></div>
+  <ol class="rail-list"></ol>
+</nav>
+
+<main id="main">
+
+  <!-- ===== 1 · HERO (pinned, recomposes on scroll) ===== -->
+  <section class="hero" id="home" data-rail="Home">
+    <div class="hero-pin">
+      <div class="hs-stage">
+        <figure class="hs-img" data-i="0"><img src="assets/hero-pazienza.webp" alt="Mani che lavorano un panetto su un banco di marmo" draggable="false"></figure>
+        <figure class="hs-img" data-i="1"><img src="assets/hero-memoria.webp" alt="Mani infarinate che stendono un disco di pasta" draggable="false"></figure>
+        <figure class="hs-img" data-i="2"><img src="assets/hero-fuoco.webp" alt="Fiamma viva dentro un forno a legna" draggable="false"></figure>
+        <div class="hs-shade"></div>
+      </div>
+
+      <div class="hs-words">
+        <h1 class="hs-word" data-i="0" aria-label="Pazienza"><span class="hw-b" data-split>PAZIEN</span><span class="hw-t" data-split>ZA</span></h1>
+        <p class="hs-word" data-i="1" aria-label="Memoria"><span class="hw-b" data-split>MEMO</span><span class="hw-t" data-split>RIA</span></p>
+        <p class="hs-word" data-i="2" aria-label="Fuoco"><span class="hw-b" data-split>FUO</span><span class="hw-t" data-split>CO</span></p>
+      </div>
+
+      <div class="hs-meta">
+        <span class="hs-count"><b class="hs-cur">01</b> / 03</span>
+        <span class="hs-cap">Impasto a 48 ore · forno a legna · Casertavecchia</span>
+      </div>
+
+      <div class="hs-recap" aria-hidden="true">
+        <span class="eyebrow">Casertavecchia · 401 m s.l.m.</span>
+        <p class="hs-recap-title">Una pizzeria con due camere, sotto le volte di un palazzo del Seicento.</p>
+        <p class="hs-recap-sub">Sedici tavoli, un forno, un vicolo in salita. Si viene per cena, qualcuno resta a dormire.</p>
+      </div>
+
+      <div class="hs-cue" aria-hidden="true"><i></i>Scorri</div>
+    </div>
+  </section>
+
+  <div class="stk-wrap">
+    <!-- ===== 2 · STORIA ===== -->
+    <section class="stk storia" id="storia" data-rail="Storia">
+      <div class="stk-in">
+        <div class="storia-grid">
+          <figure class="storia-img"><img src="assets/storia-mani.webp" alt="Mani che stendono l'impasto sulla farina" loading="lazy" draggable="false"></figure>
+          <div class="storia-txt">
+            <h2 class="h-sec">Nel 2014 nasce Volta Antica</h2>
+            <div class="two-col">
+              <p>Una vecchia stalla del borgo, tre archi di tufo e un forno costruito a mano da un fornaciaio di Piedimonte. All'inizio eravamo in quattro, con un solo impasto e la porta sempre aperta sul vicolo.</p>
+              <p>Oggi le farine arrivano da mulini a pietra della provincia, la pasta riposa due giorni e il menu cambia con l'orto. L'idea è rimasta quella: pochi ingredienti, scelti vicino, cotti bene.</p>
+            </div>
+            <hr class="rule">
+            <a class="link-cu" href="#officina" data-go="officina">L'officina</a>
+          </div>
+        </div>
+      </div>
+      <div class="stk-shade"></div>
+    </section>
+
+    <!-- ===== 3 · IN EVIDENZA ===== -->
+    <section class="stk evidenza" id="evidenza" data-rail="In evidenza">
+      <div class="stk-in">
+        <header class="sec-head center">
+          <span class="eyebrow cu">Dal forno</span>
+          <h2 class="h-sec caps">In evidenza</h2>
+        </header>
+        <div class="ev-wrap">
+          <div class="ev-track" tabindex="0" aria-label="Pizze in evidenza, scorri in orizzontale"></div>
+          <div class="ev-ctrl">
+            <button class="ev-btn" type="button" data-dir="-1" aria-label="Precedente"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+            <span class="ev-count"><b>01</b> / <span>05</span></span>
+            <button class="ev-btn" type="button" data-dir="1" aria-label="Successiva"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="stk-shade"></div>
+    </section>
+
+    <!-- ===== 4 · LE SALE ===== -->
+    <section class="stk sale" id="sale" data-rail="Sale">
+      <div class="stk-in">
+        <div class="sale-head">
+          <span class="eyebrow cu">Le sale</span>
+          <p class="sale-lead">Quattro ambienti per una sola cucina: <b>sotto le volte</b>, accanto al fuoco, davanti al forno o all'aperto sui colli.</p>
+        </div>
+        <div class="sale-grid">
+          <article class="sala" tabindex="0">
+            <img src="assets/sala-volte.webp" alt="Sala con volte in pietra e tavoli apparecchiati" loading="lazy" draggable="false">
+            <div class="sala-txt"><h3>Sotto le volte</h3><p>La sala principale: tre archi di tufo, quaranta coperti, luce bassa.</p></div>
+          </article>
+          <article class="sala" tabindex="0">
+            <img src="assets/pala.webp" alt="Pizza appena sfornata davanti al forno a legna" loading="lazy" draggable="false">
+            <div class="sala-txt"><h3>Banco del forno</h3><p>Sei sgabelli davanti alla bocca del forno. Massimo quattro persone.</p></div>
+          </article>
+          <article class="sala" tabindex="0">
+            <img src="assets/sala-camino.webp" alt="Sala rustica con travi a vista e tavolo lungo" loading="lazy" draggable="false">
+            <div class="sala-txt"><h3>Sala del camino</h3><p>Un tavolo lungo per dodici, su richiesta per cene private e percorsi.</p></div>
+          </article>
+          <article class="sala" tabindex="0">
+            <img src="assets/sala-terrazza.webp" alt="Tavolo su una terrazza illuminata di sera" loading="lazy" draggable="false">
+            <div class="sala-txt"><h3>Terrazza sui Tifatini</h3><p>Aperta da aprile a ottobre, con la pianura che si accende sotto.</p></div>
+          </article>
+        </div>
+      </div>
+      <div class="stk-shade"></div>
+    </section>
+
+    <!-- ===== 5 · CAMERE ===== -->
+    <section class="stk camere" id="camere" data-rail="Camere">
+      <div class="stk-in">
+        <div class="cam-head">
+          <div>
+            <span class="eyebrow cu">Ospitalità</span>
+            <h2 class="h-split"><b>Due camere</b> sopra il forno</h2>
+          </div>
+          <p>All'ultimo piano del palazzo, due stanze arredate con falegnami e fabbri del borgo. Cena giù, si sale a piedi. La colazione la fa il forno la mattina dopo.</p>
+        </div>
+        <div class="cam-grid">
+          <button class="cam-card" type="button" data-room="lanterna">
+            <span class="cam-photo"><img src="assets/camera-lanterna.webp" alt="Camera con letto in legno e lanterne" loading="lazy" draggable="false"></span>
+            <span class="cam-meta"><span class="cam-name">Camera della Lanterna</span><span class="cam-price">da € 140 / notte</span></span>
+            <span class="cam-more">Dettagli <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </button>
+          <button class="cam-card" type="button" data-room="sottotetto">
+            <span class="cam-photo"><img src="assets/camera-sottotetto.webp" alt="Camera mansardata con finestra e letto basso" loading="lazy" draggable="false"></span>
+            <span class="cam-meta"><span class="cam-name">Camera del Sottotetto</span><span class="cam-price">da € 120 / notte</span></span>
+            <span class="cam-more">Dettagli <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </button>
+          <div class="cam-note">
+            <p class="cam-note-big">Cena e camera,<br><b>una sola prenotazione.</b></p>
+            <button class="btn btn-cu" type="button" data-book="camera">Prenota una camera</button>
+          </div>
+        </div>
+      </div>
+      <div class="stk-shade"></div>
+    </section>
+  </div>
+
+  <!-- ===== 6 · MENU ===== -->
+  <section class="menu" id="menu" data-rail="Menu">
+    <div class="menu-in">
+      <header class="menu-head">
+        <div>
+          <span class="eyebrow cu">Volta Antica</span>
+          <h2 class="h-split"><b>Menu</b> della casa</h2>
+        </div>
+        <div class="seg" role="tablist" aria-label="Tipo di menu">
+          <button role="tab" type="button" id="tab-classiche" aria-selected="true" aria-controls="pane-classiche" data-tab="classiche">Classiche</button>
+          <button role="tab" type="button" id="tab-degustazione" aria-selected="false" aria-controls="pane-degustazione" data-tab="degustazione">Degustazione</button>
+          <i class="seg-ink" aria-hidden="true"></i>
+        </div>
+      </header>
+
+      <div class="pane" id="pane-classiche" role="tabpanel" aria-labelledby="tab-classiche">
+        <div class="mf" role="group" aria-label="Filtra per esigenza">
+          <span class="mf-lab">Filtra</span>
+          <button type="button" class="mf-chip" data-f="v" aria-pressed="false"><i class="tg tg-v">V</i>Vegetariano</button>
+          <button type="button" class="mf-chip" data-f="vg" aria-pressed="false"><i class="tg tg-vg">VG</i>Vegano</button>
+          <button type="button" class="mf-chip" data-f="sl" aria-pressed="false"><i class="tg tg-sl">SL</i>Senza lattosio</button>
+          <button type="button" class="mf-chip" data-f="sg" aria-pressed="false"><i class="tg tg-sg">SG</i>Senza glutine</button>
+          <span class="mf-count" aria-live="polite"></span>
+        </div>
+        <div class="acc"></div>
+        <ul class="menu-notes">
+          <li>Coperto € 3 · Impasto senza glutine su richiesta (+ € 3), cotto in teglia separata.</li>
+          <li>Le pizze sono pensate così: se avete allergie ditelo in sala, per il resto fidatevi dell'equilibrio.</li>
+          <li>Alcuni prodotti possono essere abbattuti in casa. Elenco allergeni (Reg. UE 1169/2011) disponibile in sala.</li>
+        </ul>
+      </div>
+
+      <div class="pane" id="pane-degustazione" role="tabpanel" aria-labelledby="tab-degustazione" hidden>
+        <p class="deg-intro">Percorsi serviti per tutto il tavolo, minimo due persone, solo su prenotazione. Le pizze arrivano a spicchi, una alla volta, dal forno al tavolo.</p>
+        <div class="deg-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 7 · OFFICINA ===== -->
+  <section class="officina" id="officina" data-rail="Officina">
+    <div class="off-hero">
+      <img src="assets/officina.webp" alt="Piatti in uscita sul banco della cucina, in bianco e nero" loading="lazy" draggable="false">
+      <p class="off-word" data-split-view aria-label="officina">officina</p>
+      <span class="off-tag">Serate a quattro mani</span>
+    </div>
+    <div class="off-body">
+      <div class="off-txt">
+        <span class="eyebrow cu">Officina</span>
+        <p class="off-lead">Una volta al mese il banco del forno diventa un laboratorio. Invitiamo una cucina diversa — di mare, di montagna, di un'altra regione — e costruiamo insieme un menu attorno all'impasto.</p>
+        <p>Dodici posti, un solo turno alle 20:30, percorso fisso. Si prenota come un tavolo normale, scegliendo la data della serata.</p>
+      </div>
+      <ol class="off-list"></ol>
+    </div>
+  </section>
+
+  <!-- ===== 8 · CTA + FOOTER ===== -->
+  <footer class="foot" id="contatti" data-rail="Contatti">
+    <p class="foot-cta">Pronti per una sera sotto le volte? <button type="button" data-book="tavolo">Prenota ora</button></p>
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <span class="logo-caps">VOLTA</span><span class="logo-script">antica</span>
+        <p class="status" data-status><i class="status-dot"></i><span class="status-txt">—</span></p>
+      </div>
+      <div>
+        <h3 class="foot-h">Orari</h3>
+        <p>Dal martedì alla domenica<br>dalle 18:30 alle 00:30.</p>
+        <hr class="rule thin">
+        <p>Lunedì chiuso.<br>Camere aperte tutti i giorni.</p>
+      </div>
+      <div>
+        <h3 class="foot-h">Dove siamo</h3>
+        <p>Vico della Torre, 7<br>81100 Casertavecchia (CE)</p>
+        <p class="foot-small">Parcheggio libero in piazza del Duomo, 200 m a piedi.</p>
+        <div class="foot-social">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" class="fill"/></svg></a>
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h3 class="foot-h">Contatti</h3>
+        <p>Telefono:<br><b>+39 0823 000 714</b></p>
+        <p>Prenotazioni:<br><b>tavoli@voltaantica.example</b></p>
+        <p>Camere:<br><b>camere@voltaantica.example</b></p>
+      </div>
+    </div>
+    <div class="foot-bar">
+      <a class="back" href="/templates" target="_top">← Tutti i modelli</a>
+      <span>Volta Antica s.r.l. · P.IVA 04XXXXXX061</span>
+      <span>Nome, indirizzi e prezzi sono di fantasia.</span>
+    </div>
+  </footer>
+</main>
+
+<!-- ============ Room drawer sheet ============ -->
+<div class="rd" id="rd" aria-hidden="true">
+  <div class="rd-scrim" data-rd-close></div>
+  <figure class="rd-photo" aria-hidden="true"><img src="assets/camera-lanterna.webp" alt="" draggable="false"><figcaption><span class="rd-lbl">Camera</span><span class="rd-ttl"></span></figcaption></figure>
+  <section class="rd-drawer" role="dialog" aria-modal="true" aria-labelledby="rd-name">
+    <button class="x" type="button" data-rd-close aria-label="Chiudi"><i></i><i></i></button>
+    <h3 id="rd-name" class="rd-name"></h3>
+    <p class="rd-desc"></p>
+    <dl class="rd-kv"></dl>
+    <div class="rd-price"><small>a notte, colazione inclusa</small><span>€ <b class="rd-num">0</b></span></div>
+    <div class="rd-acts">
+      <button class="btn btn-ghost" type="button" data-rd-close>Chiudi</button>
+      <button class="btn btn-cu rd-book" type="button">Prenota questa camera</button>
+    </div>
+  </section>
+</div>
+
+<!-- ============ Booking modal ============ -->
+<div class="bk" id="bk" aria-hidden="true">
+  <div class="bk-scrim" data-bk-close></div>
+  <section class="bk-box" role="dialog" aria-modal="true" aria-labelledby="bk-title">
+    <header class="bk-head">
+      <h2 id="bk-title" class="bk-title">Prenota</h2>
+      <div class="seg seg-sm" role="tablist" aria-label="Cosa vuoi prenotare">
+        <button role="tab" type="button" aria-selected="true" data-bk="tavolo">Tavolo</button>
+        <button role="tab" type="button" aria-selected="false" data-bk="camera">Camera</button>
+        <i class="seg-ink" aria-hidden="true"></i>
+      </div>
+      <button class="x" type="button" data-bk-close aria-label="Chiudi"><i></i><i></i></button>
+    </header>
+
+    <!-- Tavolo -->
+    <form class="bk-form" id="f-tavolo" novalidate>
+      <fieldset class="fs">
+        <legend>Giorno</legend>
+        <div class="days" role="radiogroup" aria-label="Giorno"></div>
+        <p class="err" data-err="day"></p>
+      </fieldset>
+      <div class="row2">
+        <fieldset class="fs">
+          <legend>Persone</legend>
+          <div class="step" data-step="ppl"><button type="button" data-d="-1" aria-label="Meno">−</button><output>2</output><button type="button" data-d="1" aria-label="Più">+</button></div>
+          <p class="hint" data-hint="ppl"></p>
+        </fieldset>
+        <fieldset class="fs">
+          <legend>Sala</legend>
+          <div class="chips" role="radiogroup" aria-label="Sala" data-group="sala"></div>
+          <p class="err" data-err="sala"></p>
+        </fieldset>
+      </div>
+      <fieldset class="fs">
+        <legend>Orario</legend>
+        <div class="chips slots" role="radiogroup" aria-label="Orario" data-group="slot"></div>
+        <p class="err" data-err="slot"></p>
+      </fieldset>
+      <fieldset class="fs">
+        <legend>Menu</legend>
+        <div class="chips" role="radiogroup" aria-label="Menu" data-group="formula"></div>
+        <p class="hint" data-hint="formula"></p>
+      </fieldset>
+      <div class="row2">
+        <label class="fld"><span>Nome e cognome</span><input name="nome" autocomplete="name"><em class="err" data-err="nome"></em></label>
+        <label class="fld"><span>Telefono</span><input name="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="+39 …"><em class="err" data-err="tel"></em></label>
+      </div>
+      <label class="fld"><span>Note <small>(allergie, seggiolone, ricorrenze)</small></span><textarea name="note" rows="2"></textarea></label>
+      <label class="chk"><input type="checkbox" name="privacy"><span>Acconsento al trattamento dei dati per gestire la prenotazione.</span></label>
+      <p class="err" data-err="privacy"></p>
+      <div class="bk-foot">
+        <p class="bk-sum" data-sum="tavolo"></p>
+        <button class="btn btn-cu" type="submit">Conferma il tavolo</button>
+      </div>
+    </form>
+
+    <!-- Camera -->
+    <form class="bk-form" id="f-camera" novalidate hidden>
+      <ol class="steps" aria-label="Passaggi"><li class="on">1 · Soggiorno</li><li>2 · Ospite</li></ol>
+      <div class="cstep" data-cstep="1">
+        <div class="row2">
+          <label class="fld"><span>Check-in</span><input name="in" type="date"><em class="err" data-err="in"></em></label>
+          <label class="fld"><span>Check-out</span><input name="out" type="date"><em class="err" data-err="out"></em></label>
+        </div>
+        <fieldset class="fs">
+          <legend>Camera</legend>
+          <div class="chips" role="radiogroup" aria-label="Camera" data-group="room"></div>
+        </fieldset>
+        <div class="row4">
+          <fieldset class="fs"><legend>Camere</legend><div class="step" data-step="rooms"><button type="button" data-d="-1" aria-label="Meno camere">−</button><output>1</output><button type="button" data-d="1" aria-label="Più camere">+</button></div></fieldset>
+          <fieldset class="fs"><legend>Adulti</legend><div class="step" data-step="adults"><button type="button" data-d="-1" aria-label="Meno adulti">−</button><output>2</output><button type="button" data-d="1" aria-label="Più adulti">+</button></div></fieldset>
+          <fieldset class="fs"><legend>Extra <small>2–12 anni</small></legend><div class="step" data-step="extra"><button type="button" data-d="-1" aria-label="Meno bambini">−</button><output>0</output><button type="button" data-d="1" aria-label="Più bambini">+</button></div></fieldset>
+          <fieldset class="fs"><legend>Culla</legend><label class="sw"><input type="checkbox" name="culla"><span class="sw-ui" aria-hidden="true"></span><span class="sw-t">gratuita</span></label></fieldset>
+        </div>
+        <p class="err" data-err="guests"></p>
+        <div class="tot" aria-live="polite">
+          <div class="tot-lines"></div>
+          <div class="tot-big"><span>Totale</span><b>€ <span class="tot-num">0</span></b></div>
+        </div>
+        <div class="bk-foot">
+          <p class="bk-sum">Cancellazione gratuita fino a 72 ore prima.</p>
+          <button class="btn btn-cu" type="button" data-next>Avanti</button>
+        </div>
+      </div>
+      <div class="cstep" data-cstep="2" hidden>
+        <p class="recap" data-recap></p>
+        <div class="row2">
+          <label class="fld"><span>Nome e cognome</span><input name="cnome" autocomplete="name"><em class="err" data-err="cnome"></em></label>
+          <label class="fld"><span>Email</span><input name="cmail" type="email" autocomplete="email"><em class="err" data-err="cmail"></em></label>
+        </div>
+        <div class="row2">
+          <label class="fld"><span>Telefono</span><input name="ctel" type="tel" inputmode="tel" autocomplete="tel"><em class="err" data-err="ctel"></em></label>
+          <label class="fld"><span>Arrivo previsto</span>
+            <select name="arrivo"><option>15:00–17:00</option><option>17:00–19:00</option><option>19:00–21:00</option><option>dopo le 21:00</option></select>
+          </label>
+        </div>
+        <label class="chk"><input type="checkbox" name="cena"><span>Tenetemi un tavolo in pizzeria la prima sera (20:30).</span></label>
+        <label class="chk"><input type="checkbox" name="cprivacy"><span>Acconsento al trattamento dei dati per gestire il soggiorno.</span></label>
+        <p class="err" data-err="cprivacy"></p>
+        <div class="bk-foot">
+          <button class="btn btn-ghost" type="button" data-back>Indietro</button>
+          <button class="btn btn-cu" type="submit">Conferma il soggiorno</button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Success -->
+    <div class="bk-ok" hidden>
+      <svg class="ok-arch" viewBox="0 0 120 70" aria-hidden="true"><path d="M10 68 V40 A50 50 0 0 1 110 40 V68" fill="none" stroke="currentColor" stroke-width="2"/><path d="M40 44 l14 14 l28 -28" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h3 class="ok-t">Ci vediamo sotto le volte.</h3>
+      <p class="ok-s"></p>
+      <p class="ok-code"></p>
+      <button class="btn btn-ghost" type="button" data-bk-close>Chiudi</button>
+    </div>
+  </section>
+</div>
+
+<div class="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

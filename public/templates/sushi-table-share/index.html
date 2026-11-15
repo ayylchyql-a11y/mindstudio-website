@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hibana · sushi &amp; robata · Bologna</title>
+<meta name="description" content="Hibana, sushi e spiedini alla brace a Bologna. Una tavola piena, tutto in mezzo. Prenota un tavolo o ordina da asporto.">
+<meta name="theme-color" content="#2b1e17">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=Cormorant+Garamond:ital,wght@1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ================= HEADER (desktop pills) ================= -->
+<header class="hb-head" id="head" data-tone="dark">
+  <div class="hb-pill hb-pill-l">
+    <button type="button" class="hb-pill-btn hb-burger" id="navOpen" aria-label="Apri il menu" aria-expanded="false" aria-controls="nav"><span></span><span></span><span></span></button>
+    <i class="hb-sep" aria-hidden="true"></i>
+    <button type="button" class="hb-pill-btn hb-ico" data-toast="L'area Hibana Club arriva in primavera." aria-label="Il tuo profilo">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20c.8-3.8 3.6-5.6 7.2-5.6s6.4 1.8 7.2 5.6"/></svg>
+    </button>
+    <i class="hb-sep" aria-hidden="true"></i>
+    <button type="button" class="hb-pill-btn hb-city" data-toast="Per ora siamo solo a Bologna: due tavole, Pratello e Strada Maggiore.">BO <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+  </div>
+
+  <a class="hb-logo" href="#top" aria-label="Hibana, torna su">
+    <svg class="hb-spark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="7"/><path d="M20 2v8M20 30v8M2 20h8M30 20h8M7.3 7.3l5.6 5.6M27.1 27.1l5.6 5.6M7.3 32.7l5.6-5.6M27.1 12.9l5.6-5.6"/></svg>
+    <span>HIBANA</span>
+  </a>
+
+  <div class="hb-pill hb-pill-r">
+    <a class="hb-pill-btn" href="#asporto" data-go="menu">ASPORTO</a>
+    <i class="hb-sep" aria-hidden="true"></i>
+    <button type="button" class="hb-pill-btn" data-book>PRENOTA</button>
+    <i class="hb-sep hb-cart-sep" aria-hidden="true"></i>
+    <button type="button" class="hb-pill-btn hb-cart-btn" id="cartBtnTop" data-cart aria-label="Apri l'ordine">ORDINE <b class="hb-cart-sum" data-cart-sum>0,00 €</b></button>
+  </div>
+</header>
+
+<!-- mobile bottom bar (same pills, moved to the thumb) -->
+<nav class="hb-mbar" aria-label="Azioni rapide">
+  <button type="button" class="hb-mbar-burger" data-nav-open aria-label="Apri il menu"><span></span><span></span><span></span></button>
+  <div class="hb-mbar-pill">
+    <a href="#asporto" data-go="menu">ASPORTO</a>
+    <i aria-hidden="true"></i>
+    <button type="button" data-book>PRENOTA</button>
+  </div>
+  <button type="button" class="hb-mbar-cart" data-cart aria-label="Apri l'ordine"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><b data-cart-count>0</b></button>
+</nav>
+
+<!-- ================= NAV DRAWER ================= -->
+<div class="hb-nav" id="nav" aria-hidden="true">
+  <div class="hb-nav-mask" data-nav-close></div>
+  <div class="hb-nav-panel" role="dialog" aria-modal="true" aria-label="Menu principale">
+    <button type="button" class="hb-nav-x" data-nav-close aria-label="Chiudi il menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <div class="hb-nav-cols">
+      <div class="hb-nav-main">
+        <ul class="hb-nav-big">
+          <li><button type="button" data-book data-nav-close>PRENOTA <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button></li>
+          <li><a href="#asporto" data-go="menu" data-nav-close>ASPORTO <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a></li>
+          <li><a href="#asporto" data-go="menu" data-nav-close>MENU <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a></li>
+          <li><button type="button" data-toast="Buoni regalo da 30, 50 e 100 € — li trovi alla cassa di entrambi i locali." data-nav-close>BUONO REGALO <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button></li>
+        </ul>
+        <ul class="hb-nav-mid">
+          <li><a href="#locali" data-nav-close>LOCALI</a></li>
+          <li><a href="#linee" data-nav-close>SUSHI &amp; ROBATA</a></li>
+          <li><a href="#casa" data-nav-close>LA TAVOLA PIENA</a></li>
+          <li><button type="button" data-toast="Gruppi oltre le 8 persone: scrivici a tavola@hibana.example" data-nav-close>GRUPPI &amp; EVENTI</button></li>
+          <li><button type="button" data-toast="Cerchiamo camerieri e un secondo alla brace. Passa a trovarci al Pratello." data-nav-close>LAVORA CON NOI</button></li>
+        </ul>
+        <ul class="hb-nav-small">
+          <li><a href="#locali" data-nav-close>Orari</a></li>
+          <li><button type="button" data-toast="Allergeni: chiedi al personale, la scheda completa è su ogni tavolo." data-nav-close>Allergeni</button></li>
+          <li><a href="#contatti" data-nav-close>Contatti</a></li>
+          <li><button type="button" data-toast="Nessun cookie di profilazione su questo sito." data-nav-close>Privacy</button></li>
+        </ul>
+      </div>
+      <aside class="hb-nav-promo">
+        <img src="assets/c-sashimi-piatto.webp" alt="Sashimi di branzino e ricciola su piatto in ceramica" loading="lazy">
+        <h3>LA TAVOLA PER SEI<br>DEL GIOVEDÌ</h3>
+        <p>Ogni giovedì sera un menu da condividere, dodici piatti al centro, 39 € a testa.</p>
+        <button type="button" class="hb-arrow-link" data-book data-nav-close>PRENOTA IL GIOVEDÌ <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<main id="top">
+
+<!-- ================= HERO · the explorable table ================= -->
+<section class="hb-hero" id="hero" data-tone="dark" aria-label="La tavola di Hibana">
+  <div class="hb-stage" id="stage">
+    <div class="hb-table hb-par" style="--d:-7"></div>
+    <div class="hb-grain" aria-hidden="true"></div>
+
+    <!-- decorations (not for sale) -->
+    <div class="hb-deco hb-candle hb-par" data-m="0" style="--x:4.5;--y:21;--w:5.4;--d:26" aria-hidden="true"><i class="hb-flame" id="flame"></i></div>
+    <div class="hb-deco hb-soy hb-par" style="--x:40.5;--y:49.5;--w:4.2;--mx:30;--my:61;--mw:11;--d:6" aria-hidden="true"></div>
+    <div class="hb-deco hb-soy hb-par" style="--x:72;--y:49;--w:3.8;--mx:73;--my:63;--mw:10;--d:6" aria-hidden="true"></div>
+    <svg class="hb-deco hb-robata hb-par" style="--x:68;--y:47;--w:20;--r:-24deg;--mx:72;--my:40;--mw:52;--mr:-30deg;--d:8" viewBox="0 0 200 20" aria-hidden="true"><rect x="2" y="3" width="196" height="4.4" rx="2.2"/><rect x="2" y="12" width="190" height="4.4" rx="2.2" transform="rotate(1.6 2 14)"/></svg>
+    <svg class="hb-deco hb-robata hb-par" style="--x:28;--y:50;--w:18;--r:16deg;--mx:24;--my:76;--mw:46;--mr:12deg;--d:8" viewBox="0 0 200 20" aria-hidden="true"><rect x="2" y="3" width="196" height="4.4" rx="2.2"/><rect x="2" y="12" width="190" height="4.4" rx="2.2" transform="rotate(-1.4 2 14)"/></svg>
+
+    <!-- plates: filled from app.js (PLATES) -->
+    <div class="hb-plates" id="plates"></div>
+    <div class="hb-dim" aria-hidden="true"></div>
+  </div>
+
+  <div class="hb-hero-copy hb-par" style="--d:-10">
+    <p class="hb-eyebrow">Sushi &amp; robata · Bologna</p>
+    <h1>UNA TAVOLA.<br>TUTTO IN MEZZO.</h1>
+    <i class="hb-rule" aria-hidden="true"></i>
+    <p class="hb-hero-hint"><span class="hb-hint-fine">Passa sopra i piatti</span><span class="hb-hint-touch">Tocca i piatti</span>: nome, pezzi, prezzo.</p>
+  </div>
+
+  <div class="hb-hero-bar">
+    <div class="hb-found" aria-live="polite">
+      <div class="hb-found-lines" id="foundLines" aria-hidden="true"></div>
+      <span id="foundTxt">0 di 11 piatti scoperti</span>
+    </div>
+    <div class="hb-take">
+      <p class="hb-take-txt"><span class="hb-take-a" id="tableSum">11 piatti · per 4 · 149,00 €</span><span class="hb-take-b">Tavola aggiunta all'ordine</span></p>
+      <button type="button" class="hb-done" id="takeTable" aria-label="Voglio questa tavola: aggiungi tutti i piatti all'ordine">
+        <span>VOGLIO QUESTA TAVOLA</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12.5l3.2 3.2L17 9"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MANIFESTO (beige) ================= -->
+<section class="hb-manifesto" id="casa" data-tone="light">
+  <h2 class="hb-shout">A TAVOLA SI STA<br>MEGLIO IN TANTI</h2>
+  <i class="hb-rule hb-rule-ink" aria-hidden="true"></i>
+  <p class="hb-script">Si mangia insieme.</p>
+
+  <div class="hb-cards">
+    <article class="hb-card">
+      <div class="hb-card-img"><img src="assets/c-sashimi-box.webp" alt="Sashimi di salmone su griglia di bambù, con nigiri a lato" loading="lazy"></div>
+      <div class="hb-card-txt">
+        <p class="hb-kicker">Menu per quattro · da condividere</p>
+        <h3>LA TAVOLA PIENA</h3>
+        <p>Dieci piatti al centro e quattro paia di bacchette. Prendete la tavola qui sopra così com'è, oppure cambiatela pezzo per pezzo dal menu.</p>
+        <a class="hb-arrow-link" href="#hero">COMPONI LA TUA TAVOLA <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a>
+      </div>
+    </article>
+    <article class="hb-card hb-card-rev">
+      <div class="hb-card-img"><img src="assets/c-uramaki.webp" alt="Uramaki al salmone con avocado su piatto bianco" loading="lazy"></div>
+      <div class="hb-card-txt">
+        <p class="hb-kicker">Pranzo · martedì–venerdì</p>
+        <h3>IL BENTO DI MEZZOGIORNO</h3>
+        <p>Otto pezzi di sushi, due spiedini, zuppa di miso e insalata di alghe. Al tavolo in quaranta minuti, oppure pronto da portare via.</p>
+        <button type="button" class="hb-arrow-link" data-book>PRENOTA IL PRANZO <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+      </div>
+    </article>
+    <article class="hb-card">
+      <div class="hb-card-img"><img src="assets/c-tartare-ardesia.webp" alt="Tartare di salmone in cucchiai di ceramica su ardesia" loading="lazy"></div>
+      <div class="hb-card-txt">
+        <p class="hb-kicker">Piccoli pesci, grandi mani</p>
+        <h3>CORSO DI SUSHI IN FAMIGLIA</h3>
+        <p>La prima domenica del mese i bambini arrotolano il loro hosomaki al banco, con il nostro itamae. Poi se lo mangiano, ovviamente.</p>
+        <button type="button" class="hb-arrow-link" data-toast="Prossimo corso: domenica mattina, 12 posti. Iscrizioni alla cassa del Pratello.">SCOPRI LE DATE <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= TWO LINES · stacked sections ================= -->
+<section class="hb-lines" id="linee" aria-label="Sushi e robata">
+  <article class="hb-sec" data-tone="dark">
+    <img src="assets/p-sushi.webp" alt="Due nigiri di salmone su piatto bianco con foglia di bambù" loading="lazy">
+    <div class="hb-sec-shade"></div>
+    <div class="hb-sec-in">
+      <p class="hb-sec-n">01 · dal banco freddo</p>
+      <h2>SUSHI</h2>
+      <p>Il pesce arriva la mattina, il riso si condisce tiepido. Tagliato al banco, servito al centro.</p>
+      <a href="#asporto" class="hb-arrow-link" data-filter="sushi">VEDI I SUSHI <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a>
+    </div>
+  </article>
+  <article class="hb-sec" data-tone="dark">
+    <img src="assets/p-robata.webp" alt="Spiedini di pollo, pancetta e cipollotto alla brace" loading="lazy">
+    <div class="hb-sec-shade"></div>
+    <div class="hb-sec-in">
+      <p class="hb-sec-n">02 · dalla brace</p>
+      <h2>ROBATA</h2>
+      <p>Spiedini su carbone binchōtan, girati a mano uno per uno. Sale, tare, fumo. Nient'altro.</p>
+      <a href="#asporto" class="hb-arrow-link" data-filter="robata">VEDI LA ROBATA <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a>
+    </div>
+  </article>
+  <article class="hb-sec" data-tone="dark">
+    <img src="assets/p-bar.webp" alt="Due cocktail rossi in coppa con rametti di timo" loading="lazy">
+    <div class="hb-sec-shade"></div>
+    <div class="hb-sec-in">
+      <p class="hb-sec-n">03 · dal bancone</p>
+      <h2>DA BERE</h2>
+      <p>Sake freddi, shochu, e cocktail che parlano bolognese: prugna, lambrusco, yuzu.</p>
+      <a href="#asporto" class="hb-arrow-link" data-filter="bar">VEDI IL BAR <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a>
+    </div>
+  </article>
+</section>
+
+<!-- ================= TAKEAWAY MENU ================= -->
+<section class="hb-menu" id="asporto" data-tone="light" aria-labelledby="menuTitle">
+  <div class="hb-chips-wrap" id="chipsWrap">
+    <div class="hb-chips" role="group" aria-label="Filtra il menu">
+      <i class="hb-chip-pill" aria-hidden="true"></i>
+      <button type="button" aria-pressed="true" data-k="all">Tutti <small data-n="all"></small></button>
+      <button type="button" aria-pressed="false" data-k="sushi">Sushi <small data-n="sushi"></small></button>
+      <button type="button" aria-pressed="false" data-k="robata">Robata <small data-n="robata"></small></button>
+      <button type="button" aria-pressed="false" data-k="veg">Veg <small data-n="veg"></small></button>
+      <button type="button" aria-pressed="false" data-k="bar">Bar <small data-n="bar"></small></button>
+    </div>
+  </div>
+
+  <header class="hb-menu-head">
+    <h2 id="menuTitle">ORDINA DA ASPORTO</h2>
+    <i class="hb-rule hb-rule-ink" aria-hidden="true"></i>
+    <p class="hb-script">Pronto in venti minuti, o portato a casa.</p>
+  </header>
+
+  <div class="hb-grid" id="grid" aria-live="polite"></div>
+  <p class="hb-empty" id="gridEmpty" hidden>Nessun piatto in questa categoria.</p>
+
+  <!-- floating order bar (desktop), like the takeaway page -->
+  <div class="hb-obar" id="obar" aria-label="Opzioni dell'ordine">
+    <div class="hb-seg" role="radiogroup" aria-label="Modalità">
+      <button type="button" role="radio" aria-checked="true" data-mode="ritiro">RITIRO</button>
+      <button type="button" role="radio" aria-checked="false" data-mode="consegna">CONSEGNA</button>
+    </div>
+    <label class="hb-obar-sel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-6.1-6.5-11a6.5 6.5 0 0 1 13 0C18.5 14.9 12 21 12 21z"/><circle cx="12" cy="10" r="2.3"/></svg>
+      <select data-loc-select aria-label="Locale"></select></label>
+    <label class="hb-obar-sel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+      <select data-slot-select aria-label="Orario"></select></label>
+    <button type="button" class="hb-obar-go" data-cart>ORDINE · <b data-cart-sum>0,00 €</b></button>
+  </div>
+</section>
+
+<!-- ================= RESTAURANTS ================= -->
+<section class="hb-locs" id="locali" data-tone="light" aria-labelledby="locTitle">
+  <header class="hb-menu-head">
+    <h2 id="locTitle">I NOSTRI LOCALI</h2>
+    <i class="hb-rule hb-rule-ink" aria-hidden="true"></i>
+    <p class="hb-script">Due tavole a Bologna.</p>
+  </header>
+  <div class="hb-locs-grid" id="locsGrid"></div>
+</section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="hb-foot" id="contatti" data-tone="light">
+  <div class="hb-foot-cols">
+    <div>
+      <h4>CONTATTI</h4>
+      <a class="hb-foot-tel" href="tel:+390510000417">+39 051 000 0417</a>
+      <a href="mailto:tavola@hibana.example">tavola@hibana.example</a>
+    </div>
+    <div>
+      <h4>ESPLORA</h4>
+      <a href="#hero">La tavola</a><a href="#linee">Sushi &amp; robata</a><a href="#asporto">Asporto</a><a href="#locali">Locali e orari</a>
+    </div>
+    <div>
+      <h4>LOCALI</h4>
+      <p>Via del Pratello 41/b<br>40122 Bologna</p>
+      <p>Strada Maggiore 18<br>40125 Bologna</p>
+    </div>
+    <div>
+      <h4>SEGUICI</h4>
+      <div class="hb-social">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".9" class="hb-fill"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8.5h2.5V5.2H14c-2.3 0-3.8 1.6-3.8 3.9v1.6H8v3.2h2.2V21h3.3v-7.1h2.6l.5-3.2h-3.1V9.4c0-.5.3-.9.5-.9z"/></svg></a>
+        <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3.5v11.2a3.3 3.3 0 1 1-3.3-3.3M14 3.5c.4 2.6 2.2 4.3 4.8 4.5"/></svg></a>
+      </div>
+      <a class="hb-back" href="/templates" target="_top">← Tutti i modelli</a>
+    </div>
+  </div>
+  <div class="hb-foot-base">
+    <span>Hibana S.r.l. · Via del Pratello 41/b, 40122 Bologna · P.IVA 04172930376</span>
+    <span>Nome, indirizzi e prezzi sono di fantasia.</span>
+  </div>
+</footer>
+
+<!-- ================= BOOKING DRAWER ================= -->
+<div class="hb-drawer" id="book" aria-hidden="true">
+  <div class="hb-drawer-mask" data-close></div>
+  <div class="hb-drawer-panel" role="dialog" aria-modal="true" aria-labelledby="bookTitle">
+    <header class="hb-drawer-head">
+      <h2 id="bookTitle">PRENOTA UN TAVOLO</h2>
+      <button type="button" class="hb-x" data-close aria-label="Chiudi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </header>
+    <form class="hb-drawer-body" id="bookForm" novalidate>
+      <fieldset class="hb-f">
+        <legend>Locale</legend>
+        <div class="hb-locpick" id="bLoc"></div>
+      </fieldset>
+      <fieldset class="hb-f">
+        <legend>Persone</legend>
+        <div class="hb-people" id="bPeople"></div>
+        <p class="hb-note" id="bGroup" hidden>Per 9 o più persone ti richiamiamo noi: scrivi a <b>tavola@hibana.example</b> o chiama il locale.</p>
+      </fieldset>
+      <fieldset class="hb-f">
+        <legend>Giorno</legend>
+        <div class="hb-days" id="bDays"></div>
+      </fieldset>
+      <fieldset class="hb-f">
+        <legend>Orario <span class="hb-legend-sub" id="bSlotInfo"></span></legend>
+        <div class="hb-slots" id="bSlots"></div>
+      </fieldset>
+      <fieldset class="hb-f hb-f-contact">
+        <legend>I tuoi dati</legend>
+        <label class="hb-in"><span>Nome e cognome</span><input name="name" autocomplete="name" required></label>
+        <label class="hb-in"><span>Telefono</span><input name="tel" type="tel" autocomplete="tel" inputmode="tel" required></label>
+        <label class="hb-in"><span>Email</span><input name="email" type="email" autocomplete="email" required></label>
+        <label class="hb-in"><span>Note (allergie, seggiolone, compleanno…)</span><textarea name="note" rows="2"></textarea></label>
+      </fieldset>
+      <p class="hb-err" id="bErr" role="alert"></p>
+      <div class="hb-drawer-foot">
+        <p class="hb-sum" id="bSum">Scegli giorno e orario</p>
+        <button type="submit" class="hb-cta">CONFERMA</button>
+      </div>
+    </form>
+    <div class="hb-ok" id="bOk" hidden>
+      <svg class="hb-ok-tick" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M15 27l7.5 7.5L37.5 19"/></svg>
+      <h3>TAVOLO PRENOTATO</h3>
+      <p id="bOkTxt"></p>
+      <p class="hb-code" id="bOkCode"></p>
+      <button type="button" class="hb-cta hb-cta-ghost" data-close>CHIUDI</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CART DRAWER ================= -->
+<div class="hb-drawer" id="cart" aria-hidden="true">
+  <div class="hb-drawer-mask" data-close></div>
+  <div class="hb-drawer-panel" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+    <header class="hb-drawer-head">
+      <h2 id="cartTitle">IL TUO ORDINE</h2>
+      <button type="button" class="hb-x" data-close aria-label="Chiudi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </header>
+    <form class="hb-drawer-body" id="cartForm" novalidate>
+      <div class="hb-seg hb-seg-wide" role="radiogroup" aria-label="Modalità">
+        <button type="button" role="radio" aria-checked="true" data-mode="ritiro">RITIRO</button>
+        <button type="button" role="radio" aria-checked="false" data-mode="consegna">CONSEGNA</button>
+      </div>
+      <div class="hb-row2">
+        <label class="hb-in"><span>Locale</span><select data-loc-select></select></label>
+        <label class="hb-in"><span id="cSlotLbl">Ritiro</span><select data-slot-select></select></label>
+      </div>
+      <label class="hb-in" id="cAddrWrap" hidden><span>Indirizzo di consegna (Bologna)</span><input name="addr" autocomplete="street-address" placeholder="Via, numero civico, citofono"></label>
+      <ul class="hb-lines-list" id="cItems"></ul>
+      <p class="hb-cart-empty" id="cEmpty">Il carrello è vuoto. Prova a prendere tutta la tavola, oppure scegli dal menu.</p>
+      <dl class="hb-totals" id="cTotals">
+        <div><dt>Subtotale</dt><dd id="cSub">0,00 €</dd></div>
+        <div id="cFeeRow" hidden><dt>Consegna</dt><dd id="cFee">3,50 €</dd></div>
+        <div class="hb-tot"><dt>Totale</dt><dd id="cTot">0,00 €</dd></div>
+      </dl>
+      <p class="hb-note" id="cHint"></p>
+      <fieldset class="hb-f hb-f-contact">
+        <legend>Chi ritira</legend>
+        <label class="hb-in"><span>Nome</span><input name="name" autocomplete="name" required></label>
+        <label class="hb-in"><span>Telefono</span><input name="tel" type="tel" autocomplete="tel" inputmode="tel" required></label>
+      </fieldset>
+      <p class="hb-err" id="cErr" role="alert"></p>
+      <div class="hb-drawer-foot">
+        <p class="hb-sum">Si paga al ritiro o alla consegna.</p>
+        <button type="submit" class="hb-done hb-done-ink" id="cSend"><span>INVIA ORDINE</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12.5l3.2 3.2L17 9"/></svg></button>
+      </div>
+    </form>
+    <div class="hb-ok" id="cOk" hidden>
+      <svg class="hb-ok-tick" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M15 27l7.5 7.5L37.5 19"/></svg>
+      <h3>ORDINE RICEVUTO</h3>
+      <p id="cOkTxt"></p>
+      <p class="hb-code" id="cOkCode"></p>
+      <button type="button" class="hb-cta hb-cta-ghost" data-close>CHIUDI</button>
+    </div>
+  </div>
+</div>
+
+<div class="hb-toast" id="toast" role="status" aria-live="polite"></div>
+<canvas class="hb-burst" id="burst" aria-hidden="true"></canvas>
+
+<script src="app.js"></script>
+</body>
+</html>

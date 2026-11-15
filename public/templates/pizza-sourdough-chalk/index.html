@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lenta · Pizza di pasta madre · Parma</title>
+<meta name="description" content="Lenta: pizza di pasta madre, 48 ore di lievitazione. Undici pizzerie in Emilia, casa madre a Parma. Trova la più vicina e ordina da ritirare.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=DM+Mono:wght@300;400;500&family=Permanent+Marker&family=Schibsted+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/hero-madre.webp">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip" href="#contenuto">Vai al contenuto</a>
+
+<!-- ============ HEADER ============ -->
+<header class="hd" id="hd">
+  <a class="hd-mark" href="#top" aria-label="Lenta, torna su">
+    <span class="hd-word">Lenta</span>
+    <svg class="hd-pin" viewBox="0 0 20 26" aria-hidden="true"><path d="M10 1C5 1 1.5 4.6 1.5 9.4 1.5 15.6 10 25 10 25s8.5-9.4 8.5-15.6C18.5 4.6 15 1 10 1Z" fill="currentColor"/><circle cx="10" cy="9.4" r="3.2" fill="var(--pin-hole, #fff)"/></svg>
+  </a>
+  <nav class="hd-nav" aria-label="Principale">
+    <a href="#pizzerie">Pizzerie</a>
+    <a href="#menu">Menù</a>
+    <a href="#novita">Novità</a>
+    <a href="#tessera">Tessera &amp; timbri</a>
+    <a href="#gruppi">Gruppi &amp; corsi</a>
+    <a href="#storia">La madre</a>
+  </nav>
+  <div class="hd-cta">
+    <button class="pill pill-line hd-order" type="button" data-open-order>Ordina <span class="hd-count" id="hdCount" hidden>0</span></button>
+    <a class="pill pill-red hd-find" href="#pizzerie"><svg viewBox="0 0 20 26" aria-hidden="true"><path d="M10 1C5 1 1.5 4.6 1.5 9.4 1.5 15.6 10 25 10 25s8.5-9.4 8.5-15.6C18.5 4.6 15 1 10 1Z" fill="currentColor"/><circle cx="10" cy="9.4" r="3.2" fill="#e02b28"/></svg>Trova</a>
+  </div>
+</header>
+
+<!-- mobile bottom bar -->
+<div class="mbar" id="mbar">
+  <button class="mbar-burger" type="button" aria-label="Apri il menù" aria-expanded="false" aria-controls="mnav" id="burger"><i></i><i></i><i></i></button>
+  <div class="mbar-r">
+    <button class="pill pill-line" type="button" data-open-order>Ordina <span class="hd-count" id="mbCount" hidden>0</span></button>
+    <a class="pill pill-red" href="#pizzerie">Trova</a>
+  </div>
+</div>
+
+<div class="mnav" id="mnav" hidden>
+  <nav aria-label="Menù mobile">
+    <a href="#pizzerie">Pizzerie</a>
+    <a href="#menu">Menù</a>
+    <a href="#novita">Novità</a>
+    <a href="#tessera">Tessera</a>
+    <a href="#gruppi">Gruppi &amp; corsi</a>
+    <a href="#storia">La madre</a>
+  </nav>
+  <p class="mnav-foot">Undici pizzerie in Emilia · casa madre a Parma</p>
+</div>
+
+<main id="contenuto">
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="hero-bg" aria-hidden="true"><img src="assets/hero-madre.webp" alt="" width="1920" height="1440" draggable="false"></div>
+  <div class="hero-in">
+    <h1 class="hero-h" aria-label="48 ore di lievito. 90 secondi di forno.">
+      <svg id="handTitle" class="hand" aria-hidden="true"></svg>
+    </h1>
+    <a class="pill pill-red pill-big hero-cta" href="#pizzerie" id="heroFind">
+      <svg viewBox="0 0 20 26" aria-hidden="true"><path d="M10 1C5 1 1.5 4.6 1.5 9.4 1.5 15.6 10 25 10 25s8.5-9.4 8.5-15.6C18.5 4.6 15 1 10 1Z" fill="currentColor"/><circle cx="10" cy="9.4" r="3.2" fill="#e02b28"/></svg>
+      Trova la tua pizzeria
+    </a>
+  </div>
+  <svg class="wave wave-hero" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 46C160 18 320 16 520 30S900 62 1100 44 1360 10 1440 22V80H0Z"/></svg>
+</section>
+
+<!-- ============ PROMO CARDS ============ -->
+<section class="promos" id="novita" aria-label="Novità">
+  <article class="promo promo-a">
+    <p class="note">la Margherita a 6 € <br>per chi studia, il lunedì</p>
+    <div class="blob blob-1"><svg class="curl" viewBox="0 0 70 46" aria-hidden="true"><path class="draw" d="M8 42C2 24 12 6 25 10c9 3 7 15-1 15-9 0-8-14 9-17 13-2 24 6 30 16"/><path class="draw" d="M53 26l10 0-3-10"/></svg><img src="assets/tavola.webp" alt="Tavolo con pizze e burrata" loading="lazy" width="800" height="600" draggable="false"></div>
+    <h3>Lunedì Lenta</h3>
+    <p class="mono">Fino al 30 novembre, tutte le sere.</p>
+    <a class="pill pill-outline-red" href="#menu">Scopri di più</a>
+  </article>
+  <article class="promo promo-b">
+    <p class="note">sabato mattina, <br>mani in pasta</p>
+    <div class="blob blob-2"><svg class="curl" viewBox="0 0 70 46" aria-hidden="true"><path class="draw" d="M8 42C2 24 12 6 25 10c9 3 7 15-1 15-9 0-8-14 9-17 13-2 24 6 30 16"/><path class="draw" d="M53 26l10 0-3-10"/></svg><img src="assets/impasto.webp" alt="Mani che reggono un panetto di pasta madre" loading="lazy" width="760" height="1147" draggable="false"></div>
+    <h3>Corso di pasta madre</h3>
+    <p class="mono">Tre ore al banco. Ti porti a casa un vasetto di madre.</p>
+    <a class="pill pill-red" href="#gruppi" data-group-type="corso">Prenota un posto</a>
+  </article>
+  <article class="promo promo-c">
+    <p class="note">nuove al banco <br>da ottobre</p>
+    <div class="blob blob-3"><svg class="curl" viewBox="0 0 70 46" aria-hidden="true"><path class="draw" d="M8 42C2 24 12 6 25 10c9 3 7 15-1 15-9 0-8-14 9-17 13-2 24 6 30 16"/><path class="draw" d="M53 26l10 0-3-10"/></svg><img src="assets/pala.webp" alt="Pizza appena sfornata su un tagliere di legno" loading="lazy" width="800" height="534" draggable="false"></div>
+    <h3>Cavolo nero &amp; Felino</h3>
+    <p class="mono">Due pizze d'autunno, una bianca e una rossa.</p>
+    <a class="pill pill-outline-red" href="#menu">Guarda il menù</a>
+  </article>
+</section>
+
+<!-- ============ INTRO ============ -->
+<section class="intro" id="storia">
+  <div class="intro-txt">
+    <h2>Da un forno di Oltretorrente,<br>senza scorciatoie.</h2>
+    <p class="mono">Pizze semplici, prezzi onesti, impasto fatto ogni mattina. Se distingui il culatello dal crudo, se ti piace una crosta che ha riposato più di te e una pizza grande seguita da un caffè piccolo, sei nel posto giusto.</p>
+    <p class="mono">Le nostre pizzerie tengono sempre tavoli liberi per chi passa. Chi preferisce, ordina online e ritira: venti minuti e la scatola è calda.</p>
+    <div class="row-btn">
+      <a class="pill pill-red" href="#pizzerie">Trova la tua pizzeria</a>
+      <button class="pill pill-line" type="button" data-open-order>Ordina da ritirare</button>
+    </div>
+  </div>
+  <div class="intro-img blob blob-big"><img src="assets/forno.webp" alt="Pizza nel forno a legna" loading="lazy" width="1100" height="733" draggable="false"></div>
+</section>
+
+<!-- ============ SLOW ============ -->
+<section class="slow" aria-labelledby="slowH">
+  <h2 class="marker red big" id="slowH">Il tempo è <br>l'ingrediente.</h2>
+  <div class="slow-grid">
+    <div class="slow-img blob blob-4"><img src="assets/lievitata.webp" alt="Impasto di pasta madre lievitato sotto un canovaccio" loading="lazy" width="800" height="616" draggable="false"></div>
+    <div class="slow-txt">
+      <h3>La nostra madre ha <span class="madre-age" id="madreAge">—</span> giorni.</h3>
+      <p class="mono">È nata nel 2015 in un barattolo di vetro sul davanzale del primo forno. La rinfreschiamo ogni mattina alle sei con farina tipo 1 e acqua, e ne parte un pezzetto per ognuna delle undici pizzerie. Niente lievito di birra, niente fretta: 48 ore in cella, poi 90 secondi a 450 gradi.</p>
+      <ul class="sources">
+        <li><span class="src-n">1</span><b>Farina tipo 1</b><span class="mono">macinata a pietra a Collecchio, 14 km dal forno</span></li>
+        <li><span class="src-n">2</span><b>Pomodoro</b><span class="mono">dalla Bassa, pelato a mano e schiacciato, mai cotto prima del forno</span></li>
+        <li><span class="src-n">3</span><b>Parmigiano 30 mesi</b><span class="mono">da un caseificio di Langhirano, grattugiato al momento</span></li>
+      </ul>
+      <p class="ann"><svg viewBox="0 0 90 50" aria-hidden="true"><path class="draw" d="M86 6C60 4 30 10 16 38"/><path class="draw" d="M8 28l8 12 10-8"/></svg>il pomodoro è l'unica cosa <br>che non lievita</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MENU ============ -->
+<section class="menu" id="menu" aria-labelledby="menuH">
+  <svg class="wave wave-top" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70V34C200 8 420 4 640 24S1060 64 1240 40 1400 18 1440 22V70Z"/></svg>
+  <div class="menu-in">
+    <div class="menu-head">
+      <h2 class="marker big" id="menuH">Il menù corto.</h2>
+      <p class="mono">Otto pizze, tutte sulla stessa madre. Le cambiamo con le stagioni, non con le mode. Impasto senza glutine su richiesta in tutte le pizzerie.</p>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Filtra le pizze">
+      <span class="chips-pill" id="chipsPill" aria-hidden="true"></span>
+      <button type="button" data-k="tutte" aria-pressed="true">Tutte</button>
+      <button type="button" data-k="rossa" aria-pressed="false">Rosse</button>
+      <button type="button" data-k="bianca" aria-pressed="false">Bianche</button>
+      <button type="button" data-k="veg" aria-pressed="false">Vegetariane</button>
+    </div>
+    <p class="menu-count mono" id="menuCount" aria-live="polite">8 pizze</p>
+    <div class="pz-grid" id="pzGrid"></div>
+    <p class="mono small allergen">Allergeni: chiedi al banco la scheda della pizzeria. VG = vegana, V = vegetariana.</p>
+  </div>
+</section>
+
+<!-- ============ FINDER ============ -->
+<section class="finder" id="pizzerie" aria-labelledby="findH">
+  <div class="finder-side">
+    <h2 id="findH">Trova la pizzeria <br>più vicina.</h2>
+    <p class="mono">Undici forni tra Piacenza e Ferrara, tutti con la stessa madre. Cerca una città o lascia fare a noi: ti diciamo chi è aperto adesso e a che ora chiude.</p>
+    <form class="search" id="searchForm" autocomplete="off" role="search">
+      <label class="sr-only" for="q">Città</label>
+      <svg class="search-pin" viewBox="0 0 20 26" aria-hidden="true"><path d="M10 1C5 1 1.5 4.6 1.5 9.4 1.5 15.6 10 25 10 25s8.5-9.4 8.5-15.6C18.5 4.6 15 1 10 1Z" fill="currentColor"/><circle cx="10" cy="9.4" r="3.2" fill="#fff"/></svg>
+      <input id="q" name="q" type="text" placeholder="Scrivi una città, es. Reggio" aria-autocomplete="list" aria-controls="sugg">
+      <button class="search-go" type="submit" aria-label="Cerca"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></button>
+      <ul class="sugg" id="sugg" role="listbox" hidden></ul>
+    </form>
+    <button class="near" type="button" id="nearBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.6" class="f"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg><span>Vicino a me</span></button>
+    <p class="find-msg mono" id="findMsg" aria-live="polite">Ordinate per città. Cerca o usa «Vicino a me» per ordinarle per distanza.</p>
+    <div class="map-card">
+      <svg id="map" class="map" viewBox="0 0 600 330" role="img" aria-label="Mappa delle pizzerie Lenta in Emilia"></svg>
+    </div>
+  </div>
+  <div class="finder-list">
+    <div class="list-bar">
+      <div class="chips chips-sm" id="openChips" role="group" aria-label="Filtra le pizzerie">
+        <span class="chips-pill" aria-hidden="true"></span>
+        <button type="button" data-k="all" aria-pressed="true">Tutte</button>
+        <button type="button" data-k="open" aria-pressed="false">Aperte ora</button>
+      </div>
+      <span class="mono small" id="listInfo"></span>
+    </div>
+    <ol class="stores" id="stores"></ol>
+    <p class="stores-empty mono" id="storesEmpty" hidden>Adesso è tutto chiuso. Puoi comunque ordinare per la prossima apertura.</p>
+  </div>
+</section>
+
+<!-- ============ LOYALTY ============ -->
+<section class="loyal" id="tessera" aria-labelledby="loyH">
+  <h2 class="marker red big" id="loyH">Una pizza ogni dieci.</h2>
+  <div class="loyal-grid">
+    <div class="loyal-txt">
+      <h3>Più mangi, più timbri.</h3>
+      <ol class="steps mono">
+        <li><b>1</b>Ogni pizza, al tavolo o da ritirare, vale un timbro.</li>
+        <li><b>2</b>I timbri valgono in tutte le undici pizzerie e non scadono.</li>
+        <li><b>3</b>Al decimo, la prossima pizza la offriamo noi.</li>
+      </ol>
+      <p class="mono small">Gli ordini fatti qui sopra timbrano la tessera da soli: prova.</p>
+    </div>
+    <div class="card-wrap">
+      <div class="lcard" id="lcard" style="--p:30%">
+        <span class="lcard-fill" aria-hidden="true"></span>
+        <div class="lcard-in">
+          <div class="lcard-top"><span class="lcard-brand">Lenta</span><span class="mono small">tessera n. 0427</span></div>
+          <p class="lcard-num"><b id="lcNum">3</b><span>/ 10 timbri</span></p>
+          <div class="stamps" id="stamps" aria-hidden="true"></div>
+          <p class="lcard-msg mono" id="lcMsg">Mancano 7 pizze alla prossima offerta.</p>
+        </div>
+      </div>
+      <div class="row-btn">
+        <button class="pill pill-red" type="button" id="stampBtn">Simula una visita</button>
+        <button class="pill pill-line" type="button" id="stampReset">Azzera</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GROUPS ============ -->
+<section class="groups" id="gruppi" aria-labelledby="grpH">
+  <h2 class="marker red big" id="grpH">Tavolate grandi. <br>Una madre sola.</h2>
+  <div class="grp-cards">
+    <article class="gcard">
+      <div class="blob blob-5"><img src="assets/gruppo.webp" alt="Pizza margherita su tagliere" loading="lazy" width="800" height="496" draggable="false"></div>
+      <h3>Menù famiglia</h3>
+      <p class="mono">Dagli 8 in su: fritti da dividere, tre pizze a giro, dolce e caffè. 19,50 € a testa.</p>
+    </article>
+    <article class="gcard">
+      <div class="blob blob-6"><img src="assets/panetti.webp" alt="Panetti infarinati pronti per la lievitazione" loading="lazy" width="800" height="600" draggable="false"></div>
+      <h3>Corsi di pasta madre</h3>
+      <p class="mono">Il sabato alle 10, al massimo dodici persone. Anche per bambini, con il grembiule in regalo.</p>
+    </article>
+    <article class="gcard">
+      <div class="blob blob-7"><img src="assets/forno.webp" alt="Forno a legna acceso" loading="lazy" width="1100" height="733" draggable="false"></div>
+      <h3>Sala riservata</h3>
+      <p class="mono">Sei pizzerie hanno una saletta da 20 a 40 posti. Compleanni, lauree, cene di squadra.</p>
+    </article>
+  </div>
+  <form class="gform" id="gform" novalidate>
+    <div class="gform-head">
+      <p class="eyebrow">Parliamone</p>
+      <h3>Raccontaci il tuo gruppo.</h3>
+      <p class="mono small">Ti richiama la pizzeria entro un giorno. Nessun anticipo, basta una conferma.</p>
+    </div>
+    <div class="gfields">
+      <label class="fld"><span>Tipo</span>
+        <select name="type" id="gType"><option value="cena">Cena di gruppo</option><option value="corso">Corso di pasta madre</option><option value="sala">Sala riservata</option></select></label>
+      <label class="fld"><span>Pizzeria</span><select name="store" id="gStore" required><option value="">Scegli…</option></select></label>
+      <label class="fld"><span>Data</span><input type="date" name="date" id="gDate" required></label>
+      <label class="fld"><span>Persone</span><input type="number" name="ppl" id="gPpl" min="8" max="40" value="10" inputmode="numeric" required></label>
+      <label class="fld"><span>Email</span><input type="email" name="email" id="gEmail" placeholder="nome@esempio.it" required></label>
+      <label class="fld"><span>Telefono (facoltativo)</span><input type="tel" name="tel" id="gTel" placeholder="+39 333 123 4567" inputmode="tel" autocomplete="tel"></label>
+      <label class="fld fld-wide"><span>Note (facoltative)</span><textarea name="note" rows="2" placeholder="Allergie, orario preferito, festeggiato…"></textarea></label>
+    </div>
+    <p class="gerr mono small" id="gErr" aria-live="polite"></p>
+    <button class="pill pill-red" type="submit">Invia la richiesta</button>
+    <div class="gdone" id="gDone" hidden tabindex="-1"><p class="hand-note">Grazie!</p><p class="mono" id="gDoneTxt"></p><button class="pill pill-line" type="button" id="gAgain">Nuova richiesta</button></div>
+  </form>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="ft">
+  <svg class="wave wave-top" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true"><path d="M0 70V30C240 6 480 6 720 26S1180 60 1440 24V70Z"/></svg>
+  <div class="ft-in">
+    <p class="ft-claim marker red">Lenta di lievito, svelta in forno.</p>
+    <div class="ft-cols">
+      <div><p class="ft-lab">Ordina</p><a href="#pizzerie">Trova una pizzeria</a><button type="button" data-open-order>Ordina e ritira</button><a href="#gruppi">Gruppi</a></div>
+      <div><p class="ft-lab">Lenta</p><a href="#storia">La madre</a><a href="#menu">Menù</a><a href="#novita">Novità</a></div>
+      <div><p class="ft-lab">Offerte</p><a href="#tessera">Tessera &amp; timbri</a><a href="#novita">Lunedì Lenta</a><a href="#gruppi">Corsi</a></div>
+      <div><p class="ft-lab">Casa madre</p><p class="mono small">Borgo della Madia 3<br>43121 Parma (PR)<br>+39 0521 000 427<br>ciao@lenta-pizza.it</p></div>
+    </div>
+    <div class="ft-bot">
+      <div class="social">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" class="f"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3c-2.8 0-4.5 1.8-4.5 4.6V11H7v4h2.5v6h4v-6H16l.6-4h-3.1V8.9c0-.6.3-.9.5-.9Z"/></svg></a>
+        <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5M14 3c.4 2.6 2.2 4.4 5 4.6"/></svg></a>
+      </div>
+      <p class="mono small">Lenta Pizza s.r.l. · P.IVA 02904270341 · © 2026</p>
+      <p class="mono small">Nome, indirizzi e prezzi sono di fantasia.</p>
+      <a class="back" href="/templates" target="_top">← Tutti i modelli</a>
+    </div>
+  </div>
+</footer>
+
+<!-- corner promo (desktop) -->
+<aside class="corner" id="corner" aria-label="Offerta del lunedì">
+  <svg class="corner-wave" viewBox="0 0 330 170" preserveAspectRatio="none" aria-hidden="true"><path d="M0 38C40 8 96 2 150 22S230 112 262 136 312 162 330 170H0Z"/></svg>
+  <div class="corner-in">
+    <p class="corner-t">Lunedì Lenta</p>
+    <p class="mono small">Margherita a 6 € per chi studia.</p>
+    <button type="button" class="corner-a" data-open-order>Ordina ora</button>
+  </div>
+  <button class="corner-x" type="button" id="cornerX" aria-label="Chiudi l'offerta">×</button>
+</aside>
+
+<!-- ============ ORDER DRAWER ============ -->
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drH" hidden>
+  <div class="dr-head">
+    <div>
+      <p class="eyebrow">Ordina e ritira</p>
+      <h2 id="drH">Il tuo ordine</h2>
+    </div>
+    <button class="x" type="button" data-close-order aria-label="Chiudi">×</button>
+  </div>
+  <ol class="dr-steps" aria-label="Passaggi">
+    <li class="on" data-s="1">Pizze</li><li data-s="2">Ritiro</li><li data-s="3">Fatto</li>
+  </ol>
+  <div class="dr-store" id="drStore"></div>
+
+  <div class="dr-body" id="drBody1">
+    <ul class="dr-menu" id="drMenu"></ul>
+    <p class="dr-rule mono small">Al massimo 12 pizze per ordine online. Per gruppi più grandi usa il modulo Gruppi.</p>
+  </div>
+
+  <div class="dr-body" id="drBody2" hidden>
+    <p class="dr-lab">Quando passi a ritirare?</p>
+    <p class="mono small dr-day" id="slotDay"></p>
+    <div class="slots" id="slots" role="radiogroup" aria-label="Orario di ritiro"></div>
+    <div class="dr-form">
+      <label class="fld"><span>Nome</span><input id="oName" type="text" autocomplete="name" placeholder="Come ti chiamiamo al banco"></label>
+      <label class="fld"><span>Telefono</span><input id="oPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+39 333 123 4567"></label>
+    </div>
+    <p class="mono small">Paghi al ritiro, contanti o carta.</p>
+  </div>
+
+  <div class="dr-body dr-done" id="drBody3" hidden tabindex="-1">
+    <p class="hand-note">Fatto!</p>
+    <p class="dr-done-no" id="doneNo"></p>
+    <p class="mono" id="doneTxt"></p>
+    <p class="mono small" id="doneStamps"></p>
+    <button class="pill pill-line" type="button" id="newOrder">Nuovo ordine</button>
+  </div>
+
+  <div class="dr-foot" id="drFoot">
+    <p class="dr-err mono small" id="drErr" aria-live="polite"></p>
+    <div class="dr-tot"><span id="drQty">0 pizze</span><b id="drTot">0,00 €</b></div>
+    <div class="dr-act">
+      <button class="pill pill-line" type="button" id="drBack" hidden>Indietro</button>
+      <button class="pill pill-red" type="button" id="drNext">Scegli l'orario</button>
+    </div>
+  </div>
+</aside>
+
+<!-- hours dialog -->
+<div class="hrs" id="hrs" role="dialog" aria-modal="true" aria-labelledby="hrsH" hidden>
+  <div class="hrs-box">
+    <button class="x" type="button" id="hrsX" aria-label="Chiudi">×</button>
+    <h3 id="hrsH"></h3>
+    <p class="mono small" id="hrsAddr"></p>
+    <table class="hrs-t mono" id="hrsT"></table>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

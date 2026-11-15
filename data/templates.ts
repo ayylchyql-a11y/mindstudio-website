@@ -1,4 +1,5 @@
 import type { Locale, Localized } from "@/lib/i18n";
+import { famousTemplates } from "@/data/templates-famous";
 
 /**
  * Templates = 网页设计模版。
@@ -13,7 +14,7 @@ import type { Locale, Localized } from "@/lib/i18n";
  * 网站，所以框要高（720）、要能在框里滚，并且给「整页打开」。
  */
 
-export type GroupId = "food" | "retail" | "supply" | "services";
+export type GroupId = "food" | "sushi-icons" | "pizza-icons" | "retail" | "supply" | "services";
 export type StyleId = "original" | "editorial" | "night-glass" | "pop" | "claude" | "abisso" | "mercato" | "kaiten" | "tavolo" | "ukiyo" | "yoru" | "shizuka" | "yatai" | "manga" | "loop" | "showa" | "app" | "kraft" | "carta" | "ardesia" | "margherita";
 
 export interface TemplateGroup {
@@ -38,6 +39,33 @@ export const groups: TemplateGroup[] = [
       it: "Ramen bar, all you can eat, sushi da asporto, poke, gelato, enoteca. Menù con filtri per categoria, bowl da comporre, prenotazione di tavoli, torte e degustazioni, carrello che somma l’ordine.",
     },
     accent: "#e05a3a",
+  },
+  /**
+   * 11-15 用户拍板：「名店风格」两个板块，各 10 套。每套照一家世界知名店的官网骨架做、
+   * 再用设计库效果改善；店名/照片/文案全是自己的，**页面上不写原店名**（导入脚本有自检）。
+   * 数据由 scripts/import-famous-templates.mjs 生成到 data/templates-famous.ts。
+   */
+  {
+    id: "sushi-icons",
+    title: { en: "Sushi · signature styles", zh: "寿司 · 名店风格", "zh-tw": "壽司 · 名店風格", it: "Sushi · stili d’autore", ja: "寿司・名店スタイル", ko: "스시 · 명점 스타일" },
+    intro: {
+      en: "Ten sushi sites, each built on the layout language of a world-famous sushi house and then pushed further with effects from the Design Library: an omakase counter, a monochrome tasting room, a global flagship, a seasonal izakaya, a Nikkei kitchen, a no-reservations sushi bar, a sharing table, a kaiten chain, a delivery shop, a family of restaurants. Names, photos and copy are our own.",
+      zh: "十个寿司网站，每个都照一家世界知名寿司店官网的版式语言来做，再用设计库的效果往前推一步：板前 omakase、黑白品鉴室、全球旗舰、四季居酒屋、Nikkei 融合、不订位的寿司吧、分享餐桌、回转连锁、外卖电商、一个餐厅家族。店名、照片和文案都是我们自己的。",
+      "zh-tw": "十個壽司網站，每個都照一家世界知名壽司店官網的版式語言來做，再用設計庫的效果往前推一步：板前 omakase、黑白品鑑室、全球旗艦、四季居酒屋、Nikkei 融合、不訂位的壽司吧、分享餐桌、迴轉連鎖、外送電商、一個餐廳家族。店名、照片和文案都是我們自己的。",
+      it: "Dieci siti di sushi, ognuno costruito sul linguaggio di impaginazione di un sushi famoso nel mondo e poi spinto oltre con gli effetti della Libreria design: un banco omakase, una sala in bianco e nero, un flagship globale, un izakaya delle stagioni, una cucina nikkei, un sushi bar senza prenotazione, una tavola da condividere, una catena kaiten, uno shop di delivery, una famiglia di ristoranti. Nomi, foto e testi sono nostri.",
+    },
+    accent: "#b8322a",
+  },
+  {
+    id: "pizza-icons",
+    title: { en: "Pizza · signature styles", zh: "披萨 · 名店风格", "zh-tw": "披薩 · 名店風格", it: "Pizza · stili d’autore", ja: "ピッツァ・名店スタイル", ko: "피자 · 명점 스타일" },
+    intro: {
+      en: "Ten pizzeria sites, each built on the layout language of a world-famous pizzeria and then pushed further with effects from the Design Library: a century-old house with a queue ticket, a dark country pizzeria with rooms, a split-screen chef, a typographic poster, a Brooklyn-style joint with a frozen-pizza shop, a gingham-pop chain, a sourdough chain with a pizzeria finder, an online-ordering classic, a cream-and-orange stamp, pizza by the slice sold by weight. Names, photos and copy are our own.",
+      zh: "十个披萨网站，每个都照一家世界知名披萨店官网的版式语言来做，再用设计库的效果往前推一步：发排队号的百年老店、带客房的乡村暗色披萨店、分屏主厨店、纯排版海报、带冷冻披萨小店的布鲁克林风、格子桌布波普连锁、能找最近门店的酸面种连锁、在线点单老字号、奶油橙印章风、按重量卖的切片披萨。店名、照片和文案都是我们自己的。",
+      "zh-tw": "十個披薩網站，每個都照一家世界知名披薩店官網的版式語言來做，再用設計庫的效果往前推一步：發排隊號的百年老店、帶客房的鄉村暗色披薩店、分屏主廚店、純排版海報、帶冷凍披薩小店的布魯克林風、格子桌布波普連鎖、能找最近門市的酸麵種連鎖、線上點單老字號、奶油橙印章風、按重量賣的切片披薩。店名、照片和文案都是我們自己的。",
+      it: "Dieci siti di pizzerie, ognuno costruito sul linguaggio di impaginazione di una pizzeria famosa nel mondo e poi spinto oltre con gli effetti della Libreria design: una casa centenaria col numerino per la fila, una pizzeria di campagna scura con le camere, uno chef in split screen, un poster tipografico, un locale in stile Brooklyn con lo shop delle surgelate, una catena pop a quadretti, una catena a lievito madre con la ricerca della pizzeria più vicina, un classico con l’ordine online, un timbro crema e arancio, la pizza al taglio venduta a peso. Nomi, foto e testi sono nostri.",
+    },
+    accent: "#e2552b",
   },
   {
     id: "retail",
@@ -649,6 +677,7 @@ export const templates: SiteTemplate[] = [
     accent: "#1d4ed8",
     lang: "it",
   },
+  ...famousTemplates,
 ];
 
 /**

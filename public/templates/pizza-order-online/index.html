@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bertacchi · Pizzeria di famiglia dal 1931 · Modena · Ordina online</title>
+<meta name="description" content="Pizzeria di famiglia a Modena dal 1931. Forno a legna, impasto di 48 ore. Ordina online: ritiro o consegna a domicilio.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&family=Zilla+Slab:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="bt-skip" href="#menu">Vai al menù</a>
+
+<header class="bt-top" id="top">
+  <div class="bt-top__l">
+    <button class="bt-burger" id="burger" type="button" aria-label="Apri il menu" aria-expanded="false" aria-controls="navDrawer"><i></i><i></i><i></i></button>
+    <nav class="bt-top__nav" aria-label="Principale">
+      <a href="#menu">Menù</a><a href="#sedi">Sedi</a><a href="#premi">Premi</a><a href="#storia">Storia</a>
+    </nav>
+  </div>
+  <a class="bt-mark" href="#top" aria-label="Bertacchi, torna su">
+    <small>Dal 1931</small><b>Bertacchi</b><small>Pizzeria di famiglia</small>
+  </a>
+  <div class="bt-top__r">
+    <button class="bt-cartbtn" id="cartBtn" type="button" aria-label="Apri il carrello, 0 articoli">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8L5 8Z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
+      <span class="bt-cartbtn__n" id="cartCount">0</span>
+    </button>
+    <a class="bt-btn bt-btn--solid bt-order" href="#menu">Ordina ora</a>
+  </div>
+</header>
+
+<main>
+  <section class="bt-hero" aria-labelledby="heroTitle">
+    <div class="bt-hero__txt">
+      <span class="bt-flag">Solo d'autunno</span>
+      <h1 id="heroTitle">Novità! La&nbsp;Balsamica</h1>
+      <p>Fior di latte, rucola appena tagliata e scaglie di Parmigiano Reggiano 30 mesi, chiusa fuori dal forno con un filo di aceto balsamico tradizionale della bottega di famiglia. Fino a fine dicembre.</p>
+      <div class="bt-hero__cta">
+        <button class="bt-btn bt-btn--solid bt-btn--wide" type="button" data-customize="balsamica">Ordina ora</button>
+        <button class="bt-status" id="heroStatus" type="button" aria-live="polite"><i></i><span>…</span></button>
+      </div>
+    </div>
+    <figure class="bt-hero__img">
+      <img src="assets/hero-balsamica.webp" width="1000" height="580" alt="Pizza bianca con rucola e aceto balsamico, vista dall'alto">
+    </figure>
+  </section>
+
+  <section class="bt-band" aria-labelledby="bandTitle">
+    <div class="bt-band__in">
+      <div class="bt-seal" aria-hidden="true">
+        <img src="assets/hero-forno.webp" alt="">
+        <svg viewBox="0 0 200 200">
+          <defs><path id="sealArc" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"/></defs>
+          <circle cx="100" cy="100" r="97" fill="#194f42"/>
+          <circle cx="100" cy="100" r="93" fill="none" stroke="#ebeae5" stroke-width="1.4"/>
+          <circle cx="100" cy="100" r="64" fill="none" stroke="#ebeae5" stroke-width="1.4"/>
+          <text font-size="14.5" fill="#ebeae5"><textPath href="#sealArc" startOffset="0" textLength="484" lengthAdjust="spacing">PIZZA DI FAMIGLIA ✦ MODENA ✦ DAL 1931 ✦</textPath></text>
+        </svg>
+      </div>
+      <div class="bt-band__txt">
+        <h2 id="bandTitle">L'originale pizza modenese. Dal&nbsp;1931.</h2>
+        <p>Forno a legna, impasto di 48 ore e la stessa pala di faggio da tre generazioni, in Via Emilia da più di novant'anni.</p>
+      </div>
+      <a class="bt-btn bt-btn--ghost" href="#storia">Leggi la storia</a>
+    </div>
+  </section>
+
+  <section class="bt-menu" id="menu" aria-label="Menù e ordini online">
+    <div class="bt-tabs" id="tabsBar">
+      <button class="bt-tabs__arr bt-tabs__arr--l" type="button" aria-label="Categorie precedenti" tabindex="-1">‹</button>
+      <nav class="bt-tabs__scroll" id="tabs" aria-label="Categorie del menù"></nav>
+      <button class="bt-tabs__arr bt-tabs__arr--r" type="button" aria-label="Categorie successive" tabindex="-1">›</button>
+    </div>
+    <div class="bt-wrap">
+      <div class="bt-filter">
+        <div class="bt-chips" id="chips" role="group" aria-label="Filtra il menù">
+          <i class="bt-chips__pill" aria-hidden="true"></i>
+          <button type="button" data-f="all" aria-pressed="true">Tutto</button>
+          <button type="button" data-f="veg" aria-pressed="false">Vegetariane</button>
+          <button type="button" data-f="hot" aria-pressed="false">Piccanti</button>
+          <button type="button" data-f="new" aria-pressed="false">Novità</button>
+          <button type="button" data-f="cheap" aria-pressed="false">Sotto i €10</button>
+        </div>
+        <p class="bt-filter__n" id="filterCount" aria-live="polite"></p>
+      </div>
+      <div id="menuSections"></div>
+      <p class="bt-empty" id="menuEmpty" hidden>Nessun piatto corrisponde al filtro.</p>
+    </div>
+  </section>
+
+  <section class="bt-sedi" id="sedi" aria-labelledby="sediTitle">
+    <div class="bt-sedi__list">
+      <h2 id="sediTitle">Trova la pizzeria più vicina</h2>
+      <p class="bt-sub">Tre forni a legna tra Modena e Carpi. Lo stato è calcolato adesso, ora di Modena.</p>
+      <label class="bt-search">
+        <span class="bt-vh">Cerca per città o CAP</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4-4"/></svg>
+        <input id="storeSearch" type="search" placeholder="Cerca per città o CAP" autocomplete="off">
+      </label>
+      <p class="bt-sedi__n" id="storeCount"></p>
+      <ul class="bt-stores" id="storeList"></ul>
+    </div>
+    <div class="bt-map" aria-hidden="true">
+      <svg viewBox="0 0 600 640" id="mapSvg" preserveAspectRatio="xMidYMid slice">
+        <rect width="600" height="640" fill="#dedbd2"/>
+        <g fill="none" stroke="#cfcbc0" stroke-width="1">
+          <path d="M0 80h600M0 160h600M0 240h600M0 320h600M0 400h600M0 480h600M0 560h600M75 0v640M150 0v640M225 0v640M300 0v640M375 0v640M450 0v640M525 0v640"/>
+        </g>
+        <path d="M90 0 C120 120 60 220 120 330 S 210 520 170 640" fill="none" stroke="#b9cbc3" stroke-width="14" stroke-linecap="round"/>
+        <path d="M560 0 C520 140 600 260 520 380 S 470 560 520 640" fill="none" stroke="#b9cbc3" stroke-width="10" stroke-linecap="round"/>
+        <g fill="none" stroke="#f6f4ee" stroke-linecap="round">
+          <path d="M-20 600 L620 300" stroke-width="12"/>
+          <path d="M330 470 L250 110 L240 -20" stroke-width="8"/>
+          <path d="M120 640 L360 430" stroke-width="6"/>
+          <path d="M600 520 L380 450" stroke-width="6"/>
+        </g>
+        <text x="520" y="322" font-size="13" fill="#8a8578" font-family="Inter, sans-serif" letter-spacing="1.5" transform="rotate(-25 520 322)">VIA EMILIA</text>
+        <text x="72" y="190" font-size="12" fill="#7d9b90" font-family="EB Garamond, serif" font-style="italic" transform="rotate(70 72 190)">Secchia</text>
+        <text x="548" y="120" font-size="12" fill="#7d9b90" font-family="EB Garamond, serif" font-style="italic" transform="rotate(100 548 120)">Panaro</text>
+        <ellipse cx="350" cy="455" rx="70" ry="52" fill="#d4d0c5" stroke="#c6c1b4"/>
+        <text x="350" y="530" text-anchor="middle" font-size="15" fill="#5f5a4f" font-family="Zilla Slab, serif" font-weight="600" letter-spacing="2">MODENA</text>
+        <ellipse cx="248" cy="122" rx="48" ry="38" fill="#d4d0c5" stroke="#c6c1b4"/>
+        <text x="248" y="182" text-anchor="middle" font-size="15" fill="#5f5a4f" font-family="Zilla Slab, serif" font-weight="600" letter-spacing="2">CARPI</text>
+        <g id="mapPins"></g>
+      </svg>
+      <p class="bt-map__cap">Mappa illustrativa</p>
+    </div>
+  </section>
+
+  <section class="bt-premi" id="premi" aria-labelledby="premiTitle">
+    <div class="bt-premi__hero">
+      <span class="bt-flag bt-flag--light">Premi Bertacchi</span>
+      <h2 id="premiTitle">Più pizza, più premi.</h2>
+      <p>Un punto per ogni euro, su ogni ordine online e al banco. A 100 punti hai 5&nbsp;€ da spendere come vuoi.</p>
+      <form class="bt-join" id="joinForm" novalidate>
+        <label class="bt-vh" for="joinMail">La tua email</label>
+        <input id="joinMail" type="email" placeholder="La tua email" autocomplete="email">
+        <button class="bt-btn bt-btn--light" type="submit">Iscriviti</button>
+        <p class="bt-join__msg" id="joinMsg" aria-live="polite"></p>
+      </form>
+    </div>
+    <div class="bt-premi__cards">
+      <article class="bt-perk"><b>1&nbsp;€ = 1 punto</b><h3>Accumula</h3><p>Su ogni ordine: online, al telefono o al banco. Il carrello ti dice subito quanti ne prendi.</p></article>
+      <article class="bt-perk"><b>100 punti = 5&nbsp;€</b><h3>Riscatta</h3><p>Lo sconto si applica da solo al prossimo ordine, senza codici da ricordare.</p></article>
+      <article class="bt-perk"><b>Martedì ×2</b><h3>Punti doppi</h3><p>Ogni martedì i punti raddoppiano. Nel mese del compleanno, una pizza piccola la offriamo noi.</p></article>
+    </div>
+    <div class="bt-faq">
+      <h3>Domande frequenti</h3>
+      <details><summary>Come mi iscrivo?</summary><p>Lascia la tua email qui sopra o chiedi la tessera alla cassa: i punti dell'ordine di oggi vengono già contati.</p></details>
+      <details><summary>I punti scadono?</summary><p>Restano validi dodici mesi dall'ultimo ordine. Basta una pizza all'anno per tenerli tutti.</p></details>
+      <details><summary>Valgono in tutte e tre le sedi?</summary><p>Sì: Modena Centro, Modena Sacca e Carpi condividono lo stesso conto punti.</p></details>
+      <details><summary>Posso usarli sui menù famiglia?</summary><p>Sì, lo sconto vale su tutto, bibite comprese. Non vale sul costo di consegna.</p></details>
+    </div>
+  </section>
+
+  <section class="bt-storia" id="storia" aria-labelledby="storiaTitle">
+    <div class="bt-wrap">
+      <span class="bt-flag">Dal 1931</span>
+      <h2 id="storiaTitle">Novantacinque anni, un solo forno acceso</h2>
+      <p class="bt-sub">Trascina le schede o usa le frecce: la linea si disegna quando la scheda si ferma.</p>
+    </div>
+    <div class="bt-tl" id="timeline">
+      <div class="bt-tl__rail" aria-hidden="true"><i class="bt-tl__track"></i><i class="bt-tl__fill" id="tlFill"></i><div class="bt-tl__dots" id="tlDots"></div></div>
+      <div class="bt-tl__scroller" id="tlScroller" tabindex="0" aria-label="Linea del tempo"></div>
+      <div class="bt-tl__ctl">
+        <button type="button" class="bt-round" id="tlPrev" aria-label="Anno precedente">‹</button>
+        <span id="tlCount" aria-live="polite">01 / 07</span>
+        <button type="button" class="bt-round" id="tlNext" aria-label="Anno successivo">›</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="bt-foot">
+  <div class="bt-foot__cols">
+    <div>
+      <h2>Link utili</h2>
+      <a href="#menu">Menù e ordini</a><a href="#sedi">Le sedi</a><a href="#premi">Premi Bertacchi</a><a href="#storia">La nostra storia</a>
+    </div>
+    <div>
+      <h2>La casa</h2>
+      <a href="#">Buoni regalo</a><a href="#">Feste e compleanni</a><a href="#">Lavora con noi</a><a href="#">Allergeni</a>
+    </div>
+    <div>
+      <h2>Contatti</h2>
+      <p>Via Emilia Centro 212<br>41121 Modena<br><a href="#">059 210 1931</a><br><a href="#">ciao@bertacchi.example</a></p>
+    </div>
+    <div class="bt-foot__bottom">
+      <p>© 2026 Bertacchi s.n.c. di famiglia · P.IVA 03190311931 · Via Emilia Centro 212, Modena</p>
+      <p>Nome, indirizzi e prezzi sono di fantasia.</p>
+      <p><a href="/templates" target="_top">← Tutti i modelli</a></p>
+      <div class="bt-social">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle cx="16.8" cy="7.2" r=".9" fill="currentColor" stroke="none"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8h2.5V4.6H14A3.6 3.6 0 0 0 10.4 8.2V10H8v3.4h2.4V20h3.4v-6.6h2.5l.5-3.4h-3V8.6c0-.4.2-.6.6-.6Z" fill="currentColor" stroke="none"/></svg></a>
+        <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M14 4v10.5a3.3 3.3 0 1 1-3.3-3.3M14 4c.4 2.4 2 4 4.4 4.2"/></svg></a>
+        <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="17" height="11" rx="3"/><path d="m10.5 9.6 4 2.4-4 2.4Z" fill="currentColor" stroke="none"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <figure class="bt-foot__img"><img src="assets/hero-forno.webp" alt="La bocca del forno a legna" loading="lazy"></figure>
+</footer>
+
+<!-- Mobile: barra carrello -->
+<button class="bt-cartbar" id="cartBar" type="button" hidden><span id="cartBarN">0</span><b>Vedi l'ordine</b><span id="cartBarT">€0,00</span></button>
+
+<!-- Menu laterale -->
+<div class="bt-scrim" id="scrim" hidden></div>
+<aside class="bt-drawer" id="navDrawer" aria-label="Menu" aria-hidden="true">
+  <button class="bt-x" type="button" data-close-drawer aria-label="Chiudi il menu">×</button>
+  <nav>
+    <a href="#menu" data-close-drawer>Menù</a><a href="#sedi" data-close-drawer>Sedi</a><a href="#premi" data-close-drawer>Premi</a><a href="#storia" data-close-drawer>Storia</a>
+  </nav>
+  <div class="bt-drawer__store" id="drawerStore"></div>
+  <p class="bt-drawer__tel">Ordini al telefono<br><b>059 210 1931</b></p>
+</aside>
+
+<!-- Pannello Personalizza (step sheet) -->
+<div class="bt-shade" id="sheetShade" hidden></div>
+<section class="bt-sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shName" aria-hidden="true">
+  <div class="bt-sheet__grab" aria-hidden="true"></div>
+  <header class="bt-sheet__head">
+    <img id="shImg" src="assets/margherita.webp" alt="">
+    <div>
+      <p class="bt-sheet__step" id="shStep">Passo 1 di 3</p>
+      <h2 id="shName">Margherita</h2>
+    </div>
+    <div class="bt-sheet__dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    <button class="bt-x" type="button" id="shClose" aria-label="Chiudi">×</button>
+  </header>
+  <div class="bt-sheet__view" id="shView">
+    <div class="bt-pane" data-pane="0">
+      <h3>Misura</h3>
+      <div class="bt-sizes" id="shSizes" role="radiogroup" aria-label="Misura"></div>
+      <h3>Impasto</h3>
+      <div class="bt-opts" id="shDough" role="radiogroup" aria-label="Impasto"></div>
+    </div>
+    <div class="bt-pane" data-pane="1">
+      <h3>Base</h3>
+      <div class="bt-bases" id="shBases" role="radiogroup" aria-label="Base"></div>
+    </div>
+    <div class="bt-pane" data-pane="2">
+      <h3>Aggiunte <span class="bt-pane__n" id="shExtraN">0 di 6</span></h3>
+      <div id="shExtras"></div>
+      <label class="bt-field"><span>Note per il forno <i>(facoltativo)</i></span><input id="shNote" maxlength="80" placeholder="Es. ben cotta, tagliata in 8"></label>
+      <div class="bt-sheet__qty"><span>Quantità</span><div class="bt-ds" id="shQty" data-min="1" data-max="20" data-span="10"></div></div>
+      <p class="bt-sheet__sum" id="shSum"></p>
+    </div>
+  </div>
+  <footer class="bt-sheet__foot">
+    <button class="bt-btn bt-btn--outline" type="button" id="shBack">Indietro</button>
+    <p class="bt-sheet__price"><small>Totale</small><b id="shPrice">€0,00</b></p>
+    <button class="bt-btn bt-btn--solid bt-done" type="button" id="shNext"><span class="bt-done__t">Avanti</span><svg class="bt-done__ck" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12.5l4 4 8-9"/></svg></button>
+  </footer>
+</section>
+
+<!-- Carrello -->
+<aside class="bt-cart" id="cart" role="dialog" aria-modal="true" aria-labelledby="cartTitle" aria-hidden="true">
+  <header class="bt-cart__head">
+    <button class="bt-round bt-cart__back" type="button" id="cartBack" aria-label="Indietro" hidden>‹</button>
+    <h2 id="cartTitle">Il tuo ordine</h2>
+    <button class="bt-x" type="button" id="cartClose" aria-label="Chiudi il carrello">×</button>
+  </header>
+  <div class="bt-cart__views" id="cartViews">
+    <!-- 1 · carrello -->
+    <div class="bt-cv" data-v="0">
+      <div class="bt-seg" id="modeSeg" role="radiogroup" aria-label="Ritiro o consegna">
+        <i class="bt-seg__pill" aria-hidden="true"></i>
+        <button type="button" role="radio" data-mode="ritiro" aria-checked="true">Ritiro</button>
+        <button type="button" role="radio" data-mode="consegna" aria-checked="false">Consegna</button>
+      </div>
+      <label class="bt-field"><span>Sede</span>
+        <select id="cartStore"></select>
+      </label>
+      <p class="bt-cart__st" id="cartStoreSt"></p>
+      <div id="cartAddrBox" hidden>
+        <div class="bt-field2">
+          <label class="bt-field"><span>Indirizzo</span><input id="addr" autocomplete="street-address" placeholder="Via e numero civico"></label>
+          <label class="bt-field bt-field--cap"><span>CAP</span><input id="cap" inputmode="numeric" maxlength="5" placeholder="41121"></label>
+        </div>
+        <p class="bt-hint" id="capHint">Consegniamo nei CAP vicini alla sede scelta.</p>
+      </div>
+      <ul class="bt-lines" id="cartLines"></ul>
+      <div class="bt-cart__empty" id="cartEmpty">
+        <p>Il carrello è vuoto.</p>
+        <button class="bt-btn bt-btn--outline" type="button" id="cartBrowse">Sfoglia il menù</button>
+      </div>
+      <div class="bt-totals" id="cartTotals">
+        <div class="bt-free" id="freeBox"><p id="freeTxt"></p><div class="bt-free__bar"><i id="freeBar"></i></div></div>
+        <dl>
+          <div><dt>Subtotale</dt><dd id="tSub">€0,00</dd></div>
+          <div id="tDelRow"><dt>Consegna</dt><dd id="tDel">€0,00</dd></div>
+          <div class="bt-totals__tot"><dt>Totale</dt><dd id="tTot">€0,00</dd></div>
+        </dl>
+        <div class="bt-pts" id="ptsBox">
+          <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18" class="bt-pts__bg"/><circle cx="22" cy="22" r="18" class="bt-pts__fg" id="ptsRing"/></svg>
+          <p id="ptsTxt"></p>
+        </div>
+        <p class="bt-warn" id="minWarn" hidden></p>
+      </div>
+    </div>
+    <!-- 2 · orario e dati -->
+    <div class="bt-cv" data-v="1">
+      <form id="checkout" novalidate>
+        <fieldset class="bt-slots">
+          <legend>Orario <span id="slotDay"></span></legend>
+          <div class="bt-slots__row" id="slots" role="radiogroup" aria-label="Orario"></div>
+          <p class="bt-err" id="errSlot"></p>
+        </fieldset>
+        <label class="bt-field"><span>Nome</span><input id="cName" autocomplete="name" placeholder="Nome e cognome"></label>
+        <p class="bt-err" id="errName"></p>
+        <label class="bt-field"><span>Telefono</span><input id="cTel" type="tel" autocomplete="tel" placeholder="333 123 4567"></label>
+        <p class="bt-err" id="errTel"></p>
+        <div id="coAddr"></div>
+        <fieldset class="bt-pay">
+          <legend>Pagamento</legend>
+          <label><input type="radio" name="pay" value="contanti" checked> <span id="payCash">Contanti al ritiro</span></label>
+          <label><input type="radio" name="pay" value="carta"> <span id="payCard">Carta al ritiro (POS)</span></label>
+        </fieldset>
+        <p class="bt-recap" id="coRecap"></p>
+      </form>
+    </div>
+    <!-- 3 · confermato -->
+    <div class="bt-cv bt-cv--ok" data-v="2">
+      <div class="bt-ok__ck" aria-hidden="true"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16"/></svg></div>
+      <h3 id="okTitle">Ordine confermato</h3>
+      <p id="okNo" class="bt-ok__no"></p>
+      <dl class="bt-ok__dl" id="okDl"></dl>
+      <p class="bt-ok__pts" id="okPts"></p>
+    </div>
+  </div>
+  <footer class="bt-cart__foot">
+    <button class="bt-btn bt-btn--solid bt-btn--block" type="button" id="cartCta">Scegli l'orario</button>
+  </footer>
+</aside>
+
+<div class="bt-toast" id="toast" role="status" aria-live="polite"><span id="toastTxt"></span><button type="button" id="toastBtn" hidden>Annulla</button></div>
+<canvas class="bt-burst" id="burst" aria-hidden="true"></canvas>
+
+<script src="app.js"></script>
+</body>
+</html>
