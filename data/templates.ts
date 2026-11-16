@@ -29,19 +29,8 @@ export interface TemplateGroup {
  * 所以这一层是**行业**，不是设计风格（风格是每套模版里面的 4 个 tab）。
  */
 export const groups: TemplateGroup[] = [
-  {
-    id: "food",
-    title: { en: "Restaurants & food", zh: "餐饮", "zh-tw": "餐飲", it: "Ristorazione", ja: "飲食店", ko: "음식점" },
-    intro: {
-      en: "Ramen bar, all-you-can-eat, sushi takeaway, poke, gelato, wine bar. Menu with category filters, a bowl builder, table, cake and tasting bookings, a cart that adds up an order.",
-      zh: "拉面店、自助餐、寿司外卖、poke、冰淇淋、酒窖酒吧。带分类筛选的菜单、配碗器、订座/订蛋糕/品鉴弹窗、能加总的购物车。",
-      "zh-tw": "拉麵店、吃到飽、壽司外帶、poke、冰淇淋、酒窖酒吧。帶分類篩選的菜單、配碗器、訂位/訂蛋糕/品鑑彈窗、能加總的購物車。",
-      it: "Ramen bar, all you can eat, sushi da asporto, poke, gelato, enoteca. Menù con filtri per categoria, bowl da comporre, prenotazione di tavoli, torte e degustazioni, carrello che somma l’ordine.",
-    },
-    accent: "#e05a3a",
-  },
   /**
-   * 11-15 用户拍板：「名店风格」两个板块，各 10 套。每套照一家世界知名店的官网骨架做、
+   * 11-15 用户拍板（11-16 寿司板块挪到最上面）：「名店风格」两个板块，各 10 套。每套照一家世界知名店的官网骨架做、
    * 再用设计库效果改善；店名/照片/文案全是自己的，**页面上不写原店名**（导入脚本有自检）。
    * 数据由 scripts/import-famous-templates.mjs 生成到 data/templates-famous.ts。
    */
@@ -55,6 +44,17 @@ export const groups: TemplateGroup[] = [
       it: "Dieci siti di sushi, ognuno costruito sul linguaggio di impaginazione di un sushi famoso nel mondo e poi spinto oltre con gli effetti della Libreria design: un banco omakase, una sala in bianco e nero, un flagship globale, un izakaya delle stagioni, una cucina nikkei, un sushi bar senza prenotazione, una tavola da condividere, una catena kaiten, uno shop di delivery, una famiglia di ristoranti. Nomi, foto e testi sono nostri.",
     },
     accent: "#b8322a",
+  },
+  {
+    id: "food",
+    title: { en: "Restaurants & food", zh: "餐饮", "zh-tw": "餐飲", it: "Ristorazione", ja: "飲食店", ko: "음식점" },
+    intro: {
+      en: "Ramen bar, all-you-can-eat, sushi takeaway, poke, gelato, wine bar. Menu with category filters, a bowl builder, table, cake and tasting bookings, a cart that adds up an order.",
+      zh: "拉面店、自助餐、寿司外卖、poke、冰淇淋、酒窖酒吧。带分类筛选的菜单、配碗器、订座/订蛋糕/品鉴弹窗、能加总的购物车。",
+      "zh-tw": "拉麵店、吃到飽、壽司外帶、poke、冰淇淋、酒窖酒吧。帶分類篩選的菜單、配碗器、訂位/訂蛋糕/品鑑彈窗、能加總的購物車。",
+      it: "Ramen bar, all you can eat, sushi da asporto, poke, gelato, enoteca. Menù con filtri per categoria, bowl da comporre, prenotazione di tavoli, torte e degustazioni, carrello che somma l’ordine.",
+    },
+    accent: "#e05a3a",
   },
   {
     id: "pizza-icons",
