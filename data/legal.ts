@@ -320,6 +320,89 @@ export const privacy: Record<string, PrivacyDoc> = {
       contactSection,
     ],
   },
+  roboss: {
+    updated: { en: "Last updated: November 17, 2026", zh: "最后更新：2026 年 11 月 17 日" },
+    intro: {
+      en: "Roboss AI is a voice assistant. To answer you it uses Claude, an AI model made by Anthropic. This page explains what is sent where, what stays on your iPhone, and how to delete it.",
+      zh: "Roboss AI 是一个语音助手，它用 Anthropic 公司的 AI 模型 Claude 来回答你。本页说明哪些数据发往哪里、哪些留在你的 iPhone 上，以及如何删除。",
+    },
+    sections: [
+      {
+        heading: { en: "Before anything is sent", zh: "发送之前" },
+        body: [
+          {
+            en: "The first time you use Roboss it explains what is shared with Claude and asks for your permission (the box is not ticked for you). Without it, Roboss only does what needs no AI. You can withdraw the permission at any time in Settings → Privacy.",
+            zh: "第一次使用时，Roboss 会说明哪些内容会发给 Claude，并征求你的同意（选框默认不勾）。不同意的话，Roboss 只做不需要 AI 的事。你可以随时在「设置 → 隐私」里撤回同意。",
+          },
+        ],
+      },
+      {
+        heading: { en: "What is sent to the AI", zh: "发给 AI 的内容" },
+        body: [
+          {
+            en: "When you ask something: the words you said or typed, the photos you choose to show it, the recent part of your conversation, and what Roboss reads on your iPhone to answer that question — for example your calendar events, reminders, alarms, the town you are in, the music playing, or the mail you ask about. It travels through the Roboss server to Anthropic (USA) and back. The server checks your subscription and counts usage; it does not keep the content.",
+            zh: "你提问时，会发送：你说的或打的话、你选择给它看的照片、最近的一段对话，以及 Roboss 为回答这个问题在手机上读到的内容——比如日程、提醒、闹钟、你所在的城市、正在播放的音乐，或你问到的邮件。这些经 Roboss 服务器转发给 Anthropic（美国）再返回。服务器只核对订阅、统计用量，不保存内容。",
+          },
+          {
+            en: "Anthropic does not use this data to train its models. It may keep it for a limited time to detect misuse, as described in Anthropic's privacy policy, then deletes it. Transfers to the USA rely on the European Commission's Standard Contractual Clauses.",
+            zh: "Anthropic 不会用这些数据训练模型。按 Anthropic 隐私政策，它可能为防滥用保留一段有限的时间，之后删除。向美国的传输以欧盟委员会标准合同条款为依据。",
+          },
+        ],
+      },
+      {
+        heading: { en: "What stays on your iPhone", zh: "留在 iPhone 上的" },
+        body: [
+          {
+            en: "Your conversation, what Roboss remembers about you, your name, home and work, photos you showed it (kept for a week), translations, the mail list, settings and a diagnostic log are stored only on your iPhone. Speech is recognised on the device; Roboss's voice is made on the device. Your Gmail app password is kept in the iPhone's Keychain and only used to read your mail directly from Google.",
+            zh: "你的对话、Roboss 记住的关于你的事、名字、家和公司地址、给它看过的照片（保留一周）、翻译、邮件列表、设置和诊断日志都只存在你的 iPhone 上。语音在手机上识别，Roboss 的声音也在手机上合成。Gmail 应用专用密码存在 iPhone 钥匙串里，只用来直接从 Google 读取你的邮件。",
+          },
+        ],
+      },
+      {
+        heading: { en: "Your account", zh: "你的账号" },
+        body: [
+          {
+            en: "You sign in with Apple. We receive an identifier for the app and, only if you choose to share it, an email address. We store that identifier, your subscription status (from Apple) and how many requests you made, to apply your plan. Payments are handled entirely by Apple; we never see your payment details.",
+            zh: "使用「通过 Apple 登录」。我们收到一个本 App 专用的标识，只有你选择分享时才会收到邮箱。我们保存这个标识、你的订阅状态（来自 Apple）和请求次数，用于执行你的套餐。付款全部由 Apple 处理，我们看不到你的支付信息。",
+          },
+        ],
+      },
+      {
+        heading: { en: "Other services Roboss uses", zh: "Roboss 用到的其他服务" },
+        body: [
+          {
+            en: "Apple: weather (WeatherKit), maps, places and routes (MapKit), song recognition (ShazamKit) and, when on-device recognition is unavailable, Apple's speech recognition. Google: only if you connect your Gmail, to read and send your own mail. OpenFreeMap: the building outlines of the 3D city during navigation (requests reveal the area being shown). Roboss has no advertising and no analytics or tracking SDKs.",
+            zh: "Apple：天气（WeatherKit）、地图、地点和路线（MapKit）、听歌识曲（ShazamKit），以及手机本地识别不可用时 Apple 的语音识别。Google：只有你连接 Gmail 时，用来读取和发送你自己的邮件。OpenFreeMap：导航时 3D 城市的楼宇轮廓（请求会透露显示的区域）。Roboss 没有广告，也没有任何分析或追踪 SDK。",
+          },
+        ],
+      },
+      {
+        heading: { en: "Permissions", zh: "权限说明" },
+        body: [
+          {
+            en: "Microphone and speech recognition — to hear you while Roboss is open. Location — for local weather, places and navigation. Calendars and Reminders — to read and, after you confirm, change them. Apple Music, Camera, Photos and Notifications — only when you use those features. Every permission is optional.",
+            zh: "麦克风和语音识别——Roboss 打开时听你说话。定位——本地天气、地点和导航。日历和提醒事项——读取，并在你确认后修改。Apple Music、相机、相册和通知——只在你用到这些功能时。所有权限都可以不开。",
+          },
+        ],
+      },
+      {
+        heading: { en: "Deleting your data", zh: "删除你的数据" },
+        body: [
+          {
+            en: "In the app, Settings → Privacy → Delete all my data erases the conversation, memories, profile, photos, translations, mail cache and log on your iPhone, and deletes your account and usage records from the Roboss server. Deleting the app removes everything stored on the iPhone. You can also email us to delete your account.",
+            zh: "在 App 里「设置 → 隐私 → 删除我的全部数据」会清除 iPhone 上的对话、记忆、个人资料、照片、翻译、邮件缓存和日志，并从 Roboss 服务器删除你的账号和用量记录。删除 App 会清除手机上的全部数据。也可以发邮件让我们删除账号。",
+          },
+          {
+            en: "If you are in the EU you have the right to access, correct, delete and port your data and to object to its processing; you can also complain to your data protection authority.",
+            zh: "如果你在欧盟，你有权访问、更正、删除和导出你的数据，并可反对处理；也可以向数据保护机构投诉。",
+          },
+        ],
+      },
+      childrenSection,
+      changesSection,
+      contactSection,
+    ],
+  },
 };
 
 export function getPrivacy(id: string): PrivacyDoc | undefined {

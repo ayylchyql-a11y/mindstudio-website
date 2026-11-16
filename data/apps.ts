@@ -1367,6 +1367,31 @@ export const apps: AppEntry[] = [
         } },
     ],
   },
+  {
+    id: "roboss",
+    name: "Roboss AI",
+    headlinePre: { en: "A personal AI ", zh: "一个" },
+    headlineGrad: { en: "you talk to", zh: "用说的" },
+    headlinePost: { en: ".", zh: "私人 AI。" },
+    gradientCss: "linear-gradient(90deg, #9fd4ff, #e6f4ff)",
+    desc: {
+      en: "Roboss is a holographic voice assistant for iPhone. Say “Hey Roboss” and ask — it keeps your calendar, to-dos, alarms, music, routes and mail, and speaks up when something needs you.",
+      zh: "Roboss 是 iPhone 上的全息语音助手。说一声「Hey Roboss」就能问它——它管你的日程、待办、闹钟、音乐、路线和邮件，有事会主动提醒你。",
+    },
+    tagline: { en: "Just say “Hey Roboss”.", zh: "说一声「Hey Roboss」。" },
+    status: "soon",
+    accent: "#94d1ff",
+    sectionClass: "sect-dark",
+    flip: false,
+    icon: "/icons/roboss.png",
+    features: [
+      { title: { en: "Talk, don't tap", zh: "用说的" }, desc: { en: "Speech is recognised on your iPhone; Roboss answers in its own voice, made on the device.", zh: "语音在 iPhone 上识别；Roboss 用自己的声音回答，声音也在手机上合成。" } },
+      { title: { en: "Your day, handled", zh: "管好你的一天" }, desc: { en: "Calendar, reminders, alarms and timers — every change shown on a card before it is saved.", zh: "日程、提醒、闹钟和计时——每次修改先在卡片上给你确认。" } },
+      { title: { en: "On the road", zh: "路上" }, desc: { en: "Routes with live traffic, turn-by-turn navigation and a reminder when it is time to leave.", zh: "实时路况、逐向导航，该出发时提醒你。" } },
+      { title: { en: "Reads for you", zh: "替你读" }, desc: { en: "Show it a letter or a menu and it explains or translates it in full.", zh: "给它看一封信或一份菜单，它会解释或全文翻译。" } },
+    ],
+    gallery: [],
+  },
 ];
 
 export function getApp(id: string): AppEntry | undefined {
