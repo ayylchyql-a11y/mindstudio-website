@@ -126,6 +126,8 @@ const blurbs: Record<string, string> = {
     "A time picker that behaves like a real wheel: flick it and it keeps turning, slows down by itself and clicks into place, stretching like a rubber band if you push it past the end. The difference between choosing a time and fighting a form.",
   "circle-reveal-tabs":
     "Changing tabs as a circle that grows from your fingertip until the new page fills the screen, and grows back the same way when you return. It keeps people oriented — the new screen visibly comes from what they touched.",
+  "typewriter-notes":
+    "A writing app that feels like a real typewriter: every letter is struck onto the page by a little carriage that steps along a roller, a bell rings near the margin and Return throws the carriage back with a satisfying ratchet. A desk lamp mode turns the room dark and lights only the page you are writing on. Made for journaling, letters and distraction-free notes.",
   "pizza-builder":
     "A friend's working ordering prototype for a real pizzeria: choose a base, tap toppings from the shop's own price list and watch every portion fall onto the pizza in its own place while the price climbs. Adding to the order puts the pizza through a burst of fire and into the cart, and the order ends on a big-type screen for the waiter. Everything is drawn in code, with no photos. A reference for build-your-own menus — pizza, poke, burgers, salads — where seeing the dish fill up does the selling.",
   "m-alpha-relax":

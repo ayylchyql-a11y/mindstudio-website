@@ -99,6 +99,7 @@ const LONG_SELF = { "slate-card-order": { secs: 17, query: "?clip" }, "receipt-p
   "neumorphic-io-switch": { secs: 10, vw: 710, query: "?demo" },
   "m-alpha-relax": { secs: 16, vw: 710, query: "?demo" },
   "pizza-builder": { secs: 18, vw: 710, query: "?demo" },
+  "typewriter-notes": { secs: 19, vw: 710, query: "?demo" },
   "potion-dispenser": { secs: 8, vw: 710, query: "?demo" },
   /* Soft Matter 新拟态六件：都带 ?demo（照原片节奏按下-松开），按详情画框原尺寸录。 */
   "neu-light-switch": { secs: 8, vw: 710, query: "?demo" }, "neu-thermostat-dial": { secs: 8, vw: 710, query: "?demo" }, "neu-audio-player": { secs: 8, vw: 710, query: "?demo" },
