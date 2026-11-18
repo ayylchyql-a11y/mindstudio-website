@@ -14,16 +14,31 @@
 @font-face { font-family: "Courier Prime"; src: url(_fonts/courier-prime-700-latin.woff2) format("woff2"); font-weight: 700; font-display: block; }
 
 :root {
-  --home: #c4a7d6;          /* home page lavender */
-  --paper: #dcaacd;         /* editor page pink */
-  --ink: #2a1c25;
-  --night: #140a13;         /* behind the sheet once the keyboard is up */
+  /* default stock: old typewriter paper — warm off-white, fibres, yellowed edges */
+  --ink: #2b2118;
+  --night: #14100b;         /* behind the sheet once the keyboard is up */
+  --mark: #3a2d22; --tabline: rgb(70 50 30 / .18);
+  --pill-a: #f6efe0; --pill-b: #e4d6bb; --pill-edge: rgb(110 85 50 / .3); --pill-sh: rgb(70 45 20 / .4); --dot: #3a2d22;
+  --tool: rgb(247 240 225 / .62); --tool-sh: rgb(80 55 25 / .22); --tool-ink: #2e2419; --tool-lamp: rgb(150 124 96 / .92);
+  --kb: rgb(234 222 198 / .5); --kb-lamp: rgb(22 17 12 / .95); --sug: rgb(70 50 30 / .18); --curl: 255 250 238;
   --ease: cubic-bezier(.3,.7,.2,1);
   --kb: cubic-bezier(.38,.7,.125,1);   /* iOS keyboard curve */
 }
+body.pink {   /* the source app's stock: pink letter paper on a lavender home */
+  --ink: #2a1c25; --night: #140a13; --mark: #3a2b35; --tabline: rgb(60 40 60 / .16);
+  --pill-a: #f6dcef; --pill-b: #e9c3df; --pill-edge: rgb(120 70 110 / .25); --pill-sh: rgb(80 30 60 / .45); --dot: #3b2934;
+  --tool: rgb(240 206 230 / .55); --tool-sh: rgb(80 30 60 / .25); --tool-ink: #2c1e28; --tool-lamp: rgb(178 128 150 / .9);
+  --kb: rgb(222 190 228 / .42); --kb-lamp: rgb(24 13 24 / .94); --sug: rgb(60 30 60 / .18); --curl: 255 236 248;
+}
+.bg { position: absolute; inset: 0; transition: opacity .45s ease; }
+.bgp { opacity: 0; } body.pink .bgp { opacity: 1; }
+#home .bgv { background: radial-gradient(125% 95% at 50% 40%, #ede2c9 0%, #e6d8ba 58%, #d8c5a0 100%); }
+#home .bgp { background: linear-gradient(180deg, #c0a3d3 0%, #c4a7d6 50%, #c9aad8 100%); }
+#paper .bgv { background: radial-gradient(120% 90% at 50% 42%, #f5eedd 0%, #efe4cc 55%, #e1d0ad 100%); }
+#paper .bgp { background: linear-gradient(180deg, #d6a3c8 0%, #dcaacd 45%, #dfadd1 100%); }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; overflow: hidden; background: #e9e4ea; }
-body { font-family: "Courier Prime", ui-monospace, monospace; color: var(--ink); user-select: none; -webkit-user-select: none; touch-action: manipulation; }
+body { font-family: "Courier Prime", ui-monospace, monospace; color: var(--ink); transition: color .45s; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
 
 /* ---------- device ---------- */
 #dev { position: absolute; left: 50%; top: 50%; width: 417px; height: 876px; border-radius: 66px; background: #0d0c0e;
@@ -34,17 +49,17 @@ body { font-family: "Courier Prime", ui-monospace, monospace; color: var(--ink);
 .speck { position: absolute; inset: 0; width: 393px; height: 852px; pointer-events: none; }
 
 /* ---------- home ---------- */
-#home { position: absolute; inset: 0; background: linear-gradient(180deg, #c0a3d3 0%, var(--home) 50%, #c9aad8 100%); z-index: 1; }
+#home { position: absolute; inset: 0; z-index: 1; }
 #home .txt { transition: opacity .15s, filter .15s; }
 #home.leaving .txt { opacity: 0; filter: blur(3px); }
 #home h1 { position: absolute; left: 32px; top: 82px; font: 400 21px/24px "Courier Prime"; letter-spacing: .06em; }
 #home p { position: absolute; left: 32px; top: 132px; font-size: 10.5px; line-height: 14px; opacity: .82; }
 #plus { position: absolute; left: 196px; top: 372px; width: 14px; height: 14px; margin: -7px; opacity: 0; transform: scale(.4); transition: opacity .12s, transform .2s cubic-bezier(.22,1,.36,1); pointer-events: none; }
-#plus::before, #plus::after { content: ""; position: absolute; background: #3a2b35; }
+#plus::before, #plus::after { content: ""; position: absolute; background: var(--mark); }
 #plus::before { left: 6.4px; top: 0; width: 1.2px; height: 14px; }
 #plus::after { top: 6.4px; left: 0; height: 1.2px; width: 14px; }
 #home.armed #plus { opacity: .8; transform: none; }
-#tabs { position: absolute; left: 10px; right: 10px; top: 694px; height: 158px; border-top: 1px solid rgb(60 40 60 / .16); }
+#tabs { position: absolute; left: 10px; right: 10px; top: 694px; height: 158px; border-top: 1px solid var(--tabline); }
 .tab { position: absolute; top: 16px; width: 90px; margin-left: -45px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; letter-spacing: .04em; background: none; border: 0; color: inherit; font-family: inherit; cursor: pointer; }
 .tab svg { width: 20px; height: 20px; }
 .tab.off { opacity: .45; }
@@ -52,19 +67,19 @@ body { font-family: "Courier Prime", ui-monospace, monospace; color: var(--ink);
 /* ---------- editor ---------- */
 #ed { position: absolute; inset: 0; z-index: 2; background: var(--night); transform: translateX(100%); visibility: hidden; }
 #ed.in { visibility: visible; }
-#paper { position: absolute; inset: 0; background: linear-gradient(180deg, #d6a3c8 0%, var(--paper) 45%, #dfadd1 100%);
+#paper { position: absolute; inset: 0;
   clip-path: inset(0px 0px 0px 0px round 0px 0px 0 0); transition: clip-path .3s var(--kb); }
 body.kb #paper { clip-path: inset(160px 8px 0px 8px round 26px 40px 0 0); }
 /* the curl at the top of the sheet: a lighter band that only shows once the sheet has an edge */
 #curl { position: absolute; left: 8px; right: 8px; top: 160px; height: 46px; border-radius: 26px 40px 0 0; pointer-events: none;
-  background: linear-gradient(180deg, rgb(255 236 248 / .5), rgb(255 236 248 / 0)); opacity: 0; transition: opacity .3s; }
+  background: linear-gradient(180deg, rgb(var(--curl) / .5), rgb(var(--curl) / 0)); opacity: 0; transition: opacity .3s; }
 body.kb #curl { opacity: 1; }
 body.lamp #curl { opacity: .12; }
 #ink { position: absolute; inset: 0; pointer-events: none; }
 #roll, #stkl { position: absolute; left: 0; top: 0; transition: transform .22s cubic-bezier(.25,.8,.3,1); }
 #stkw { position: absolute; inset: 0; pointer-events: none; }
 .ln { position: absolute; left: 82px; height: 23px; white-space: pre; }
-.c { position: absolute; top: 0; width: 10.5px; text-align: center; font: 15.5px/23px "Special Elite", "Courier Prime", monospace; color: var(--ink); -webkit-text-stroke: .32px var(--ink); }
+.c { position: absolute; top: 0; width: 10.5px; text-align: center; font: 15.5px/23px "Special Elite", "Courier Prime", monospace; color: var(--ink); -webkit-text-stroke: .32px var(--ink); transition: color .45s, -webkit-text-stroke-color .45s; }
 .c.fresh { animation: strike .16s ease-out; }
 @keyframes strike { from { transform: translateY(-1.2px) scale(1.12); filter: blur(.4px); opacity: .55; } }
 #ph1 { position: absolute; left: 0; right: 0; top: 242px; text-align: center; font-size: 10px; letter-spacing: .02em; transition: opacity .2s; }
@@ -104,9 +119,9 @@ body.kb #hd, body.lamp #hd { color: #eadbe4; }
 #car.ret { transition: transform .34s cubic-bezier(.45,0,.2,1); }
 #car.glide { transition: transform .3s var(--ease); }
 #pill { position: absolute; left: 0; top: -17px; width: 84px; height: 34px; border-radius: 17px;
-  background: linear-gradient(180deg, #f6dcef, #e9c3df); box-shadow: 0 0 0 .5px rgb(120 70 110 / .25), 0 3px 8px -3px rgb(80 30 60 / .45), inset 0 1px 0 rgb(255 255 255 / .8);
+  background: linear-gradient(180deg, var(--pill-a), var(--pill-b)); box-shadow: 0 0 0 .5px var(--pill-edge), 0 3px 8px -3px var(--pill-sh), inset 0 1px 0 rgb(255 255 255 / .8);
   transition: background .3s, box-shadow .3s; }
-#pill i { position: absolute; top: 14.5px; width: 5px; height: 5px; border-radius: 50%; background: #3b2934; transition: background .3s; }
+#pill i { position: absolute; top: 14.5px; width: 5px; height: 5px; border-radius: 50%; background: var(--dot); transition: background .3s; }
 #pill i:nth-child(1) { left: 11px; background: #57c066; } #pill i:nth-child(2) { left: 20.5px; } #pill i:nth-child(3) { left: 30px; }
 body.lamp #pill { background: linear-gradient(180deg, #3d2c3a, #2c1f2a); box-shadow: 0 0 0 .5px rgb(0 0 0 / .4), 0 3px 8px -3px rgb(0 0 0 / .6), inset 0 1px 0 rgb(255 255 255 / .08); }
 body.lamp #pill i:nth-child(2) { background: #e0553f; } body.lamp #pill i:nth-child(3) { background: #150d14; }
@@ -125,11 +140,11 @@ body.lamp #tb b:not(.r) { background: #120a10; }
 
 /* ---------- toolbar ---------- */
 #tool { position: absolute; left: 20px; right: 20px; top: 712px; height: 36px; border-radius: 18px; z-index: 35;
-  background: rgb(240 206 230 / .55); box-shadow: 0 0 0 .75px rgb(255 255 255 / .55) inset, 0 2px 10px -4px rgb(80 30 60 / .25);
+  background: var(--tool); box-shadow: 0 0 0 .75px rgb(255 255 255 / .55) inset, 0 2px 10px -4px var(--tool-sh);
   -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); transition: transform .3s var(--kb), background .3s; }
 body.kb #tool { transform: translateY(-243px); }
-body.lamp #tool { background: rgb(178 128 150 / .9); box-shadow: 0 0 0 .75px rgb(255 255 255 / .12) inset; }
-.tl { position: absolute; top: 0; width: 38px; height: 36px; margin-left: -19px; border: 0; background: none; color: #2c1e28; cursor: pointer; display: grid; place-items: center; transition: color .3s, transform .12s; }
+body.lamp #tool { background: var(--tool-lamp); box-shadow: 0 0 0 .75px rgb(255 255 255 / .12) inset; }
+.tl { position: absolute; top: 0; width: 38px; height: 36px; margin-left: -19px; border: 0; background: none; color: var(--tool-ink); cursor: pointer; display: grid; place-items: center; transition: color .3s, transform .12s; }
 .tl:active { transform: scale(.86); }
 body.lamp .tl { color: #f3dfe9; }
 .tl svg { width: 19px; height: 19px; stroke-width: 1.55; }
@@ -139,11 +154,11 @@ body.lamp .tl { color: #f3dfe9; }
 
 /* ---------- keyboard (drawn; also driven by a physical keyboard) ---------- */
 #kb { position: absolute; left: 0; right: 0; top: 515px; height: 337px; z-index: 40; transform: translateY(337px); transition: transform .3s var(--kb), background .3s;
-  background: rgb(222 190 228 / .42); -webkit-backdrop-filter: blur(22px) saturate(1.3); backdrop-filter: blur(22px) saturate(1.3); border-radius: 26px 26px 0 0; }
+  background: var(--kb); -webkit-backdrop-filter: blur(22px) saturate(1.3); backdrop-filter: blur(22px) saturate(1.3); border-radius: 26px 26px 0 0; }
 body.kb #kb { transform: none; }
-body.lamp #kb { background: rgb(24 13 24 / .94); }
+body.lamp #kb { background: var(--kb-lamp); }
 #sug { position: absolute; left: 0; right: 0; top: 0; height: 44px; }
-#sug::before, #sug::after { content: ""; position: absolute; top: 12px; width: 1px; height: 20px; background: rgb(60 30 60 / .18); }
+#sug::before, #sug::after { content: ""; position: absolute; top: 12px; width: 1px; height: 20px; background: var(--sug); }
 #sug::before { left: 131px; } #sug::after { left: 262px; }
 body.lamp #sug::before, body.lamp #sug::after { background: rgb(255 255 255 / .14); }
 .k { position: absolute; height: 42px; border-radius: 5px; border: 0; display: grid; place-items: center; cursor: pointer;
@@ -161,7 +176,7 @@ body.lamp .k.press { background: rgb(255 255 255 / .38); }
   display: grid; place-items: center; font: 400 30px/1 system-ui, -apple-system, sans-serif; color: #1c1219; pointer-events: none; opacity: 0; }
 #bal.show { opacity: 1; }
 body.lamp #bal { background: #6d5e6b; color: #fff; }
-.glyph { position: absolute; top: 791px; width: 30px; height: 30px; color: #3a2a35; transition: color .3s; } body.lamp .glyph { color: #e9dde6; }
+.glyph { position: absolute; top: 791px; width: 30px; height: 30px; color: var(--mark); transition: color .3s; } body.lamp .glyph { color: #e9dde6; }
 #homebar { position: absolute; left: 50%; bottom: 8px; width: 134px; height: 5px; margin-left: -67px; border-radius: 3px; background: rgb(30 15 25 / .55); z-index: 50; pointer-events: none; transition: background .3s; }
 body.kb #homebar, body.lamp #homebar { background: rgb(255 255 255 / .6); }
 
@@ -178,7 +193,7 @@ body.kb #homebar, body.lamp #homebar { background: rgb(255 255 255 / .6); }
 <div id="dev"><div id="scr">
   <!-- home -->
   <section id="home">
-    <canvas class="speck" id="sp1"></canvas>
+    <div class="bg bgv"><canvas class="speck" id="sp1v"></canvas></div><div class="bg bgp"><canvas class="speck" id="sp1"></canvas></div>
     <div class="txt"><h1>DRAFT</h1><p>A blank page is waiting.</p></div>
     <div id="plus"></div>
     <div id="tabs" class="txt">
@@ -190,7 +205,7 @@ body.kb #homebar, body.lamp #homebar { background: rgb(255 255 255 / .6); }
   <!-- editor -->
   <section id="ed">
     <div id="paper">
-      <canvas class="speck" id="sp2"></canvas>
+      <div class="bg bgv"><canvas class="speck" id="sp2v"></canvas></div><div class="bg bgp"><canvas class="speck" id="sp2"></canvas></div>
       <div id="ph1">Need a first line?</div>
       <div id="ph2"></div>
       <div id="ink"><div id="roll"></div></div>
@@ -212,7 +227,7 @@ body.kb #homebar, body.lamp #homebar { background: rgb(255 255 255 / .6); }
       <button class="tl" style="left:158px" data-act="page" data-tip="New sheet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M7.5 4h7l3.5 3.5V19a1 1 0 0 1-1 1H7.5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M14.5 4v3.5H18"/><path d="M5 6.5V20.5a1.2 1.2 0 0 0 1.2 1.2H16" opacity=".6"/></svg></button>
       <button class="tl" style="left:204px" data-tip="Ribbon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="11" cy="11" r="6.5"/><circle cx="11" cy="8.4" r="1.3"/><circle cx="8.6" cy="12.3" r="1.3"/><circle cx="13.4" cy="12.3" r="1.3"/><path d="M15.8 15.6l3.7 3.7" stroke-linecap="round"/></svg></button>
       <button class="tl" style="left:250px" data-act="lamp" data-tip="Lamp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20.5h7M11.5 20.5l-3-7 4.5-5.5"/><path d="M12 6.2l3.6-2.4 3.4 4.6-3.6 2.4z"/><path d="M16.8 10.4l1 1.6" opacity=".7"/></svg></button>
-      <button class="tl" style="left:331px" data-tip="Tone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="12" cy="12.5" r="7"/><path d="M12 12.5l3.6-3.6M12 3v2.5M5 5.5l1.5 1.5M19 5.5L17.5 7"/></svg></button>
+      <button class="tl" style="left:331px" data-act="tone" data-tip="Paper"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="12" cy="12.5" r="7"/><path d="M12 12.5l3.6-3.6M12 3v2.5M5 5.5l1.5 1.5M19 5.5L17.5 7"/></svg></button>
       <div id="tip"></div>
     </div>
   </section>
@@ -259,7 +274,27 @@ function dust(cv, seed, n) {
   // a little uneven tone, like pulp
   for (let i = 0; i < 26; i++) { const g = c.createRadialGradient(0, 0, 0, 0, 0, 60 + r() * 80); g.addColorStop(0, `rgba(255,240,250,${(r() * .07).toFixed(3)})`); g.addColorStop(1, "rgba(255,240,250,0)"); c.save(); c.translate(r() * 393, r() * 852); c.fillStyle = g; c.fillRect(-140, -140, 280, 280); c.restore(); }
 }
-dust($("#sp1"), 11, 210); dust($("#sp2"), 29, 260);
+// old typewriter stock: grain, fibres, a few foxing spots and brown dust
+function vintage(cv, seed, n) {
+  const d = 2, c = cv.getContext("2d"); cv.width = 393 * d; cv.height = 852 * d; c.scale(d, d);
+  const r = rng(seed);
+  for (let i = 0; i < 7000; i++) { const v = r(); c.fillStyle = v < .5 ? `rgba(110,80,40,${(.02 + r() * .05).toFixed(3)})` : `rgba(255,252,240,${(.05 + r() * .1).toFixed(3)})`; c.fillRect(r() * 393, r() * 852, .6, .6); }   // grain
+  c.lineCap = "round";
+  for (let i = 0; i < 700; i++) {   // fibres: short, slightly curved, mostly faint
+    const x = r() * 393, y = r() * 852, a = r() * Math.PI, l = 2 + r() * 6, k = (r() - .5) * 3;
+    c.strokeStyle = `rgba(120,92,55,${(.04 + r() * .09).toFixed(3)})`; c.lineWidth = .3 + r() * .35;
+    c.beginPath(); c.moveTo(x, y); c.quadraticCurveTo(x + Math.cos(a) * l / 2 + k, y + Math.sin(a) * l / 2 - k, x + Math.cos(a) * l, y + Math.sin(a) * l); c.stroke();
+  }
+  for (let i = 0; i < 9; i++) { const rad = 4 + r() * 14, g = c.createRadialGradient(0, 0, 0, 0, 0, rad); g.addColorStop(0, `rgba(160,110,50,${(.05 + r() * .08).toFixed(3)})`); g.addColorStop(1, "rgba(160,110,50,0)");   // foxing
+    c.save(); c.translate(r() * 393, r() * 852); c.fillStyle = g; c.fillRect(-rad, -rad, rad * 2, rad * 2); c.restore(); }
+  for (let i = 0; i < n; i++) { const x = r() * 393, y = r() * 852; c.fillStyle = `rgba(52,38,22,${(.15 + r() * .5).toFixed(2)})`; c.beginPath(); c.arc(x, y, .3 + Math.pow(r(), 2.4) * 1, 0, 7); c.fill(); }
+}
+dust($("#sp1"), 11, 210); dust($("#sp2"), 29, 260); vintage($("#sp1v"), 5, 150); vintage($("#sp2v"), 17, 180);
+
+/* ---------- paper stock: typewriter paper by default, the source's pink behind the dial ---------- */
+let pink = Q.get("paper") === "pink";
+try { if (!Q.has("paper") && !Q.has("demo")) pink = localStorage.getItem("tw-paper") === "pink"; } catch (e) {}
+body.classList.toggle("pink", pink);
 
 /* ---------- sound: every effect synthesised ---------- */
 let ac = null, out = null, nbuf = null, muted = false;
@@ -312,6 +347,7 @@ const sfx = {
     noise(t, .008, { f: on ? 2600 : 2200, q: 2, g: .5 }); noise(t + .045, .009, { f: 1700, q: 2, g: .32 }); tone(t + .045, .04, { f: 420, f2: 260, g: .12 });
     if (on) tone(t + .06, .6, { f: 100, g: .015, att: .2 }); },
   pop() { if (!A()) return; const t = ac.currentTime + .005; tone(t, .1, { f: 560, f2: 190, g: .28 }); noise(t, .02, { f: 1600, q: 1, g: .12 }); },
+  swap() { if (!A()) return; const t = ac.currentTime + .005; noise(t, .45, { f: 900, f2: 2600, q: .8, g: .14 }); for (let i = 0; i < 6; i++) noise(t + .05 + i * .04, .006, { f: 3200 * jit(.2), q: 4, g: .12 }); },
   tap() { if (!A()) return; noise(ac.currentTime + .002, .007, { f: 3200, q: 1.5, g: .14 }); },
 };
 const sndBtn = $("#snd");
@@ -420,7 +456,7 @@ function drawLamp() {
   const ax = carX(), ay = 366 - 17 - 28;           // apex = the typebar head
   const L = 215 * coneK, A0 = -0.66, A1 = 0.9;     // left edge 38° off vertical, right edge 52° — the beam leans right
   // 1) darkness everywhere, the cone cut out of it with feathered edges and a distance falloff
-  dc.clearRect(0, 0, 393, 852); dc.globalCompositeOperation = "source-over"; dc.fillStyle = "rgba(24,9,20,.84)"; dc.fillRect(0, 0, 393, 852);
+  dc.clearRect(0, 0, 393, 852); dc.globalCompositeOperation = "source-over"; dc.fillStyle = pink ? "rgba(24,9,20,.84)" : "rgba(22,15,8,.84)"; dc.fillRect(0, 0, 393, 852);
   if (L > 2) {
     dc.globalCompositeOperation = "destination-out";
     const g = dc.createRadialGradient(ax, ay, 4, ax, ay, L); g.addColorStop(0, "rgba(0,0,0,1)"); g.addColorStop(.25, "rgba(0,0,0,.96)"); g.addColorStop(.62, "rgba(0,0,0,.6)"); g.addColorStop(1, "rgba(0,0,0,0)");
@@ -434,10 +470,11 @@ function drawLamp() {
   // 2) warm tint (multiplied onto the pink paper → salmon)
   // 3) brightness at the source: screened warm light, strongest next to the typebar
   gc.clearRect(0, 0, 393, 852);
-  if (L > 2) { const g3 = gc.createRadialGradient(ax, ay, 0, ax, ay, L * .75); g3.addColorStop(0, "rgba(255,160,150,.75)"); g3.addColorStop(.35, "rgba(240,120,125,.32)"); g3.addColorStop(1, "rgba(240,120,125,0)");
+  if (L > 2) { const g3 = gc.createRadialGradient(ax, ay, 0, ax, ay, L * .75); const hot = pink ? ["rgba(255,160,150,.75)", "rgba(240,120,125,.32)", "rgba(240,120,125,0)"] : ["rgba(255,184,108,.72)", "rgba(236,140,70,.3)", "rgba(236,140,70,0)"];
+    g3.addColorStop(0, hot[0]); g3.addColorStop(.35, hot[1]); g3.addColorStop(1, hot[2]);
     gc.fillStyle = g3; for (let i = 0; i < 12; i++) { gc.globalAlpha = 1 / 12; const w = .01 * i; wedge(gc, ax, ay, L, A0 + .06 - w, A1 - .06 + w); gc.fill(); } gc.globalAlpha = 1; }
   tc.clearRect(0, 0, 393, 852);
-  if (L > 2) { const g2 = tc.createRadialGradient(ax, ay, 0, ax, ay, L); g2.addColorStop(0, "rgba(255,206,178,1)"); g2.addColorStop(.6, "rgba(255,212,190,.8)"); g2.addColorStop(1, "rgba(255,214,200,0)"); tc.fillStyle = g2; wedge(tc, ax, ay, L, A0 - .08, A1 + .08); tc.fill(); }
+  if (L > 2) { const g2 = tc.createRadialGradient(ax, ay, 0, ax, ay, L); g2.addColorStop(0, pink ? "rgba(255,206,178,1)" : "rgba(255,212,160,1)"); g2.addColorStop(.6, pink ? "rgba(255,212,190,.8)" : "rgba(255,222,180,.8)"); g2.addColorStop(1, "rgba(255,214,200,0)"); tc.fillStyle = g2; wedge(tc, ax, ay, L, A0 - .08, A1 + .08); tc.fill(); }
 }
 function lampLoop(t0, target) {
   cancelAnimationFrame(lampRaf);
@@ -577,6 +614,8 @@ $("#tool").addEventListener("click", (e) => {
   else if (act === "flower") addFlower();
   else if (act === "lamp") toggleLamp();
   else if (act === "page") newSheet();
+  else if (act === "tone") { pink = !pink; body.classList.toggle("pink", pink); try { localStorage.setItem("tw-paper", pink ? "pink" : "typewriter"); } catch (e) {}
+    sfx.swap(); if (lampOn) drawLamp(); b.dataset.tip = pink ? "Pink paper" : "Typewriter paper"; tip(b); }
   else { sfx.tap(); tip(b); }
 });
 function newSheet() {
